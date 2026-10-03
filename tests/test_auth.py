@@ -4,6 +4,7 @@ from pathlib import Path
 import tempfile
 import time
 import unittest
+from unittest.mock import patch
 from urllib.parse import parse_qs, urlparse
 
 from cryptography.fernet import Fernet
@@ -24,6 +25,8 @@ class AuthTests(unittest.TestCase):
         self.claim_overrides = {}
         self.scopes = SCOPES
         self.fail_revoke = False
+        self.bad_signature = False
+        self.refresh_failure = False
         self.events = [{"type": "response.output_text.delta", "delta": "검토 완료"}, {"type": "response.completed"}]
         self.service = AuthService(storage_path=self.path, encryption_key=self.key,
                                    http_client=httpx.Client(transport=httpx.MockTransport(self.handle)))
@@ -39,11 +42,14 @@ class AuthTests(unittest.TestCase):
                 "token_endpoint": ISSUER + "/api/accounts/oauth/token", "jwks_uri": ISSUER + "/.well-known/jwks.json",
                 "revocation_endpoint": ISSUER + "/oauth/revoke"})
         if path == "/.well-known/jwks.json":
-            key = json.loads(jwt.algorithms.RSAAlgorithm.to_jwk(self.signing.public_key()))
+            public_key = rsa.generate_private_key(public_exponent=65537, key_size=2048).public_key() if self.bad_signature else self.signing.public_key()
+            key = json.loads(jwt.algorithms.RSAAlgorithm.to_jwk(public_key))
             key["kid"] = "test-key"
             return httpx.Response(200, json={"keys": [key]})
         if path == "/api/accounts/oauth/token":
             form = parse_qs(request.content.decode())
+            if self.refresh_failure and form["grant_type"] == ["refresh_token"]:
+                return httpx.Response(400, json={"error": "invalid_grant", "error_description": "secret-refresh-new"})
             claims = {"iss": ISSUER, "aud": form["client_id"][0], "sub": "user-one",
                       "iat": int(time.time()), "exp": int(time.time()) + 3600,
                       "nonce": self.nonce, "email": "user@example.test", **self.claim_overrides}
@@ -109,6 +115,11 @@ class AuthTests(unittest.TestCase):
                 self.assertEqual(self.login()["reason"], "invalid_identity_token")
                 self.assertFalse(self.service.status()["connected"])
 
+    def test_invalid_signature_is_rejected(self):
+        self.bad_signature = True
+        self.assertEqual(self.login()["reason"], "invalid_identity_token")
+        self.assertFalse(self.service.status()["connected"])
+
     def test_returning_registration_mismatch_keeps_active_credentials(self):
         self.login()
         params = self.begin()
@@ -171,11 +182,34 @@ class AuthTests(unittest.TestCase):
         self.assertEqual(params["client_id"], ["oaiapp_test"])
         self.assertNotIn("id_token_hint", params)
 
+    def test_expired_token_scope_downgrade_prevents_inference(self):
+        self.login()
+        self.service._account()["expires_at"] = time.time() - 1
+        self.scopes = "openid profile email"
+        result = self.service.review([{"role": "user", "content": "review"}])
+        self.assertEqual(result["reason"], "plan_permission_required")
+        self.assertFalse(self.service.status()["plan_enabled"])
+        self.assertFalse(any(request.url.path == "/v1/responses" for request in self.requests))
+        restored = AuthService(storage_path=self.path, encryption_key=self.key)
+        self.assertFalse(restored.status()["plan_enabled"])
+
+    def test_invalid_refresh_requires_reauthorization_and_redacts_description(self):
+        self.login()
+        self.service._account()["expires_at"] = time.time() - 1
+        self.refresh_failure = True
+        result = self.service.models()
+        self.assertEqual(result["reason"], "reauthorization_required")
+        self.assertNotIn("secret-refresh", json.dumps(result))
+
     def test_missing_key_and_invalid_callback_fail_closed(self):
         service = AuthService(storage_path=self.path, redirect_uri="http://localhost:8000/auth/callback", encryption_key=self.key)
         self.assertEqual(service.start()["reason"], "invalid_loopback_callback")
         service = AuthService(storage_path=self.path, encryption_key=Fernet.generate_key())
         self.assertEqual(service.status()["reason"], "auth_storage_unavailable")
+        with patch.dict("os.environ", {}, clear=True):
+            service = AuthService(storage_path=Path(self.temp.name) / "new.enc")
+            self.assertEqual(service.start()["reason"], "auth_storage_key_required")
+            self.assertFalse(service.path.exists())
 
 
 if __name__ == "__main__":
