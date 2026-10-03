@@ -50,14 +50,26 @@ def test_mixed_manifest_is_rejected(tmp_path, field, value):
         PackageCatalog(tmp_path).load("training-001", "v1", allow_unvalidated=True)
 
 
-def test_missing_reference_and_escape_rejected(tmp_path):
+def test_missing_reference_rejected(tmp_path):
     package = generate_package(tmp_path)
     package.private["problems"] = []
     write_json(package.path / "private/manifest.json", package.private)
     with pytest.raises(PackageError):
         PackageCatalog(tmp_path).load("training-001", "v1", allow_unvalidated=True)
+
+
+def test_escape_rejected(tmp_path):
+    package = generate_package(tmp_path)
     package.public["data_files"][0]["path"] = "../../outside.csv"
     write_json(package.path / "public/manifest.json", package.public)
+    with pytest.raises(PackageError):
+        PackageCatalog(tmp_path).load("training-001", "v1", allow_unvalidated=True)
+
+
+def test_duplicate_reference_rejected(tmp_path):
+    package = generate_package(tmp_path)
+    package.private["problems"].append(dict(package.private["problems"][0]))
+    write_json(package.path / "private/manifest.json", package.private)
     with pytest.raises(PackageError):
         PackageCatalog(tmp_path).load("training-001", "v1", allow_unvalidated=True)
 

@@ -78,8 +78,12 @@ class PackageCatalog:
             if public["dataset_id"] != private["dataset_id"]:
                 raise PackageError("Dataset identity mismatch")
             public_ids = [p["problem_id"] for p in public["problems"]]
-            if not public_ids or len(public_ids) != len(set(public_ids)) or set(public_ids) != {p["problem_id"] for p in private["problems"]}:
+            private_ids = [p["problem_id"] for p in private["problems"]]
+            if not public_ids or len(public_ids) != len(set(public_ids)) or len(private_ids) != len(set(private_ids)) or set(public_ids) != set(private_ids):
                 raise PackageError("Missing or duplicate reference")
+            tables = [entry["table"] for entry in public["data_files"]]
+            if len(tables) != len(set(tables)) or any(not set(p["required_tables"]).issubset(tables) for p in public["problems"]):
+                raise PackageError("Missing or duplicate required table")
             for section, entries, version_key in (("public", public["data_files"], None), ("public", public["problems"], "problem_version"), ("private", private["problems"], "evaluation_version")):
                 for entry in entries:
                     file = safe_file(path / section, entry["path"])
