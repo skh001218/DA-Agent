@@ -22,9 +22,10 @@ function renderSchema(schema) {
   const tableLabels = { users: '유저 1명당 한 행', sessions: '로그인 1회당 한 행', tutorial_attempts: '튜토리얼 시도 1회당 한 행' };
   for (const [name, fields] of Object.entries(schema)) {
     if (name === 'categories') continue;
-    const entry = el('div', undefined, 'schema-table'); entry.append(el('h3', name), el('p', tableLabels[name] || '공개 학습 표', 'muted'));
+    const entry = el('div', undefined, 'schema-table'); entry.append(el('h3', name === 'time_rules' ? '시간 기준' : name), el('p', fields.grain || tableLabels[name] || '', 'muted'));
     if (typeof fields === 'string') { entry.append(el('p', fields, 'prose')); container.append(entry); continue; }
-    const rows = Array.isArray(fields) ? fields : fields.columns || fields.fields || Object.entries(fields).map(([column, definition]) => ({ name: column, description: typeof definition === 'string' ? definition : definition.description, type: definition.type }));
+    const rawFields = Array.isArray(fields) ? fields : fields.columns || fields.fields || fields;
+    const rows = Array.isArray(rawFields) ? rawFields : Object.entries(rawFields).map(([column, definition]) => ({ name: column, description: typeof definition === 'string' ? definition : definition?.description, type: definition?.type }));
     if (fields.description) entry.append(el('p', fields.description, 'prose'));
     const scroll = el('div', undefined, 'table-scroll'); const table = el('table'); const header = el('tr'); header.append(el('th', 'SQL 컬럼'), el('th', '의미')); const head = el('thead'); head.append(header); const body = el('tbody');
     for (const field of rows) { const column = typeof field === 'string' ? field : field.name || field.column; const row = el('tr'); row.append(el('td', `${column}${field.type ? ' (' + field.type + ')' : ''}`), el('td', field.description || fieldLabels[column] || '공개 데이터 컬럼')); body.append(row); }
@@ -133,9 +134,17 @@ function renderReports() {
     const reviewButton = el('button', '이 제출본 리뷰 요청'); const editButton = el('button', '이 제출본을 수정'); let requestId = uid();
     reviewButton.onclick = () => busy(reviewButton, async () => { const review = await post(attemptPath(`/reports/${encodeURIComponent(report.report_id)}/review`), { request_id: requestId }); (state.attempt.reviews ||= []).push({ ...review, report_id: review.report_id || report.report_id }); requestId = uid(); renderReports(); if (review.status !== 'completed' && review.status !== 'success') notice(review.error?.message || '리뷰를 완료하지 못했습니다. 제출본은 보존되며 재시도할 수 있습니다.'); });
     editButton.onclick = () => busy(editButton, async () => { if (state.dirty && !confirm('현재 작성 중인 서술 입력을 이 제출본 내용으로 바꿀까요?')) return; await flushDraft(); state.previousReport = report.report_id; state.reportRequest = null; for (const key of ['problem_definition', 'hypothesis', 'limitations', 'next_actions']) $(`[data-section="${key}"]`).value = report.content?.[key] || ''; $('#discoveries').value = (report.claims || []).map(claim => claim.text).join('\n\n'); state.claimEvidence.clear(); const allowed = new Set(successfulSaved().map(saved => saved.saved_execution_id)); (report.claims || []).forEach((claim, index) => state.claimEvidence.set(index, new Set((claim.evidence_refs || []).map(ref => ref.saved_execution_id).filter(id => allowed.has(id))))); draftChanged(); renderClaims(); tab('report'); $('#report-status').textContent = `보고서 v${report.report_version ?? '?'}의 수정본 작성 중 · 제출하면 새 버전이 됩니다.`; });
-    node.append(reviewButton, document.createTextNode(' '), editButton); for (const review of state.attempt.reviews || []) if (review.report_id === report.report_id) { node.append(el('h3', `리뷰 · ${review.status}`), el('pre', pretty(review.feedback || review.error || review))); } $('#reports').append(node);
+    node.append(reviewButton, document.createTextNode(' '), editButton); for (const review of state.attempt.reviews || []) if (review.report_id === report.report_id) { node.append(el('h3', `리뷰 · ${review.status === 'completed' ? '완료' : review.status === 'pending' ? '처리 중' : '재시도 필요'}`)); renderFeedback(node, review); } $('#reports').append(node);
   }
   if (!(state.attempt.reports || []).length) $('#reports').append(el('p', '아직 제출한 보고서가 없습니다.', 'muted'));
+}
+function renderFeedback(container, review) {
+  const feedback = review.feedback;
+  if (!feedback?.criteria) { container.append(el('p', review.error?.message || (typeof review.error === 'string' ? 'ChatGPT 연결을 확인한 뒤 다시 요청하세요.' : feedback || '리뷰 처리 중입니다.'), 'prose')); return; }
+  container.append(el('p', `총점 ${feedback.total_score} / 100점`));
+  const labels = { problem_definition: '문제 정의', analysis_approach: '분석 접근', sql_accuracy: 'SQL 정확성', interpretation: '결과 해석', next_actions: '추가 분석·액션' };
+  for (const item of feedback.criteria) container.append(el('h3', `${labels[item.key] || item.key} · ${item.score}/${item.weight}점 (수준 ${item.level}/4)`), el('p', item.reason, 'prose'));
+  for (const [key, label] of Object.entries({ strengths: '잘한 점', improvements: '보완할 점', next_steps: '다음 행동' })) { container.append(el('h3', label)); for (const text of feedback[key] || []) container.append(el('p', text, 'prose')); }
 }
 $$('nav button').forEach(button => { button.onclick = () => { if (button.dataset.tab === 'report') renderClaims(); tab(button.dataset.tab); }; });
 $$('[data-section]').forEach(node => { node.addEventListener('input', () => { draftChanged(); state.reportRequest = null; if (node.id === 'discoveries') renderClaims(); }); });

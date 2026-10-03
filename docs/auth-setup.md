@@ -4,7 +4,7 @@
 
 ## 서버 설정
 
-필요 라이브러리: `httpx`, `PyJWT[crypto]`, `cryptography`. 구현에서 확인한 설치 버전은 각각 0.28.1, 2.12.1, 46.0.7이다.
+필요 라이브러리: `httpx`, `PyJWT[crypto]`, `cryptography`. 통합 프로토타입에서 확인·고정한 버전은 각각 0.28.1, 2.10.1, 46.0.5이며 requirements.lock.txt를 따른다.
 
 | 환경 변수 | 기본값 / 사용 방법 |
 | --- | --- |
@@ -17,7 +17,7 @@
 Fernet 키는 다음 명령으로 한 번 생성하고 서버 밖의 secret 관리 위치에 보관한다. 출력·파일을 Git, 로그, 대화에 붙여 넣지 않는다. Linux에서는 키 파일과 인증 볼륨에 소유자만 접근하도록 설정하고, Windows에서는 파일 보안 속성의 ACL을 사용 계정으로 제한한다. 암호화 키와 인증 파일을 같은 공개 볼륨에 넣지 않는다. 키를 잃으면 인증 저장소를 복구할 수 없다.
 
 ```shell
-python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+python scripts/setup_local.py
 ```
 
 키가 없거나 인증 파일을 해독하지 못하면 `unavailable`을 표시하며, 기존 호스트 ID를 임의로 재생성하지 않는다. 파일은 Fernet으로 인증 암호화하고 원자적으로 교체하며 Linux 파일 권한은 `0600`이다. OS 관리자 또는 서버 프로세스에 접근 가능한 사람으로부터의 보호까지 제공하는 방식은 아니다.

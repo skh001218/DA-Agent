@@ -1,0 +1,58 @@
+services:
+  db:
+    image: postgres:17.4
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Run scripts/setup_local.py first}
+      LEARNER_PASSWORD: ${LEARNER_PASSWORD:?Run setup first}
+      RECORDER_PASSWORD: ${RECORDER_PASSWORD:?Run setup first}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-db.sh:/docker-entrypoint-initdb.d/10-init.sh:ro
+    command: ["postgres", "-c", "log_statement=none", "-c", "log_min_error_statement=panic", "-c", "log_error_verbosity=terse", "-c", "log_min_messages=panic", "-c", "log_parameter_max_length=0", "-c", "log_parameter_max_length_on_error=0"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+  app:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:${WEB_PORT:-8000}:8000"
+    environment:
+      RECORDS_DSN: postgresql://recorder:${RECORDER_PASSWORD}@db/records
+      LEARNER_DSN: postgresql://learner:${LEARNER_PASSWORD}@db/training
+      PACKAGES_ROOT: /app/packages
+      DA_AUTH_ENCRYPTION_KEY_FILE: /run/secrets/auth_key
+      DA_AUTH_STORAGE_PATH: /app/auth-data/auth.enc
+      DA_AUTH_REDIRECT_URI: http://127.0.0.1:${WEB_PORT:-8000}/auth/callback
+    volumes:
+      - ./packages:/app/packages:ro
+      - auth_data:/app/auth-data
+    secrets:
+      - auth_key
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health')"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+  prepare:
+    profiles: ["tools"]
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ADMIN_DSN: postgresql://postgres:${POSTGRES_PASSWORD}@db/training
+    volumes:
+      - ./packages:/app/packages
+    command: ["python", "scripts/prepare_db.py"]
+volumes:
+  postgres_data:
+  auth_data:
+secrets:
+  auth_key:
+    file: .local/auth.key

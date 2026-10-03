@@ -1,0 +1,7 @@
+.git
+.venv
+.env
+.local
+packages
+tests
+node_modules

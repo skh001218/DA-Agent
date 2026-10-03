@@ -8,3 +8,9 @@ venv/
 node_modules/
 .DS_Store
 Thumbs.db
+.local/
+packages/
+.pytest_cache/
+*.egg-info/
+build/
+dist/
