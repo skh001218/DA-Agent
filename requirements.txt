@@ -1,0 +1,8 @@
+fastapi==0.142.2
+uvicorn==0.54.0
+psycopg[binary]==3.3.6
+sqlglot==30.21.0
+httpx==0.28.1
+PyJWT[crypto]==2.10.1
+cryptography==46.0.5
+pytest==8.4.2

@@ -1,0 +1,2 @@
+# Docker's Linux shell must retain LF on Windows checkouts.
+*.sh text eol=lf
