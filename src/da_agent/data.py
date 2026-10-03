@@ -12,6 +12,17 @@ END = datetime(2026, 9, 15, tzinfo=KST)
 COMPLETE = datetime(2026, 9, 19, tzinfo=KST)
 USER_FIELDS = ["user_id", "signup_at", "platform", "country", "acquisition_channel", "signup_app_version"]
 SESSION_FIELDS = ["session_id", "user_id", "login_at", "logout_at", "app_version"]
+DATA_DICTIONARY = {
+    "users": {"grain": "유저 1명", "columns": {
+        "user_id": "text, 유저 고유 ID (기본 키)", "signup_at": "timestamptz, 가입 시각",
+        "platform": "text, 가입 플랫폼 android/ios/pc", "country": "text, 가입 국가 KR",
+        "acquisition_channel": "text, 유입 채널 organic/ad/referral", "signup_app_version": "text, 가입 앱 버전"}},
+    "sessions": {"grain": "로그인 세션 1회", "columns": {
+        "session_id": "text, 세션 고유 ID (기본 키)", "user_id": "text, users.user_id 참조 (외래 키)",
+        "login_at": "timestamptz, 로그인 시작 시각", "logout_at": "nullable timestamptz, 종료 시각; 종료 미기록은 null",
+        "app_version": "text, 세션 앱 버전"}},
+    "time_rules": "파일 시각은 UTC ISO 8601 초 단위. PostgreSQL timestamptz 저장. 날짜 집계는 signup_at AT TIME ZONE 'Asia/Seoul'로 변환하세요.",
+    "categories": {"platform": ["android", "ios", "pc"], "country": ["KR"], "acquisition_channel": ["organic", "ad", "referral"], "app_version": ["1.0.0"]}}
 
 
 def iso(value):
@@ -118,13 +129,13 @@ def generate_package(root, package_id="training-001", release_version="v1", seed
     write_json(path / "public/problem-001.json", problem)
     reference = {**identity, "problem_id": "problem-001", "evaluation_version": release_version,
                  "sql": REFERENCE_SQL.format(start=iso(START), end=iso(END), complete=iso(COMPLETE)), "expected": calculate(users, sessions),
-                 "hints": ["가입 날짜를 Asia/Seoul로 해석하고 D1~D7을 정의하세요.", "D8이 수집 완료 경계 이하인 유저만 분모에 넣으세요.", "세션 수가 아닌 고유 유저를 세고 NOT EXISTS로 재접속이 없는 유저를 찾으세요."],
+                 "hints": {"direction": "가입 날짜를 Asia/Seoul로 해석하고 D1~D7을 정의하세요.", "metric": "D8이 수집 완료 경계 이하인 유저만 분모에 넣으세요.", "sql_structure": "세션 수가 아닌 고유 유저를 세고 NOT EXISTS로 재접속이 없는 유저를 찾으세요."},
                  "explanation": "D0와 D8 로그인은 재접속에서 제외하며 반복 로그인은 한 유저로 셉니다. D8까지 관측되지 않은 유저는 분모와 분자 모두에서 제외합니다."}
     write_json(path / "private/reference-001.json", reference)
     write_json(path / "public/manifest.json", {**identity, "dataset_version": release_version, "schema_version": "1", "timezone": "Asia/Seoul", "timestamp_format": "UTC ISO 8601 seconds", "data_complete_before": iso(COMPLETE),
         "data_files": [{"table": table, "path": f"{table}.csv", "sha256": digest(path / f"public/{table}.csv")} for table in ["users", "sessions"]],
-        "data_dictionary": {"users": USER_FIELDS, "sessions": SESSION_FIELDS, "categories": {"platform": ["android", "ios", "pc"], "country": ["KR"], "acquisition_channel": ["organic", "ad", "referral"], "app_version": ["1.0.0"]}},
-        "problems": [{"problem_id": "problem-001", "problem_type_id": "new-user-churn", "problem_version": release_version, "path": "problem-001.json", "sha256": digest(path / "public/problem-001.json"), "cohort_start": iso(START), "cohort_end": iso(END), "required_tables": ["users", "sessions"]}]})
+        "data_dictionary": DATA_DICTIONARY,
+        "problems": [{"problem_id": "problem-001", "problem_type_id": "new-user-churn", "problem_version": release_version, "title": problem["title"], "path": "problem-001.json", "sha256": digest(path / "public/problem-001.json"), "cohort_start": iso(START), "cohort_end": iso(END), "required_tables": ["users", "sessions"]}]})
     write_json(path / "private/manifest.json", {**identity, "dataset_version": release_version, "generator_version": "1", "seed": seed, "user_count": user_count,
         "problems": [{"problem_id": "problem-001", "evaluation_version": release_version, "path": "reference-001.json", "sha256": digest(path / "private/reference-001.json")} ]})
     return PackageCatalog(root).load(package_id, release_version, allow_unvalidated=True)
@@ -159,6 +170,17 @@ def load_package(conn, package):
         cur.execute(sql.SQL("CREATE SCHEMA IF NOT EXISTS {}").format(schema))
         cur.execute(sql.SQL("CREATE TABLE IF NOT EXISTS {}.users (user_id text PRIMARY KEY, signup_at timestamptz NOT NULL, platform text NOT NULL, country text NOT NULL, acquisition_channel text NOT NULL, signup_app_version text NOT NULL)").format(schema))
         cur.execute(sql.SQL("CREATE TABLE IF NOT EXISTS {}.sessions (session_id text PRIMARY KEY, user_id text NOT NULL REFERENCES {}.users(user_id), login_at timestamptz NOT NULL, logout_at timestamptz, app_version text NOT NULL, CHECK (logout_at IS NULL OR logout_at >= login_at))").format(schema, schema))
+        current = {}
+        for table, fields in [("users", USER_FIELDS), ("sessions", SESSION_FIELDS)]:
+            cur.execute(sql.SQL("SELECT {} FROM {}.{} ORDER BY {}").format(sql.SQL(",").join(map(sql.Identifier, fields)), schema, sql.Identifier(table), sql.Identifier(fields[0])))
+            normalized = []
+            for db_row in cur.fetchall():
+                values = [db_row[k] for k in fields] if isinstance(db_row, dict) else db_row
+                normalized.append({k: iso(v) if isinstance(v, datetime) else (v or "") for k, v in zip(fields, values)})
+            current[table] = normalized
+        if current["users"] or current["sessions"]:
+            if current["users"] != sorted(users, key=lambda r: r["user_id"]) or current["sessions"] != sorted(sessions, key=lambda r: r["session_id"]):
+                raise PackageError("Existing release database differs from immutable package")
         for table, rows, fields in [("users", users, USER_FIELDS), ("sessions", sessions, SESSION_FIELDS)]:
             statement = sql.SQL("INSERT INTO {}.{} VALUES ({}) ON CONFLICT DO NOTHING").format(schema, sql.Identifier(table), sql.SQL(",").join([sql.Placeholder()] * len(fields)))
             cur.executemany(statement, [[r[k] or None for k in fields] for r in rows])
