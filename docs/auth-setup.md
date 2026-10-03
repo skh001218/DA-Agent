@@ -48,3 +48,9 @@ python scripts/setup_local.py
 - [계정·세션 관리](https://developers.openai.com/siwc/token-sharing-open-source/profiles-and-sessions): 계정별 등록, 갱신, 원격 폐기, 로그에서 인증 URL 제거.
 - [모델·추론](https://developers.openai.com/siwc/token-sharing-open-source/models-and-inference): 계정별 모델 목록, 공개 Responses API, 완료 이벤트.
 - [OIDC 검증 예시](https://developers.openai.com/siwc/website): 공식 discovery·JWKS와 issuer·audience·nonce 검증. 이 앱은 파트너 웹사이트 flow가 아닌 OSS public-client flow를 사용한다.
+
+## 2026-10-03 실제 로그인 차단
+
+사용자가 공식 화면에서 “조직에서 이 앱에 접근 권한을 부여하지 않았습니다.”를 확인했다. 앱에는 계정 등록·권한 승인·실제 호출이 확인되지 않았다. 메시지는 접근 정책에 따른 거부를 시사하지만 조직 관리자 설정, 계정 지원 범위, 앱 등록 제한 중 어느 원인인지는 아직 확정하지 않았다. 조직 계정이면 관리자에게 해당 앱의 접근 허용 여부를 확인하고, 개인 계정이면 공식 지원에 계정·앱 등록 제한 확인을 요청한다. 인증 코드·토큰·전체 인증 URL은 공유하지 않는다.
+
+[공식 오류 안내](https://developers.openai.com/siwc/token-sharing-open-source/errors-and-recovery)는 선택한 사용자·워크스페이스·정책에 따른 거부 시 반복 OAuth를 피하고 제한을 표시하도록 안내한다. [Preview 요구사항](https://developers.openai.com/siwc/token-sharing-open-source/preview-limitations)에 맞춰 지시 메시지는 developer 역할을 사용한다. 실제 승인 전에는 SQL·저장·보고서 흐름만 검증 완료 상태를 유지한다.

@@ -13,6 +13,7 @@ class OfflineAuth:
     def status(self):
         return {"state": "disconnected", "inference_verified": False}
     def review(self, messages):
+        assert [message["role"] for message in messages] == ["developer", "user"]
         return {"state": "error", "reason": "reauthorization_required"}
 
 

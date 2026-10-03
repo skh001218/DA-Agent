@@ -143,13 +143,16 @@ class AuthTests(unittest.TestCase):
 
     def test_completed_response_and_preview_contract(self):
         self.login()
-        result = self.service.review([{"role": "user", "content": "review"}])
+        messages = [{"role": "developer", "content": "Review grounded evidence"}, {"role": "user", "content": "review"}]
+        result = self.service.review(messages)
         self.assertEqual(result["state"], "completed")
         self.assertEqual(result["text"], "검토 완료")
         payload = json.loads(next(r.content for r in self.requests if r.url.path == "/v1/responses"))
         self.assertFalse(payload["store"])
         self.assertTrue(payload["stream"])
         self.assertEqual(payload["model"], "account-model")
+        self.assertEqual(payload["input"], messages)
+        self.assertEqual(set(payload), {"model", "input", "store", "stream"})
         self.assertTrue(self.service.status()["inference_verified"])
 
     def test_failed_partial_and_interrupted_never_completed(self):
