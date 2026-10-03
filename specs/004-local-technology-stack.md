@@ -1,18 +1,19 @@
-# 로컬 기술 구성 — Docker와 ChatGPT 로그인
+# 로컬 기술 구성 — Docker와 Gemini API
 
 ## 구현 진행도
 
-- 진행도: 3/5개 완료 (60%)
+- 진행도: 4/6개 완료 (66.7%)
 - 마지막 갱신일: 2026-10-03
-- 남은 작업: 실제 ChatGPT 인증·완료 응답·모델 품질 및 다른 PC 검증
-- 차단 사유: 공식 로그인 화면에서 “조직에서 이 앱에 접근 권한을 부여하지 않았습니다.” 표시. 계정·조직 또는 앱 등록 정책 확인 필요; 다른 PC 테스트 환경 필요
+- 남은 작업: Gemini 평가 표본·반복 일관성과 다른 PC 검증
+- 차단 사유: 다른 PC 테스트 환경 필요. 평가 품질 검증은 미차단·검증 대기
 
 | 작업 | 상태 | 완료 조건 | 관련 코드 / 검증 결과 |
 | --- | --- | --- | --- |
 | Docker 실행 구성 | 완료 | 웹 서버·PostgreSQL을 Compose로 실행하고 DB 준비 후 앱 시작 | compose.yaml·Dockerfile, 앱·DB healthcheck 정상 |
 | DB·버전 연결 | 완료 | 학습·기록 DB와 계정을 분리하고 검증된 패키지 버전을 로드 | init-db.sh·prepare_db.py, 실제 두 DB·권한·v1/v2·재적재 검증 |
 | 웹·서버 연결 | 완료 | 문제 시작·SQL 실행·선택 저장·보고서 제출·재개 동작 | http://127.0.0.1:8087, 브라우저에서 시작~수정 제출·재개 확인 |
-| ChatGPT 인증·호출 | 검증 대기 | 공식 로그인·권한 승인·모델 조회·코칭·리뷰 및 오류 처리 확인 | auth.py, 오프라인 인증 테스트13개; 실제 계정 호출 미확인 |
+| LLM 설정·호출 | 완료 | 선택한 Gemini API의 코칭·리뷰 완료와 오류·보존 확인 | Gemini 3.8 Flash 실제 코칭·리뷰 완료·화면 표시·새로고침 보존; 90개 테스트 |
+| LLM 평가 품질 | 검증 대기 | 표본5개·반복3회로 평가 일관성 및 대안 SQL 인정 여부 확인 | 실제 미완성 보고서1개만 확인. 표본·반복 평가는 미실행 |
 | 다른 PC 검증 | 검증 대기 | Git으로 같은 커밋을 받아 신규 환경에서 핵심 흐름과 버전 일치 확인 | docs/prototype-runbook.md·release-fingerprints.json, 실제 타 PC 미실행 |
 
 2026-10-03 구현·검증: Python3.12.10·PostgreSQL17.4 컨테이너와 requirements.lock.txt를 사용했다. Windows/AMD64에서 Linux/AMD64 실행을 확인했고 ARM은 미확인이다. 기본 포트8000을 다른 앱이 사용 중이어서 8087을 사용한다. [검증 기록](../tests/verification-2026-10-03.md), [인증 안내](../docs/auth-setup.md)를 따른다. 아래 초기 미실행 표현은 작성 당시 기록이다.
@@ -99,3 +100,7 @@ Git에는 소스, Dockerfile·Compose 설정, 의존성 고정 파일, DB 스키
 - [문제 1](./001-new-user-churn.md), [데이터 패키지](./002-training-data-packages.md), [입출력·선택 저장](./003-training-record-contracts.md)
 - [Docker Compose](https://docs.docker.com/compose/intro/compose-application-model/), [Windows 설치 조건](https://docs.docker.com/desktop/setup/install/windows-install/)
 - [OpenAI 공식 로그인 안내](https://developers.openai.com/siwc/quickstart), [플랜 사용 개요](https://developers.openai.com/siwc/token-sharing-open-source), [로그인 절차](https://developers.openai.com/siwc/token-sharing-open-source/sign-in), [모델·호출](https://developers.openai.com/siwc/token-sharing-open-source/models-and-inference), [미리보기 제약](https://developers.openai.com/siwc/token-sharing-open-source/preview-limitations)
+
+2026-10-03 범위 변경: 비용 우려로 Gemini API를 기본 테스트 경로로 선택했다. 기존 ChatGPT OAuth 구현은 보존하지만 접근 거부는 미해결이다. Gemini API의 모의 응답·오류·DB 통합 검증은 실제 AI 호출·품질 검증으로 계산하지 않는다. 전체5개 작업은 유지하며 LLM 작업의 완료 조건을 선택한 제공자 기준으로 변경했다. [Gemini 안내](../docs/gemini-setup.md)를 따른다.
+
+실제 키 설정 후 Gemini 모델 조회·코칭·보고서 리뷰 성공 및 화면 재개를 확인했다. 최초2.5 Flash는 신규 사용자 생성 제한404, 최초3.8 Flash 리뷰는 서버 오류였으며 실패 기록을 유지하고 명시적으로 한 번 재시도한 리뷰가 완료됐다. 범위 변경: 호출 동작과 평가 품질을 각각 검증할 수 있도록 기존 LLM 작업을2개로 나눠 전체5개→6개로 변경했다. 호출은 완료지만 품질 표본·반복 평가는 대기다. OAuth 접근 거부는 별도로 미해결이다.

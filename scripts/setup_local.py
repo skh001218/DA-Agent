@@ -15,4 +15,7 @@ if not key_file.exists():
     key_file.write_bytes(Fernet.generate_key())
     if os.name != "nt":
         key_file.chmod(0o600)
+api_file = local / "gemini_api.key"
+if not api_file.exists():
+    api_file.touch(mode=0o600)
 print("Local configuration ready. Existing secrets were preserved.")

@@ -132,3 +132,37 @@ def test_timeout_and_failure_selected_save(client):
     assert result["status"] == "timeout", result
     saved = client.post(f"/api/attempts/{attempt}/executions/save", json={"execution_id": result["execution_id"], "request_id": str(uuid.uuid4())})
     assert saved.status_code == 200 and saved.json()["result"]["status"] == "timeout"
+
+
+def test_api_coach_review_completion_and_persistence(client, tmp_path):
+    import httpx
+    from da_agent.api_provider import GeminiProvider
+    key = tmp_path / "api.key"
+    key.write_text("sk-only-offline-test", encoding="utf-8")
+    calls = []
+    def handler(request):
+        payload = json.loads(request.content)
+        assert payload["store"] is False
+        data = json.loads(payload["contents"][0]["parts"][0]["text"])
+        assert "reference_sql" not in data and "seed" not in data
+        assert "signup_at" in json.dumps(data["schema"])
+        calls.append(data)
+        text = "관측 기간을 먼저 확인하세요."
+        if "report" in data:
+            text = json.dumps({"criteria": [{"key": k, "level": 3, "reason": "실행 근거 확인", "claim_ids": ["c1"], "saved_execution_ids": [data["evidence"][0]["saved_execution_id"]]} for k in ("problem_definition", "analysis_approach", "sql_accuracy", "interpretation", "next_actions")], "strengths": ["근거 연결"], "improvements": ["한계 확인"], "next_steps": ["관측 기간 확인"]})
+        return httpx.Response(200, json={"candidates": [{"finishReason": "STOP", "content": {"parts": [{"text": text}]}}]})
+    provider = GeminiProvider(key_file=key, model="offline-model", http_client=httpx.Client(transport=httpx.MockTransport(handler)))
+    client.app.state.auth.review = provider.review
+    attempt = begin(client, "v2")["attempt_id"]
+    path = f"/api/attempts/{attempt}"
+    coached = client.post(path + "/coach", json={"message": "다음 행동"}).json()
+    assert coached["status"] == "completed"
+    assert "expected" not in calls[0]
+    executed = execute(client, attempt, "SELECT count(*) FROM users")
+    saved = client.post(path + "/executions/save", json={"execution_id": executed["execution_id"], "request_id": str(uuid.uuid4())}).json()
+    report = client.post(path + "/reports", json={"revision": 0, "request_id": str(uuid.uuid4()), "content": {}, "claims": [{"claim_id": "c1", "text": "공개 유저수 확인", "evidence_refs": [{"saved_execution_id": saved["saved_execution_id"]}]}]}).json()
+    review = client.post(path + f"/reports/{report['report_id']}/review", json={"request_id": str(uuid.uuid4())}).json()
+    assert review["status"] == "completed" and review["feedback"]["total_score"] == 75
+    resumed = client.get(path).json()
+    assert resumed["reviews"][0]["feedback"] == review["feedback"]
+    assert "sk-only-offline-test" not in json.dumps(resumed)

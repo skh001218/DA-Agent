@@ -25,6 +25,9 @@ services:
       RECORDS_DSN: postgresql://recorder:${RECORDER_PASSWORD}@db/records
       LEARNER_DSN: postgresql://learner:${LEARNER_PASSWORD}@db/training
       PACKAGES_ROOT: /app/packages
+      DA_LLM_PROVIDER: ${DA_LLM_PROVIDER:-chatgpt}
+      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-3.8-flash}
+      GEMINI_API_KEY_FILE: /run/secrets/gemini_api_key
       DA_AUTH_ENCRYPTION_KEY_FILE: /run/secrets/auth_key
       DA_AUTH_STORAGE_PATH: /app/auth-data/auth.enc
       DA_AUTH_REDIRECT_URI: http://127.0.0.1:${WEB_PORT:-8000}/auth/callback
@@ -33,6 +36,7 @@ services:
       - auth_data:/app/auth-data
     secrets:
       - auth_key
+      - gemini_api_key
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health')"]
       interval: 5s
@@ -56,3 +60,5 @@ volumes:
 secrets:
   auth_key:
     file: .local/auth.key
+  gemini_api_key:
+    file: .local/gemini_api.key

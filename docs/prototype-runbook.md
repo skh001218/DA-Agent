@@ -50,3 +50,8 @@ docker compose run --rm -e RUN_DB_TESTS=1 -v "${PWD}/tests:/app/tests" app pytho
 인증 코드와 모의 HTTP 테스트는 구현했지만 실제 계정의 로그인·플랜 사용·AI 응답은 아직 확인하지 않았다. [인증 안내](./auth-setup.md)를 따라 화면의 ChatGPT 연결을 누르고 직접 공식 로그인·승인을 완료한다. 연결 후 코칭 또는 리뷰를 요청해 완료 응답을 확인한다. 로그인 성공과 실제 AI 호출 성공은 별도로 표시한다. AI 실패 시에도 SQL·선택 저장·보고서·고정 힌트는 계속 사용할 수 있다.
 
 다른 PC는 같은 Git 커밋, 고정 의존성, 생성된 v2 manifest 해시로 위 절차를 재현하고 새 PC에서 별도 로그인한다. 지금은 Windows/AMD64 호스트의 Linux/AMD64 Docker만 검증했다. ARM 및 실제 다른 PC 실행은 검증 대기다. 인증 키·개인 기록·DB 백업은 Git에 넣지 않는다.
+
+
+## 현재 LLM 선택: Gemini API
+
+2026-10-03 사용자가 비용 우려로 Gemini API를 선택했다. [키 설정·실제 확인 안내](gemini-setup.md)를 따른다. 기존 ChatGPT 로그인 접근 거부는 별도 미해결 기록이며 Gemini 테스트 성공으로 해당 OAuth 검증을 완료 처리하지 않는다.

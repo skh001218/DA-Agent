@@ -53,3 +53,6 @@ DA-Agent/
 [실행 안내](./docs/prototype-runbook.md)를 따라 Docker Compose로 시작합니다. 기본 접속 주소는 [DA-Agent](http://127.0.0.1:8087)입니다.
 
 문제 시작, PostgreSQL 조회, SQL 선택 저장, 초안·근거 재개, 보고서 수정 제출을 구현하고 실제 화면에서 확인했습니다. [검증 기록](./tests/verification-2026-10-03.md)에 확인 결과와 남은 항목을 기록했습니다. 실제 ChatGPT 계정 승인·완료 응답과 다른 PC 실행은 검증 대기입니다.
+
+
+현재 LLM 테스트 경로는 [Gemini API 설정](docs/gemini-setup.md)을 따른다. ChatGPT 로그인 접근 거부에 대한 대안으로 사용자가 선택했으며, 실제 키 설정·모델 호출·품질은 별도로 검증한다.
