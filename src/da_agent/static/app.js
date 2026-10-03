@@ -44,7 +44,7 @@ async function api(path, options = {}) {
 const post = (path, body) => api(path, { method: 'POST', body: JSON.stringify(body) });
 const attemptPath = (suffix = '') => `/api/attempts/${encodeURIComponent(state.attempt.attempt_id)}${suffix}`;
 async function busy(button, action) { if (button.disabled) return; button.disabled = true; try { await action(); } catch (error) { notice(error.message); } finally { button.disabled = false; } }
-function tab(name) { $$('.tab-panel').forEach(node => { node.hidden = node.id !== name; }); $$('nav button').forEach(node => node.classList.toggle('active', node.dataset.tab === name)); }
+function tab(name) { $$('.tab-panel').forEach(node => { node.hidden = node.id !== name; }); $$('nav button').forEach(node => node.classList.toggle('active', node.dataset.tab === name)); if (state.attempt?.pilot_linked) post(`/api/quality/pilots/${encodeURIComponent(state.attempt.attempt_id)}/stage`, { stage: name }).catch(() => notice('파일럿 단계 기록을 저장하지 못했습니다. 훈련 입력은 유지됩니다.')); }
 async function authStatus() {
   try { const auth = await api('/api/auth/status'); if (auth.provider === 'gemini') { $('#auth-status').textContent = auth.message; $('#connect').hidden = true; $('#disconnect').hidden = true; return; } const connected = ['connected', 'ready'].includes(auth.status); $('#auth-status').textContent = connected ? (auth.plan_enabled === false ? '로그인 연결됨 · 플랜 사용 권한 확인 필요' : auth.inference_verified ? 'ChatGPT 연결 · 실제 호출 확인됨' : '로그인 연결됨 · 실제 호출 검증 전') : (auth.message || 'ChatGPT 미연결'); $('#disconnect').hidden = !connected; $('#connect').hidden = connected; }
   catch (error) { $('#auth-status').textContent = 'AI 연결 확인 실패'; }
