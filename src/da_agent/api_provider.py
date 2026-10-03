@@ -11,7 +11,7 @@ import httpx
 class GeminiProvider:
     def __init__(self, *, key_file=None, model=None, http_client=None):
         self.key_file = Path(key_file or os.getenv("GEMINI_API_KEY_FILE", ".local/gemini_api.key"))
-        self.model = model or os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
+        self.model = model or os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite")
         if not re.fullmatch(r"[a-zA-Z0-9][a-zA-Z0-9._-]{0,100}", self.model):
             raise ValueError("Invalid GEMINI_MODEL")
         self.http = http_client or httpx.Client(timeout=90, follow_redirects=False)

@@ -63,3 +63,8 @@
 보고서v2의 실제 리뷰 최초 요청은 API 서버 오류로 실패했고, 진단을 포함한 명시적 재시도1회가 upstream200·review completed로 완료됐다. 리뷰ID c388a338-8d56-46e7-8d73-046a54e62ad1, 모델 gemini-3.8-flash, 서버 계산40점. 이 보고서는 전체 유저수 확인까지만 작성한 미완성 검증용 제출본이므로 낮은 점수는 정상 흐름 결과다. 새로고침 후5개 항목·점수·근거·다음 행동과 이전 실패 기록 보존을 실제 화면에서 확인했고 브라우저 오류는 없었다. gemini-review-live.png에 화면을 저장했다.
 
 Spec003 기록 흐름5/5 완료, Spec004 호출 완료4/6으로 갱신했다. Spec004의 품질표본5개×반복3회와 다른 PC/ARM은 여전히 검증 대기다. 이전 키 설정 대기·60% 표현은 이 최신 결과 이전의 검증 이력이다.
+
+
+## 모델 변경: Gemini 3.5 Flash-Lite
+
+사용자 요청으로 현재 .env·Compose·provider·키 설정 도구·.env.example의 모델을 gemini-3.5-flash-lite로 변경했다. 기존3.8 Flash 전용 thinkingLevel 설정은 해당 모델을 명시적으로 선택할 때만 적용된다. 앱을 새 이미지로 재생성하고 상태 API의 model=gemini-3.5-flash-lite를 확인했다. 브라우저에서 실제 코칭1회가 완료되어 signup_at 컬럼을 올바르게 안내했고 inference_verified=true·reason=null을 확인했다. API 어댑터 테스트17개 통과. 이번 모델에서는 보고서 리뷰와 평가 품질표본을 새로 실행하지 않았으며 이전3.8 리뷰 결과는 보존한다.
