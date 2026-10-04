@@ -110,3 +110,30 @@ def test_evaluate_exactly_eighteen_metered_calls_retains_provider_failures(monke
     assert 'SECRET_PROVIDER_ERROR' not in json.dumps(saved)
     assert all(result['human']['critical_error'] == 'pending' for _, result in saved)
     assert all('message' not in metadata and 'sql' not in metadata for metadata in started)
+
+# Reuse the isolated recorder schema and temporary package-root fixture.
+from test_task_generation_v2 import v2_db_client as quality_db_client, begin_v2
+
+
+def test_db_operator_suite_actual_evidence_eighteen_calls_and_idempotency(quality_db_client):
+    client, provider = quality_db_client
+    _, ready = begin_v2(client, 'design')
+    attempt_id = ready['attempt_id']
+    for mode in ('review', 'coaching'):
+        body = {'request_id': 'quality-' + __import__('uuid').uuid4().hex, 'attempt_id': attempt_id, 'mode': mode}
+        before = provider.calls
+        response = client.post('/api/quality/v2/runs', json=body)
+        assert response.status_code == 200, response.text
+        run_id = response.json()['run_id']
+        run = client.get('/api/quality/v2/runs/' + run_id).json()
+        assert run['status'] == 'completed' and run['completed_calls'] == 18
+        assert len(run['samples']) == 6 and all(len(s['results']) == 3 for s in run['samples'])
+        assert provider.calls - before == 18
+        assert not run['semantic_approval']  # Fixture provider is not model/human quality approval.
+        assert client.post('/api/quality/v2/runs', json=body).json()['run_id'] == run_id
+        assert provider.calls - before == 18
+        assert client.get('/api/quality/v2/runs/' + run_id + '/export').status_code == 200
+        with client.app.state.store.connect() as conn:
+            rows = conn.execute("SELECT payload FROM quality_operations WHERE payload->>'request_id'=%s AND payload->>'kind'='ai'", ('quality-v2:' + run_id,)).fetchall()
+            assert len(rows) == 18
+            assert all('sql' not in r['payload'] and 'message' not in r['payload'] and 'attempt_id' not in r['payload'] for r in rows)
