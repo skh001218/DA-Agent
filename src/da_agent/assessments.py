@@ -63,7 +63,7 @@ def _target(conn, kind, identifier):
                   'review': ('reviews', 'record_id'), 'report_pair': ('reports', 'record_id'),
                   'pilot': ('pilot_records', 'attempt_id'), 'coaching': ('training_messages', 'action_id')}[kind]
     row = conn.execute(f'SELECT payload FROM {table} WHERE {key}=%s FOR SHARE', (identifier,)).fetchone()
-    if not row and kind == 'review':
+    if not row and kind in {'review', 'coaching'}:
         row = conn.execute('SELECT payload FROM quality_runs WHERE run_id=%s FOR SHARE', (identifier,)).fetchone()
     if not row:
         raise DomainError('not_found', '판정할 저장 대상을 찾을 수 없습니다.', 404)
@@ -76,7 +76,7 @@ def target_version(value):
 
 def validate_target(conn, data):
     target = _target(conn, data.target_kind, data.target_id)
-    if data.target_kind == 'review' and 'samples' in target:
+    if data.target_kind in {'review', 'coaching'} and 'samples' in target:
         sample = next((sample for sample in target['samples'] if sample['id'] == data.sample_id), None)
         if not sample or not any(result.get('repetition') == data.repetition for result in sample.get('results', [])):
             raise DomainError('invalid_sample', '실제 평가된 표본과 회차를 선택하세요.', 422)
