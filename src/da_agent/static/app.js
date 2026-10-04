@@ -10,6 +10,9 @@ const sectionLabels = { problem_definition: '문제 정의', hypothesis: '가설
 function kst(value) { const date = new Date(value); return Number.isNaN(date.getTime()) ? String(value) : `${new Intl.DateTimeFormat('ko-KR', { timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23' }).format(date)} KST`; }
 function renderProblemMetadata(problem) {
   const container = $('#problem-metadata'); container.replaceChildren();
+  if (problem.goal) container.append(el('p', `학습 목표: ${problem.goal}`, 'prose'));
+  if ((problem.required_judgments || problem.completion_conditions)?.length) {container.append(el('h3','기대 제출물·완료 조건'));for(const text of problem.required_judgments || problem.completion_conditions)container.append(el('p',text,'prose'));}
+  if (problem.allowed_limits?.length) {container.append(el('h3','설명할 관측 한계'));for(const text of problem.allowed_limits)container.append(el('p',text,'prose'));}
   for (const [key, label] of Object.entries({ cohort_start: '가입 기간 시작 (포함)', cohort_end: '가입 기간 종료 (제외)', data_complete_before: '수집 완료 경계 (이 시각 미만)' })) if (problem[key]) container.append(el('p', `${label}: ${kst(problem[key])}`));
   if (problem.required_tables?.length) container.append(el('p', `사용할 표: ${problem.required_tables.join(', ')}`));
   const definitions = problem.definitions || {}; const labels = { observation: '관측 구간', complete: '관측 완료 기준', return: '재접속 기준', empty_denominator: '대상자 0명인 경우', display: '결과 표시' };

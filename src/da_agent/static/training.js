@@ -52,8 +52,9 @@ async function trainingHome() {
   $('#refresh-learning').onclick = () => busy($('#refresh-learning'), loadLearningState);
   $('#save-learning').onclick = () => busy($('#save-learning'), async () => {
     if (!currentLearningState) throw new Error('먼저 최신 학습 상태를 확인하세요.');
+    if ([...$('#learning-overrides').querySelectorAll('[data-observation]')].some(x=>x.querySelector('.learning-disagree').checked && !x.querySelector('.learning-reason').value.trim())) throw new Error('이견을 선택한 관측에는 이유를 입력하세요.');
     try {
-      await api('/api/learning-state', {method:'PATCH',body:JSON.stringify({expected_revision:currentLearningState.state_revision, preferences:{level:$('#learning-level').value,goal:$('#learning-goal').value}, overrides:[...$('#learning-overrides').querySelectorAll('[data-observation]')].map(x=>({observation_id:x.dataset.observation,disagree:x.querySelector('.learning-disagree').checked,reason:x.querySelector('.learning-reason').value}))})});
+      await api('/api/learning-state', {method:'PATCH',body:JSON.stringify({expected_revision:currentLearningState.state_revision, preferences:{level:$('#learning-level').value,goal:$('#learning-goal').value}, overrides:[...$('#learning-overrides').querySelectorAll('[data-observation]')].filter(x=>x.querySelector('.learning-disagree').checked || x.querySelector('.learning-reason').value.trim()).map(x=>({observation_id:x.dataset.observation,disagree:x.querySelector('.learning-disagree').checked,reason:x.querySelector('.learning-reason').value}))})});
       await loadLearningState(); notice('학습 상태를 저장했습니다.');
     } catch(error) { notice(`학습 상태 저장 실패 · 입력 유지: ${error.message}${error.status === 409 ? ' · 최신 상태 확인 후 다시 저장하세요.' : ''}`); }
   });
