@@ -9,7 +9,7 @@ let currentRecommendation = null;
 let currentLearningState = null;
 async function loadLearningState() {
   const data = await api('/api/learning-state'); currentLearningState = data;
-  $('#learning-state').textContent = `수정 번호: ${data.state_revision}\n출처·관측 상태·자동 추정: ${pretty(data)}`;
+  $('#learning-state').textContent = `수정 번호: ${data.state_revision}\n관측 ${data.observations?.length || 0}건 · 자동 관측은 확정 판단이 아닙니다.\n역량별 관측: ${Object.entries(data.competencies || {}).map(([key,value])=>`${key}: ${typeof value==='string'?value:value.certainty || value.status || '잠정'}`).join(' · ')}`;
   $('#learning-level').value = data.preferences?.level || 'auto';
   $('#learning-goal').value = data.preferences?.goal || '';
   $('#learning-overrides').replaceChildren();
@@ -37,7 +37,7 @@ async function startTraining(recommended = false) {
 }
 async function trainingHome() {
   const recommendation = await api('/api/training/recommendation'); currentRecommendation = recommendation;
-  $('#recommendation').textContent = `다음 훈련 제안: ${levelNames[recommendation.difficulty]} ${taskNames[recommendation.task_kind]} · ${recommendation.reason || recommendation.selection_reason}\n근거: ${(recommendation.evidence_ids || []).join(', ') || '관측 근거 없음'} · ${recommendation.provisional ? '잠정 추천' : '이력 기반 추천'}\n후보: ${pretty(recommendation.candidates || [])}`;
+  $('#recommendation').textContent = `다음 훈련 제안: ${levelNames[recommendation.difficulty]} ${taskNames[recommendation.task_kind]} · ${recommendation.reason || recommendation.selection_reason}\n근거: ${recommendation.evidence_ids?.length ? '저장된 관측 '+recommendation.evidence_ids.length+'건 (학습 상태에서 출처 확인)' : '관측 근거 없음'} · ${recommendation.provisional ? '잠정 추천' : '이력 기반 추천'}\n다른 후보: ${(recommendation.candidates || []).filter(x=>x.task_kind!==recommendation.task_kind).slice(0,3).map(x=>`${levelNames[x.difficulty]} ${taskNames[x.task_kind]} · 최근 반복 ${x.duplicate_count || 0}회`).join(' / ') || '다른 지원 후보 없음'}`;
   try {
     const capabilities = await api('/api/training/capabilities');
     $('#capability-status').textContent = `지원 상태: ${(capabilities.capabilities || []).map(x => `${x.title}: ${x.status}`).join(' · ')}\n한도: ${pretty(capabilities.limits || {})}`;
