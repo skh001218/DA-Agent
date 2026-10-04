@@ -204,7 +204,7 @@ function fillV2Assessment(run,sample,result) {
  $('#assessment-target').value=run.run_id;$('#assessment-version').value=run.evaluation_version || 'request-review-v2';$('#assessment-source').value='human';
  $('#assessment-sample').value=sample.id;$('#assessment-repetition').value=result.repetition;$('#assessment-paired-target').value='';$('#assessment-paired-version').value='';
  view('metrics');$('#assessment-target').focus();$('#assessment-status').textContent=`검증 ${run.run_id.slice(0,8)} · ${v2CaseNames[sample.id] || sample.title} · ${result.repetition}회차 연결. 이전 검토자·메모 입력을 유지했습니다. 판정과 근거를 확인하고 저장하세요.`;
- loadAssessments().catch(e=>notice(e.message));
+
 }
 function renderV2Result(column,run,sample,result) {
  column.append(node('h3',`${result.repetition}회차`),node('p',`${result.status==='completed'?'호출 완료':'호출 실패·중단'} · 자동 판정 ${statusLabels[result.automatic_verdict] || result.automatic_verdict || '미판정'}`,'prose'),node('p',`${result.model || '모델 미기록'} · ${result.duration_ms ?? result.duration ?? '시간 미기록'}${result.duration_ms!=null?'ms':''} · ${kst(result.finished_at)}`,'muted'));
