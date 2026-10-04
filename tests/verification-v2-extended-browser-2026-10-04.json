@@ -1,0 +1,297 @@
+{
+  "actual_browser": true,
+  "actual_api": true,
+  "actual_model": true,
+  "actual_db": true,
+  "model_call_budget": 8,
+  "model_actions_started": 8,
+  "checks": {
+    "keyboard_delete_cancel": {
+      "passed": true,
+      "delete_requests": 0,
+      "list_count": 7
+    },
+    "home_390": {
+      "passed": true,
+      "width": 390,
+      "scrollWidth": 390
+    },
+    "recommendation_change": {
+      "passed": true,
+      "selected": "advanced",
+      "model_call": false
+    },
+    "unsupported_input_preserved": {
+      "passed": true,
+      "status": "failed",
+      "error_code": "plan_invalid",
+      "reason": "AI 해석 형식이 올바르지 않습니다. 출제하지 않았습니다."
+    },
+    "clarification_explicit_conflict": {
+      "passed": true,
+      "status": "needs_clarification",
+      "questions": [
+        "D1~D7 미재접속의 구체적인 정의(예: 특정 기간 내 연속 미접속인지, 특정 일자 기준인지)를 어떻게 설정하시겠습니까?",
+        "선택한 난이도와 문장 해석이 다릅니다. 원하는 난이도를 알려주세요.",
+        "선택한 과제 유형과 문장 해석이 다릅니다. 원하는 유형을 알려주세요."
+      ],
+      "error_code": "clarification_required",
+      "input_preserved": true
+    },
+    "console_clean": {
+      "passed": true
+    }
+  },
+  "flows": [
+    {
+      "kind": "calculation",
+      "request_status": "ready",
+      "request_error": null,
+      "questions": [],
+      "attempt_id": "ea9cd382-375d-4fe7-80c9-d0fd159578a3",
+      "explicit_type": {
+        "kind": "calculation",
+        "difficulty": "beginner"
+      },
+      "analysis_390": {
+        "passed": false,
+        "width": 390,
+        "scrollWidth": 452
+      },
+      "sql_success": true,
+      "saved": true,
+      "report_submitted": true,
+      "review_status": "completed",
+      "review_error": null,
+      "error": "locator.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#sql')\u001b[22m\n\u001b[2m    - locator resolved to <textarea id=\"sql\" spellcheck=\"false\" placeholder=\"조회할 SQL을 직접 작성하세요.\"></textarea>\u001b[22m\n\u001b[2m    - fill(\"\")\u001b[22m\n\u001b[2m  - attempting fill action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying fill action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying fill action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    59 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying fill action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n"
+    },
+    {
+      "kind": "review",
+      "request_status": "ready",
+      "request_error": null,
+      "questions": [],
+      "attempt_id": "56b27b84-7ce6-4865-bd1d-820173c7501c",
+      "explicit_type": {
+        "kind": "review",
+        "difficulty": "beginner"
+      },
+      "analysis_390": {
+        "passed": false,
+        "width": 390,
+        "scrollWidth": 452
+      },
+      "sql_success": true,
+      "saved": true,
+      "report_submitted": true,
+      "review_status": "failed",
+      "review_error": "answer_exposure",
+      "error": "locator.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#sql')\u001b[22m\n\u001b[2m    - locator resolved to <textarea id=\"sql\" spellcheck=\"false\" placeholder=\"조회할 SQL을 직접 작성하세요.\"></textarea>\u001b[22m\n\u001b[2m    - fill(\"\")\u001b[22m\n\u001b[2m  - attempting fill action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying fill action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying fill action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    59 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying fill action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n"
+    },
+    {
+      "kind": "investigation",
+      "request_status": "ready",
+      "request_error": null,
+      "questions": [],
+      "attempt_id": "0f206dad-195b-42aa-9f2e-4c94585ca960",
+      "explicit_type": {
+        "kind": "investigation",
+        "difficulty": "beginner"
+      },
+      "analysis_390": {
+        "passed": false,
+        "width": 390,
+        "scrollWidth": 452
+      },
+      "sql_success": true,
+      "saved": true,
+      "report_submitted": true,
+      "review_status": "failed",
+      "review_error": "unverified_calculation",
+      "error": "locator.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#sql')\u001b[22m\n\u001b[2m    - locator resolved to <textarea id=\"sql\" spellcheck=\"false\" placeholder=\"조회할 SQL을 직접 작성하세요.\"></textarea>\u001b[22m\n\u001b[2m    - fill(\"\")\u001b[22m\n\u001b[2m  - attempting fill action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying fill action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying fill action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    59 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying fill action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n"
+    }
+  ],
+  "console_errors": [],
+  "cleanup": [
+    {
+      "attempt_id": "ea9cd382-375d-4fe7-80c9-d0fd159578a3",
+      "status": 200,
+      "deleted": true
+    },
+    {
+      "attempt_id": "56b27b84-7ce6-4865-bd1d-820173c7501c",
+      "status": 200,
+      "deleted": true
+    },
+    {
+      "attempt_id": "0f206dad-195b-42aa-9f2e-4c94585ca960",
+      "status": 200,
+      "deleted": true
+    }
+  ],
+  "finished_at": "2026-10-04T13:29:23.584Z",
+  "layout_diagnostics": {
+    "read_only_attempt": "d58d26bc-4398-40c4-9f64-3c918d0c5a27",
+    "elements": [
+      {
+        "tag": "ASIDE",
+        "id": "",
+        "className": "",
+        "left": 20,
+        "right": 452,
+        "width": 433
+      },
+      {
+        "tag": "ARTICLE",
+        "id": "",
+        "className": "",
+        "left": 20,
+        "right": 452,
+        "width": 433
+      },
+      {
+        "tag": "H2",
+        "id": "",
+        "className": "",
+        "left": 39,
+        "right": 433,
+        "width": 395
+      },
+      {
+        "tag": "DIV",
+        "id": "problem-description",
+        "className": "prose",
+        "left": 39,
+        "right": 433,
+        "width": 395
+      },
+      {
+        "tag": "DIV",
+        "id": "problem-metadata",
+        "className": "prose",
+        "left": 39,
+        "right": 433,
+        "width": 395
+      },
+      {
+        "tag": "P",
+        "id": "",
+        "className": "prose",
+        "left": 39,
+        "right": 433,
+        "width": 395
+      },
+      {
+        "tag": "H3",
+        "id": "",
+        "className": "",
+        "left": 39,
+        "right": 433,
+        "width": 395
+      },
+      {
+        "tag": "P",
+        "id": "",
+        "className": "prose",
+        "left": 39,
+        "right": 433,
+        "width": 395
+      },
+      {
+        "tag": "P",
+        "id": "",
+        "className": "prose",
+        "left": 39,
+        "right": 433,
+        "width": 395
+      },
+      {
+        "tag": "P",
+        "id": "",
+        "className": "prose",
+        "left": 39,
+        "right": 433,
+        "width": 395
+      },
+      {
+        "tag": "H3",
+        "id": "",
+        "className": "",
+        "left": 39,
+        "right": 433,
+        "width": 395
+      },
+      {
+        "tag": "P",
+        "id": "",
+        "className": "prose",
+        "left": 39,
+        "right": 433,
+        "width": 395
+      },
+      {
+        "tag": "P",
+        "id": "",
+        "className": "prose",
+        "left": 39,
+        "right": 433,
+        "width": 395
+      },
+      {
+        "tag": "P",
+        "id": "",
+        "className": "",
+        "left": 39,
+        "right": 433,
+        "width": 395
+      },
+      {
+        "tag": "P",
+        "id": "",
+        "className": "",
+        "left": 39,
+        "right": 433,
+        "width": 395
+      },
+      {
+        "tag": "P",
+        "id": "",
+        "className": "",
+        "left": 39,
+        "right": 433,
+        "width": 395
+      },
+      {
+        "tag": "P",
+        "id": "",
+        "className": "",
+        "left": 39,
+        "right": 433,
+        "width": 395
+      },
+      {
+        "tag": "H3",
+        "id": "",
+        "className": "",
+        "left": 39,
+        "right": 433,
+        "width": 395
+      },
+      {
+        "tag": "P",
+        "id": "",
+        "className": "",
+        "left": 39,
+        "right": 433,
+        "width": 395
+      },
+      {
+        "tag": "P",
+        "id": "",
+        "className": "",
+        "left": 39,
+        "right": 433,
+        "width": 395
+      }
+    ]
+  }
+}
