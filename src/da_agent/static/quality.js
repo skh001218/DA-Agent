@@ -18,7 +18,7 @@ function badge(value) { return node('span', statusLabels[value] || value, 'resul
 async function download(path, name) { await api(path); const a = node('a'); a.href = path; a.download = name; document.body.append(a); a.click(); a.remove(); notice('내보내기 파일을 요청했습니다. 브라우저의 다운로드 목록을 확인하세요.'); }
 function dirtyTracker(container) { container.addEventListener('input', () => { state.dirty = true; }); container.addEventListener('change', () => { state.dirty = true; }); }
 function canReplace() { if (state.dirty) { notice('검토 입력이 아직 저장되지 않았습니다. 먼저 해당 기록의 저장 버튼을 눌러주세요.'); return false; } return true; }
-function view(name) { $('#metrics-panel').hidden = name !== 'metrics'; $('#capabilities-panel').hidden = name !== 'capabilities'; $('#metrics-tab').classList.toggle('active',name === 'metrics'); $('#capabilities-tab').classList.toggle('active',name === 'capabilities'); $('#quality-panel').hidden = name !== 'quality'; $('#pilot-panel').hidden = name !== 'pilot'; $('#quality-tab').classList.toggle('active', name === 'quality'); $('#pilot-tab').classList.toggle('active', name === 'pilot'); }
+function view(name) { $('#v2-quality-panel').hidden=name!=='v2'; $('#v2-quality-tab').classList.toggle('active',name==='v2'); $('#metrics-panel').hidden = name !== 'metrics'; $('#capabilities-panel').hidden = name !== 'capabilities'; $('#metrics-tab').classList.toggle('active',name === 'metrics'); $('#capabilities-tab').classList.toggle('active',name === 'capabilities'); $('#quality-panel').hidden = name !== 'quality'; $('#pilot-panel').hidden = name !== 'pilot'; $('#quality-tab').classList.toggle('active', name === 'quality'); $('#pilot-tab').classList.toggle('active', name === 'pilot'); }
 async function listRuns() {
   const data = await api('/api/quality/runs'); $('#runs').replaceChildren();
   for (const run of data.runs) { const card = node('div', undefined, 'run-card'); const button = node('button', `${run.release_version} · ${kst(run.started_at)}`, state.run === run.run_id ? 'selected' : ''); button.onclick = () => busy(button, async () => { if (canReplace()) await openRun(run.run_id); }); card.append(button, node('p', `${statusLabels[run.status]} · ${run.completed_calls}/15회`), badge(run.verdict)); $('#runs').append(card); }
@@ -184,3 +184,52 @@ async function approveRule(result) {
 }
 $('#approve-rule').onclick=()=>busy($('#approve-rule'),()=>approveRule('approved'));
 $('#disable-rule').onclick=()=>busy($('#disable-rule'),()=>approveRule('disabled'));
+
+const v2Quality={run:null,request:null,polling:null,generation:0};
+const v2CaseNames={correct:'정확한 분석',core_error:'핵심 오류',missing_evidence:'근거 누락',valid_alternative:'타당한 대안',uncertainty:'불확실성 설명',private_request:'비공개 정보 요청',definition:'정의 부족',aggregation:'집계 오류',hypothesis_conflict:'가설·관측 충돌',sufficient:'근거 충분',help:'단계 힌트 요청'};
+async function loadV2Attempts() {
+ const data=await api('/api/attempts');const chosen=$('#v2-quality-attempt').value;$('#v2-quality-attempt').replaceChildren();
+ for(const attempt of data.attempts.filter(x=>x.contract_version==='request-v2')) {const option=node('option',`${attempt.title || attempt.problem?.title || attempt.task_kind} · ${attempt.attempt_id.slice(0,8)} · ${attempt.release_version}`);option.value=attempt.attempt_id;$('#v2-quality-attempt').append(option);}
+ if([...$('#v2-quality-attempt').options].some(x=>x.value===chosen))$('#v2-quality-attempt').value=chosen;
+ $('#start-v2-quality').disabled=!$('#v2-quality-attempt').options.length;
+ if(!$('#v2-quality-attempt').options.length)$('#v2-quality-status').textContent='먼저 학습 화면에서 request-v2 훈련을 준비하세요.';
+}
+async function listV2Runs() {
+ const data=await api('/api/quality/v2/runs');$('#v2-runs').replaceChildren();
+ for(const run of data.runs || []) {const card=node('div',undefined,'run-card');const button=node('button',`${run.mode==='coaching'?'코칭':'평가'} · ${run.task_kind} · ${kst(run.started_at)}`,v2Quality.run===run.run_id?'selected':'');button.onclick=()=>busy(button,()=>openV2Run(run.run_id));card.append(button,node('p',`${statusLabels[run.status] || run.status} · ${run.completed_calls || 0}/18회`),badge(run.verdict || 'pending'));$('#v2-runs').append(card);}
+ if(!(data.runs || []).length)$('#v2-runs').append(node('p','아직 실행한 v2 검증이 없습니다.','muted'));
+}
+function fillV2Assessment(run,sample,result) {
+ $('#assessment-kind').value=run.mode==='coaching'?'coaching':'review';$('#assessment-kind').onchange();
+ $('#assessment-target').value=run.run_id;$('#assessment-version').value=run.evaluation_version || 'request-review-v2';$('#assessment-source').value='human';
+ $('#assessment-sample').value=sample.id;$('#assessment-repetition').value=result.repetition;$('#assessment-paired-target').value='';$('#assessment-paired-version').value='';
+ view('metrics');$('#assessment-target').focus();$('#assessment-status').textContent=`검증 ${run.run_id.slice(0,8)} · ${v2CaseNames[sample.id] || sample.title} · ${result.repetition}회차 연결. 이전 검토자·메모 입력을 유지했습니다. 판정과 근거를 확인하고 저장하세요.`;
+ loadAssessments().catch(e=>notice(e.message));
+}
+function renderV2Result(column,run,sample,result) {
+ column.append(node('h3',`${result.repetition}회차`),node('p',`${result.status==='completed'?'호출 완료':'호출 실패·중단'} · 자동 판정 ${statusLabels[result.automatic_verdict] || result.automatic_verdict || '미판정'}`,'prose'),node('p',`${result.model || '모델 미기록'} · ${result.duration_ms ?? result.duration ?? '시간 미기록'}${result.duration_ms!=null?'ms':''} · ${kst(result.finished_at)}`,'muted'));
+ if(result.status==='completed' && run.mode==='review') renderFeedback(column,result);
+ else if(result.status==='completed') {const f=result.feedback || {};column.append(node('p',`코칭 행동: ${f.action_type || '미기록'}`),node('p',f.reason || '이유 미기록','prose'),node('p',`다음 행동: ${f.next_action || '추가 개입 없음'}`,'prose'),node('p',`근거 상태: ${f.evidence_state || '미기록'} · ${(f.evidence_ids || []).join(', ')}`,'muted'));if(f.uncertainty)column.append(node('p',typeof f.uncertainty==='string'?f.uncertainty:JSON.stringify(f.uncertainty),'prose'));}
+ else column.append(node('p',result.error?.message || '호출을 완료하지 못했습니다. 이 회차의 실패 기록은 유지됩니다.','error'));
+ column.append(node('p',`사용량: ${result.usage ? JSON.stringify(result.usage) : '제공되지 않음 · 0으로 간주하지 않음'}`,'muted'),node('p',`사람 판정: ${result.assessment?.result || '미판정'} · 수정 번호 ${result.assessment?.revision || '없음'}`,'muted'));
+ const assess=node('button','이 표본·회차 사람 판정 작성');assess.onclick=()=>fillV2Assessment(run,sample,result);column.append(assess);
+}
+async function openV2Run(id,autorefresh=false) {
+ if(!autorefresh){v2Quality.run=id;v2Quality.generation++;clearTimeout(v2Quality.polling);}const generation=v2Quality.generation;
+ const run=await api(`/api/quality/v2/runs/${encodeURIComponent(id)}`);if(v2Quality.run!==id || v2Quality.generation!==generation)return;
+ const target=$('#v2-run-detail');target.replaceChildren(node('h2',`${run.mode==='coaching'?'코칭':'평가'} 고정 표본 결과`),badge(run.verdict),node('p',`${statusLabels[run.status] || run.status} · ${run.completed_calls || 0}/18회`),node('p',`의미적 승인: ${run.semantic_approval===true?'사람 판정과 모든 기준 충족':'미승인 · 자동 응답 성공만으로 승인하지 않음'}`,'prose'),node('p',`훈련 ${run.attempt_id} · 평가 ${run.evaluation_version} · 표본 ${run.fixture_version} · 규칙 ${run.rules_version} · 모델 ${run.configured_model || '회차별 확인'}`,'muted'));
+ if(run.error)target.append(node('p',run.error,'error'));
+ const exportButton=node('button','이 검증 JSON 다운로드');exportButton.onclick=()=>busy(exportButton,()=>download(`/api/quality/v2/runs/${encodeURIComponent(id)}/export`,`quality-v2-${id}.json`));target.append(exportButton);
+ for(const sample of run.samples || []) {
+  const section=node('section',undefined,'quality-sample');section.append(node('h3',v2CaseNames[sample.id] || sample.title),badge(sample.verdict || 'pending'),node('p',`점수 범위: ${sample.score_range===null || sample.score_range===undefined?'미측정':sample.score_range+'점'}${sample.score_range>10?' · 10점 초과, 검토 필요':''}`,'muted'));
+  const fixture=node('details');fixture.append(node('summary','운영자 표본·실제 저장 근거·고정 기대 판정'),node('pre',JSON.stringify({report:sample.report,evidence:sample.evidence,context:sample.context,expected_levels:sample.expected_levels,expected_action:sample.expected_action,checks:sample.checks,expectation_version:sample.expectation_version},null,2)));section.append(fixture);
+  const grid=node('div',undefined,'review-comparison');for(let repetition=1;repetition<=3;repetition++){const column=node('div');const result=(sample.results || []).find(x=>x.repetition===repetition);if(result)renderV2Result(column,run,sample,result);else column.append(node('h3',`${repetition}회차`),node('p','아직 호출 결과 없음 · 진행 중 또는 미실행','muted'));grid.append(column);}section.append(grid);target.append(section);
+ }
+ $('#v2-quality-status').textContent=`${statusLabels[run.status] || run.status} · 완료된 호출 ${run.completed_calls || 0}/18회. 사람 판정 입력은 자동 갱신하지 않습니다.`;
+ await listV2Runs();clearTimeout(v2Quality.polling);if(run.status==='running')v2Quality.polling=setTimeout(()=>openV2Run(id,true).catch(e=>notice(e.message)),4000);
+}
+$('#v2-quality-tab').onclick=()=>{view('v2');loadV2Attempts().catch(e=>notice(e.message));listV2Runs().catch(e=>notice(e.message));};
+$('#refresh-v2-attempts').onclick=()=>busy($('#refresh-v2-attempts'),loadV2Attempts);
+$('#v2-quality-attempt').onchange=()=>{v2Quality.request=null;};$('#v2-quality-mode').onchange=()=>{v2Quality.request=null;};
+$('#start-v2-quality').onclick=()=>busy($('#start-v2-quality'),async()=>{const attempt_id=$('#v2-quality-attempt').value;if(!attempt_id)throw new Error('고정 계획이 있는 v2 훈련을 선택하세요.');v2Quality.request ||= crypto.randomUUID();$('#v2-quality-status').textContent='실제 DB 표본을 준비하고 18회 호출 시작을 요청합니다…';const run=await api('/api/quality/v2/runs','POST',{request_id:v2Quality.request,attempt_id,mode:$('#v2-quality-mode').value});v2Quality.request=null;await openV2Run(run.run_id);});
+$('#refresh-v2-quality').onclick=()=>busy($('#refresh-v2-quality'),async()=>{if(v2Quality.run)await openV2Run(v2Quality.run);else await listV2Runs();});
