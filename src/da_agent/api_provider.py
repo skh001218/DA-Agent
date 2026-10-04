@@ -84,7 +84,12 @@ class GeminiProvider:
                 if not text.strip():
                     return self._failed("api_empty_response")
                 self.verified_key, self.last_error = hashlib.sha256(key.encode()).digest(), None
-                return {"state": "completed", "text": text, "model": selected}
+                metadata = data.get('usageMetadata') or {}
+                usage = {key: metadata.get(source) for key, source in {'input_tokens': 'promptTokenCount', 'output_tokens': 'candidatesTokenCount', 'total_tokens': 'totalTokenCount'}.items()}
+                result = {"state": "completed", "text": text, "model": selected}
+                if metadata:
+                    result['usage'] = usage
+                return result
             except httpx.TimeoutException:
                 return self._failed("api_timeout")
             except httpx.HTTPError:
