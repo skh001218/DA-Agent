@@ -40,6 +40,14 @@
     },
     "console_clean": {
       "passed": true
+    },
+    "analysis_390_after_css_fix": {
+      "passed": true,
+      "width": 390,
+      "scrollWidth": 390,
+      "asideWidth": 351,
+      "model_calls": 0,
+      "read_only_attempt": "d58d26bc-4398-40c4-9f64-3c918d0c5a27"
     }
   },
   "flows": [
