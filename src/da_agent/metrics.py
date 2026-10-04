@@ -17,6 +17,11 @@ VERSION = 'quality-metrics-v2'
 FILTER_FIELDS = ('domain', 'requested_difficulty', 'difficulty', 'task_kind', 'model_version', 'rules_version')
 
 
+def error_code(value):
+    error = value.get('error')
+    return error.get('code', 'unknown') if isinstance(error, dict) else 'unknown'
+
+
 def ratio(numerator, denominator):
     return {'numerator': numerator, 'denominator': denominator, 'rate': numerator / denominator if denominator else None,
             'measurement': 'measured' if denominator else 'unmeasured'}
@@ -86,7 +91,7 @@ def adapt_quality_run(run):
                      'rules_version': run.get('rules_version'), 'model_version': result.get('model') or run.get('configured_model'),
                      'feedback': {'total_score': (result.get('feedback') or {}).get('total_score')}}
             if result.get('error'):
-                value['error'] = {'code': result['error'].get('code')}
+                value['error'] = {'code': error_code(result)}
             records.append(value)
     return records
 
@@ -184,7 +189,7 @@ def aggregate(events=(), verdicts=(), requests=(), reviews=(), pilots=(), operat
             'diversity': dict(ratio(sum(a['result'] == 'meaningful_difference' for a in natural_pairs), len(natural_pairs)), intentional_repeat=sum(a['result'] == 'intentional_repeat' for a in pairs), pending=sum(a['target_kind'] == 'task_pair' and a['result'] == 'pending' for a in verdicts)),
             'difficulty_fit': dict(ratio(sum(a['result'] == 'appropriate' for a in difficulty), len(difficulty)), human_results=dict(Counter(a['result'] for a in difficulty)), learner_results=dict(Counter(a['result'] for a in learner)), unanswered=sum(a['result'] == 'pending' for a in learner)),
             'coaching_appropriateness': dict(ratio(sum(a['result'] == 'helpful' for a in coaching), len(coaching)), results=dict(Counter(a['result'] for a in coaching))),
-            'evaluation_reliability': dict(ratio(sum(r.get('status') == 'completed' for r in terminal_reviews), len(terminal_reviews)), errors=dict(Counter((r.get('error') or {}).get('code', 'unknown') for r in terminal_reviews if r.get('status') != 'completed')), human_sample_count=len(review_verdicts), human_results=dict(Counter(a['result'] for a in review_verdicts)), repeated_samples=repeated),
+            'evaluation_reliability': dict(ratio(sum(r.get('status') == 'completed' for r in terminal_reviews), len(terminal_reviews)), errors=dict(Counter(error_code(r) for r in terminal_reviews if r.get('status') != 'completed')), human_sample_count=len(review_verdicts), human_results=dict(Counter(a['result'] for a in review_verdicts)), repeated_samples=repeated),
             'independent_performance': dict(ratio(independent, len(selected_pilots)), interrupted=sum(bool(p.get('stopped_at')) for p in selected_pilots), ongoing=sum(not p.get('completed') and not p.get('stopped_at') for p in selected_pilots), assistance_unknown=sum(p.get('assistance') not in {'yes', 'no'} for p in selected_pilots)),
             'revision_effect': dict(ratio(len(initial & improved), len(initial)), unsubmitted=len(initial - submitted), unassessed=sum(a['target_kind'] == 'report_pair' and a['result'] == 'pending' for a in verdicts)),
             'wait_usage': {'duration': distribution([o.get('duration_ms') for o in terminal_ops]), 'request_duration': distribution(request_durations), 'statuses': dict(Counter(o.get('status') for o in ops)), 'ai_attempts': len(selected_ai_starts), 'ai_retries': sum(bool(e.get('parent_operation_id')) for e in selected_ai_starts), 'groups': dict(usage_groups)},
@@ -242,13 +247,15 @@ def routes(app, store):
     def read_metrics(start_date: str | None = None, end_date: str | None = None, domain: str | None = None,
                      requested_difficulty: str | None = None, difficulty: str | None = None, task_kind: str | None = None,
                      model_version: str | None = None, rules_version: str | None = None):
-        return collect(store, {k: v for k, v in locals().items() if v is not None})
+        values = locals()
+        return collect(store, {k: values[k] for k in ('start_date', 'end_date', *FILTER_FIELDS) if values[k] is not None})
 
     @router.get('/api/quality/metrics/export')
     def export_metrics(format: str = 'json', start_date: str | None = None, end_date: str | None = None,
                        domain: str | None = None, requested_difficulty: str | None = None, difficulty: str | None = None,
                        task_kind: str | None = None, model_version: str | None = None, rules_version: str | None = None):
-        filters = {k: v for k, v in locals().items() if k != 'format' and v is not None}
+        values = locals()
+        filters = {k: values[k] for k in ('start_date', 'end_date', *FILTER_FIELDS) if values[k] is not None}
         if format not in {'json', 'csv'}:
             raise DomainError('invalid_format', 'json 또는 csv를 선택하세요.', 422)
         value = collect(store, filters)

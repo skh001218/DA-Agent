@@ -111,6 +111,25 @@ def test_repeat_quality_run_adapter_drops_all_fixture_material():
     assert repeats == [{'sample_id': 'run:sample', 'valid_count': 2, 'score_range': 10, 'failed_repetitions': 1}]
 
 
+def test_legacy_string_error_is_safe_and_does_not_break_metrics():
+    value = metrics.aggregate(reviews=[{'status': 'failed', 'error': 'SECRET provider response'}])
+    assert value['evaluation_reliability']['errors'] == {'unknown': 1}
+    assert 'SECRET' not in json.dumps(value)
+
+
+def test_metrics_route_filters_exclude_closure_objects(monkeypatch):
+    from fastapi import FastAPI
+    from fastapi.testclient import TestClient
+    app = FastAPI()
+    monkeypatch.setattr(metrics, 'collect', lambda store, filters: {'filters': filters})
+    metrics.routes(app, object())
+    with TestClient(app) as client:
+        result = client.get('/api/quality/metrics?difficulty=advanced')
+        assert result.status_code == 200 and result.json() == {'filters': {'difficulty': 'advanced'}}
+        result = client.get('/api/quality/metrics/export?format=json&difficulty=advanced')
+        assert result.status_code == 200 and result.json() == {'filters': {'difficulty': 'advanced'}}
+
+
 @pytest.mark.parametrize('value', ['=SUM(1)', '+cmd', '-2+3', '@evil', '  =cmd', '\tcmd', '\rcmd'])
 def test_csv_formula_escaping(value):
     assert metrics.safe_csv(value).startswith("'")
