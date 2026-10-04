@@ -31,7 +31,7 @@ ALLOWED_FUNCTIONS = {
 }
 
 
-def check_query(text):
+def check_query(text, allowed_tables=None):
     try:
         trees = sqlglot.parse(text, read="postgres")
     except sqlglot.errors.SqlglotError:
@@ -45,7 +45,7 @@ def check_query(text):
                              exp.Command, exp.Into, exp.Lock, exp.Copy, exp.Merge)):
             raise DomainError("blocked", "데이터 변경·잠금·외부 접근은 허용되지 않습니다.")
         if isinstance(node, exp.Table):
-            if node.db or node.catalog or node.name not in {"users", "sessions", "tutorial_attempts"} | ctes:
+            if node.db or node.catalog or node.name not in set(allowed_tables or {"users", "sessions", "tutorial_attempts"}) | ctes:
                 raise DomainError("blocked", "공개 학습 표만 조회할 수 있습니다.")
         if isinstance(node, exp.Dot):
             if isinstance(node.expression, exp.Func):
@@ -83,7 +83,7 @@ class SqlRunner:
         self.pending = {}
         self.lock = threading.Lock()
 
-    def execute(self, attempt_id, schema_name, text):
+    def execute(self, attempt_id, schema_name, text, allowed_tables=None):
         started = time.monotonic()
         result = dict(execution_id=str(uuid.uuid4()), status="success",
                       executed_at=dt.datetime.now(dt.timezone.utc).isoformat().replace("+00:00", "Z"),
@@ -92,7 +92,7 @@ class SqlRunner:
                       expires_in_seconds=self.settings.execution_ttl)
         full_rows = []
         try:
-            check_query(text)
+            check_query(text,allowed_tables)
             with psycopg.connect(self.settings.learner_dsn, connect_timeout=5, options="-c default_transaction_read_only=on") as conn:
                 conn.execute("SET TRANSACTION READ ONLY")
                 conn.execute(sql.SQL("SET LOCAL search_path TO {}, pg_catalog").format(sql.Identifier(schema_name)))

@@ -1,0 +1,62 @@
+metric,field,value,metrics_version
+filters,domain,access,quality-metrics-v2
+generation_success,numerator,1,quality-metrics-v2
+generation_success,denominator,1,quality-metrics-v2
+generation_success,rate,1.0,quality-metrics-v2
+generation_success,measurement,measured,quality-metrics-v2
+generation_success,statuses,"{""ready"": 1}",quality-metrics-v2
+generation_success,unsupported,0,quality-metrics-v2
+diversity,numerator,0,quality-metrics-v2
+diversity,denominator,0,quality-metrics-v2
+diversity,rate,,quality-metrics-v2
+diversity,measurement,unmeasured,quality-metrics-v2
+diversity,intentional_repeat,0,quality-metrics-v2
+diversity,pending,0,quality-metrics-v2
+difficulty_fit,numerator,0,quality-metrics-v2
+difficulty_fit,denominator,0,quality-metrics-v2
+difficulty_fit,rate,,quality-metrics-v2
+difficulty_fit,measurement,unmeasured,quality-metrics-v2
+difficulty_fit,human_results,{},quality-metrics-v2
+difficulty_fit,learner_results,{},quality-metrics-v2
+difficulty_fit,unanswered,0,quality-metrics-v2
+coaching_appropriateness,numerator,0,quality-metrics-v2
+coaching_appropriateness,denominator,0,quality-metrics-v2
+coaching_appropriateness,rate,,quality-metrics-v2
+coaching_appropriateness,measurement,unmeasured,quality-metrics-v2
+coaching_appropriateness,results,{},quality-metrics-v2
+evaluation_reliability,numerator,0,quality-metrics-v2
+evaluation_reliability,denominator,2,quality-metrics-v2
+evaluation_reliability,rate,0.0,quality-metrics-v2
+evaluation_reliability,measurement,measured,quality-metrics-v2
+evaluation_reliability,errors,"{""review_format"": 2}",quality-metrics-v2
+evaluation_reliability,human_sample_count,0,quality-metrics-v2
+evaluation_reliability,human_results,{},quality-metrics-v2
+evaluation_reliability,repeated_samples,[],quality-metrics-v2
+independent_performance,numerator,0,quality-metrics-v2
+independent_performance,denominator,0,quality-metrics-v2
+independent_performance,rate,,quality-metrics-v2
+independent_performance,measurement,unmeasured,quality-metrics-v2
+independent_performance,interrupted,0,quality-metrics-v2
+independent_performance,ongoing,0,quality-metrics-v2
+independent_performance,assistance_unknown,0,quality-metrics-v2
+revision_effect,numerator,0,quality-metrics-v2
+revision_effect,denominator,0,quality-metrics-v2
+revision_effect,rate,,quality-metrics-v2
+revision_effect,measurement,unmeasured,quality-metrics-v2
+revision_effect,unsubmitted,0,quality-metrics-v2
+revision_effect,unassessed,0,quality-metrics-v2
+wait_usage,duration,"{""count"": 45, ""missing"": 0, ""median_ms"": 2510, ""p95_ms"": 3254}",quality-metrics-v2
+wait_usage,request_duration,"{""count"": 1, ""missing"": 0, ""median_ms"": 1495, ""p95_ms"": 1495}",quality-metrics-v2
+wait_usage,statuses,"{""completed"": 40, ""failed"": 5, ""running"": 1}",quality-metrics-v2
+wait_usage,ai_attempts,43,quality-metrics-v2
+wait_usage,ai_retries,0,quality-metrics-v2
+wait_usage,groups,"{""5bd7b4e9-80eb-4aaf-a43f-92ced0ac178d"": {""attempts"": 1, ""retries"": 0, ""observed_tokens"": 580, ""missing_calls"": 0}, ""d58d26bc-4398-40c4-9f64-3c918d0c5a27"": {""attempts"": 3, ""retries"": 0, ""observed_tokens"": 7736, ""missing_calls"": 0}, ""quality-v2:1e877be6-6a7f-4183-bbd5-ac9c7303f455"": {""attempts"": 18, ""retries"": 0, ""observed_tokens"": 41078, ""missing_calls"": 2}, ""quality-v2:9ede75af-836a-43fc-a266-cbaab4c10aac"": {""attempts"": 18, ""retries"": 0, ""observed_tokens"": 44262, ""missing_calls"": 2}, ""quality-v2:99c35c50-9cdf-41b7-9fbb-697b4732f2a4"": {""attempts"": 3, ""retries"": 0, ""observed_tokens"": 5618, ""missing_calls"": 1}}",quality-metrics-v2
+versions,event_schema,"{""event-v2"": 97, ""event-v1"": 4}",quality-metrics-v2
+versions,rules,"{""access-plan-v2"": 8, ""access-validation-v2"": 2, ""request-review-v2"": 8, ""history-recommendation-v2"": 6, ""evaluation-v2"": 77}",quality-metrics-v2
+versions,criteria,{},quality-metrics-v2
+review_version_groups,evaluation-v2,"{""numerator"": 0, ""denominator"": 0, ""rate"": null, ""measurement"": ""unmeasured"", ""errors"": {}, ""human_sample_count"": 0, ""human_results"": {}, ""repeated_samples"": []}",quality-metrics-v2
+review_version_groups,request-review-v2,"{""numerator"": 0, ""denominator"": 2, ""rate"": 0.0, ""measurement"": ""measured"", ""errors"": {""review_format"": 2}, ""human_sample_count"": 0, ""human_results"": {}, ""repeated_samples"": []}",quality-metrics-v2
+review_version_groups,review-v1,"{""numerator"": 0, ""denominator"": 0, ""rate"": null, ""measurement"": ""unmeasured"", ""errors"": {}, ""human_sample_count"": 0, ""human_results"": {}, ""repeated_samples"": []}",quality-metrics-v2
+collection,incomplete,False,quality-metrics-v2
+collection,retention_days,30,quality-metrics-v2
+collection,outside_retention,False,quality-metrics-v2

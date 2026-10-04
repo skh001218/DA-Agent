@@ -1,0 +1,11 @@
+{
+  "actual_browser": true,
+  "actual_api": true,
+  "model_calls": 0,
+  "unsupported_guidance": true,
+  "input_preserved": true,
+  "analysis_width": {
+    "width": 390,
+    "scrollWidth": 390
+  }
+}

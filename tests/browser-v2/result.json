@@ -1,0 +1,16 @@
+{
+  "actual_browser": true,
+  "actual_api": true,
+  "checks": {
+    "delete_cancel": true,
+    "learning_save": true,
+    "metrics_eight": true,
+    "download_json": true,
+    "download_csv": true,
+    "quality_v2_controls": true,
+    "width_390": true,
+    "console_clean": true
+  },
+  "console_errors": [],
+  "delete_requests": 0
+}

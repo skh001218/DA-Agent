@@ -1,0 +1,138 @@
+{
+  "actual_db": true,
+  "human_approval": "pending",
+  "samples": [
+    {
+      "sample_id": "0550a922-1607-4f02-a79b-1ed29183f846",
+      "capability_id": "access-calculation",
+      "rules_version": "access-rules-v2",
+      "status": "validated",
+      "difficulty": "beginner",
+      "row_counts": {
+        "users": 200,
+        "sessions": 511
+      }
+    },
+    {
+      "sample_id": "d6dd57cb-06b0-4c38-9411-49627cacc3b6",
+      "capability_id": "access-calculation",
+      "rules_version": "access-rules-v2",
+      "status": "validated",
+      "difficulty": "intermediate",
+      "row_counts": {
+        "users": 200,
+        "sessions": 494
+      }
+    },
+    {
+      "sample_id": "198c79d5-5c89-4296-97ef-7c0a3d4adcfb",
+      "capability_id": "access-calculation",
+      "rules_version": "access-rules-v2",
+      "status": "validated",
+      "difficulty": "advanced",
+      "row_counts": {
+        "users": 200,
+        "sessions": 453
+      }
+    },
+    {
+      "sample_id": "04888cce-81dd-4e2d-8201-fa4b74d5dfda",
+      "capability_id": "access-review",
+      "rules_version": "access-rules-v2",
+      "status": "validated",
+      "difficulty": "beginner",
+      "row_counts": {
+        "users": 200,
+        "sessions": 494
+      }
+    },
+    {
+      "sample_id": "b2fea6c6-8610-415c-a424-1ba376b63031",
+      "capability_id": "access-review",
+      "rules_version": "access-rules-v2",
+      "status": "validated",
+      "difficulty": "intermediate",
+      "row_counts": {
+        "users": 200,
+        "sessions": 506
+      }
+    },
+    {
+      "sample_id": "2b4f1adf-2a02-47f4-b909-9c31a7dac0f5",
+      "capability_id": "access-review",
+      "rules_version": "access-rules-v2",
+      "status": "validated",
+      "difficulty": "advanced",
+      "row_counts": {
+        "users": 200,
+        "sessions": 480
+      }
+    },
+    {
+      "sample_id": "b9a4ffbf-a8c7-4d08-b0a0-241c0f990b7f",
+      "capability_id": "access-design",
+      "rules_version": "access-rules-v2",
+      "status": "validated",
+      "difficulty": "beginner",
+      "row_counts": {
+        "users": 200,
+        "sessions": 514
+      }
+    },
+    {
+      "sample_id": "baba7c9d-57c4-45e0-885e-25b9a477f67f",
+      "capability_id": "access-design",
+      "rules_version": "access-rules-v2",
+      "status": "validated",
+      "difficulty": "intermediate",
+      "row_counts": {
+        "users": 200,
+        "sessions": 502
+      }
+    },
+    {
+      "sample_id": "530877ca-3172-40a5-842c-59b311b07111",
+      "capability_id": "access-design",
+      "rules_version": "access-rules-v2",
+      "status": "validated",
+      "difficulty": "advanced",
+      "row_counts": {
+        "users": 200,
+        "sessions": 494
+      }
+    },
+    {
+      "sample_id": "7f797bb6-52f4-4715-a602-6bc2853d00de",
+      "capability_id": "access-investigation",
+      "rules_version": "access-rules-v2",
+      "status": "validated",
+      "difficulty": "beginner",
+      "row_counts": {
+        "users": 200,
+        "sessions": 423
+      }
+    },
+    {
+      "sample_id": "fa592d83-ac24-46ba-8ebc-437448fb417e",
+      "capability_id": "access-investigation",
+      "rules_version": "access-rules-v2",
+      "status": "validated",
+      "difficulty": "intermediate",
+      "row_counts": {
+        "users": 200,
+        "sessions": 405
+      }
+    },
+    {
+      "sample_id": "c2e036fe-de8a-4cf9-854f-8e196cbe2c66",
+      "capability_id": "access-investigation",
+      "rules_version": "access-rules-v2",
+      "status": "validated",
+      "difficulty": "advanced",
+      "row_counts": {
+        "users": 200,
+        "sessions": 424
+      }
+    }
+  ]
+}

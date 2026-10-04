@@ -1,0 +1,17 @@
+{
+  "actual_model": true,
+  "actual_db": true,
+  "checks": {
+    "sql_success": true,
+    "review_status": "completed",
+    "resume_saved": true,
+    "delete_own_record": true
+  },
+  "human_quality": "pending",
+  "request_status": "ready",
+  "attempt_id": "89e2e66a-9f48-4e5c-9bcb-6e01829cd0a5",
+  "review_error_code": null,
+  "model": "gemini-3.5-flash-lite",
+  "rules_version": "request-review-v2",
+  "request_id": "live-v2-6e23e01b3f544d6aa032efa593bfa5e7"
+}

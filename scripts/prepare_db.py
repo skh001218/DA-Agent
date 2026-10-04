@@ -4,12 +4,17 @@ from pathlib import Path
 import psycopg
 from da_agent.packages import PackageCatalog
 from da_agent.data import load_package, validate_package
+from setup_generator import main as setup_generator
+
+setup_generator()
 
 root = Path(os.getenv("PACKAGES_ROOT", "packages"))
 catalog = PackageCatalog(root)
 with psycopg.connect(os.environ["ADMIN_DSN"]) as conn:
     for public in root.glob("*/*/public/manifest.json"):
         version, package_id = public.parents[1].name, public.parents[2].name
+        if package_id.startswith(('generated-','sample-')):
+            continue  # Request staging/approvals exclusively own these schemas and grants.
         package = catalog.load(package_id, version, allow_unvalidated=True)
         load_package(conn, package)
         conn.commit()

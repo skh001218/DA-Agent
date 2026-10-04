@@ -29,16 +29,19 @@ services:
       GEMINI_MODEL: ${GEMINI_MODEL:-gemini-3.5-flash-lite}
       DA_TRAINING_AI_LIMIT: ${DA_TRAINING_AI_LIMIT:-30}
       DA_EVENT_RETENTION_DAYS: ${DA_EVENT_RETENTION_DAYS:-30}
+      QUALITY_CALL_INTERVAL_SECONDS: ${QUALITY_CALL_INTERVAL_SECONDS:-5}
       GEMINI_API_KEY_FILE: /run/secrets/gemini_api_key
+      GENERATOR_PASSWORD_FILE: /run/secrets/generator_password
       DA_AUTH_ENCRYPTION_KEY_FILE: /run/secrets/auth_key
       DA_AUTH_STORAGE_PATH: /app/auth-data/auth.enc
       DA_AUTH_REDIRECT_URI: http://127.0.0.1:${WEB_PORT:-8000}/auth/callback
     volumes:
-      - ./packages:/app/packages:ro
+      - ./packages:/app/packages
       - auth_data:/app/auth-data
     secrets:
       - auth_key
       - gemini_api_key
+      - generator_password
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health')"]
       interval: 5s
@@ -55,6 +58,7 @@ services:
       ADMIN_DSN: postgresql://postgres:${POSTGRES_PASSWORD}@db/training
     volumes:
       - ./packages:/app/packages
+      - ./.local:/app/.local
     command: ["python", "scripts/prepare_db.py"]
 volumes:
   postgres_data:
@@ -64,3 +68,5 @@ secrets:
     file: .local/auth.key
   gemini_api_key:
     file: .local/gemini_api.key
+  generator_password:
+    file: .local/generator.key

@@ -10,6 +10,9 @@ const sectionLabels = { problem_definition: '문제 정의', hypothesis: '가설
 function kst(value) { const date = new Date(value); return Number.isNaN(date.getTime()) ? String(value) : `${new Intl.DateTimeFormat('ko-KR', { timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23' }).format(date)} KST`; }
 function renderProblemMetadata(problem) {
   const container = $('#problem-metadata'); container.replaceChildren();
+  if (problem.goal) container.append(el('p', `학습 목표: ${problem.goal}`, 'prose'));
+  if ((problem.required_judgments || problem.completion_conditions)?.length) {container.append(el('h3','기대 제출물·완료 조건'));for(const text of problem.required_judgments || problem.completion_conditions)container.append(el('p',text,'prose'));}
+  if (problem.allowed_limits?.length) {container.append(el('h3','설명할 관측 한계'));for(const text of problem.allowed_limits)container.append(el('p',text,'prose'));}
   for (const [key, label] of Object.entries({ cohort_start: '가입 기간 시작 (포함)', cohort_end: '가입 기간 종료 (제외)', data_complete_before: '수집 완료 경계 (이 시각 미만)' })) if (problem[key]) container.append(el('p', `${label}: ${kst(problem[key])}`));
   if (problem.required_tables?.length) container.append(el('p', `사용할 표: ${problem.required_tables.join(', ')}`));
   const definitions = problem.definitions || {}; const labels = { observation: '관측 구간', complete: '관측 완료 기준', return: '재접속 기준', empty_denominator: '대상자 0명인 경우', display: '결과 표시' };
@@ -60,10 +63,19 @@ async function home() {
   if (!attempts.attempts.length) $('#attempts').append(el('p', '아직 시작한 훈련이 없습니다.', 'muted'));
   await trainingHome();
 }
+function confirmAction(message, action='계속') {
+  return new Promise(resolve=>{
+    const dialog=el('dialog');const title=el('h2','입력 유지 확인');title.id=`confirm-${uid()}`;dialog.setAttribute('aria-labelledby',title.id);
+    const cancel=el('button','취소');const proceed=el('button',action);
+    const finish=value=>{dialog.close();dialog.remove();resolve(value);};
+    cancel.onclick=()=>finish(false);proceed.onclick=()=>finish(true);dialog.addEventListener('cancel',event=>{event.preventDefault();finish(false);});
+    dialog.append(title,el('p',message,'prose'),cancel,document.createTextNode(' '),proceed);document.body.append(dialog);dialog.showModal();cancel.focus();
+  });
+}
 async function canLeave() {
   if (!state.attempt) return true;
   try { await flushDraft(); } catch (error) { notice(error.message); return false; }
-  if ($('#sql').value.trim() || state.executions.some(item => !item.saved)) return confirm('미저장 SQL과 실행 결과가 사라집니다. 훈련 목록으로 이동할까요?');
+  if ($('#sql').value.trim() || state.executions.some(item => !item.saved)) return await confirmAction('미저장 SQL과 실행 결과가 사라집니다. 취소하면 현재 입력을 유지합니다. 훈련 목록으로 이동할까요?','목록으로 이동');
   return true;
 }
 async function openAttempt(id) {
@@ -77,7 +89,7 @@ async function openAttempt(id) {
   renderProblemMetadata(attempt.problem || {});
   renderSchema(attempt.problem?.schema || attempt.problem?.dictionary);
   $('#hints').replaceChildren(); for (const hint of attempt.hints || []) $('#hints').append(el('p', hint.content || pretty(hint)));
-  history.replaceState(null, '', `/?attempt=${encodeURIComponent(id)}`); renderSaved(); renderReports(); renderClaims(); trainingOpen(attempt); tab('analysis'); notice();
+  history.replaceState(null, '', `/?attempt=${encodeURIComponent(id)}`); renderSaved(); renderReports(); renderClaims(); trainingOpen(attempt); tab('analysis'); notice('저장된 자료·대화·제출본을 복원했습니다. 임시 SQL과 미저장 결과·임시 코칭은 복원되지 않습니다.'); $('#problem-title').setAttribute('tabindex', '-1'); $('#problem-title').focus();
 }
 function draftChanged() { state.sections = { ...state.sections, ...Object.fromEntries($$('[data-section]').map(node => [node.dataset.section, node.value])), report_evidence: JSON.stringify(Object.fromEntries([...state.claimEvidence].map(([index, ids]) => [index, [...ids]]))) }; state.generation++; state.dirty = true; $('#save-status').textContent = '저장 대기'; clearTimeout(state.saveTimer); state.saveTimer = setTimeout(() => flushDraft().catch(() => {}), 700); }
 async function flushDraft() {
@@ -135,7 +147,7 @@ function renderReports() {
     for (const key of ['limitations', 'next_actions']) node.append(el('h3', sectionLabels[key]), el('p', report.content?.[key] || '작성하지 않음', 'prose'));
     const reviewButton = el('button', '이 제출본 리뷰 요청'); const editButton = el('button', '이 제출본을 수정'); let requestId = uid();
     reviewButton.onclick = () => busy(reviewButton, async () => { const review = await post(attemptPath(`/reports/${encodeURIComponent(report.report_id)}/review`), { request_id: requestId }); (state.attempt.reviews ||= []).push({ ...review, report_id: review.report_id || report.report_id }); requestId = uid(); renderReports(); await authStatus(); if (review.status !== 'completed' && review.status !== 'success') notice(review.error?.message || '리뷰를 완료하지 못했습니다. 제출본은 보존되며 재시도할 수 있습니다.'); });
-    editButton.onclick = () => busy(editButton, async () => { if (state.dirty && !confirm('현재 작성 중인 서술 입력을 이 제출본 내용으로 바꿀까요?')) return; await flushDraft(); state.previousReport = report.report_id; state.reportRequest = null; for (const key of ['problem_definition', 'hypothesis', 'limitations', 'next_actions']) $(`[data-section="${key}"]`).value = report.content?.[key] || ''; $('#discoveries').value = (report.claims || []).map(claim => claim.text).join('\n\n'); state.claimEvidence.clear(); const allowed = new Set(successfulSaved().map(saved => saved.saved_execution_id)); (report.claims || []).forEach((claim, index) => state.claimEvidence.set(index, new Set((claim.evidence_refs || []).map(ref => ref.saved_execution_id).filter(id => allowed.has(id))))); draftChanged(); renderClaims(); tab('report'); $('#report-status').textContent = `보고서 v${report.report_version ?? '?'}의 수정본 작성 중 · 제출하면 새 버전이 됩니다.`; });
+    editButton.onclick = () => busy(editButton, async () => { if (state.dirty && !(await confirmAction('현재 작성 중인 서술 입력을 이 제출본 내용으로 바꿀까요? 취소하면 현재 입력을 유지합니다.','제출본으로 변경'))) return; await flushDraft(); state.previousReport = report.report_id; state.reportRequest = null; for (const key of ['problem_definition', 'hypothesis', 'limitations', 'next_actions']) $(`[data-section="${key}"]`).value = report.content?.[key] || ''; $('#discoveries').value = (report.claims || []).map(claim => claim.text).join('\n\n'); state.claimEvidence.clear(); const allowed = new Set(successfulSaved().map(saved => saved.saved_execution_id)); (report.claims || []).forEach((claim, index) => state.claimEvidence.set(index, new Set((claim.evidence_refs || []).map(ref => ref.saved_execution_id).filter(id => allowed.has(id))))); draftChanged(); renderClaims(); tab('report'); $('#report-status').textContent = `보고서 v${report.report_version ?? '?'}의 수정본 작성 중 · 제출하면 새 버전이 됩니다.`; });
     node.append(reviewButton, document.createTextNode(' '), editButton); for (const review of state.attempt.reviews || []) if (review.report_id === report.report_id) { node.append(el('h3', `리뷰 · ${review.status === 'completed' ? '완료' : review.status === 'pending' ? '처리 중' : '재시도 필요'}`)); renderFeedback(node, review); } $('#reports').append(node);
   }
   if (!(state.attempt.reports || []).length) $('#reports').append(el('p', '아직 제출한 보고서가 없습니다.', 'muted'));
@@ -145,7 +157,12 @@ function renderFeedback(container, review) {
   if (!feedback?.criteria) { container.append(el('p', review.error?.message || (typeof review.error === 'string' ? 'ChatGPT 연결을 확인한 뒤 다시 요청하세요.' : feedback || '리뷰 처리 중입니다.'), 'prose')); return; }
   container.append(el('p', `총점 ${feedback.total_score} / 100점`));
   const labels = { problem_definition: '문제 정의', analysis_approach: '분석 접근', sql_accuracy: 'SQL 정확성', interpretation: '결과 해석', next_actions: '추가 분석·액션' };
-  for (const item of feedback.criteria) container.append(el('h3', `${labels[item.key] || item.key} · ${item.score}/${item.weight}점 (수준 ${item.level}/4)`), el('p', item.reason, 'prose'));
+  for (const item of feedback.criteria) {
+    container.append(el('h3', `${labels[item.key] || item.key} · ${item.score}/${item.weight}점 (수준 ${item.level}/4)`), el('p', item.reason, 'prose'));
+    if (item.evidence_refs || item.evidence) container.append(el('p', `평가 근거: ${pretty(item.evidence_refs || item.evidence)}`, 'prose'));
+    if (item.missing_evidence) container.append(el('p', `부족한 근거: ${pretty(item.missing_evidence)}`, 'muted'));
+    if (item.next_action) container.append(el('p', `수정 행동: ${item.next_action}`, 'prose'));
+  }
   for (const [key, label] of Object.entries({ strengths: '잘한 점', improvements: '보완할 점', next_steps: '다음 행동' })) { container.append(el('h3', label)); for (const text of feedback[key] || []) container.append(el('p', text, 'prose')); }
 }
 $$('nav button').forEach(button => { button.onclick = () => { if (button.dataset.tab === 'report') renderClaims(); tab(button.dataset.tab); }; });
@@ -156,7 +173,7 @@ $('#execute').onclick = () => busy($('#execute'), async () => { const sql = $('#
 $('#submit-report').onclick = () => busy($('#submit-report'), async () => { await flushDraft(); const claims = claimTexts().map((text, index) => ({ claim_id: `claim-${index + 1}`, text, evidence_refs: [...(state.claimEvidence.get(index) || [])].map(saved_execution_id => ({ saved_execution_id })) })); const payload = { revision: state.revision, previous_report_id: state.previousReport, content: Object.fromEntries(['problem_definition', 'hypothesis', 'limitations', 'next_actions'].map(key => [key, state.sections[key] || ''])), claims }; const signature = JSON.stringify(payload); if (state.reportRequest?.signature !== signature) state.reportRequest = { signature, requestId: uid() }; const report = await post(attemptPath('/reports'), { ...payload, request_id: state.reportRequest.requestId }); if (!(state.attempt.reports || []).some(item => item.report_id === report.report_id)) (state.attempt.reports ||= []).push(report); $('#report-status').textContent = `보고서 v${report.report_version ?? '?'} 제출 완료`; renderReports(); tab('history'); notice('보고서가 제출되었습니다. 해당 제출본으로 리뷰를 요청할 수 있습니다.'); });
 $$('[data-hint]').forEach(button => { button.onclick = () => busy(button, async () => { const hint = await post(attemptPath('/hints'), { level: button.dataset.hint }); $('#hints').append(el('p', hint.content)); }); });
 $('#explanation-button').onclick = () => busy($('#explanation-button'), async () => { const result = await post(attemptPath('/explanation'), {}); $('#explanation').textContent = `${result.sql || ''}\n\n${pretty(result.explanation || '')}`; state.attempt.explanation_viewed = true; });
-$('#coach').onclick = () => busy($('#coach'), async () => { const message = $('#coach-message').value.trim(); if (!message) throw new Error('코칭 질문을 입력하세요.'); await flushDraft(); if (state.attempt.contract_version === 'request-v1') { await requestConversation(message, $('#coach-evidence').value); } else { const result = await post(attemptPath('/coach'), { message, saved_execution_id: $('#coach-evidence').value || null }); $('#coach-result').textContent = pretty(result.feedback || result.error?.message || result); } await authStatus(); });
+$('#coach').onclick = () => busy($('#coach'), async () => { const message = $('#coach-message').value.trim(); if (!message) throw new Error('코칭 질문을 입력하세요.'); await flushDraft(); if (['request-v1', 'request-v2'].includes(state.attempt.contract_version)) { await requestConversation(message, $('#coach-evidence').value); } else { const result = await post(attemptPath('/coach'), { message, saved_execution_id: $('#coach-evidence').value || null }); $('#coach-result').textContent = pretty(result.feedback || result.error?.message || result); } await authStatus(); });
 $('#connect').onclick = () => busy($('#connect'), async () => { const popup = window.open('about:blank', '_blank'); if (!popup) throw new Error('로그인 창이 차단됐습니다. 이 앱의 팝업을 허용한 뒤 다시 연결하세요.'); popup.opener = null; try { const result = await post('/api/auth/start', {}); if (!result.authorization_url) throw new Error(result.message || '인증 주소를 받지 못했습니다.'); const url = new URL(result.authorization_url); if (url.protocol !== 'https:' || url.hostname !== 'auth.openai.com') throw new Error('공식 인증 주소를 확인할 수 없습니다.'); popup.location.replace(url.href); notice('새 창에서 공식 로그인과 권한 승인을 완료한 뒤 이 분석 창으로 돌아오세요. 입력은 이 창에 유지됩니다.'); } catch (error) { popup.close(); throw error; } });
 $('#disconnect').onclick = () => busy($('#disconnect'), async () => { await post('/api/auth/disconnect', {}); await authStatus(); });
 $('#home-button').onclick = () => busy($('#home-button'), async () => { if (!(await canLeave())) return; await home(); clearTimeout(state.saveTimer); state.attempt = null; $('#workspace').hidden = true; $('#home').hidden = false; history.replaceState(null, '', '/'); notice(); });

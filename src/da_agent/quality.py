@@ -142,6 +142,9 @@ def prepare_samples(package, runner, run_id):
 
 
 def summarize(run):
+    if run.get('fixture_version')=='fixed-plan-quality-v2':
+        from .quality_v2 import summarize as summarize_v2
+        return summarize_v2(run)
     value = copy.deepcopy(run)
     for sample in value["samples"]:
         results = sample["results"]
@@ -194,7 +197,7 @@ def routes(app, store, runner, load, auth):
     @router.get("/runs")
     def runs():
         with store.connect() as conn:
-            rows = conn.execute("SELECT payload FROM quality_runs ORDER BY payload->>'started_at' DESC").fetchall()
+            rows = conn.execute("SELECT payload FROM quality_runs WHERE COALESCE(payload->>'fixture_version','') != 'fixed-plan-quality-v2' ORDER BY payload->>'started_at' DESC").fetchall()
         # Full reports/evidence are fetched only when an operator opens a run.
         return {"runs": [{key: summarize(row["payload"])[key] for key in ("run_id", "started_at", "status", "verdict", "completed_calls", "package_id", "release_version")} for row in rows]}
 

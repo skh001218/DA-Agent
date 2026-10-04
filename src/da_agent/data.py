@@ -70,7 +70,9 @@ SELECT count(*)::int AS eligible_count, count(*) FILTER (WHERE churned)::int AS 
  (100.0 * count(*) FILTER (WHERE churned) / NULLIF(count(*),0))::float8 AS churn_rate FROM flags;"""
 
 
-def generate_package(root, package_id="training-001", release_version="v1", seed=20261003, user_count=200):
+def generate_package(root, package_id="training-001", release_version="v1", seed=20261003, user_count=200, scenario='baseline'):
+    if scenario not in {'baseline','group_difference','period_change','composition','observation_short','no_difference'}:
+        raise ValueError('Unknown registered scenario')
     if user_count < 12:
         raise ValueError("At least 12 users needed for boundary cases")
     # Validate identity before filesystem mutation.
@@ -94,6 +96,8 @@ def generate_package(root, package_id="training-001", release_version="v1", seed
             signup = START + timedelta(days=11)  # incomplete observation
         else:
             signup = START + timedelta(seconds=rng.randrange(14 * 86400))
+        if scenario=='observation_short' and index>=12:
+            signup=START+timedelta(days=9,seconds=rng.randrange(5*86400))
         user_id = f"u{index + 1:04d}"
         users.append(dict(zip(USER_FIELDS, [user_id, iso(signup), rng.choice(["android", "ios", "pc"]), "KR", rng.choice(["organic", "ad", "referral"]), "1.0.0"])))
         def add(login, logout=None):
@@ -112,7 +116,21 @@ def generate_package(root, package_id="training-001", release_version="v1", seed
         elif index == 6:
             for day in [1, 2, 2, 7]:
                 add(base + timedelta(days=day, hours=12))
-        elif index >= 12 and rng.random() < .65:
+        elif index >= 12:
+            probability = .65
+            if scenario == 'group_difference':
+                probability = .9 if users[-1]['platform']=='android' else .3
+            elif scenario == 'period_change':
+                probability = .85 if signup < START + timedelta(days=7) else .25
+            elif scenario == 'composition':
+                users[-1]['acquisition_channel'] = 'organic' if signup < START+timedelta(days=7) else 'ad'
+                probability = .8 if users[-1]['acquisition_channel']=='organic' else .35
+            elif scenario == 'observation_short':
+                probability = .5
+            elif scenario == 'no_difference':
+                probability = .65
+            if rng.random() >= probability:
+                continue
             for _ in range(rng.randint(1, 4)):
                 add(base + timedelta(days=rng.randint(1, 7), seconds=rng.randint(0, 86399)))
     for table, rows, fields in [("users", users, USER_FIELDS), ("sessions", sessions, SESSION_FIELDS)]:
@@ -137,6 +155,7 @@ def generate_package(root, package_id="training-001", release_version="v1", seed
         "data_dictionary": DATA_DICTIONARY,
         "problems": [{"problem_id": "problem-001", "problem_type_id": "new-user-churn", "problem_version": release_version, "title": problem["title"], "path": "problem-001.json", "sha256": digest(path / "public/problem-001.json"), "cohort_start": iso(START), "cohort_end": iso(END), "required_tables": ["users", "sessions"]}]})
     write_json(path / "private/manifest.json", {**identity, "dataset_version": release_version, "generator_version": "1", "seed": seed, "user_count": user_count,
+        **({'scenario':scenario} if scenario!='baseline' or package_id.startswith(('generated-','sample-')) else {}),
         "problems": [{"problem_id": "problem-001", "evaluation_version": release_version, "path": "reference-001.json", "sha256": digest(path / "private/reference-001.json")} ]})
     return PackageCatalog(root).load(package_id, release_version, allow_unvalidated=True)
 
@@ -162,7 +181,7 @@ def validate_rows(package):
     return users, sessions
 
 
-def load_package(conn, package):
+def load_package(conn, package, grant_learner=True):
     from psycopg import sql
     users, sessions = validate_rows(package)
     schema = sql.Identifier(package.schema_name)
@@ -184,16 +203,17 @@ def load_package(conn, package):
         for table, rows, fields in [("users", users, USER_FIELDS), ("sessions", sessions, SESSION_FIELDS)]:
             statement = sql.SQL("INSERT INTO {}.{} VALUES ({}) ON CONFLICT DO NOTHING").format(schema, sql.Identifier(table), sql.SQL(",").join([sql.Placeholder()] * len(fields)))
             cur.executemany(statement, [[r[k] or None for k in fields] for r in rows])
-        cur.execute(sql.SQL("GRANT USAGE ON SCHEMA {} TO learner").format(schema))
-        cur.execute(sql.SQL("GRANT SELECT ON ALL TABLES IN SCHEMA {} TO learner").format(schema))
+        if grant_learner:
+            cur.execute(sql.SQL("GRANT USAGE ON SCHEMA {} TO learner").format(schema))
+            cur.execute(sql.SQL("GRANT SELECT ON ALL TABLES IN SCHEMA {} TO learner").format(schema))
     conn.commit()
 
 
-def validate_package(conn, root, package_id="training-001", release_version="v1"):
+def validate_package(conn, root, package_id="training-001", release_version="v1", grant_learner=True, publish=True):
     from psycopg import sql
     package = PackageCatalog(root).load(package_id, release_version, allow_unvalidated=True)
     users, sessions = validate_rows(package)
-    load_package(conn, package)
+    load_package(conn, package, grant_learner=grant_learner)
     results, boundaries = {}, {}
     with conn.cursor() as cur:
         cur.execute("SET TIME ZONE 'UTC'")
@@ -240,5 +260,5 @@ def validate_package(conn, root, package_id="training-001", release_version="v1"
             cur.execute(sql.SQL("SET search_path TO {}").format(sql.Identifier(package.schema_name)))
             boundaries[pid] = cases
     conn.commit()
-    write_json(package.path / "private/validation.json", {"status": "publishable", "engine": "PostgreSQL", "public_sha256": digest(package.path / "public/manifest.json"), "private_sha256": digest(package.path / "private/manifest.json"), "results": results, "boundary_cases": boundaries})
-    return PackageCatalog(root).load(package_id, release_version)
+    write_json(package.path / "private/validation.json", {"status": "publishable" if publish else "validated", "engine": "PostgreSQL", "public_sha256": digest(package.path / "public/manifest.json"), "private_sha256": digest(package.path / "private/manifest.json"), "results": results, "boundary_cases": boundaries})
+    return PackageCatalog(root).load(package_id, release_version, allow_unvalidated=not publish)
