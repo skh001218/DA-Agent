@@ -137,6 +137,9 @@ def test_legacy_string_error_is_safe_and_does_not_break_metrics():
     value = metrics.aggregate(reviews=[{'status': 'failed', 'error': 'SECRET provider response'}])
     assert value['evaluation_reliability']['errors'] == {'unknown': 1}
     assert 'SECRET' not in json.dumps(value)
+    value = metrics.aggregate(reviews=[{'status': 'failed', 'error': {'code': 'SECRET sql'}}, {'status': 'failed', 'error': {'code': 'api_unavailable'}}])
+    assert value['evaluation_reliability']['errors'] == {'unknown': 1, 'provider_failure': 1}
+    assert 'SECRET' not in json.dumps(value)
 
 
 def test_metrics_route_filters_exclude_closure_objects(monkeypatch):

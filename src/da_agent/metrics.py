@@ -19,7 +19,18 @@ FILTER_FIELDS = ('domain', 'requested_difficulty', 'difficulty', 'task_kind', 'm
 
 def error_code(value):
     error = value.get('error')
-    return error.get('code', 'unknown') if isinstance(error, dict) else 'unknown'
+    code = error.get('code') if isinstance(error, dict) else None
+    safe = {'unknown', 'review_format', 'answer_exposure', 'format_invalid', 'provider_failure', 'timeout',
+            'cancelled', 'server_restart', 'validation_failed', 'storage_failure', 'collection_failure', 'limit_reached'}
+    if code in safe:
+        return code
+    if code == 'api_timeout':
+        return 'timeout'
+    if code in {'reauthorization_required', 'plan_permission_denied', 'usage_limit_exceeded', 'api_content_blocked',
+                'api_key_missing', 'api_key_invalid', 'api_permission_denied', 'api_quota_exceeded',
+                'api_rate_limited', 'api_unavailable', 'model_unavailable', 'response_incomplete'}:
+        return 'provider_failure'
+    return 'unknown'
 
 
 def ratio(numerator, denominator):
