@@ -169,7 +169,7 @@ async function loadCapabilities() {
 function rulePath(suffix) {return `/api/training/capabilities/${encodeURIComponent($('#operator-capability').value)}/${suffix}`;}
 async function loadRuleSamples() {
  const data=await api(rulePath('samples'));operatorSamples=data.samples || [];$('#rule-samples').replaceChildren();$('#rule-reviewed').checked=false;
- for(const sample of operatorSamples){const d=node('details');const checkbox=node('input');checkbox.type='checkbox';checkbox.value=sample.sample_id;checkbox.className='rule-sample-selection';checkbox.disabled=sample.status!=='validated';const label=node('label');label.append(checkbox,document.createTextNode(`승인 표본 선택 · ${sample.sample_id}`));d.append(node('summary',`${sample.difficulty || ''} · ${sample.status}`),label,node('pre',JSON.stringify(sample.public || sample,null,2)));$('#rule-samples').append(d);}
+ for(const sample of operatorSamples){const d=node('details');const checkbox=node('input');checkbox.type='checkbox';checkbox.value=sample.sample_id;checkbox.className='rule-sample-selection';checkbox.disabled=sample.status!=='validated';const label=node('label');label.append(checkbox,document.createTextNode(`승인 표본 선택 · ${sample.sample_id}`));d.append(node('summary',`${sample.difficulty || sample.public?.difficulty || ''} · ${sample.status}`),label,node('pre',JSON.stringify({task:sample.public || sample,data_dictionary:sample.data_dictionary,row_counts:sample.row_counts,data_preview:sample.data_preview},null,2)));$('#rule-samples').append(d);}
  $('#rule-status').textContent='공개 표본과 검증 상태를 읽고 승인에 사용할 표본을 직접 선택하세요.';
 }
 $('#capabilities-tab').onclick=()=>{view('capabilities');loadCapabilities().catch(e=>notice(e.message));};
