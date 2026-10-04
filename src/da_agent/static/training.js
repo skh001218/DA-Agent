@@ -1,7 +1,7 @@
 'use strict';
 let preparingRequest = null;
 let requestPolling = false;
-const taskNames = {calculation: '지표 계산', review: '분석 오류 수정', design: '업무 요청 구체화'};
+const taskNames = {calculation: '지표 계산', review: '분석 오류 수정', design: '업무 요청 구체화', investigation: '접속 현상 조사'};
 const levelNames = {beginner: '초급', intermediate: '중급', advanced: '고급'};
 
 let currentRequest = null;
