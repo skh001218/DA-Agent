@@ -40,7 +40,7 @@ class AssessmentInput(BaseModel):
             raise ValueError('learner response must be difficulty feedback')
         if bool(self.sample_id) != bool(self.repetition):
             raise ValueError('sample_id and repetition must be supplied together')
-        if self.target_kind in {'task_pair', 'report_pair'} and not self.paired_target_id:
+        if (self.target_kind == 'task_pair' or self.target_kind == 'report_pair' and self.result not in {'needs_improvement', 'pending'}) and not self.paired_target_id:
             raise ValueError('paired target is required')
         return self
 
@@ -62,7 +62,7 @@ def _target(conn, kind, identifier):
     table, key = {'task_pair': ('attempts', 'attempt_id'), 'difficulty': ('attempts', 'attempt_id'),
                   'review': ('reviews', 'record_id'), 'report_pair': ('reports', 'record_id'),
                   'pilot': ('pilot_records', 'attempt_id'), 'coaching': ('training_messages', 'action_id')}[kind]
-    row = conn.execute(f'SELECT payload FROM {table} WHERE {key}=%s', (identifier,)).fetchone()
+    row = conn.execute(f'SELECT payload FROM {table} WHERE {key}=%s FOR SHARE', (identifier,)).fetchone()
     if not row:
         raise DomainError('not_found', '판정할 저장 대상을 찾을 수 없습니다.', 404)
     return row['payload']
@@ -87,7 +87,7 @@ def validate_target(conn, data):
             raise DomainError('invalid_pair', '같은 훈련의 제출본을 연결하세요.', 422)
         attempt_ids.append(paired.get('attempt_id', data.paired_target_id))
     # Filters anchor to target occurrence, never verdict update time.
-    return dict(attempt_ids=attempt_ids, target_occurred_at=target.get('created_at') or target.get('started_at') or now(),
+    return dict(attempt_ids=attempt_ids, target_occurred_at=target.get('created_at') or target.get('started_at'),
                 domain=target.get('domain'), difficulty=target.get('difficulty'), task_kind=target.get('task_kind'),
                 evaluation_version=data.target_version)
 

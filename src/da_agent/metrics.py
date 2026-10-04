@@ -108,7 +108,13 @@ def aggregate(events=(), verdicts=(), requests=(), reviews=(), pilots=(), operat
         key = value['assessment_id']
         if key not in latest or value['revision'] > latest[key]['revision']:
             latest[key] = value
-    verdicts = [a for a in latest.values() if matches(a, filters, 'target_occurred_at')]
+    # Several edits or reviewers must not inflate a task/participant denominator.
+    targets = {}
+    for value in latest.values():
+        key = (value['target_kind'], value['target_id'], value.get('paired_target_id'), value.get('source', 'human'), value.get('criteria_version'), value.get('sample_id'), value.get('repetition'), value['target_kind'] == 'report_pair' and value['result'] == 'needs_improvement')
+        if key not in targets or value.get('recorded_at', '') >= targets[key].get('recorded_at', ''):
+            targets[key] = value
+    verdicts = [a for a in targets.values() if matches(a, filters, 'target_occurred_at')]
     human = [a for a in verdicts if a.get('source', 'human') == 'human' and a['result'] != 'pending']
     by_kind = lambda kind: [a for a in human if a['target_kind'] == kind]
     pairs = by_kind('task_pair')
@@ -138,6 +144,16 @@ def aggregate(events=(), verdicts=(), requests=(), reviews=(), pilots=(), operat
     selected_ai_starts = [e for e in starts.values() if matches(e, filters, 'occurred_at')]
     ops = [o for o in operations if matches(o, filters, 'started_at')]
     terminal_ops = [o for o in ops if o.get('status') != 'running']
+    request_durations = []
+    for request in eligible_requests:
+        if request.get('status') not in {'ready', 'failed', 'cancelled', 'interrupted'}:
+            continue
+        ended = request.get('finished_at') or request.get('completed_at')
+        if ended:
+            elapsed = (dt.datetime.fromisoformat(ended.replace('Z', '+00:00')) - dt.datetime.fromisoformat(request['first_attempt_at'].replace('Z', '+00:00'))).total_seconds() * 1000
+            request_durations.append(max(0, int(elapsed)))
+        else:
+            request_durations.append(None)
     usage_groups = defaultdict(lambda: {'attempts': 0, 'retries': 0, 'observed_tokens': 0, 'missing_calls': 0})
     ends = {e.get('operation_id'): e for e in finished_ai}
     for start in selected_ai_starts:
@@ -156,16 +172,31 @@ def aggregate(events=(), verdicts=(), requests=(), reviews=(), pilots=(), operat
             'evaluation_reliability': dict(ratio(sum(r.get('status') == 'completed' for r in terminal_reviews), len(terminal_reviews)), errors=dict(Counter((r.get('error') or {}).get('code', 'unknown') for r in terminal_reviews if r.get('status') != 'completed')), human_sample_count=len(review_verdicts), human_results=dict(Counter(a['result'] for a in review_verdicts)), repeated_samples=repeated),
             'independent_performance': dict(ratio(independent, len(selected_pilots)), interrupted=sum(bool(p.get('stopped_at')) for p in selected_pilots), ongoing=sum(not p.get('completed') and not p.get('stopped_at') for p in selected_pilots), assistance_unknown=sum(p.get('assistance') not in {'yes', 'no'} for p in selected_pilots)),
             'revision_effect': dict(ratio(len(initial & improved), len(initial)), unsubmitted=len(initial - submitted), unassessed=sum(a['target_kind'] == 'report_pair' and a['result'] == 'pending' for a in verdicts)),
-            'wait_usage': {'duration': distribution([o.get('duration_ms') for o in terminal_ops]), 'statuses': dict(Counter(o.get('status') for o in ops)), 'ai_attempts': len(selected_ai_starts), 'ai_retries': sum(bool(e.get('parent_operation_id')) for e in selected_ai_starts), 'groups': dict(usage_groups)},
+            'wait_usage': {'duration': distribution([o.get('duration_ms') for o in terminal_ops]), 'request_duration': distribution(request_durations), 'statuses': dict(Counter(o.get('status') for o in ops)), 'ai_attempts': len(selected_ai_starts), 'ai_retries': sum(bool(e.get('parent_operation_id')) for e in selected_ai_starts), 'groups': dict(usage_groups)},
             'versions': {'event_schema': dict(Counter(e.get('schema_version', 'unknown') for e in events)), 'rules': dict(Counter(e.get('rules_version', 'unknown') for e in events)), 'criteria': dict(Counter(a.get('criteria_version', 'unknown') for a in verdicts))}}
 
 
 def collect(store, filters=None):
     with store.connect() as conn:
         rows = lambda table: [r['payload'] for r in conn.execute(f'SELECT payload FROM {table}')]
-        result = aggregate(events=rows('quality_events_v2') + [adapt_v1(e) for e in rows('training_events')],
-                           verdicts=assessments.latest(conn), requests=rows('training_requests'), reviews=rows('reviews'),
-                           pilots=rows('pilot_records'), operations=rows('quality_operations'), filters=filters)
+        contexts = {row['attempt_id']: row for row in rows('attempts')}
+        def context(values):
+            return [dict(contexts.get(value.get('attempt_id') or (value.get('attempt_ids') or [None])[0], {}), **value) for value in values]
+        events = context(rows('quality_events_v2') + [adapt_v1(e) for e in rows('training_events')])
+        verdicts = context(assessments.latest(conn))
+        reviews = context(rows('reviews'))
+        result = aggregate(events=events, verdicts=verdicts, requests=context(rows('training_requests')), reviews=reviews,
+                           pilots=context(rows('pilot_records')), operations=context(rows('quality_operations')), filters=filters)
+        # Split semantic verdicts and review reliability by applied version.
+        versions = sorted({a.get('criteria_version', 'unknown') for a in verdicts})
+        result['assessment_version_groups'] = {}
+        for version in versions:
+            group = aggregate(verdicts=[a for a in verdicts if a.get('criteria_version', 'unknown') == version], filters=filters)
+            result['assessment_version_groups'][version] = {key: group[key] for key in ('diversity', 'difficulty_fit', 'coaching_appropriateness', 'revision_effect')}
+        result['review_version_groups'] = {}
+        for version in sorted({r.get('rules_version', 'unknown') for r in reviews}):
+            group = aggregate(reviews=[r for r in reviews if r.get('rules_version', 'unknown') == version], filters=filters)
+            result['review_version_groups'][version] = group['evaluation_reliability']
         health = conn.execute('SELECT payload FROM quality_collection_health WHERE id=1').fetchone()['payload']
     start, _ = korea_range((filters or {}).get('start_date'), (filters or {}).get('end_date'))
     result['collection'] = dict(health, outside_retention=bool(start and start < dt.datetime.now(dt.timezone.utc) - dt.timedelta(days=health.get('retention_days', 30))))
