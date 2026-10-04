@@ -149,10 +149,18 @@ async function afterTrainingExecution(result) {
 
 function addTrainingDelete(card, attempt) {
   const button = el('button', '훈련 삭제');
-  button.onclick = () => busy(button, async () => {
-    if (!confirm('이 훈련의 대화·저장 SQL·보고서·리뷰·연결 기록을 삭제할까요? 공유 데이터는 유지됩니다. 내보낸 파일·백업은 별도로 관리해주세요.')) return;
-    await api(`/api/attempts/${encodeURIComponent(attempt.attempt_id)}`, {method: 'DELETE', body: '{}'});
-    await home(); notice('훈련과 연결 기록을 삭제했습니다.');
-  });
+  button.onclick = () => {
+    const dialog=el('dialog'); dialog.setAttribute('aria-labelledby','delete-training-title');
+    const title=el('h2','훈련 삭제 확인');title.id='delete-training-title';
+    const description=el('p','이 훈련의 저장 SQL·대화·보고서·리뷰·연결 판정을 삭제하면 추천과 집계에도 반영됩니다. 내보낸 파일·백업은 삭제 대상에서 제외됩니다. 실행 중인 작업이 있으면 종료 후 다시 시도하세요.','prose');
+    const cancel=el('button','삭제 취소'); const confirmButton=el('button','훈련 삭제 확정');const status=el('p');status.setAttribute('role','status');
+    const close=()=>{dialog.close();dialog.remove();button.focus();};
+    cancel.onclick=close;dialog.addEventListener('cancel',event=>{event.preventDefault();close();});
+    confirmButton.onclick=()=>busy(confirmButton,async()=>{
+      try{await api(`/api/attempts/${encodeURIComponent(attempt.attempt_id)}`,{method:'DELETE',body:'{}'});close();await home();notice('훈련과 연결 기록을 삭제하고 추천을 갱신했습니다.');}
+      catch(error){status.textContent=`삭제 실패 · 목록과 입력 유지: ${error.message}`;throw error;}
+    });
+    dialog.append(title,description,cancel,document.createTextNode(' '),confirmButton,status);document.body.append(dialog);dialog.showModal();cancel.focus();
+  };
   card.append(button);
 }
