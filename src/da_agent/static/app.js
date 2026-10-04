@@ -63,10 +63,19 @@ async function home() {
   if (!attempts.attempts.length) $('#attempts').append(el('p', '아직 시작한 훈련이 없습니다.', 'muted'));
   await trainingHome();
 }
+function confirmAction(message, action='계속') {
+  return new Promise(resolve=>{
+    const dialog=el('dialog');const title=el('h2','입력 유지 확인');title.id=`confirm-${uid()}`;dialog.setAttribute('aria-labelledby',title.id);
+    const cancel=el('button','취소');const proceed=el('button',action);
+    const finish=value=>{dialog.close();dialog.remove();resolve(value);};
+    cancel.onclick=()=>finish(false);proceed.onclick=()=>finish(true);dialog.addEventListener('cancel',event=>{event.preventDefault();finish(false);});
+    dialog.append(title,el('p',message,'prose'),cancel,document.createTextNode(' '),proceed);document.body.append(dialog);dialog.showModal();cancel.focus();
+  });
+}
 async function canLeave() {
   if (!state.attempt) return true;
   try { await flushDraft(); } catch (error) { notice(error.message); return false; }
-  if ($('#sql').value.trim() || state.executions.some(item => !item.saved)) return confirm('미저장 SQL과 실행 결과가 사라집니다. 훈련 목록으로 이동할까요?');
+  if ($('#sql').value.trim() || state.executions.some(item => !item.saved)) return await confirmAction('미저장 SQL과 실행 결과가 사라집니다. 취소하면 현재 입력을 유지합니다. 훈련 목록으로 이동할까요?','목록으로 이동');
   return true;
 }
 async function openAttempt(id) {
@@ -138,7 +147,7 @@ function renderReports() {
     for (const key of ['limitations', 'next_actions']) node.append(el('h3', sectionLabels[key]), el('p', report.content?.[key] || '작성하지 않음', 'prose'));
     const reviewButton = el('button', '이 제출본 리뷰 요청'); const editButton = el('button', '이 제출본을 수정'); let requestId = uid();
     reviewButton.onclick = () => busy(reviewButton, async () => { const review = await post(attemptPath(`/reports/${encodeURIComponent(report.report_id)}/review`), { request_id: requestId }); (state.attempt.reviews ||= []).push({ ...review, report_id: review.report_id || report.report_id }); requestId = uid(); renderReports(); await authStatus(); if (review.status !== 'completed' && review.status !== 'success') notice(review.error?.message || '리뷰를 완료하지 못했습니다. 제출본은 보존되며 재시도할 수 있습니다.'); });
-    editButton.onclick = () => busy(editButton, async () => { if (state.dirty && !confirm('현재 작성 중인 서술 입력을 이 제출본 내용으로 바꿀까요?')) return; await flushDraft(); state.previousReport = report.report_id; state.reportRequest = null; for (const key of ['problem_definition', 'hypothesis', 'limitations', 'next_actions']) $(`[data-section="${key}"]`).value = report.content?.[key] || ''; $('#discoveries').value = (report.claims || []).map(claim => claim.text).join('\n\n'); state.claimEvidence.clear(); const allowed = new Set(successfulSaved().map(saved => saved.saved_execution_id)); (report.claims || []).forEach((claim, index) => state.claimEvidence.set(index, new Set((claim.evidence_refs || []).map(ref => ref.saved_execution_id).filter(id => allowed.has(id))))); draftChanged(); renderClaims(); tab('report'); $('#report-status').textContent = `보고서 v${report.report_version ?? '?'}의 수정본 작성 중 · 제출하면 새 버전이 됩니다.`; });
+    editButton.onclick = () => busy(editButton, async () => { if (state.dirty && !(await confirmAction('현재 작성 중인 서술 입력을 이 제출본 내용으로 바꿀까요? 취소하면 현재 입력을 유지합니다.','제출본으로 변경'))) return; await flushDraft(); state.previousReport = report.report_id; state.reportRequest = null; for (const key of ['problem_definition', 'hypothesis', 'limitations', 'next_actions']) $(`[data-section="${key}"]`).value = report.content?.[key] || ''; $('#discoveries').value = (report.claims || []).map(claim => claim.text).join('\n\n'); state.claimEvidence.clear(); const allowed = new Set(successfulSaved().map(saved => saved.saved_execution_id)); (report.claims || []).forEach((claim, index) => state.claimEvidence.set(index, new Set((claim.evidence_refs || []).map(ref => ref.saved_execution_id).filter(id => allowed.has(id))))); draftChanged(); renderClaims(); tab('report'); $('#report-status').textContent = `보고서 v${report.report_version ?? '?'}의 수정본 작성 중 · 제출하면 새 버전이 됩니다.`; });
     node.append(reviewButton, document.createTextNode(' '), editButton); for (const review of state.attempt.reviews || []) if (review.report_id === report.report_id) { node.append(el('h3', `리뷰 · ${review.status === 'completed' ? '완료' : review.status === 'pending' ? '처리 중' : '재시도 필요'}`)); renderFeedback(node, review); } $('#reports').append(node);
   }
   if (!(state.attempt.reports || []).length) $('#reports').append(el('p', '아직 제출한 보고서가 없습니다.', 'muted'));
