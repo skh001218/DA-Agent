@@ -76,6 +76,21 @@ def adapt_v1(event):
     return value
 
 
+def adapt_quality_run(run):
+    """Read only score/status metadata from legacy repeat samples."""
+    records = []
+    for sample in run.get('samples', []):
+        for result in sample.get('results', []):
+            value = {'sample_id': f"{run['run_id']}:{sample['id']}", 'repetition': result.get('repetition'),
+                     'status': result.get('status'), 'created_at': run.get('started_at'),
+                     'rules_version': run.get('rules_version'), 'model_version': result.get('model') or run.get('configured_model'),
+                     'feedback': {'total_score': (result.get('feedback') or {}).get('total_score')}}
+            if result.get('error'):
+                value['error'] = {'code': result['error'].get('code')}
+            records.append(value)
+    return records
+
+
 def aggregate(events=(), verdicts=(), requests=(), reviews=(), pilots=(), operations=(), filters=None):
     filters = filters or {}
     # Idempotence across export input duplicates.
@@ -184,7 +199,7 @@ def collect(store, filters=None):
             return [dict(contexts.get(value.get('attempt_id') or (value.get('attempt_ids') or [None])[0], {}), **value) for value in values]
         events = context(rows('quality_events_v2') + [adapt_v1(e) for e in rows('training_events')])
         verdicts = context(assessments.latest(conn))
-        reviews = context(rows('reviews'))
+        reviews = context(rows('reviews')) + [review for run in rows('quality_runs') for review in adapt_quality_run(run)]
         result = aggregate(events=events, verdicts=verdicts, requests=context(rows('training_requests')), reviews=reviews,
                            pilots=context(rows('pilot_records')), operations=context(rows('quality_operations')), filters=filters)
         # Split semantic verdicts and review reliability by applied version.

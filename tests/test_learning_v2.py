@@ -99,6 +99,18 @@ def test_ai_missing_usage_and_legacy_no_invented_finish():
     assert metrics.aggregate(events=[legacy])['wait_usage']['ai_attempts'] == 1
 
 
+def test_repeat_quality_run_adapter_drops_all_fixture_material():
+    run = {'run_id': 'run', 'started_at': '2026-10-04T00:00:00Z', 'rules_version': 'review-v1',
+           'samples': [{'id': 'sample', 'sql': 'SECRET SQL', 'evidence': ['SECRET ROW'], 'results': [
+               {'repetition': 1, 'status': 'completed', 'feedback': {'total_score': 80, 'reason': 'SECRET REASON'}},
+               {'repetition': 2, 'status': 'completed', 'feedback': {'total_score': 90}},
+               {'repetition': 3, 'status': 'failed', 'error': {'code': 'provider_failure', 'message': 'SECRET ERROR'}}]}]}
+    adapted = metrics.adapt_quality_run(run)
+    assert 'SECRET' not in json.dumps(adapted)
+    repeats = metrics.aggregate(reviews=adapted)['evaluation_reliability']['repeated_samples']
+    assert repeats == [{'sample_id': 'run:sample', 'valid_count': 2, 'score_range': 10, 'failed_repetitions': 1}]
+
+
 @pytest.mark.parametrize('value', ['=SUM(1)', '+cmd', '-2+3', '@evil', '  =cmd', '\tcmd', '\rcmd'])
 def test_csv_formula_escaping(value):
     assert metrics.safe_csv(value).startswith("'")

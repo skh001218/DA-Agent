@@ -63,6 +63,8 @@ def _target(conn, kind, identifier):
                   'review': ('reviews', 'record_id'), 'report_pair': ('reports', 'record_id'),
                   'pilot': ('pilot_records', 'attempt_id'), 'coaching': ('training_messages', 'action_id')}[kind]
     row = conn.execute(f'SELECT payload FROM {table} WHERE {key}=%s FOR SHARE', (identifier,)).fetchone()
+    if not row and kind == 'review':
+        row = conn.execute('SELECT payload FROM quality_runs WHERE run_id=%s FOR SHARE', (identifier,)).fetchone()
     if not row:
         raise DomainError('not_found', '판정할 저장 대상을 찾을 수 없습니다.', 404)
     return row['payload']
@@ -74,9 +76,13 @@ def target_version(value):
 
 def validate_target(conn, data):
     target = _target(conn, data.target_kind, data.target_id)
+    if data.target_kind == 'review' and 'samples' in target:
+        sample = next((sample for sample in target['samples'] if sample['id'] == data.sample_id), None)
+        if not sample or not any(result.get('repetition') == data.repetition for result in sample.get('results', [])):
+            raise DomainError('invalid_sample', '실제 평가된 표본과 회차를 선택하세요.', 422)
     if target_version(target) != data.target_version:
         raise DomainError('target_version', '연결 대상 버전이 일치하지 않습니다.', 422)
-    attempt_ids = [target.get('attempt_id', data.target_id)]
+    attempt_ids = [target['attempt_id']] if target.get('attempt_id') else [data.target_id] if data.target_kind in {'difficulty', 'task_pair', 'pilot'} else []
     if data.paired_target_id:
         if data.paired_target_id == data.target_id:
             raise DomainError('invalid_pair', '서로 다른 대상을 연결하세요.', 422)
