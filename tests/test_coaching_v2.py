@@ -2,7 +2,7 @@ import copy
 import json
 import unittest
 from da_agent.coaching import build_context, normalize_coaching, should_coach
-from da_agent.evaluation import freeze_evaluation, normalize_evaluation, verify_evidence, exposure_detected
+from da_agent.evaluation import freeze_evaluation, normalize_evaluation, verify_evidence, verify_comparison, verify_for_contract, exposure_detected
 from da_agent.quality_fixtures import run_repeated, summarize_repeated
 
 class CoachingV2Tests(unittest.TestCase):
@@ -80,6 +80,43 @@ class CoachingV2Tests(unittest.TestCase):
         self.assertEqual(run['verdict'], 'fail')
         run['samples'][0]['results'].pop(1)
         self.assertEqual(summarize_repeated(run)['verdict'], 'pending')
+
+    def test_fenced_json_preserves_strict_coaching_and_review_validation(self):
+        ctx = build_context(self.public, self.attempt, [], '질문', self.evidence)
+        fenced = self.response()
+        fenced['feedback'] = '```json\n' + fenced['feedback'] + '\n```'
+        self.assertEqual(normalize_coaching(fenced, ctx)['status'], 'completed')
+        invalid = self.response(extra='forbidden')
+        invalid['feedback'] = '```json\n' + invalid['feedback'] + '\n```'
+        self.assertEqual(normalize_coaching(invalid, ctx)['status'], 'failed')
+        review = self.review()
+        review['feedback'] = '```json\n' + review['feedback'] + '\n```'
+        self.assertEqual(normalize_evaluation(review, self.report, [self.evidence], self.frozen)['status'], 'completed')
+        bad = self.review(total_score=100)
+        bad['feedback'] = '```json\n' + bad['feedback'] + '\n```'
+        self.assertEqual(normalize_evaluation(bad, self.report, [self.evidence], self.frozen)['status'], 'failed')
+
+    def test_comparison_full_rows_without_sql_string_matching(self):
+        expected = {'columns': ['group', 'n'], 'rows': [['a', 20], ['b', 22]]}
+        proof = copy.deepcopy(self.evidence)
+        proof['result'].update(columns=[{'name': 'n'}, {'name': 'group'}], rows=[[22, 'b'], [20, 'a']])
+        self.assertEqual(verify_comparison(proof, expected)['status'], 'verified')
+        frozen = freeze_evaluation(self.public, {'weights': {'sql_accuracy': 100}, 'comparison_expected': expected})
+        self.assertEqual(verify_for_contract(proof, frozen)['status'], 'verified')
+        self.assertEqual(normalize_evaluation(self.review(), self.report, [proof], frozen)['feedback']['total_score'], 100)
+        proof['result']['rows'] = [[42, 'a']]
+        self.assertEqual(verify_comparison(proof, expected)['status'], 'mismatch')
+        self.assertEqual(normalize_evaluation(self.review(), self.report, [proof], frozen)['error']['code'], 'unverified_calculation')
+        proof['result']['result_complete'] = False
+        self.assertEqual(verify_comparison(proof, expected)['status'], 'unverified')
+
+    def test_criterion_reference_and_weight_cannot_be_overridden(self):
+        for change in ({'weight': 100}, {'saved_execution_ids': ['other']}, {'claim_ids': ['unknown']}):
+            result = self.review()
+            value = json.loads(result['feedback'])
+            value['criteria'][0].update(change)
+            result['feedback'] = json.dumps(value)
+            self.assertEqual(normalize_evaluation(result, self.report, [self.evidence], self.frozen)['status'], 'failed')
 
 if __name__ == '__main__':
     unittest.main()

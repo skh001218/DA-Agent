@@ -18,7 +18,7 @@ def freeze_evaluation(public, reference):
         raise ValueError('public and private weights differ')
     if public.get('task_kind') == 'design' and 'sql_accuracy' in weights:
         raise ValueError('design task cannot require SQL accuracy')
-    frozen = {k: copy.deepcopy(reference[k]) for k in ('expected', 'rubric', 'required_judgments', 'required_evidence', 'allowed_limitations', 'excluded_criteria', 'verification_contracts') if k in reference}
+    frozen = {k: copy.deepcopy(reference[k]) for k in ('expected', 'comparison_expected', 'rubric', 'required_judgments', 'required_evidence', 'allowed_limitations', 'excluded_criteria', 'verification_contracts') if k in reference}
     frozen.update(weights=weights, completion_conditions=copy.deepcopy(public.get('completion_conditions', [])), rules_version=RULES_VERSION)
     frozen['contract_hash'] = hashlib.sha256(json.dumps(frozen, ensure_ascii=False, sort_keys=True).encode()).hexdigest()
     return frozen
@@ -100,6 +100,68 @@ def exposure_detected(feedback, private, known):
     return False
 
 
+def verify_comparison(evidence, comparison_expected):
+    """Verify full group/period rows against a frozen independent reference.
+
+    Contract is {columns: [name, ...], rows: [[value, ...], ...]}. Row order
+    and SQL spelling have no significance; complete group membership does.
+    """
+    base = {'saved_execution_id': evidence.get('saved_execution_id'), 'status': 'unverified', 'checks': [], 'reason': '완전한 비교 결과와 고정 비교 기준이 필요합니다.'}
+    result = evidence.get('result', {})
+    if not base['saved_execution_id'] or result.get('status') != 'success' or result.get('result_complete') is not True or result.get('truncated'):
+        return base
+    if not isinstance(comparison_expected, dict):
+        return base
+    columns, expected = comparison_expected.get('columns'), comparison_expected.get('rows')
+    actual_columns = [c.get('name') for c in result.get('columns', [])]
+    rows = result.get('rows')
+    if not isinstance(columns, list) or not columns or len(columns) != len(set(columns)) or not isinstance(expected, list) or len(expected) > 1000 or not isinstance(rows, list) or len(rows) > 1000 or len(actual_columns) != len(set(actual_columns)) or not set(columns).issubset(actual_columns):
+        return base
+    if any(not isinstance(row, list) or len(row) != len(columns) for row in expected):
+        return base
+    projected = []
+    for row in rows:
+        if isinstance(row, list) and len(row) == len(actual_columns):
+            mapping = dict(zip(actual_columns, row))
+        elif isinstance(row, dict) and set(columns).issubset(row):
+            mapping = row
+        else:
+            return base
+        projected.append([mapping[c] for c in columns])
+    def equal(left, right):
+        for a, b in zip(left, right):
+            if type(a) in (int, float, Decimal) and type(b) in (int, float, Decimal):
+                if not math.isfinite(float(a)) or not math.isfinite(float(b)) or abs(float(a)-float(b)) > 1e-8:
+                    return False
+            elif type(a) is not type(b) or a != b:
+                return False
+        return True
+    remaining = list(expected)
+    matched = len(projected) == len(expected)
+    for row in projected:
+        index = next((i for i, want in enumerate(remaining) if equal(row, want)), None)
+        if index is None:
+            matched = False
+        else:
+            remaining.pop(index)
+    matched = matched and not remaining
+    base.update(status='verified' if matched else 'mismatch', checks=[{'field': 'comparison_rows', 'matches': matched}], reason='전체 비교 집단·기간과 집계를 고정 비교 기준으로 확인했습니다.')
+    return base
+
+
+def verify_for_contract(evidence, frozen):
+    definition = evidence.get('definition')
+    if definition:
+        contract = (frozen.get('verification_contracts') or {}).get(definition)
+        if not contract:
+            return {'saved_execution_id': evidence.get('saved_execution_id'), 'status': 'unverified', 'checks': [], 'reason': '대안 정의를 검증할 고정 계약이 없습니다. 필요한 관측 조건을 확인하세요.'}
+    else:
+        contract = frozen
+    if contract.get('comparison_expected') is not None:
+        return verify_comparison(evidence, contract['comparison_expected'])
+    return verify_evidence(evidence, contract.get('expected'), definition)
+
+
 def normalize_evaluation(result, report, evidence, frozen, private=None, explanation_viewed=False):
     """Strict v2 wrapper; legacy normalize_review remains available unchanged."""
     failed = dict(status='failed', feedback=None, model=result.get('model'), error={'code': 'review_format', 'message': '고정 평가 조건·동일 제출본 근거를 확인하지 못했습니다.'})
@@ -118,6 +180,8 @@ def normalize_evaluation(result, report, evidence, frozen, private=None, explana
                 if key in report and item.get(key) != report[key]:
                     return failed
         raw = result.get('feedback', result.get('text', result.get('output_text')))
+        if isinstance(raw, str):
+            raw = re.sub(r'^```(?:json)?\s*([\s\S]*?)\s*```$', r'\1', raw.strip())
         value = json.loads(raw) if isinstance(raw, str) else copy.deepcopy(raw)
         if result.get('status') in {'completed', 'success'} or result.get('state') == 'completed':
             if not isinstance(value, dict) or set(value) - {'criteria', 'strengths', 'improvements', 'next_steps', 'uncertainty'}:
@@ -136,18 +200,7 @@ def normalize_evaluation(result, report, evidence, frozen, private=None, explana
             return normalized
         feedback = normalized['feedback']
         feedback['total_score'] = float(sum(Decimal(str(c['weight'])) * c['level'] / 4 for c in feedback['criteria']).quantize(Decimal('0.1'), rounding=ROUND_HALF_UP))
-        checks = []
-        for item in evidence:
-            definition = item.get('definition')
-            if definition:
-                contract = (frozen.get('verification_contracts') or {}).get(definition)
-                if contract:
-                    check = verify_evidence(item, contract.get('expected'), definition)
-                else:
-                    check = {'saved_execution_id': item['saved_execution_id'], 'status': 'unverified', 'checks': [], 'reason': '대안 정의를 검증할 고정 계약이 없습니다. 필요한 관측 조건을 확인하세요.'}
-            else:
-                check = verify_evidence(item, frozen.get('expected'))
-            checks.append(check)
+        checks = [verify_for_contract(item, frozen) for item in evidence]
         # A provider cannot confirm a numeric calculation contradicted by DB output.
         accuracy = next((c for c in feedback['criteria'] if c['key'] == 'sql_accuracy'), None)
         if accuracy and accuracy['level'] >= 3:

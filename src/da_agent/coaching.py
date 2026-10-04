@@ -1,6 +1,7 @@
 """Versioned public-only coaching contracts; provider calls remain in Training."""
 import copy
 import json
+import re
 from pydantic import BaseModel, ConfigDict, Field
 from typing import Literal
 from .reviews import normalize_ai
@@ -71,6 +72,8 @@ def normalize_coaching(result, context, private=None, explanation_viewed=False):
         return normalized
     try:
         raw = normalized['feedback']
+        if isinstance(raw, str):
+            raw = re.sub(r'^```(?:json)?\s*([\s\S]*?)\s*```$', r'\1', raw.strip())
         value = CoachingOutput.model_validate(json.loads(raw) if isinstance(raw, str) else raw).model_dump()
         sources = {s['id']: s for s in context['sources']}
         if len(value['evidence_ids']) != len(set(value['evidence_ids'])) or set(value['evidence_ids']) - sources.keys():
