@@ -2,17 +2,17 @@
 
 ## 구현 진행도
 
-- 진행도: 4/5개 완료 (80%)
+- 진행도: 5/5개 완료 (100%)
 - 마지막 갱신일: 2026-10-04
-- 남은 작업: 화면 삭제 확인창 취소·목록 유지의 최종 확인. 후속 범위는 아래에 별도 명시
-- 차단 사유: 삭제 확인창 조작 중 브라우저 제어 응답이 멈춤. 삭제 API는 검증 완료
+- 남은 작업: 없음. 확장 범위는 Spec 008~013에서 별도 추적
+- 차단 사유: 없음. HTML dialog 적용 후 독립 Chrome에서 취소·목록 유지 확인
 
 | 작업 | 상태 | 완료 조건 | 관련 코드 / 검증 결과 |
 | --- | --- | --- | --- |
 | 요청·출제 | 완료 | 지원 범위·3개 사고 과제·난이도·검증 후 공개·중복/취소 처리 | tests/verification-request-training-2026-10-04.md |
 | 기록·코칭 | 완료 | 대화·행동 중복·임시 근거 경계·기존 재개·삭제 | tests/verification-request-training-2026-10-04.md |
 | 과제별 평가 | 완료 | 배점 고정·계산 없는 과제·참조 검증·AI 실패 보존 | tests/verification-request-training-2026-10-04.md |
-| 학습·운영 화면 | 검증 대기 | 요청·진행·대화·조건 확인·추천·집계·삭제·내보내기 | tests/verification-request-training-2026-10-04.md |
+| 학습·운영 화면 | 완료 | 요청·진행·대화·조건 확인·추천·집계·삭제·내보내기 | tests/verification-request-training-2026-10-04.md; browser-v2/result.json 삭제 취소 확인 |
 | 통합 검증 | 완료 | 실제 DB와 화면 핵심 흐름, 실제 AI 호출·한계 기록 | tests/verification-request-training-2026-10-04.md |
 
 ## 목표

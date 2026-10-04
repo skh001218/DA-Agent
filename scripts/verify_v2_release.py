@@ -102,7 +102,7 @@ import da_agent
 root=Path(da_agent.__file__).resolve().parent
 data={'os':platform.system(),'cpu_architecture':platform.machine(),'python':platform.python_version()}
 data['source_file_sha256']={str(p.relative_to(root)).replace(chr(92),'/'):hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(root.rglob('*')) if p.is_file() and p.suffix in {'.py','.js','.css','.html'}}
-data['generator_stage_environment_present']=bool(os.getenv('GENERATOR_DSN'))
+data['generator_stage_environment_present']=bool(os.getenv('GENERATOR_DSN') or Path(os.getenv('GENERATOR_PASSWORD_FILE','/run/secrets/generator_password')).is_file())
 try:
  import psycopg
  with psycopg.connect(os.environ['RECORDS_DSN'],connect_timeout=5) as c: data['records_server_version']=c.info.server_version

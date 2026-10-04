@@ -38,3 +38,6 @@
 `PLAYWRIGHT_MODULE`에 Playwright 설치 경로, `BROWSER_EXECUTABLE`에 시스템 Chrome/Edge 경로를 설정하고 `node scripts/verify_v2_extended_browser.cjs`를 실행한다. 필요하면 VERIFY_BASE_URL로 서버 주소를 바꾼다. 실행은 실제 최대 8회의 모델 작업을 시작하므로 운영자의 호출량·비용을 확인해야 한다. 기존 기록은 최초 ID 목록으로 보호하고 생성 승인 버튼은 누르지 않는다.
 
 정적 확인: 수정된 스크립트의 `node --check`, `git diff --check` 통과. 다른 PC·ARM·실제 5명 파일럿과 모든 오류·추가 답변·취소 경쟁·의미적 리뷰 품질은 이 확장 검증으로 완료하지 않았다.
+
+
+후속 지원 밖 안내 수정: 서버가 알려진 비지원 분야를 모델 해석 전 차단하도록 변경했다. [최종 별도 브라우저 재검증](verification-v2-final-browser-2026-10-04.json)에서 unsupported_scope·접속 데이터 대안 안내·원문 유지·planning_calls=0을 확인했다. 최초 plan_invalid 관측은 보존하고 현재 미해결 결함과 구분한다.

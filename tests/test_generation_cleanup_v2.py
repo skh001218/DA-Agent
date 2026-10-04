@@ -26,10 +26,11 @@ class Result:
 
 class RecorderMock:
     """Only recorder queries mocked; artifact paths are real pytest temp dirs."""
-    def __init__(self, identity, age_hours=25, attempts=(), samples=(), recheck_attempt=False, active=False):
+    def __init__(self, identity, age_hours=25, attempts=(), samples=(), recheck_attempt=False, active=False, recheck_sample=False):
         self.jobs = [{'private': {'package_id': identity}, 'payload': {'created_at': (AT-dt.timedelta(hours=age_hours)).isoformat(), 'status': 'failed'}}]
         self.attempts, self.samples = list(attempts), list(samples)
         self.recheck_attempt, self.active = recheck_attempt, active
+        self.recheck_sample = recheck_sample
         self.statements = []
     def connect(self): return self
     def __enter__(self): return self
@@ -40,7 +41,7 @@ class RecorderMock:
         if query == 'SELECT payload FROM attempts': return Result([{'payload': {'package_id': x}} for x in self.attempts])
         if query == 'SELECT payload FROM generation_samples': return Result([{'payload': {'package_id': x}} for x in self.samples])
         if query.startswith('SELECT 1 FROM attempts'): return Result([{'found': 1}] if self.recheck_attempt else [])
-        if query.startswith('SELECT 1 FROM generation_samples'): return Result([])
+        if query.startswith('SELECT 1 FROM generation_samples'): return Result([{'found': 1}] if self.recheck_sample else [])
         if query.startswith('SELECT 1 FROM training_requests'): return Result([{'found': 1}] if self.active else [])
         return Result()
 
@@ -78,11 +79,11 @@ def test_under_twenty_four_hours_is_never_deleted(tmp_path, monkeypatch, age):
     assert not database.statements
 
 
-@pytest.mark.parametrize('reference', ['attempt', 'sample', 'late_attempt', 'active_request'])
+@pytest.mark.parametrize('reference', ['attempt', 'sample', 'late_attempt', 'active_request', 'late_sample'])
 def test_referenced_or_active_artifact_is_preserved(tmp_path, monkeypatch, reference):
     identity, catalog, package = artifact(tmp_path)
     database = mock_data_db(monkeypatch)
-    recorder = RecorderMock(identity, attempts=[identity] if reference == 'attempt' else [], samples=[identity] if reference == 'sample' else [], recheck_attempt=reference == 'late_attempt', active=reference == 'active_request')
+    recorder = RecorderMock(identity, attempts=[identity] if reference == 'attempt' else [], samples=[identity] if reference == 'sample' else [], recheck_attempt=reference == 'late_attempt', active=reference == 'active_request', recheck_sample=reference == 'late_sample')
     assert cleanup.prune(recorder, catalog, AT)['removed_package_ids'] == []
     assert package.path.exists() and not database.statements
 
@@ -166,7 +167,7 @@ def test_approval_same_level_three_blocked_all_three_levels_allowed():
 
 
 def test_real_db_cleanup_drops_only_independently_created_test_schema(tmp_path):
-    if os.getenv('RUN_DB_TESTS') != '1' or not os.getenv('GENERATOR_DSN'):
+    if os.getenv('RUN_DB_TESTS') != '1' or not (os.getenv('GENERATOR_DSN') or Path(os.getenv('GENERATOR_PASSWORD_FILE','/run/secrets/generator_password')).is_file()):
         pytest.skip('Requires dedicated generator account for isolated test schema')
     import psycopg
     from psycopg import sql

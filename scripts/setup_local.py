@@ -18,4 +18,8 @@ if not key_file.exists():
 api_file = local / "gemini_api.key"
 if not api_file.exists():
     api_file.touch(mode=0o600)
+generator_file=local/'generator.key'
+if not generator_file.exists():
+    generator_file.write_text(secrets.token_urlsafe(32),encoding='utf-8')
+    if os.name!='nt': generator_file.chmod(0o600)
 print("Local configuration ready. Existing secrets were preserved.")

@@ -2,7 +2,7 @@
 
 Run from an isolated checkout with:
 python -m pytest -o pythonpath=D:/Codex/DA-Agent/src tests/test_recommendations_v2.py
-Known policy gaps use strict xfail so a fix requires updating the expectation.
+Policy gaps found during implementation are fixed and asserted as normal regressions.
 """
 import copy
 import pytest
@@ -125,7 +125,6 @@ def test_revision_and_removed_evidence_recompute_recommendation(harness):
     assert second['evidence_ids'] == [] and second['input_state_revision'] == 5
 
 
-@pytest.mark.xfail(strict=True, reason='Spec012 gap: candidate pool includes draft/rejected capabilities rather than filtering them')
 def test_unapproved_generation_capability_is_never_recommended(harness):
     store, _, capabilities = harness
     capabilities[:] = [capability('calculation', 'draft'), capability('review', 'approved'), capability('design', 'rejected')]
@@ -134,7 +133,6 @@ def test_unapproved_generation_capability_is_never_recommended(harness):
     assert all(candidate['available_for_generation'] for candidate in result['candidates'])
 
 
-@pytest.mark.xfail(strict=True, reason='Spec012 gap: explicit format can tie with stored goal preference and lose lexical sorting')
 def test_explicit_format_wins_over_conflicting_stored_goal(harness):
     store, state, _ = harness
     state['preferences']['goal'] = 'calculation-goal'
@@ -142,7 +140,6 @@ def test_explicit_format_wins_over_conflicting_stored_goal(harness):
     assert result['task_kind'] == 'review'
 
 
-@pytest.mark.xfail(strict=True, reason='Spec012 gap: explicit intentional_repeat is not represented in recommendation repetition metadata')
 def test_explicit_repeat_intent_is_preserved_separately(harness):
     store, _, capabilities = harness
     capabilities[:] = [capability('calculation')]
@@ -154,7 +151,6 @@ def test_explicit_repeat_intent_is_preserved_separately(harness):
     assert result['repetition'].get('intentional_repeat') is True
 
 
-@pytest.mark.xfail(strict=True, reason='Legacy observation with unknown criterion_level=None raises TypeError instead of remaining unmeasured')
 def test_unknown_criterion_level_does_not_crash_or_claim_weakness(harness):
     store, state, _ = harness
     state['observations'] = [observation(level=None)]
@@ -163,6 +159,23 @@ def test_unknown_criterion_level_does_not_crash_or_claim_weakness(harness):
     assert not any(candidate['evidence_match'] for candidate in result['candidates'])
 
 
-@pytest.mark.xfail(strict=True, reason='Incomplete legacy metadata must not become a positive semantic duplicate judgment')
 def test_missing_semantic_fields_are_unobserved_not_duplicates():
     assert not recommendations.same_thinking({'seed': 1}, {'title': '다른 제목'})
+
+
+def test_draft_rules_fall_back_to_existing_data_without_claiming_generation(harness):
+    store, _, capabilities = harness
+    capabilities[:] = [capability(kind, "draft") for kind in ("calculation", "review", "design", "investigation")]
+    result = recommendations.recommend(store)
+    assert len(result["candidates"]) == 3
+    assert all(not c["available_for_generation"] for c in result["candidates"])
+    assert all(c["candidate_id"].endswith("/existing-access") for c in result["candidates"])
+
+
+def test_all_disabled_rules_return_actionable_unavailable(harness):
+    from da_agent.errors import DomainError
+    store, _, capabilities = harness
+    capabilities[:] = [capability("calculation", "disabled")]
+    with pytest.raises(DomainError) as exc:
+        recommendations.recommend(store)
+    assert exc.value.code == "capability_unavailable"

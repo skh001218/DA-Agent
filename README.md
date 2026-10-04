@@ -79,3 +79,6 @@ DA-Agent/
 실제 평가 반복 18회도 실행했으나 최종 판정은 **미달**입니다. 불확실성 표본의 점수 범위 25점과 비공개 요청 표본의 API 호출 제한 실패 2회가 남았고 사람의 의미적 품질 승인은 대기입니다. 코칭 반복·전 과제 유형의 모든 흐름, 다른 PC·ARM 재현, 실제 5명 파일럿을 완료했다고 표시하지 않습니다.
 
 [현재 UI 검증](./tests/verification-v2-ui-2026-10-04.md), [실제 모델·DB 결과](./tests/verification-v2-live-2026-10-04.json), [반복 평가 결과](./tests/verification-v2-quality-live-2026-10-04.json), [브라우저 결과](./tests/browser-v2/result.json)를 참고하세요. [이전 첫 사용 구간 기록](./tests/verification-request-training-2026-10-04.md)은 해당 시점의 검증 범위입니다. Spec·PRD의 진행도는 각 문서의 구현 진행도 표를 기준으로 확인합니다.
+
+
+2026-10-04 최종 보완: 호출 간격 5초로 18회 모두 응답했고, 없는 판단의 평가 기준을 명확히 한 결과 근거 부족·불확실성 표본은 편차0이었다. 핵심 오류 표본의 편차12.5가 기준10을 초과해 [최종 반복 결과](tests/verification-v2-quality-live-2026-10-04-final.json)의 verdict=fail을 유지한다. 신규 규칙 네 개의 세 수준 검토 표본12개는 준비됐으나 실제 사람 승인은 대기다. 전체 DB 회귀는196개 통과했다.

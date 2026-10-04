@@ -8,11 +8,7 @@ from types import SimpleNamespace
 
 import pytest
 
-# Allows isolated worktree tests to exercise the newest parent dependencies.
-_path = Path(__file__).resolve().parents[1] / 'src/da_agent/quality_v2.py'
-_spec = importlib.util.spec_from_file_location('da_agent.quality_v2', _path)
-q = importlib.util.module_from_spec(_spec)
-_spec.loader.exec_module(q)
+from da_agent import quality_v2 as q
 
 
 def test_summary_never_drops_failed_repetitions_or_approves_pending_humans():
@@ -83,6 +79,7 @@ def test_prepare_six_cases_for_each_fixed_task_and_coaching_mode(tmp_path):
 
 
 def test_evaluate_exactly_eighteen_metered_calls_retains_provider_failures(monkeypatch):
+    monkeypatch.setenv('QUALITY_CALL_INTERVAL_SECONDS','0')
     started, finished, saved = [], [], []
     def begin(store, kind, **metadata):
         assert metadata['call_limit'] == 18 and metadata['request_id'] == 'quality-v2:run'

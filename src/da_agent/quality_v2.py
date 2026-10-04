@@ -2,6 +2,8 @@
 import copy
 import hashlib
 import json
+import os
+import time
 import uuid
 from typing import Literal
 
@@ -179,6 +181,7 @@ class MeteredProvider:
     def __init__(self, training, run):
         self.training, self.run = training, run
         self.last = None
+        self.last_started = None
     def review(self, messages):
         training, run = self.training, self.run
         op = telemetry.begin(training.store, 'ai', request_id='quality-v2:' + run['run_id'], call_limit=18, domain=run.get('domain', 'access'), task_kind=run['task_kind'], difficulty=run['difficulty'], evaluation_version=run['evaluation_version'], rules_version='evaluation-v2', prompt_version='fixed-plan-quality-v2')
@@ -187,6 +190,10 @@ class MeteredProvider:
             if run['mode'] == 'review':
                 messages[0]['content'] += ' 최상위 키는 정확히 criteria,strengths,improvements,next_steps,uncertainty 다섯 개만 허용. weights,total_score,score,metadata를 출력에 추가하지 마세요. 입력 weights는 평가 기준이며 출력 필드가 아닙니다.'
             with training.ai_lock:
+                interval=max(0.0,float(os.getenv('QUALITY_CALL_INTERVAL_SECONDS','5')))
+                if self.last_started is not None:
+                    time.sleep(max(0.0,interval-(time.monotonic()-self.last_started)))
+                self.last_started=time.monotonic()
                 result = training.auth.review(messages)
             usage = result.get('usage') or {}
             completed = result.get('state') == 'completed' or result.get('status') in {'completed', 'success'}

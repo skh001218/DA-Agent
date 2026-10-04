@@ -112,7 +112,8 @@ class StructuredProvider:
 
 
 @pytest.fixture
-def v2_db_client(tmp_path):
+def v2_db_client(tmp_path, monkeypatch):
+    monkeypatch.setenv('QUALITY_CALL_INTERVAL_SECONDS','0')
     if os.getenv('RUN_DB_TESTS') != '1':
         pytest.skip('Real PostgreSQL requires RUN_DB_TESTS=1')
     from psycopg.conninfo import conninfo_to_dict
@@ -227,7 +228,7 @@ def test_db_unapproved_generation_and_validation_failure_publish_nothing(v2_db_c
 
 
 def test_db_generated_stage_validates_without_approval_or_publication(tmp_path):
-    if os.getenv('RUN_DB_TESTS') != '1' or not os.getenv('GENERATOR_DSN'):
+    if os.getenv('RUN_DB_TESTS') != '1' or not (os.getenv('GENERATOR_DSN') or Path(os.getenv('GENERATOR_PASSWORD_FILE','/run/secrets/generator_password')).is_file()):
         pytest.skip('Requires dedicated generator account')
     import hashlib
     import psycopg
@@ -252,3 +253,65 @@ def test_db_generated_stage_validates_without_approval_or_publication(tmp_path):
     finally:
         with psycopg.connect(generator_dsn()) as conn:
             conn.execute(sql.SQL('DROP SCHEMA IF EXISTS {} CASCADE').format(sql.Identifier(schema_name)))
+
+
+def test_db_generated_approval_failure_retry_same_data_and_ready(v2_db_client):
+    """Synthetic human verdict only in the disposable recorder test schema."""
+    client,_=v2_db_client
+    if not (os.getenv('GENERATOR_DSN') or Path(os.getenv('GENERATOR_PASSWORD_FILE','/run/secrets/generator_password')).is_file()):
+        pytest.skip('Requires dedicated generator account')
+    import psycopg
+    from psycopg import sql
+    from da_agent.package_validation import generator_dsn
+    from da_agent.packages import digest,read_json
+    engine=client.app.state.training
+    packages=[]
+    original=engine.runner.execute
+    try:
+        samples=[]
+        for level in ('beginner','intermediate','advanced'):
+            response=client.post('/api/training/capabilities/access-calculation/samples',json={'task_kind':'calculation','difficulty':level,'user_count':50})
+            assert response.status_code==200,response.text
+            sample=response.json();samples.append(sample['sample_id']);packages.append(sample['package_id'])
+        assert client.post('/api/training/capabilities/access-calculation/approval',json={'reviewer':'fixture-only-not-real-human','sample_ids':samples,'rules_version':'access-rules-v2','result':'approved'}).status_code==200
+        engine.runner.execute=lambda *args,**kwargs:{'execution_id':str(uuid.uuid4()),'status':'error'}
+        body,failed=begin_v2(client,data_mode='generated',user_count=50)
+        assert failed['status']=='failed' and failed['attempt_id'] is None
+        with engine.store.connect() as conn:
+            fixed=conn.execute('SELECT private FROM generation_jobs WHERE request_id=%s',(body['request_id'],)).fetchone()['private']
+        packages.append(fixed['package_id'])
+        package=engine.catalog.load(fixed['package_id'],'v1',allow_unvalidated=True)
+        before=digest(package.path/'public/users.csv')
+        assert read_json(package.path/'private/validation.json')['status']=='validated'
+        with psycopg.connect(generator_dsn()) as conn:
+            assert not conn.execute("SELECT has_schema_privilege('learner',%s,'USAGE')",(package.schema_name,)).fetchone()[0]
+        engine.runner.execute=original
+        action={'action_id':'manual-retry','expected_revision':failed['revision']}
+        response=client.post('/api/training/requests/'+body['request_id']+'/retry',json=action)
+        assert response.status_code==200,response.text
+        ready=client.get('/api/training/requests/'+body['request_id']).json()
+        assert ready['status']=='ready' and ready['generation_attempts']==2
+        assert digest(package.path/'public/users.csv')==before
+        attempt=client.get('/api/attempts/'+ready['attempt_id']).json()
+        assert attempt['problem']['revision']==0 and attempt['problem']['plan_id']==fixed['plan_id']
+        assert client.post('/api/training/requests/'+body['request_id']+'/retry',json=action).json()['attempt_id']==ready['attempt_id']
+        assert client.post('/api/attempts',json={'package_id':fixed['package_id'],'release_version':'v1','problem_id':'problem-001'}).status_code==409
+        assert client.request('DELETE','/api/attempts/'+ready['attempt_id'],json={}).json()['deleted']
+    finally:
+        engine.runner.execute=original
+        # These random identities were created only in this test's temporary root.
+        for package_id in packages:
+            assert package_id.startswith(('sample-','generated-'))
+            package=engine.catalog.load(package_id,'v1',allow_unvalidated=True)
+            with psycopg.connect(generator_dsn()) as conn:
+                conn.execute(sql.SQL('DROP SCHEMA IF EXISTS {} CASCADE').format(sql.Identifier(package.schema_name)))
+
+
+def test_db_known_unsupported_scope_does_not_call_model(v2_db_client):
+    client,provider=v2_db_client
+    before=provider.calls
+    _,result=begin_v2(client,message="매출과 결제 데이터 분석을 연습하고 싶습니다")
+    assert result["status"]=="failed" and result["error_code"]=="unsupported_scope"
+    assert result["attempt_id"] is None and not result["retry_allowed"]
+    assert provider.calls==before and result["planning_calls"]==0
+    assert "접속 데이터" in result["error"]

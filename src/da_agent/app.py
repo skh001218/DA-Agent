@@ -1,5 +1,6 @@
 import json
 import asyncio
+import os
 from contextlib import suppress
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -22,6 +23,7 @@ from .api_provider import configured_provider
 from .reviews import normalize_ai, normalize_review, review_report
 from .quality import initialize as initialize_quality, routes as quality_routes, pilot_event
 from .training import Training
+from . import learning_state, telemetry, assessments, metrics,quality_v2
 
 
 def create_app(settings=None, auth=None):
@@ -37,6 +39,9 @@ def create_app(settings=None, auth=None):
         store.initialize()
         initialize_quality(store)
         training.initialize()
+        learning_state.initialize(store)
+        telemetry.initialize(store,max(1,int(os.getenv('DA_EVENT_RETENTION_DAYS','30'))))
+        assessments.initialize(store)
         async def expire():
             while True:
                 await asyncio.sleep(5)
@@ -111,6 +116,11 @@ def create_app(settings=None, auth=None):
     def packages():
         public = []
         for manifest in catalog.list_public():
+            if manifest['package_id'].startswith('sample-'): continue
+            if manifest['package_id'].startswith('generated-'):
+                with store.connect() as conn:
+                    ready=conn.execute("SELECT 1 FROM training_requests WHERE payload->>'status'='ready' AND attempt_id IN (SELECT attempt_id FROM attempts WHERE payload->>'package_id'=%s)",(manifest['package_id'],)).fetchone()
+                if not ready: continue
             package = load(manifest["package_id"], manifest["release_version"])
             problems = [dict(entry, title=package.problem(entry["problem_id"])["title"]) for entry in manifest["problems"]]
             public.append(dict(manifest, problems=problems))
@@ -122,6 +132,8 @@ def create_app(settings=None, auth=None):
 
     @app.post("/api/attempts")
     def start(data: Start):
+        if data.package_id.startswith(('generated-','sample-')):
+            raise DomainError('request_required','요청 기반 자료는 고정 과제의 요청·재개 경로로 사용하세요.',409)
         package = load(data.package_id, data.release_version)
         try:
             package.problem(data.problem_id)
@@ -149,9 +161,11 @@ def create_app(settings=None, auth=None):
 
     @app.post("/api/attempts/{attempt_id}/execute")
     def execute(attempt_id: str, data: Execute):
-        _, package = context(attempt_id)
-        result = runner.execute(attempt_id, package.schema_name, data.sql)
+        attempt, package = context(attempt_id)
+        op=telemetry.begin(store,'sql',attempt_id=attempt_id,domain='access') if attempt.get('contract_version')=='request-v2' else None
+        result = runner.execute(attempt_id, package.schema_name, data.sql,allowed_tables=package.problem(store.get(attempt_id)['problem_id'])['required_tables'])
         pilot_event(store, attempt_id, "sql", result["status"], (result.get("error") or {}).get("code"))
+        if op: telemetry.finish(store,op,'completed' if result['status']=='success' else 'failed',error_code=None if result['status']=='success' else 'validation_failed',row_count=result.get('total_row_count'),complete=result['result_complete'])
         return result
 
     @app.post("/api/attempts/{attempt_id}/executions/save")
@@ -162,7 +176,9 @@ def create_app(settings=None, auth=None):
     @app.post("/api/attempts/{attempt_id}/reports")
     def report(attempt_id: str, data: Report):
         context(attempt_id)
-        return store.report(attempt_id, data)
+        value=store.report(attempt_id, data)
+        training.operational_event('submission',attempt_id,report_id=value['report_id'])
+        return value
 
     @app.post("/api/attempts/{attempt_id}/reports/{report_id}/review")
     def review(attempt_id: str, report_id: str, data: ReviewRequest):
@@ -173,13 +189,15 @@ def create_app(settings=None, auth=None):
         report = next(x for x in attempt["reports"] if x["report_id"] == report_id)
         ids = {ref["saved_execution_id"] for claim in report["claims"] for ref in claim["evidence_refs"]}
         evidence = [x for x in attempt["saved_executions"] if x["saved_execution_id"] in ids]
-        if attempt.get('contract_version') == 'request-v1':
+        if attempt.get('contract_version') in ('request-v1','request-v2'):
+            review_op=telemetry.begin(store,'review',attempt_id=attempt_id,review_id=value['review_id'],report_id=report_id,domain='access',rules_version='request-review-v2') if attempt.get('contract_version')=='request-v2' else None
             class MeteredProvider:
                 def review(self, messages):
                     return training.ai(attempt_id, value['review_id'], messages)
             result = review_report(MeteredProvider(), package, report, evidence)
-            result['rules_version'] = 'request-review-v1'
+            result['rules_version'] = 'request-review-v2' if attempt.get('contract_version')=='request-v2' else 'request-review-v1'
             training.review_outcome(value['review_id'], result)
+            if review_op: telemetry.finish(store,review_op,'completed' if result['status']=='completed' else 'failed',error_code=None if result['status']=='completed' else 'format_invalid')
         else:
             result = review_report(auth, package, report, evidence)
         return store.review_finish(value["review_id"], result)
@@ -191,13 +209,16 @@ def create_app(settings=None, auth=None):
         default = {"direction": "유저 단위로 계산하고 관측을 끝낼 수 있는 가입자부터 골라보세요.", "metric": "가입 다음 날 00:00부터 D8 00:00 직전까지 로그인한 적이 있는지 확인하세요.", "sql_structure": "가입 코호트 CTE → 관측 완료 필터 → NOT EXISTS 세션 조회 → 분자·분모 집계 순서로 구성하세요."}
         hints = reference.get("hints", default)
         content = hints.get(data.level, default[data.level]) if isinstance(hints, dict) else default[data.level]
-        return store.hint(attempt_id, data.level, content)
+        value=store.hint(attempt_id, data.level, content)
+        training.operational_event('hint_used',attempt_id)
+        return value
 
     @app.post("/api/attempts/{attempt_id}/explanation")
     def explanation(attempt_id: str):
         attempt, package = context(attempt_id)
         reference = package.reference(attempt["problem_id"])
         store.explanation(attempt_id)
+        training.operational_event('explanation_used',attempt_id)
         return {"sql": reference.get("sql", reference.get("reference_sql", "")), "explanation": reference.get("explanation", "D1~D7 로그인 유무를 고유 유저별 계산합니다."), "expected": reference.get("expected")}
 
     @app.post("/api/attempts/{attempt_id}/coach")
@@ -237,6 +258,11 @@ def create_app(settings=None, auth=None):
         return auth.models()
 
     quality_routes(app, store, runner, load, auth)
+    learning_state.routes(app,store)
+    telemetry.routes(app,store)
+    assessments.routes(app,store)
+    metrics.routes(app,store)
+    quality_v2.routes(app,training,context)
     training.routes(app, context, resume)
     app.mount("/static", StaticFiles(directory=Path(__file__).parent / "static"), name="static")
     app.mount("/", StaticFiles(directory=Path(__file__).parent / "static", html=True), name="web")

@@ -4,3 +4,4 @@
 input:not([type=checkbox]){display:block;width:100%;font:inherit;font-weight:400;padding:12px;border:1px solid #ccd8df;border-radius:7px;margin-top:6px}input:focus-visible,a:focus-visible{outline:2px solid #56a9a0;outline-offset:2px}.button-row>label{flex:1 1 180px;min-width:0}.cards{grid-template-columns:repeat(auto-fit,minmax(min(270px,100%),1fr))}@media(max-width:450px){header{gap:8px}.auth{flex-wrap:wrap}nav button{flex:1 1 100px}.workspace-heading{flex-wrap:wrap}.button-row{align-items:stretch}.button-row>button{flex:1 1 130px}}
 
 dialog{max-width:min(520px,90vw);border:1px solid var(--border);border-radius:12px;padding:24px;color:#182c39}dialog::backdrop{background:rgb(24 44 57 / 40%)}
+.analysis-grid > aside, .analysis-grid > section, .analysis-grid > article { min-width: 0; }
