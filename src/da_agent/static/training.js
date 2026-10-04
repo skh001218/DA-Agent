@@ -102,7 +102,7 @@ function trainingOpen(attempt) {
   $('#automatic-coaching').checked = false;
   $('#automatic-coaching').disabled = !requested;
   $('#temporary-question').checked = false;
-  $('#task-policy').textContent = requested ? `${attempt.problem.difficulty_reason}\n${attempt.problem.selection_reason}\n${attempt.problem.data_preparation}\n${attempt.problem.evaluation_status}\n배점: ${Object.entries(attempt.problem.weights || {}).map(([key, weight]) => `${({problem_definition:'문제 정의',analysis_approach:'분석 접근',sql_accuracy:'계산 정확성',interpretation:'해석',next_actions:'다음 행동'})[key]} ${weight}`).join(' · ')}` : '';
+  $('#task-policy').textContent = requested ? `${[attempt.problem.difficulty_reason,attempt.problem.selection_reason,attempt.problem.data_preparation,attempt.problem.evaluation_status].filter(Boolean).join('\n')}\n배점: ${Object.entries(attempt.problem.weights || {}).map(([key, weight]) => `${({problem_definition:'문제 정의',analysis_approach:'분석 접근',sql_accuracy:'계산 정확성',interpretation:'해석',next_actions:'다음 행동'})[key]} ${weight}`).join(' · ')}` : '';
   $('#discoveries').placeholder = attempt.task_kind === 'design' ? '정의한 질문·지표·비교 기준·검증 계획을 작성하세요. SQL 제출은 필수가 아닙니다.' : '실제 근거와 계산·검토 결과를 작성하세요.';
   $('#report-evidence-policy').textContent = attempt.task_kind === 'design' ? '분석 설계 과제는 SQL 실행·저장이 필수가 아닙니다. 공개 자료를 바탕으로 판단 이유와 검증 계획을 설명해주세요.' : '근거 없이도 제출할 수 있지만 해당 주장은 근거 부족으로 표시됩니다. 저장한 성공 실행만 연결할 수 있습니다.';
   renderConversation(attempt.messages || []);
@@ -155,4 +155,3 @@ function addTrainingDelete(card, attempt) {
   });
   card.append(button);
 }
-
