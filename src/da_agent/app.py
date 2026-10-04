@@ -21,6 +21,7 @@ from .packages import PackageCatalog
 from .api_provider import configured_provider
 from .reviews import normalize_ai, normalize_review, review_report
 from .quality import initialize as initialize_quality, routes as quality_routes, pilot_event
+from .training import Training
 
 
 def create_app(settings=None, auth=None):
@@ -29,11 +30,13 @@ def create_app(settings=None, auth=None):
     runner = SqlRunner(settings)
     catalog = PackageCatalog(settings.packages_root)
     auth = auth or configured_provider()
+    training = Training(store, runner, catalog, auth)
 
     @asynccontextmanager
     async def lifespan(app):
         store.initialize()
         initialize_quality(store)
+        training.initialize()
         async def expire():
             while True:
                 await asyncio.sleep(5)
@@ -50,6 +53,7 @@ def create_app(settings=None, auth=None):
 
     app = FastAPI(title="DA-Agent", lifespan=lifespan, docs_url=None, redoc_url=None)
     app.state.store, app.state.runner, app.state.auth = store, runner, auth
+    app.state.training = training
     app.add_middleware(TrustedHostMiddleware, allowed_hosts=["localhost", "127.0.0.1", "testserver"])
 
     @app.middleware("http")
@@ -95,7 +99,7 @@ def create_app(settings=None, auth=None):
     def context(attempt_id):
         attempt = store.get(attempt_id)
         package = load(attempt["package_id"], attempt["release_version"])
-        return attempt, package
+        return attempt, training.wrap(attempt, package)
 
     @app.get("/api/health")
     def health():
@@ -136,6 +140,7 @@ def create_app(settings=None, auth=None):
             "users": "유저 1명: user_id, signup_at, platform, country, acquisition_channel, signup_app_version",
             "sessions": "로그인 1회: session_id, user_id, login_at, logout_at, app_version",
         })))
+        attempt["messages"] = training.messages(attempt_id)
         return attempt
 
     @app.put("/api/attempts/{attempt_id}/draft")
@@ -168,7 +173,16 @@ def create_app(settings=None, auth=None):
         report = next(x for x in attempt["reports"] if x["report_id"] == report_id)
         ids = {ref["saved_execution_id"] for claim in report["claims"] for ref in claim["evidence_refs"]}
         evidence = [x for x in attempt["saved_executions"] if x["saved_execution_id"] in ids]
-        return store.review_finish(value["review_id"], review_report(auth, package, report, evidence))
+        if attempt.get('contract_version') == 'request-v1':
+            class MeteredProvider:
+                def review(self, messages):
+                    return training.ai(attempt_id, value['review_id'], messages)
+            result = review_report(MeteredProvider(), package, report, evidence)
+            result['rules_version'] = 'request-review-v1'
+            training.review_outcome(value['review_id'], result)
+        else:
+            result = review_report(auth, package, report, evidence)
+        return store.review_finish(value["review_id"], result)
 
     @app.post("/api/attempts/{attempt_id}/hints")
     def hint(attempt_id: str, data: Hint):
@@ -223,6 +237,7 @@ def create_app(settings=None, auth=None):
         return auth.models()
 
     quality_routes(app, store, runner, load, auth)
+    training.routes(app, context, resume)
     app.mount("/static", StaticFiles(directory=Path(__file__).parent / "static"), name="static")
     app.mount("/", StaticFiles(directory=Path(__file__).parent / "static", html=True), name="web")
     return app
