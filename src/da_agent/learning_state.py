@@ -42,7 +42,7 @@ def initialize(store):
         conn.execute('INSERT INTO learning_state_revisions VALUES(0,%s) ON CONFLICT DO NOTHING', (Jsonb(value),))
 
 
-def review_observations(review):
+def review_observations(review, assessment=None):
     if review.get('status') != 'completed' or not isinstance(review.get('feedback'), dict):
         return []
     results = []
@@ -50,12 +50,21 @@ def review_observations(review):
         competency = CRITERIA.get(criterion.get('key', criterion.get('id')))
         if not competency or not isinstance(criterion.get('score'), (int, float)):
             continue
+        level = criterion.get('level')
+        if type(level) is not int or not 0 <= level <= 4:
+            level = None
+        confirmed = bool(assessment and assessment.get('source') == 'human' and assessment.get('target_kind') == 'review'
+                         and assessment.get('target_id') == review['review_id'] and assessment.get('result') == 'pass'
+                         and assessment.get('target_version') == str(review.get('evaluation_version') or review.get('rules_version') or 'v1'))
         # No feedback prose, SQL, report text, or raw result is copied into state.
         results.append({'observation_id': f"{review['review_id']}:{competency}", 'competency': competency,
                         'behavior': 'saved_review_criterion', 'attempt_id': review['attempt_id'],
                         'report_id': review['report_id'], 'review_id': review['review_id'],
-                        'evaluation_version': review.get('rules_version'), 'certainty': 'provisional',
-                        'valid': True, 'confirmed': False})
+                        'evaluation_version': review.get('evaluation_version') or review.get('rules_version'),
+                        'criterion_level': level, 'level': level, 'certainty': 'human_verified' if confirmed else 'provisional',
+                        'assessment_id': assessment.get('assessment_id') if assessment else None,
+                        'assessment_revision': assessment.get('revision') if assessment else None,
+                        'valid': not assessment or assessment.get('result') in {'pass', 'pending'}, 'confirmed': confirmed})
     return results
 
 
@@ -69,8 +78,31 @@ def _save(conn, value):
 def refresh(conn):
     value = conn.execute('SELECT payload FROM learning_states WHERE id=1 FOR UPDATE').fetchone()['payload']
     observations = []
+    verdicts = {}
+    # Old deployments may initialize learning state before the assessments layer.
+    if conn.execute("SELECT to_regclass('quality_assessments') AS table_name").fetchone()['table_name']:
+        for row in conn.execute('SELECT DISTINCT ON (assessment_id) payload FROM quality_assessments ORDER BY assessment_id,revision DESC'):
+            verdict = row['payload']
+            if verdict.get('target_kind') != 'review' or verdict.get('source') != 'human':
+                continue
+            key = verdict['target_id']
+            if key not in verdicts or verdict.get('recorded_at', '') > verdicts[key].get('recorded_at', ''):
+                verdicts[key] = verdict
     for row in conn.execute('SELECT payload FROM reviews ORDER BY record_id'):
-        observations.extend(review_observations(row['payload']))
+        review = row['payload']
+        if not conn.execute('SELECT 1 FROM reports WHERE record_id=%s AND attempt_id=%s', (review.get('report_id'), review.get('attempt_id'))).fetchone():
+            continue
+        observations.extend(review_observations(review, verdicts.get(review['review_id'])))
+    active = {observation['observation_id'] for observation in observations}
+    for row in conn.execute('SELECT revision,payload FROM learning_state_revisions'):
+        snapshot = row['payload']
+        changed = False
+        for observation in snapshot['observations']:
+            if observation['observation_id'] not in active and observation.get('valid', True):
+                observation.update(valid=False, confirmed=False, certainty='invalidated', invalidation_reason='source_unavailable')
+                changed = True
+        if changed:
+            conn.execute('UPDATE learning_state_revisions SET payload=%s WHERE revision=%s', (Jsonb(snapshot), row['revision']))
     # Keep identity, never claim mastery from a score. Missing evidence disappears.
     if value['observations'] != observations:
         value = dict(value, observations=observations,
@@ -83,7 +115,10 @@ def get(store):
     with store.connect() as conn:
         value = refresh(conn)
         history = [r['payload'] for r in conn.execute('SELECT payload FROM learning_state_revisions ORDER BY revision')]
-    return dict(value, history=history, competencies={key: 'observed_provisional' if any(o['competency'] == key for o in value['observations']) else 'unobserved' for key in sorted(COMPETENCIES)})
+    def status(key):
+        evidence = [o for o in value['observations'] if o['competency'] == key and o['valid'] and not value['overrides'].get(o['observation_id'], {}).get('disagree')]
+        return 'observed_verified' if any(o['confirmed'] for o in evidence) else 'observed_provisional' if evidence else 'unobserved'
+    return dict(value, history=history, competencies={key: status(key) for key in sorted(COMPETENCIES)})
 
 
 get_state = get

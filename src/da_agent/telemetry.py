@@ -62,12 +62,20 @@ class EventV2(BaseModel):
             raise ValueError('occurred_at must be UTC')
         if self.event_type.endswith('_started') and self.status != 'running':
             raise ValueError('start event must be running')
-        if self.event_type.endswith('_finished') and self.status == 'running':
+        if self.event_type.endswith('_finished') and self.status not in {'success', 'completed', 'failed', 'cancelled', 'interrupted', 'ready'}:
             raise ValueError('finish event must be terminal')
-        if (self.row_count is not None or self.complete is not None) and not self.event_type.startswith('sql_'):
+        if self.status == 'ready' and self.event_type not in {'generation_finished', 'request_state', 'task_published'}:
+            raise ValueError('ready is only valid for task generation/publication')
+        if self.status == 'unsupported' and self.event_type != 'request_state':
+            raise ValueError('unsupported is only a request interpretation state')
+        if (self.row_count is not None or self.complete is not None) and self.event_type != 'sql_finished':
             raise ValueError('SQL metadata belongs to SQL events only')
-        if (self.input_tokens is not None or self.output_tokens is not None or self.usage_missing_reason) and not self.event_type.startswith('ai_'):
+        if (self.input_tokens is not None or self.output_tokens is not None or self.usage_missing_reason) and self.event_type != 'ai_finished':
             raise ValueError('usage belongs to AI events only')
+        if self.event_type.endswith('_started') and (self.error_code or self.duration_ms is not None):
+            raise ValueError('start event cannot contain terminal failure/time metadata')
+        if self.error_code and self.status not in {'failed', 'cancelled', 'interrupted'}:
+            raise ValueError('error metadata needs a failure state')
         return self
 
 
@@ -78,8 +86,18 @@ def initialize(store, retention_days=30):
         conn.execute('CREATE TABLE IF NOT EXISTS quality_collection_health (id integer PRIMARY KEY, payload jsonb NOT NULL)')
         conn.execute('INSERT INTO quality_collection_health VALUES(1,%s) ON CONFLICT DO NOTHING',
                      (Jsonb({'incomplete': False, 'retention_days': retention_days}),))
-        conn.execute("UPDATE quality_operations SET payload=payload || %s WHERE payload->>'status'='running'",
-                     (Jsonb({'status': 'interrupted', 'finished_at': now(), 'error_code': 'server_restart', 'duration_ms': None}),))
+        conn.execute('UPDATE quality_collection_health SET payload=payload || %s WHERE id=1', (Jsonb({'retention_days': retention_days}),))
+        for row in conn.execute("SELECT operation_id,payload FROM quality_operations WHERE payload->>'status'='running' FOR UPDATE"):
+            value = row['payload']
+            stamp = now()
+            data = {key: val for key, val in value.items() if key in EventV2.model_fields}
+            data.update(event_id='restart-' + str(uuid.uuid4()), event_type=f"{value['kind']}_finished",
+                        occurred_at=stamp, status='interrupted', error_code='server_restart', duration_ms=None)
+            if value['kind'] == 'ai':
+                data['usage_missing_reason'] = 'failed_call'
+            append(conn, data)
+            value.update(status='interrupted', finished_at=stamp, error_code='server_restart', duration_ms=None)
+            conn.execute('UPDATE quality_operations SET payload=%s WHERE operation_id=%s', (Jsonb(value), row['operation_id']))
         conn.execute("DELETE FROM quality_events_v2 WHERE (payload->>'occurred_at')::timestamptz < now() - %s * interval '1 day'", (retention_days,))
 
 

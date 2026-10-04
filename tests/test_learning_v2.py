@@ -41,6 +41,28 @@ def test_provisional_observation_never_copies_feedback_or_claims_mastery():
     assert learning_state.review_observations(dict(review, status='failed')) == []
 
 
+def test_observation_level_and_explicit_versioned_human_pass():
+    review = {'review_id': 'r', 'report_id': 'report', 'attempt_id': 'a', 'status': 'completed', 'rules_version': 'rv2',
+              'feedback': {'criteria': [{'key': 'interpretation', 'level': 1, 'score': 5, 'reason': 'SECRET'}]}}
+    verdict = {'assessment_id': 'verdict', 'revision': 2, 'source': 'human', 'target_kind': 'review',
+               'target_id': 'r', 'target_version': 'rv2', 'result': 'pass'}
+    observation = learning_state.review_observations(review, verdict)[0]
+    assert observation['level'] == 1 and observation['confirmed'] and observation['assessment_revision'] == 2
+    assert not learning_state.review_observations(review, dict(verdict, target_version='old'))[0]['confirmed']
+    assert not learning_state.review_observations(review, dict(verdict, source='learner'))[0]['confirmed']
+    rejected = learning_state.review_observations(review, dict(verdict, result='misdiagnosis'))[0]
+    assert not rejected['valid'] and not rejected['confirmed']
+    assert 'SECRET' not in json.dumps(observation)
+
+
+@pytest.mark.parametrize('changes', [{'status': 'unsupported'}, {'status': 'ready'}, {'status': 'success', 'error_code': 'timeout'},
+                                   {'event_type': 'sql_started', 'status': 'running', 'row_count': 1},
+                                   {'event_type': 'ai_started', 'status': 'running', 'input_tokens': 1}])
+def test_telemetry_event_specific_states(changes):
+    with pytest.raises(ValidationError):
+        telemetry.EventV2.model_validate(dict(event(), **changes))
+
+
 def test_assessment_source_pairs_and_repeat_contract():
     body = dict(target_kind='difficulty', target_id='a', target_version='v2', reviewer='operator', result='appropriate')
     assert assessments.AssessmentInput(**body).source == 'human'
@@ -164,6 +186,8 @@ def test_real_db_event_idempotence_operation_restart_revisions_and_delete():
         with store.connect() as conn:
             payload = conn.execute('SELECT payload FROM quality_operations WHERE operation_id=%s', (operation,)).fetchone()['payload']
             assert payload['status'] == 'interrupted' and payload['duration_ms'] is None
+            ended = conn.execute("SELECT payload FROM quality_events_v2 WHERE payload->>'operation_id'=%s AND payload->>'event_type'='ai_finished'", (operation,)).fetchone()['payload']
+            assert ended['status'] == 'interrupted' and ended['error_code'] == 'server_restart' and ended['usage_missing_reason'] == 'failed_call'
         with pytest.raises(DomainError):
             telemetry.finish(store, operation, 'success')
         assessment = assessments.create(store, assessments.AssessmentInput(target_kind='difficulty', target_id=identifier,
