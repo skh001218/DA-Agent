@@ -1,0 +1,23 @@
+{
+  "cases": [
+    {
+      "attempt_id": "c7b331b8-435b-4b79-9a12-e01cdaca3ba0",
+      "saved_executions": 1,
+      "status": "resumed"
+    },
+    {
+      "attempt_id": "1e48776c-5633-403e-bcd1-429874c57d09",
+      "saved_executions": 2,
+      "status": "resumed"
+    },
+    {
+      "attempt_id": "1e9f541f-f8d4-4e10-9c7c-cbeb2722d2f6",
+      "saved_executions": 2,
+      "status": "resumed"
+    }
+  ],
+  "new_model_calls": false,
+  "failure_ui": "input preserved; retry hidden; new request guidance visible",
+  "errors": [],
+  "status": "pass"
+}

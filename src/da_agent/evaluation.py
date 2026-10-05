@@ -52,6 +52,9 @@ def verify_evidence(evidence, expected, definition=None):
         return base
     for key, wanted in expected.items():
         value = actual.get(key)
+        # SqlRunner encodes PostgreSQL NUMERIC as decimal strings to preserve precision.
+        if isinstance(value, str) and type(wanted) in (int, float, Decimal) and re.fullmatch(r'-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?', value):
+            value = Decimal(value)
         if wanted is None:
             matches = value is None
         elif type(value) in (int, float, Decimal) and type(wanted) in (int, float, Decimal) and math.isfinite(float(value)):

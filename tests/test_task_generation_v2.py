@@ -24,7 +24,7 @@ def request_v2(**changes):
 
 
 def interpretation(kind='calculation', level='advanced', questions=None):
-    return {'capability_id': 'access-' + kind, 'difficulty': level, 'task_kind': kind, 'goal': '접속 분석', 'questions': questions or [], 'unsupported': False, 'reason': '명시한 선택을 적용'}
+    return {'analysis_topic': 'return_observation', 'capability_id': 'access-' + kind, 'difficulty': level, 'task_kind': kind, 'goal': '접속 분석', 'questions': questions or [], 'unsupported': False, 'reason': '명시한 선택을 적용'}
 
 
 def completed(value):
@@ -307,10 +307,16 @@ def test_db_generated_approval_failure_retry_same_data_and_ready(v2_db_client):
                 conn.execute(sql.SQL('DROP SCHEMA IF EXISTS {} CASCADE').format(sql.Identifier(package.schema_name)))
 
 
-def test_db_known_unsupported_scope_does_not_call_model(v2_db_client):
+@pytest.mark.parametrize('changes', [
+    {'message': '매출과 결제 데이터 분석을 연습하고 싶습니다'},
+    {'message': '게임 비정상 이용자 탐지 및 현상 조사 문제를 내줘'},
+    {'message': '접속 로그로 봇 이용자를 탐지하고 싶어'},
+    {'goal': '비정상 이용자 탐지'},
+])
+def test_db_known_unsupported_scope_does_not_call_model(v2_db_client, changes):
     client,provider=v2_db_client
     before=provider.calls
-    _,result=begin_v2(client,message="매출과 결제 데이터 분석을 연습하고 싶습니다")
+    _,result=begin_v2(client,**changes)
     assert result["status"]=="failed" and result["error_code"]=="unsupported_scope"
     assert result["attempt_id"] is None and not result["retry_allowed"]
     assert provider.calls==before and result["planning_calls"]==0

@@ -1,0 +1,116 @@
+{
+  "actual_browser": true,
+  "actual_api": true,
+  "actual_model": true,
+  "cases": [
+    {
+      "name": "abnormal-users",
+      "request_id": "c233a54e-0d38-4ede-83fb-79b7c02970ac",
+      "status": "ready",
+      "error_code": null,
+      "planning_calls": 2,
+      "attempt_id": "92cba1c2-944b-4cdf-95f2-5de5c7d0e2f7",
+      "title": "게임 비정상 이용자 탐지 및 행동 패턴 비교 조사",
+      "goal": "행동 빈도와 행동 간격의 규칙성을 분석하여 비정상 의심 계정을 탐지하고, 고빈도로 활동하는 정상 이용자와 비교하여 판단의 근거와 한계를 해석한다.",
+      "description": "본 과제에서는 게임 내 플레이어들의 활동 요약 데이터를 활용하여, 기계적인 입력 패턴(낮은 행동 간격 변동성)을 보이는 의심 계정과 활발히 게임을 즐기는 고빈도 정상 이용자를 비교합니다. 단순 행동량만으로는 구분하기 어려운 두 집단의 특성을 간격 규칙성(CV) 지표를 통해 분석하고, 자동화 매크로 판정의 근거와 실제 데이터가 가진 해석의 한계를 고찰하는 것을 목표로 합니다.\n\n이 과제의 데이터는 요청에 맞춰 생성한 연습용 합성 데이터입니다.",
+      "tables": [
+        "account_activity_summary"
+      ],
+      "dictionary": {
+        "account_activity_summary": {
+          "grain": "계정별 관측 기간 활동 요약",
+          "columns": [
+            {
+              "name": "account_id",
+              "type": "bigint",
+              "description": "계정 식별자"
+            },
+            {
+              "name": "total_actions",
+              "type": "bigint",
+              "description": "관측 기간 동안의 총 행동 횟수"
+            },
+            {
+              "name": "mean_interval_sec",
+              "type": "double precision",
+              "description": "행동 간 평균 시간 간격 (초)"
+            },
+            {
+              "name": "interval_cv",
+              "type": "double precision",
+              "description": "행동 간격의 변동계수 (표준편차/평균)"
+            }
+          ]
+        }
+      },
+      "sql_rows": [
+        [
+          200
+        ]
+      ],
+      "saved_resume": true,
+      "narrow": {
+        "width": 390,
+        "scrollWidth": 390
+      }
+    },
+    {
+      "name": "currency",
+      "request_id": "a4d7351a-1336-4cf0-89ce-5cab3100a1e5",
+      "status": "ready",
+      "error_code": null,
+      "planning_calls": 2,
+      "attempt_id": "6f46e58f-4bfb-473a-be13-22147fd92a4f",
+      "title": "일별 게임 재화 획득 및 소비 경제 지표 계산",
+      "goal": "일별 게임 재화 획득량과 소비량을 집계하고 순증감을 계산하여 경제 지표의 변동 흐름을 파악한다.",
+      "description": "본 과제에서는 게임 내 재화 획득 및 소비 로그 데이터를 활용해 일자별로 총 획득량과 총 소비량을 구하고, 두 값의 차이를 통해 재화의 순증감을 계산하는 방법을 연습합니다. 초급 분석가 수준에서 날짜별 그룹바이 집계와 파생 지표 산출 능력을 평가합니다.\n\n이 과제의 데이터는 요청에 맞춰 생성한 연습용 합성 데이터입니다.",
+      "tables": [
+        "economy_logs"
+      ],
+      "dictionary": {
+        "economy_logs": {
+          "grain": "계정별 일자별 재화 거래 요약",
+          "columns": [
+            {
+              "name": "log_id",
+              "type": "bigint",
+              "description": "로그 식별자"
+            },
+            {
+              "name": "account_id",
+              "type": "bigint",
+              "description": "계정 식별자"
+            },
+            {
+              "name": "date",
+              "type": "timestamptz",
+              "description": "거래 일자"
+            },
+            {
+              "name": "earned_amount",
+              "type": "bigint",
+              "description": "획득한 재화량"
+            },
+            {
+              "name": "spent_amount",
+              "type": "bigint",
+              "description": "소비한 재화량"
+            }
+          ]
+        }
+      },
+      "sql_rows": [
+        [
+          150
+        ]
+      ],
+      "saved_resume": true,
+      "narrow": {
+        "width": 390,
+        "scrollWidth": 390
+      }
+    }
+  ],
+  "errors": [],
+  "status": "pass"
+}

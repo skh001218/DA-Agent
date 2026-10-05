@@ -1,0 +1,304 @@
+{
+  "actual_browser": true,
+  "actual_api": true,
+  "actual_model": true,
+  "cases": [
+    {
+      "name": "boss-advanced",
+      "request_id": "c21bebdd-b9bc-4bd7-9776-3c120ab886dc",
+      "status": "ready",
+      "error_code": null,
+      "planning_calls": 4,
+      "attempt_id": "99cc36d6-1c62-4129-85c5-95ce2fde2a1a",
+      "title": "보스 클리어 소요 시간 및 트라이 패턴 심층 분석 과제",
+      "goal": "이용자가 특정 보스를 토벌하는 데 걸리는 최초 시도부터 최종 성공까지의 소요 시간과 트라이 횟수, 실패 패턴을 종합적으로 분석한다.",
+      "description": "본 과제는 플레이어가 게임 내 보스를 상대로 첫 시도를 시작한 시점부터 최종 토벌에 성공하기까지 걸린 소요 시간, 트라이 횟수, 그리고 시도 간 대기 시간의 분포를 분석하는 고급 과제입니다. 제공된 시도 로그와 계정별 요약 데이터를 활용하여 난이도별 체감 시간과 숙련도에 따른 클리어 패턴의 차이를 분석하세요.\n\n이 과제의 데이터는 요청에 맞춰 생성한 연습용 합성 데이터입니다.",
+      "tables": [
+        "account_profile",
+        "boss_attempt_log",
+        "account_boss_summary"
+      ],
+      "difficulty": "advanced",
+      "dictionary": {
+        "account_profile": {
+          "grain": "계정별 1행 프로필 및 숙련도 요약",
+          "columns": [
+            {
+              "name": "account_id",
+              "type": "bigint",
+              "description": "계정 식별자"
+            },
+            {
+              "name": "skill_group",
+              "type": "text",
+              "description": "계정 숙련도 그룹"
+            },
+            {
+              "name": "total_tries",
+              "type": "bigint",
+              "description": "총 보스 도전 횟수"
+            }
+          ]
+        },
+        "boss_attempt_log": {
+          "grain": "계정의 보스 도전 시도별 상세 로그",
+          "columns": [
+            {
+              "name": "attempt_id",
+              "type": "bigint",
+              "description": "시도 식별자"
+            },
+            {
+              "name": "account_id",
+              "type": "bigint",
+              "description": "계정 식별자"
+            },
+            {
+              "name": "boss_name",
+              "type": "text",
+              "description": "보스 이름"
+            },
+            {
+              "name": "wait_seconds",
+              "type": "bigint",
+              "description": "이전 시도 종료 후 다음 시도까지의 대기 시간"
+            },
+            {
+              "name": "duration_seconds",
+              "type": "bigint",
+              "description": "해당 시도 전투 소요 시간"
+            },
+            {
+              "name": "started_at",
+              "type": "timestamptz",
+              "description": "시도 시작 시각"
+            },
+            {
+              "name": "result",
+              "type": "text",
+              "description": "도전 결과"
+            }
+          ]
+        },
+        "account_boss_summary": {
+          "grain": "계정별 보스 도전 요약",
+          "columns": [
+            {
+              "name": "summary_id",
+              "type": "bigint",
+              "description": "요약 식별자"
+            },
+            {
+              "name": "account_id",
+              "type": "bigint",
+              "description": "계정 식별자"
+            },
+            {
+              "name": "success_count",
+              "type": "bigint",
+              "description": "성공 횟수"
+            }
+          ]
+        }
+      },
+      "sql_rows": [
+        [
+          200
+        ]
+      ],
+      "saved_resume": true,
+      "narrow": {
+        "width": 390,
+        "scrollWidth": 390
+      }
+    },
+    {
+      "name": "currency-advanced",
+      "request_id": "dd8cf717-26ce-4e34-99f9-90aa21da6a26",
+      "status": "ready",
+      "error_code": null,
+      "planning_calls": 3,
+      "attempt_id": "1e48776c-5633-403e-bcd1-429874c57d09",
+      "title": "게임 재화 획득 및 소비 패턴 비교 분석",
+      "goal": "재화 획득·소비 원본 로그와 일별 요약 데이터를 활용하여 날짜별 재화 순증감 추이를 파악하고, 특정 재화 소비의 편중 현상을 비교·분석한다.",
+      "description": "본 과제에서는 이용자의 재화 획득 및 소비 원본 로그와 이를 집계한 일별 요약 데이터를 제공합니다. 학습자는 두 데이터 간의 관계를 파악하고, 일별 재화 순증감 추이와 특정 재화 소비의 편중 현상을 다각도로 비교·분석하여 인사이트를 도출해야 합니다.\n\n이 과제의 데이터는 요청에 맞춰 생성한 연습용 합성 데이터입니다.",
+      "tables": [
+        "currency_log",
+        "currency_daily_summary"
+      ],
+      "difficulty": "advanced",
+      "dictionary": {
+        "currency_log": {
+          "grain": "계정별 재화 획득 및 소비 개별 이벤트",
+          "columns": [
+            {
+              "name": "log_id",
+              "type": "bigint",
+              "description": "이벤트 고유 식별자"
+            },
+            {
+              "name": "account_id",
+              "type": "bigint",
+              "description": "계정 식별자"
+            },
+            {
+              "name": "tx_type",
+              "type": "text",
+              "description": "재화 거래 유형"
+            },
+            {
+              "name": "amount",
+              "type": "bigint",
+              "description": "재화 변동 수량"
+            },
+            {
+              "name": "wait_seconds",
+              "type": "bigint",
+              "description": "이벤트 발생 간 대기 시간"
+            },
+            {
+              "name": "timestamp",
+              "type": "timestamptz",
+              "description": "이벤트 발생 시각"
+            },
+            {
+              "name": "tx_date",
+              "type": "timestamptz",
+              "description": "이벤트 일자"
+            }
+          ]
+        },
+        "currency_daily_summary": {
+          "grain": "계정 및 일자별 재화 요약",
+          "columns": [
+            {
+              "name": "summary_id",
+              "type": "bigint",
+              "description": "요약 고유 식별자"
+            },
+            {
+              "name": "acc_id_key",
+              "type": "bigint",
+              "description": "계정 식별자 키"
+            },
+            {
+              "name": "date_key",
+              "type": "timestamptz",
+              "description": "일자 키"
+            },
+            {
+              "name": "total_amount",
+              "type": "bigint",
+              "description": "일별 재화 총 변동량"
+            },
+            {
+              "name": "event_count",
+              "type": "bigint",
+              "description": "일별 거래 횟수"
+            }
+          ]
+        }
+      },
+      "sql_rows": [
+        [
+          200
+        ]
+      ],
+      "saved_resume": true,
+      "narrow": {
+        "width": 390,
+        "scrollWidth": 390
+      }
+    },
+    {
+      "name": "purchase-advanced",
+      "request_id": "00c3510d-9880-4139-b2de-8b06b638edce",
+      "status": "ready",
+      "error_code": null,
+      "planning_calls": 3,
+      "attempt_id": "1e9f541f-f8d4-4e10-9c7c-cbeb2722d2f6",
+      "title": "상품 구매 소요 시간 및 전환 패턴 분석 과제",
+      "goal": "최초 상품 구매 시도부터 최초 성공 종료까지의 경과 시간과 실패 및 미구매 이용자의 분포를 종합적으로 분석한다.",
+      "description": "본 과제는 이용자가 게임 내 상품 구매 시도를 시작한 시점부터 최초로 구매에 성공하기까지 걸린 경과 시간을 측정하고, 구매 실패를 경험했거나 관측 기간 내 구매하지 못한 이용자의 분포를 파악하는 고급 분석 과제입니다. 제공된 계정 프로필과 구매 시도 로그를 활용하여 구매 전환에 소요되는 시간적 특성과 그룹별 차이를 검증하세요.\n\n이 과제의 데이터는 요청에 맞춰 생성한 연습용 합성 데이터입니다.",
+      "tables": [
+        "account_profile",
+        "purchase_attempt_log"
+      ],
+      "difficulty": "advanced",
+      "dictionary": {
+        "account_profile": {
+          "grain": "이용자 계정 프로필",
+          "columns": [
+            {
+              "name": "account_id",
+              "type": "bigint",
+              "description": "계정 식별자"
+            },
+            {
+              "name": "tier",
+              "type": "text",
+              "description": "이용자 등급"
+            }
+          ]
+        },
+        "purchase_attempt_log": {
+          "grain": "이용자의 개별 상품 구매 시도 이벤트",
+          "columns": [
+            {
+              "name": "attempt_id",
+              "type": "bigint",
+              "description": "구매 시도 고유 식별자"
+            },
+            {
+              "name": "account_id",
+              "type": "bigint",
+              "description": "이용자 계정 식별자"
+            },
+            {
+              "name": "product_category",
+              "type": "text",
+              "description": "상품 카테고리"
+            },
+            {
+              "name": "wait_seconds",
+              "type": "bigint",
+              "description": "이전 시도 또는 진입 후 대기 시간"
+            },
+            {
+              "name": "duration_seconds",
+              "type": "bigint",
+              "description": "구매 결제 진행 소요 시간"
+            },
+            {
+              "name": "started_at",
+              "type": "timestamptz",
+              "description": "구매 시도 시작 시각"
+            },
+            {
+              "name": "ended_at",
+              "type": "timestamptz",
+              "description": "구매 시도 종료 시각"
+            },
+            {
+              "name": "is_success",
+              "type": "bigint",
+              "description": "구매 성공 여부 (1: 성공, 0: 실패)"
+            }
+          ]
+        }
+      },
+      "sql_rows": [
+        [
+          200
+        ]
+      ],
+      "saved_resume": true,
+      "narrow": {
+        "width": 390,
+        "scrollWidth": 390
+      }
+    }
+  ],
+  "errors": [],
+  "status": "pass"
+}

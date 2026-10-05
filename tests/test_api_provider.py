@@ -53,6 +53,19 @@ def test_provider_returns_observed_usage_without_estimation(tmp_path):
     assert value.review([])['usage'] == {'input_tokens': 11, 'output_tokens': 7, 'total_tokens': 18}
 
 
+def test_adaptive_json_mode_preserves_general_text_calls(tmp_path):
+    requests=[]
+    def handler(request):
+        requests.append(json.loads(request.content))
+        return httpx.Response(200,json=completed('{}'))
+    value=provider(tmp_path,handler)
+    for envelope in ({'request':{},'schema':{'title':'Recipe'}},{'request':{},'task':{},'dictionary':{},'private_generation_recipe':{}}):
+        value.review([{'role':'user','content':json.dumps(envelope)}])
+        assert requests[-1]['generationConfig']=={'maxOutputTokens':8192,'responseMimeType':'application/json'}
+    value.review([{'role':'user','content':'코칭 질문'}])
+    assert requests[-1]['generationConfig']=={'maxOutputTokens':4096}
+
+
 @pytest.mark.parametrize("status,code,expected", [(401,"invalid_api_key","api_key_invalid"), (403,None,"api_permission_denied"), (404,None,"model_unavailable"), (429,"RESOURCE_EXHAUSTED","api_rate_limited"), (429,"rate_limit_exceeded","api_rate_limited"), (500,None,"api_unavailable"), (400,None,"api_request_invalid"), (400,"API_KEY_INVALID","api_key_invalid")])
 def test_sanitized_errors_without_retry(tmp_path, status, code, expected):
     requests = []

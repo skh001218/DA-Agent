@@ -2,6 +2,7 @@
 import os
 import hashlib
 import re
+import json
 from pathlib import Path
 import threading
 
@@ -64,6 +65,19 @@ class GeminiProvider:
                 contents = [{"role": "model" if message["role"] == "assistant" else "user", "parts": [{"text": message["content"]}]} for message in messages if message["role"] not in {"developer", "system"}]
                 body = {"contents": contents, "systemInstruction": {"parts": system},
                         "generationConfig": {"maxOutputTokens": 4096}, "store": False}
+                # Application-owned adaptive design/validation envelopes need JSON
+                # syntax enforced by the provider, with semantic checks on the server.
+                envelope = None
+                for message in messages:
+                    if message['role']=='user':
+                        try: envelope=json.loads(message['content'])
+                        except (ValueError,TypeError): pass
+                        break
+                if isinstance(envelope,dict) and 'request' in envelope and (
+                    isinstance(envelope.get('schema'),dict) and envelope['schema'].get('title')=='Recipe'
+                    or {'task','dictionary','private_generation_recipe'}.issubset(envelope)):
+                    body['generationConfig']['responseMimeType']='application/json'
+                    body['generationConfig']['maxOutputTokens']=8192
                 if selected == "gemini-3.8-flash":
                     body["generationConfig"]["thinkingConfig"] = {"thinkingLevel": "low"}
                 response = self.http.post("https://generativelanguage.googleapis.com/v1beta/models/" + selected + ":generateContent",

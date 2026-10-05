@@ -1,0 +1,17 @@
+{
+  "actual_browser": true,
+  "actual_api": true,
+  "actual_model": true,
+  "cases": [
+    {
+      "name": "abnormal-users",
+      "request_id": "e2a6e1c6-30ff-4b72-85d9-fb4e57838186",
+      "status": "failed",
+      "error_code": "plan_invalid",
+      "planning_calls": 1
+    }
+  ],
+  "errors": [],
+  "status": "fail",
+  "failure": "{\"error\":\"요청별 데이터 설계가 생성·검증 규칙을 충족하지 않아 출제하지 않았습니다.\",\"states\":[{\"at\":\"2026-10-04T20:22:13.705692Z\",\"status\":\"accepted\"},{\"at\":\"2026-10-04T20:22:13.767127Z\",\"status\":\"planning\"},{\"at\":\"2026-10-04T20:22:20.151610Z\",\"status\":\"failed\"}],\"status\":\"failed\",\"message\":\"게임 비정상 이용자 탐지 및 현상 조사 문제를 내줘. 행동 빈도와 행동 간격의 규칙성으로 의심 계정을 조사하고, 활동량이 많은 정상 이용자와 비교하는 연습을 하고 싶어.\",\"revision\":0,\"questions\":[],\"attempt_id\":null,\"created_at\":\"2026-10-04T20:22:13.705681Z\",\"error_code\":\"plan_invalid\",\"request_id\":\"e2a6e1c6-30ff-4b72-85d9-fb4e57838186\",\"operation_id\":\"e17f1115-7d90-4586-aeee-05674cfa6ba8\",\"retry_allowed\":true,\"planning_calls\":1,\"contract_version\":\"request-v2\",\"generation_attempts\":0,\"recommendation_change\":null}\n\n'failed' !== 'ready'\n"
+}

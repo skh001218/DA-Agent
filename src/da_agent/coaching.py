@@ -8,7 +8,7 @@ from .reviews import normalize_ai
 
 CONTRACT_VERSION = 'coaching-v2'
 PROMPT_VERSION = 'cumulative-coach-v2'
-PUBLIC_KEYS = {'problem_id', 'title', 'description', 'task_kind', 'difficulty', 'completion_conditions', 'weights', 'cohort_start', 'cohort_end', 'data_complete_before', 'definitions', 'analysis_draft', 'contract_version', 'evaluation_status'}
+PUBLIC_KEYS = {'problem_id', 'title', 'description', 'task_kind', 'difficulty', 'completion_conditions', 'weights', 'cohort_start', 'cohort_end', 'data_complete_before', 'definitions', 'analysis_draft', 'contract_version', 'evaluation_status', 'goal', 'required_tables', 'schema', 'allowed_limits'}
 PRIVATE_KEYS = {'private', 'seed', 'expected', 'reference_sql', 'cause', 'actual_cause', 'event_name', 'variation_id', 'variant_id', 'reference', 'evaluation', 'question_facts'}
 
 class CoachingOutput(BaseModel):

@@ -1,0 +1,19 @@
+{
+  "actual_browser": true,
+  "model_calls": 0,
+  "status": "pass",
+  "checks": [
+    {
+      "attempt_id": "92cba1c2-944b-4cdf-95f2-5de5c7d0e2f7",
+      "restart_resume": true,
+      "saved": 2,
+      "model": "gemini-3.5-flash-lite"
+    },
+    {
+      "attempt_id": "6f46e58f-4bfb-473a-be13-22147fd92a4f",
+      "restart_resume": true,
+      "saved": 1,
+      "model": null
+    }
+  ]
+}
