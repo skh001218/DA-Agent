@@ -1,0 +1,14 @@
+{
+  "actual_browser": true,
+  "actual_api": true,
+  "ai_calls": 0,
+  "merged_source": true,
+  "checks": [
+    "saved structured coaching rendered",
+    "SQL editor visible",
+    "v3 held feedback visible",
+    "review survives reload",
+    "390px layout"
+  ],
+  "page_errors": []
+}
