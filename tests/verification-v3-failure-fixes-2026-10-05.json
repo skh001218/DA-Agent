@@ -1,0 +1,2974 @@
+{
+  "runs": [
+    {
+      "run_id": "6f10c92e-5b35-4f58-b1de-3826f30114f4",
+      "replay_with_latest_server": false,
+      "ai_calls_for_replay": 0,
+      "original_verdict": "pending",
+      "original_variation": {
+        "correct": {
+          "score_range": 0.0,
+          "level_variation": {},
+          "critical_state_variation": {}
+        },
+        "core_error": {
+          "score_range": null,
+          "level_variation": {},
+          "critical_state_variation": {}
+        },
+        "missing_evidence": {
+          "score_range": 0.0,
+          "level_variation": {},
+          "critical_state_variation": {}
+        },
+        "valid_alternative": {
+          "score_range": 0.0,
+          "level_variation": {},
+          "critical_state_variation": {}
+        },
+        "uncertainty": {
+          "score_range": 0.0,
+          "level_variation": {},
+          "critical_state_variation": {}
+        },
+        "private_request": {
+          "score_range": 0.0,
+          "level_variation": {},
+          "critical_state_variation": {}
+        }
+      },
+      "actual_model": true,
+      "actual_db": true,
+      "status": "completed",
+      "verdict": "pending",
+      "human_quality": "pending",
+      "calls": 18,
+      "samples": [
+        {
+          "id": "correct",
+          "verdict": "pending",
+          "score_range": 0.0,
+          "level_variation": {},
+          "critical_state_variation": {},
+          "repetitions": [
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 4,
+                "analysis_approach": 4,
+                "sql_accuracy": 4,
+                "interpretation": 4,
+                "next_actions": 4
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "met",
+                  "target": "met",
+                  "period": "met",
+                  "unit": "met",
+                  "metric": "met",
+                  "observation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "analysis_approach": {
+                  "content": "met",
+                  "method": "met",
+                  "validation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "sql_accuracy": {
+                  "content": "met",
+                  "execution": "met",
+                  "calculation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "met",
+                  "scope": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "next_actions": {
+                  "content": "met",
+                  "action": "met",
+                  "purpose": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                }
+              }
+            },
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 4,
+                "analysis_approach": 4,
+                "sql_accuracy": 4,
+                "interpretation": 4,
+                "next_actions": 4
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "met",
+                  "target": "met",
+                  "period": "met",
+                  "unit": "met",
+                  "metric": "met",
+                  "observation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "analysis_approach": {
+                  "content": "met",
+                  "method": "met",
+                  "validation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "sql_accuracy": {
+                  "content": "met",
+                  "execution": "met",
+                  "calculation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "met",
+                  "scope": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "next_actions": {
+                  "content": "met",
+                  "action": "met",
+                  "purpose": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                }
+              }
+            },
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 4,
+                "analysis_approach": 4,
+                "sql_accuracy": 4,
+                "interpretation": 4,
+                "next_actions": 4
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "met",
+                  "target": "met",
+                  "period": "met",
+                  "unit": "met",
+                  "metric": "met",
+                  "observation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "analysis_approach": {
+                  "content": "met",
+                  "method": "met",
+                  "validation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "sql_accuracy": {
+                  "content": "met",
+                  "execution": "met",
+                  "calculation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "met",
+                  "scope": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "next_actions": {
+                  "content": "met",
+                  "action": "met",
+                  "purpose": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "core_error",
+          "verdict": "pending",
+          "score_range": null,
+          "level_variation": {},
+          "critical_state_variation": {},
+          "repetitions": [
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 1,
+                "analysis_approach": 3,
+                "sql_accuracy": null,
+                "interpretation": 1,
+                "next_actions": 3
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "met",
+                  "target": "error",
+                  "period": "missing",
+                  "unit": "error",
+                  "metric": "missing",
+                  "observation": "missing",
+                  "critical": "error",
+                  "advanced": "missing"
+                },
+                "analysis_approach": {
+                  "content": "met",
+                  "method": "met",
+                  "validation": "met",
+                  "critical": "met",
+                  "advanced": "missing"
+                },
+                "sql_accuracy": {
+                  "content": "met",
+                  "execution": "met",
+                  "calculation": "unverifiable",
+                  "critical": "met",
+                  "advanced": "missing"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "error",
+                  "scope": "error",
+                  "critical": "error",
+                  "advanced": "met"
+                },
+                "next_actions": {
+                  "content": "met",
+                  "action": "met",
+                  "purpose": "met",
+                  "critical": "met",
+                  "advanced": "missing"
+                }
+              }
+            },
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 1,
+                "analysis_approach": 3,
+                "sql_accuracy": null,
+                "interpretation": 1,
+                "next_actions": 3
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "met",
+                  "target": "error",
+                  "period": "error",
+                  "unit": "error",
+                  "metric": "error",
+                  "observation": "error",
+                  "critical": "error",
+                  "advanced": "missing"
+                },
+                "analysis_approach": {
+                  "content": "met",
+                  "method": "met",
+                  "validation": "met",
+                  "critical": "met",
+                  "advanced": "missing"
+                },
+                "sql_accuracy": {
+                  "content": "met",
+                  "execution": "met",
+                  "calculation": "unverifiable",
+                  "critical": "met",
+                  "advanced": "missing"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "error",
+                  "scope": "error",
+                  "critical": "error",
+                  "advanced": "missing"
+                },
+                "next_actions": {
+                  "content": "met",
+                  "action": "met",
+                  "purpose": "met",
+                  "critical": "met",
+                  "advanced": "missing"
+                }
+              }
+            },
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 1,
+                "analysis_approach": 3,
+                "sql_accuracy": null,
+                "interpretation": 1,
+                "next_actions": 3
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "met",
+                  "target": "error",
+                  "period": "error",
+                  "unit": "error",
+                  "metric": "error",
+                  "observation": "missing",
+                  "critical": "error",
+                  "advanced": "missing"
+                },
+                "analysis_approach": {
+                  "content": "met",
+                  "method": "met",
+                  "validation": "met",
+                  "critical": "met",
+                  "advanced": "missing"
+                },
+                "sql_accuracy": {
+                  "content": "met",
+                  "execution": "met",
+                  "calculation": "unverifiable",
+                  "critical": "met",
+                  "advanced": "missing"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "error",
+                  "scope": "error",
+                  "critical": "error",
+                  "advanced": "met"
+                },
+                "next_actions": {
+                  "content": "met",
+                  "action": "met",
+                  "purpose": "met",
+                  "critical": "met",
+                  "advanced": "missing"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "missing_evidence",
+          "verdict": "pending",
+          "score_range": 0.0,
+          "level_variation": {},
+          "critical_state_variation": {},
+          "repetitions": [
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 2,
+                "analysis_approach": 0,
+                "sql_accuracy": 0,
+                "interpretation": 1,
+                "next_actions": 0
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "met",
+                  "target": "missing",
+                  "period": "missing",
+                  "unit": "missing",
+                  "metric": "missing",
+                  "observation": "missing",
+                  "critical": "met",
+                  "advanced": "missing"
+                },
+                "analysis_approach": {
+                  "content": "missing",
+                  "method": "missing",
+                  "validation": "missing",
+                  "critical": "met",
+                  "advanced": "missing"
+                },
+                "sql_accuracy": {
+                  "content": "missing",
+                  "execution": "missing",
+                  "calculation": "missing",
+                  "critical": "met",
+                  "advanced": "missing"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "missing",
+                  "scope": "missing",
+                  "critical": "error",
+                  "advanced": "missing"
+                },
+                "next_actions": {
+                  "content": "missing",
+                  "action": "missing",
+                  "purpose": "missing",
+                  "critical": "met",
+                  "advanced": "missing"
+                }
+              }
+            },
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 2,
+                "analysis_approach": 0,
+                "sql_accuracy": 0,
+                "interpretation": 1,
+                "next_actions": 0
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "met",
+                  "target": "missing",
+                  "period": "missing",
+                  "unit": "missing",
+                  "metric": "missing",
+                  "observation": "missing",
+                  "critical": "met",
+                  "advanced": "missing"
+                },
+                "analysis_approach": {
+                  "content": "missing",
+                  "method": "missing",
+                  "validation": "missing",
+                  "critical": "met",
+                  "advanced": "missing"
+                },
+                "sql_accuracy": {
+                  "content": "missing",
+                  "execution": "missing",
+                  "calculation": "missing",
+                  "critical": "met",
+                  "advanced": "missing"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "missing",
+                  "scope": "missing",
+                  "critical": "error",
+                  "advanced": "missing"
+                },
+                "next_actions": {
+                  "content": "missing",
+                  "action": "missing",
+                  "purpose": "missing",
+                  "critical": "met",
+                  "advanced": "missing"
+                }
+              }
+            },
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 2,
+                "analysis_approach": 0,
+                "sql_accuracy": 0,
+                "interpretation": 1,
+                "next_actions": 0
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "met",
+                  "target": "missing",
+                  "period": "missing",
+                  "unit": "missing",
+                  "metric": "missing",
+                  "observation": "missing",
+                  "critical": "met",
+                  "advanced": "missing"
+                },
+                "analysis_approach": {
+                  "content": "missing",
+                  "method": "missing",
+                  "validation": "missing",
+                  "critical": "met",
+                  "advanced": "missing"
+                },
+                "sql_accuracy": {
+                  "content": "missing",
+                  "execution": "missing",
+                  "calculation": "missing",
+                  "critical": "met",
+                  "advanced": "missing"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "missing",
+                  "scope": "missing",
+                  "critical": "error",
+                  "advanced": "missing"
+                },
+                "next_actions": {
+                  "content": "missing",
+                  "action": "missing",
+                  "purpose": "missing",
+                  "critical": "met",
+                  "advanced": "missing"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "valid_alternative",
+          "verdict": "pending",
+          "score_range": 0.0,
+          "level_variation": {},
+          "critical_state_variation": {},
+          "repetitions": [
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 4,
+                "analysis_approach": 4,
+                "sql_accuracy": 4,
+                "interpretation": 4,
+                "next_actions": 4
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "met",
+                  "target": "met",
+                  "period": "met",
+                  "unit": "met",
+                  "metric": "met",
+                  "observation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "analysis_approach": {
+                  "content": "met",
+                  "method": "met",
+                  "validation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "sql_accuracy": {
+                  "content": "met",
+                  "execution": "met",
+                  "calculation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "met",
+                  "scope": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "next_actions": {
+                  "content": "met",
+                  "action": "met",
+                  "purpose": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                }
+              }
+            },
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 4,
+                "analysis_approach": 4,
+                "sql_accuracy": 4,
+                "interpretation": 4,
+                "next_actions": 4
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "met",
+                  "target": "met",
+                  "period": "met",
+                  "unit": "met",
+                  "metric": "met",
+                  "observation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "analysis_approach": {
+                  "content": "met",
+                  "method": "met",
+                  "validation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "sql_accuracy": {
+                  "content": "met",
+                  "execution": "met",
+                  "calculation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "met",
+                  "scope": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "next_actions": {
+                  "content": "met",
+                  "action": "met",
+                  "purpose": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                }
+              }
+            },
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 4,
+                "analysis_approach": 4,
+                "sql_accuracy": 4,
+                "interpretation": 4,
+                "next_actions": 4
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "met",
+                  "target": "met",
+                  "period": "met",
+                  "unit": "met",
+                  "metric": "met",
+                  "observation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "analysis_approach": {
+                  "content": "met",
+                  "method": "met",
+                  "validation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "sql_accuracy": {
+                  "content": "met",
+                  "execution": "met",
+                  "calculation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "met",
+                  "scope": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "next_actions": {
+                  "content": "met",
+                  "action": "met",
+                  "purpose": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "uncertainty",
+          "verdict": "pending",
+          "score_range": 0.0,
+          "level_variation": {},
+          "critical_state_variation": {},
+          "repetitions": [
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 4,
+                "analysis_approach": 4,
+                "sql_accuracy": 4,
+                "interpretation": 4,
+                "next_actions": 4
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "met",
+                  "target": "met",
+                  "period": "met",
+                  "unit": "met",
+                  "metric": "met",
+                  "observation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "analysis_approach": {
+                  "content": "met",
+                  "method": "met",
+                  "validation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "sql_accuracy": {
+                  "content": "met",
+                  "execution": "met",
+                  "calculation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "met",
+                  "scope": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "next_actions": {
+                  "content": "met",
+                  "action": "met",
+                  "purpose": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                }
+              }
+            },
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 4,
+                "analysis_approach": 4,
+                "sql_accuracy": 4,
+                "interpretation": 4,
+                "next_actions": 4
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "met",
+                  "target": "met",
+                  "period": "met",
+                  "unit": "met",
+                  "metric": "met",
+                  "observation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "analysis_approach": {
+                  "content": "met",
+                  "method": "met",
+                  "validation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "sql_accuracy": {
+                  "content": "met",
+                  "execution": "met",
+                  "calculation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "met",
+                  "scope": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "next_actions": {
+                  "content": "met",
+                  "action": "met",
+                  "purpose": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                }
+              }
+            },
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 4,
+                "analysis_approach": 4,
+                "sql_accuracy": 4,
+                "interpretation": 4,
+                "next_actions": 4
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "met",
+                  "target": "met",
+                  "period": "met",
+                  "unit": "met",
+                  "metric": "met",
+                  "observation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "analysis_approach": {
+                  "content": "met",
+                  "method": "met",
+                  "validation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "sql_accuracy": {
+                  "content": "met",
+                  "execution": "met",
+                  "calculation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "met",
+                  "scope": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "next_actions": {
+                  "content": "met",
+                  "action": "met",
+                  "purpose": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "private_request",
+          "verdict": "pending",
+          "score_range": 0.0,
+          "level_variation": {},
+          "critical_state_variation": {},
+          "repetitions": [
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 4,
+                "analysis_approach": 4,
+                "sql_accuracy": 4,
+                "interpretation": 4,
+                "next_actions": 4
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "met",
+                  "target": "met",
+                  "period": "met",
+                  "unit": "met",
+                  "metric": "met",
+                  "observation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "analysis_approach": {
+                  "content": "met",
+                  "method": "met",
+                  "validation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "sql_accuracy": {
+                  "content": "met",
+                  "execution": "met",
+                  "calculation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "met",
+                  "scope": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "next_actions": {
+                  "content": "met",
+                  "action": "met",
+                  "purpose": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                }
+              }
+            },
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 4,
+                "analysis_approach": 4,
+                "sql_accuracy": 4,
+                "interpretation": 4,
+                "next_actions": 4
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "met",
+                  "target": "met",
+                  "period": "met",
+                  "unit": "met",
+                  "metric": "met",
+                  "observation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "analysis_approach": {
+                  "content": "met",
+                  "method": "met",
+                  "validation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "sql_accuracy": {
+                  "content": "met",
+                  "execution": "met",
+                  "calculation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "met",
+                  "scope": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "next_actions": {
+                  "content": "met",
+                  "action": "met",
+                  "purpose": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                }
+              }
+            },
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 4,
+                "analysis_approach": 4,
+                "sql_accuracy": 4,
+                "interpretation": 4,
+                "next_actions": 4
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "met",
+                  "target": "met",
+                  "period": "met",
+                  "unit": "met",
+                  "metric": "met",
+                  "observation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "analysis_approach": {
+                  "content": "met",
+                  "method": "met",
+                  "validation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "sql_accuracy": {
+                  "content": "met",
+                  "execution": "met",
+                  "calculation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "met",
+                  "scope": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "next_actions": {
+                  "content": "met",
+                  "action": "met",
+                  "purpose": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "run_id": "2b1b9e9d-00bd-4c3a-8ff4-c10f36d06f41",
+      "replay_with_latest_server": true,
+      "ai_calls_for_replay": 0,
+      "original_verdict": "fail",
+      "original_variation": {
+        "correct": {
+          "score_range": 0.0,
+          "level_variation": {},
+          "critical_state_variation": {}
+        },
+        "core_error": {
+          "score_range": null,
+          "level_variation": {},
+          "critical_state_variation": {}
+        },
+        "missing_evidence": {
+          "score_range": 12.5,
+          "level_variation": {
+            "problem_definition": [
+              0,
+              2
+            ]
+          },
+          "critical_state_variation": {}
+        },
+        "valid_alternative": {
+          "score_range": 0.0,
+          "level_variation": {},
+          "critical_state_variation": {}
+        },
+        "uncertainty": {
+          "score_range": 0.0,
+          "level_variation": {},
+          "critical_state_variation": {}
+        },
+        "private_request": {
+          "score_range": 0.0,
+          "level_variation": {},
+          "critical_state_variation": {}
+        }
+      },
+      "actual_model": true,
+      "actual_db": true,
+      "status": "completed",
+      "verdict": "pending",
+      "human_quality": "pending",
+      "calls": 18,
+      "samples": [
+        {
+          "id": "correct",
+          "verdict": "pending",
+          "score_range": 0.0,
+          "level_variation": {},
+          "critical_state_variation": {},
+          "repetitions": [
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 4,
+                "analysis_approach": 4,
+                "sql_accuracy": 4,
+                "interpretation": 4,
+                "next_actions": 4
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "met",
+                  "target": "met",
+                  "period": "met",
+                  "unit": "met",
+                  "metric": "met",
+                  "observation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "analysis_approach": {
+                  "content": "met",
+                  "method": "met",
+                  "validation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "sql_accuracy": {
+                  "content": "met",
+                  "execution": "met",
+                  "calculation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "met",
+                  "scope": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "next_actions": {
+                  "content": "met",
+                  "action": "met",
+                  "purpose": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                }
+              }
+            },
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 4,
+                "analysis_approach": 4,
+                "sql_accuracy": 4,
+                "interpretation": 4,
+                "next_actions": 4
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "met",
+                  "target": "met",
+                  "period": "met",
+                  "unit": "met",
+                  "metric": "met",
+                  "observation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "analysis_approach": {
+                  "content": "met",
+                  "method": "met",
+                  "validation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "sql_accuracy": {
+                  "content": "met",
+                  "execution": "met",
+                  "calculation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "met",
+                  "scope": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "next_actions": {
+                  "content": "met",
+                  "action": "met",
+                  "purpose": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                }
+              }
+            },
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 4,
+                "analysis_approach": 4,
+                "sql_accuracy": 4,
+                "interpretation": 4,
+                "next_actions": 4
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "met",
+                  "target": "met",
+                  "period": "met",
+                  "unit": "met",
+                  "metric": "met",
+                  "observation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "analysis_approach": {
+                  "content": "met",
+                  "method": "met",
+                  "validation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "sql_accuracy": {
+                  "content": "met",
+                  "execution": "met",
+                  "calculation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "met",
+                  "scope": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "next_actions": {
+                  "content": "met",
+                  "action": "met",
+                  "purpose": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "core_error",
+          "verdict": "pending",
+          "score_range": null,
+          "level_variation": {},
+          "critical_state_variation": {},
+          "repetitions": [
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 1,
+                "analysis_approach": 3,
+                "sql_accuracy": null,
+                "interpretation": 1,
+                "next_actions": 3
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "met",
+                  "target": "error",
+                  "period": "error",
+                  "unit": "error",
+                  "metric": "error",
+                  "observation": "missing",
+                  "critical": "error",
+                  "advanced": "missing"
+                },
+                "analysis_approach": {
+                  "content": "met",
+                  "method": "met",
+                  "validation": "met",
+                  "critical": "met",
+                  "advanced": "missing"
+                },
+                "sql_accuracy": {
+                  "content": "met",
+                  "execution": "met",
+                  "calculation": "unverifiable",
+                  "critical": "met",
+                  "advanced": "missing"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "error",
+                  "scope": "error",
+                  "critical": "error",
+                  "advanced": "met"
+                },
+                "next_actions": {
+                  "content": "met",
+                  "action": "met",
+                  "purpose": "met",
+                  "critical": "met",
+                  "advanced": "missing"
+                }
+              }
+            },
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 1,
+                "analysis_approach": 3,
+                "sql_accuracy": null,
+                "interpretation": 1,
+                "next_actions": 3
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "met",
+                  "target": "error",
+                  "period": "error",
+                  "unit": "error",
+                  "metric": "error",
+                  "observation": "missing",
+                  "critical": "error",
+                  "advanced": "missing"
+                },
+                "analysis_approach": {
+                  "content": "met",
+                  "method": "met",
+                  "validation": "met",
+                  "critical": "met",
+                  "advanced": "missing"
+                },
+                "sql_accuracy": {
+                  "content": "met",
+                  "execution": "met",
+                  "calculation": "unverifiable",
+                  "critical": "met",
+                  "advanced": "missing"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "error",
+                  "scope": "error",
+                  "critical": "error",
+                  "advanced": "met"
+                },
+                "next_actions": {
+                  "content": "met",
+                  "action": "met",
+                  "purpose": "met",
+                  "critical": "met",
+                  "advanced": "missing"
+                }
+              }
+            },
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 1,
+                "analysis_approach": 3,
+                "sql_accuracy": null,
+                "interpretation": 1,
+                "next_actions": 3
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "met",
+                  "target": "error",
+                  "period": "error",
+                  "unit": "error",
+                  "metric": "missing",
+                  "observation": "missing",
+                  "critical": "error",
+                  "advanced": "missing"
+                },
+                "analysis_approach": {
+                  "content": "met",
+                  "method": "met",
+                  "validation": "met",
+                  "critical": "met",
+                  "advanced": "missing"
+                },
+                "sql_accuracy": {
+                  "content": "met",
+                  "execution": "met",
+                  "calculation": "unverifiable",
+                  "critical": "met",
+                  "advanced": "missing"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "error",
+                  "scope": "error",
+                  "critical": "error",
+                  "advanced": "met"
+                },
+                "next_actions": {
+                  "content": "met",
+                  "action": "met",
+                  "purpose": "met",
+                  "critical": "met",
+                  "advanced": "missing"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "missing_evidence",
+          "verdict": "pending",
+          "score_range": 0.0,
+          "level_variation": {},
+          "critical_state_variation": {},
+          "repetitions": [
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 0,
+                "analysis_approach": 0,
+                "sql_accuracy": 0,
+                "interpretation": 1,
+                "next_actions": 0
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "missing",
+                  "target": "missing",
+                  "period": "missing",
+                  "unit": "missing",
+                  "metric": "missing",
+                  "observation": "missing",
+                  "critical": "met",
+                  "advanced": "missing"
+                },
+                "analysis_approach": {
+                  "content": "missing",
+                  "method": "missing",
+                  "validation": "missing",
+                  "critical": "met",
+                  "advanced": "missing"
+                },
+                "sql_accuracy": {
+                  "content": "missing",
+                  "execution": "missing",
+                  "calculation": "missing",
+                  "critical": "met",
+                  "advanced": "missing"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "missing",
+                  "scope": "missing",
+                  "critical": "error",
+                  "advanced": "missing"
+                },
+                "next_actions": {
+                  "content": "missing",
+                  "action": "missing",
+                  "purpose": "missing",
+                  "critical": "met",
+                  "advanced": "missing"
+                }
+              }
+            },
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 0,
+                "analysis_approach": 0,
+                "sql_accuracy": 0,
+                "interpretation": 1,
+                "next_actions": 0
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "missing",
+                  "target": "missing",
+                  "period": "missing",
+                  "unit": "missing",
+                  "metric": "missing",
+                  "observation": "missing",
+                  "critical": "met",
+                  "advanced": "missing"
+                },
+                "analysis_approach": {
+                  "content": "missing",
+                  "method": "missing",
+                  "validation": "missing",
+                  "critical": "met",
+                  "advanced": "missing"
+                },
+                "sql_accuracy": {
+                  "content": "missing",
+                  "execution": "missing",
+                  "calculation": "missing",
+                  "critical": "met",
+                  "advanced": "missing"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "error",
+                  "scope": "error",
+                  "critical": "error",
+                  "advanced": "missing"
+                },
+                "next_actions": {
+                  "content": "missing",
+                  "action": "missing",
+                  "purpose": "missing",
+                  "critical": "met",
+                  "advanced": "missing"
+                }
+              }
+            },
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 0,
+                "analysis_approach": 0,
+                "sql_accuracy": 0,
+                "interpretation": 1,
+                "next_actions": 0
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "missing",
+                  "target": "missing",
+                  "period": "missing",
+                  "unit": "missing",
+                  "metric": "missing",
+                  "observation": "missing",
+                  "critical": "met",
+                  "advanced": "missing"
+                },
+                "analysis_approach": {
+                  "content": "missing",
+                  "method": "missing",
+                  "validation": "missing",
+                  "critical": "met",
+                  "advanced": "missing"
+                },
+                "sql_accuracy": {
+                  "content": "missing",
+                  "execution": "missing",
+                  "calculation": "missing",
+                  "critical": "met",
+                  "advanced": "missing"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "missing",
+                  "scope": "missing",
+                  "critical": "error",
+                  "advanced": "missing"
+                },
+                "next_actions": {
+                  "content": "missing",
+                  "action": "missing",
+                  "purpose": "missing",
+                  "critical": "met",
+                  "advanced": "missing"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "valid_alternative",
+          "verdict": "pending",
+          "score_range": 0.0,
+          "level_variation": {},
+          "critical_state_variation": {},
+          "repetitions": [
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 4,
+                "analysis_approach": 4,
+                "sql_accuracy": 4,
+                "interpretation": 4,
+                "next_actions": 4
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "met",
+                  "target": "met",
+                  "period": "met",
+                  "unit": "met",
+                  "metric": "met",
+                  "observation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "analysis_approach": {
+                  "content": "met",
+                  "method": "met",
+                  "validation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "sql_accuracy": {
+                  "content": "met",
+                  "execution": "met",
+                  "calculation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "met",
+                  "scope": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "next_actions": {
+                  "content": "met",
+                  "action": "met",
+                  "purpose": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                }
+              }
+            },
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 4,
+                "analysis_approach": 4,
+                "sql_accuracy": 4,
+                "interpretation": 4,
+                "next_actions": 4
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "met",
+                  "target": "met",
+                  "period": "met",
+                  "unit": "met",
+                  "metric": "met",
+                  "observation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "analysis_approach": {
+                  "content": "met",
+                  "method": "met",
+                  "validation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "sql_accuracy": {
+                  "content": "met",
+                  "execution": "met",
+                  "calculation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "met",
+                  "scope": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "next_actions": {
+                  "content": "met",
+                  "action": "met",
+                  "purpose": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                }
+              }
+            },
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 4,
+                "analysis_approach": 4,
+                "sql_accuracy": 4,
+                "interpretation": 4,
+                "next_actions": 4
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "met",
+                  "target": "met",
+                  "period": "met",
+                  "unit": "met",
+                  "metric": "met",
+                  "observation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "analysis_approach": {
+                  "content": "met",
+                  "method": "met",
+                  "validation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "sql_accuracy": {
+                  "content": "met",
+                  "execution": "met",
+                  "calculation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "met",
+                  "scope": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "next_actions": {
+                  "content": "met",
+                  "action": "met",
+                  "purpose": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "uncertainty",
+          "verdict": "pending",
+          "score_range": 0.0,
+          "level_variation": {},
+          "critical_state_variation": {},
+          "repetitions": [
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 4,
+                "analysis_approach": 4,
+                "sql_accuracy": 4,
+                "interpretation": 4,
+                "next_actions": 4
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "met",
+                  "target": "met",
+                  "period": "met",
+                  "unit": "met",
+                  "metric": "met",
+                  "observation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "analysis_approach": {
+                  "content": "met",
+                  "method": "met",
+                  "validation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "sql_accuracy": {
+                  "content": "met",
+                  "execution": "met",
+                  "calculation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "met",
+                  "scope": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "next_actions": {
+                  "content": "met",
+                  "action": "met",
+                  "purpose": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                }
+              }
+            },
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 4,
+                "analysis_approach": 4,
+                "sql_accuracy": 4,
+                "interpretation": 4,
+                "next_actions": 4
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "met",
+                  "target": "met",
+                  "period": "met",
+                  "unit": "met",
+                  "metric": "met",
+                  "observation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "analysis_approach": {
+                  "content": "met",
+                  "method": "met",
+                  "validation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "sql_accuracy": {
+                  "content": "met",
+                  "execution": "met",
+                  "calculation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "met",
+                  "scope": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "next_actions": {
+                  "content": "met",
+                  "action": "met",
+                  "purpose": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                }
+              }
+            },
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 4,
+                "analysis_approach": 4,
+                "sql_accuracy": 4,
+                "interpretation": 4,
+                "next_actions": 4
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "met",
+                  "target": "met",
+                  "period": "met",
+                  "unit": "met",
+                  "metric": "met",
+                  "observation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "analysis_approach": {
+                  "content": "met",
+                  "method": "met",
+                  "validation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "sql_accuracy": {
+                  "content": "met",
+                  "execution": "met",
+                  "calculation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "met",
+                  "scope": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "next_actions": {
+                  "content": "met",
+                  "action": "met",
+                  "purpose": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "private_request",
+          "verdict": "pending",
+          "score_range": 0.0,
+          "level_variation": {},
+          "critical_state_variation": {},
+          "repetitions": [
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 4,
+                "analysis_approach": 4,
+                "sql_accuracy": 4,
+                "interpretation": 4,
+                "next_actions": 4
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "met",
+                  "target": "met",
+                  "period": "met",
+                  "unit": "met",
+                  "metric": "met",
+                  "observation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "analysis_approach": {
+                  "content": "met",
+                  "method": "met",
+                  "validation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "sql_accuracy": {
+                  "content": "met",
+                  "execution": "met",
+                  "calculation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "met",
+                  "scope": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "next_actions": {
+                  "content": "met",
+                  "action": "met",
+                  "purpose": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                }
+              }
+            },
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 4,
+                "analysis_approach": 4,
+                "sql_accuracy": 4,
+                "interpretation": 4,
+                "next_actions": 4
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "met",
+                  "target": "met",
+                  "period": "met",
+                  "unit": "met",
+                  "metric": "met",
+                  "observation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "analysis_approach": {
+                  "content": "met",
+                  "method": "met",
+                  "validation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "sql_accuracy": {
+                  "content": "met",
+                  "execution": "met",
+                  "calculation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "met",
+                  "scope": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "next_actions": {
+                  "content": "met",
+                  "action": "met",
+                  "purpose": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                }
+              }
+            },
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 4,
+                "analysis_approach": 4,
+                "sql_accuracy": 4,
+                "interpretation": 4,
+                "next_actions": 4
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "met",
+                  "target": "met",
+                  "period": "met",
+                  "unit": "met",
+                  "metric": "met",
+                  "observation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "analysis_approach": {
+                  "content": "met",
+                  "method": "met",
+                  "validation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "sql_accuracy": {
+                  "content": "met",
+                  "execution": "met",
+                  "calculation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "met",
+                  "scope": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "next_actions": {
+                  "content": "met",
+                  "action": "met",
+                  "purpose": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "run_id": "7ce868bd-4c55-4ceb-aacc-dd01f9ac094d",
+      "replay_with_latest_server": false,
+      "ai_calls_for_replay": 0,
+      "original_verdict": "fail",
+      "original_variation": {
+        "valid_plan_wrong_execution": {
+          "score_range": null,
+          "level_variation": {},
+          "critical_state_variation": {}
+        },
+        "withdrawn_causal_claim": {
+          "score_range": 0.0,
+          "level_variation": {},
+          "critical_state_variation": {}
+        },
+        "plan_in_other_section": {
+          "score_range": 0.0,
+          "level_variation": {
+            "analysis_approach": [
+              null,
+              4
+            ]
+          },
+          "critical_state_variation": {}
+        }
+      },
+      "actual_model": true,
+      "actual_db": true,
+      "status": "completed",
+      "verdict": "fail",
+      "human_quality": "pending",
+      "calls": 9,
+      "samples": [
+        {
+          "id": "valid_plan_wrong_execution",
+          "verdict": "pending",
+          "score_range": null,
+          "level_variation": {},
+          "critical_state_variation": {},
+          "repetitions": [
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 4,
+                "analysis_approach": 4,
+                "sql_accuracy": null,
+                "interpretation": 4,
+                "next_actions": 4
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "met",
+                  "target": "met",
+                  "period": "met",
+                  "unit": "met",
+                  "metric": "met",
+                  "observation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "analysis_approach": {
+                  "content": "met",
+                  "method": "met",
+                  "validation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "sql_accuracy": {
+                  "content": "met",
+                  "execution": "met",
+                  "calculation": "unverifiable",
+                  "critical": "met",
+                  "advanced": "unverifiable"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "met",
+                  "scope": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "next_actions": {
+                  "content": "met",
+                  "action": "met",
+                  "purpose": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                }
+              }
+            },
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 4,
+                "analysis_approach": 4,
+                "sql_accuracy": null,
+                "interpretation": 4,
+                "next_actions": 4
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "met",
+                  "target": "met",
+                  "period": "met",
+                  "unit": "met",
+                  "metric": "met",
+                  "observation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "analysis_approach": {
+                  "content": "met",
+                  "method": "met",
+                  "validation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "sql_accuracy": {
+                  "content": "met",
+                  "execution": "met",
+                  "calculation": "unverifiable",
+                  "critical": "met",
+                  "advanced": "unverifiable"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "met",
+                  "scope": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "next_actions": {
+                  "content": "met",
+                  "action": "met",
+                  "purpose": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                }
+              }
+            },
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 4,
+                "analysis_approach": 4,
+                "sql_accuracy": null,
+                "interpretation": 4,
+                "next_actions": 4
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "met",
+                  "target": "met",
+                  "period": "met",
+                  "unit": "met",
+                  "metric": "met",
+                  "observation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "analysis_approach": {
+                  "content": "met",
+                  "method": "met",
+                  "validation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "sql_accuracy": {
+                  "content": "met",
+                  "execution": "met",
+                  "calculation": "unverifiable",
+                  "critical": "met",
+                  "advanced": "unverifiable"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "met",
+                  "scope": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "next_actions": {
+                  "content": "met",
+                  "action": "met",
+                  "purpose": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "withdrawn_causal_claim",
+          "verdict": "pending",
+          "score_range": 0.0,
+          "level_variation": {},
+          "critical_state_variation": {},
+          "repetitions": [
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 4,
+                "analysis_approach": 4,
+                "sql_accuracy": 4,
+                "interpretation": 4,
+                "next_actions": 4
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "met",
+                  "target": "met",
+                  "period": "met",
+                  "unit": "met",
+                  "metric": "met",
+                  "observation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "analysis_approach": {
+                  "content": "met",
+                  "method": "met",
+                  "validation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "sql_accuracy": {
+                  "content": "met",
+                  "execution": "met",
+                  "calculation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "met",
+                  "scope": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "next_actions": {
+                  "content": "met",
+                  "action": "met",
+                  "purpose": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                }
+              }
+            },
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 4,
+                "analysis_approach": 4,
+                "sql_accuracy": 4,
+                "interpretation": 4,
+                "next_actions": 4
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "met",
+                  "target": "met",
+                  "period": "met",
+                  "unit": "met",
+                  "metric": "met",
+                  "observation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "analysis_approach": {
+                  "content": "met",
+                  "method": "met",
+                  "validation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "sql_accuracy": {
+                  "content": "met",
+                  "execution": "met",
+                  "calculation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "met",
+                  "scope": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "next_actions": {
+                  "content": "met",
+                  "action": "met",
+                  "purpose": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                }
+              }
+            },
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 4,
+                "analysis_approach": 4,
+                "sql_accuracy": 4,
+                "interpretation": 4,
+                "next_actions": 4
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "met",
+                  "target": "met",
+                  "period": "met",
+                  "unit": "met",
+                  "metric": "met",
+                  "observation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "analysis_approach": {
+                  "content": "met",
+                  "method": "met",
+                  "validation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "sql_accuracy": {
+                  "content": "met",
+                  "execution": "met",
+                  "calculation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "met",
+                  "scope": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "next_actions": {
+                  "content": "met",
+                  "action": "met",
+                  "purpose": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "plan_in_other_section",
+          "verdict": "fail",
+          "score_range": 0.0,
+          "level_variation": {
+            "analysis_approach": [
+              null,
+              4
+            ]
+          },
+          "critical_state_variation": {},
+          "repetitions": [
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "fail",
+              "levels": {
+                "problem_definition": 4,
+                "analysis_approach": null,
+                "sql_accuracy": 4,
+                "interpretation": 4,
+                "next_actions": 4
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "met",
+                  "target": "met",
+                  "period": "met",
+                  "unit": "met",
+                  "metric": "met",
+                  "observation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "analysis_approach": {
+                  "content": "missing",
+                  "method": "unverifiable",
+                  "validation": "unverifiable",
+                  "critical": "met",
+                  "advanced": "unverifiable"
+                },
+                "sql_accuracy": {
+                  "content": "met",
+                  "execution": "met",
+                  "calculation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "met",
+                  "scope": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "next_actions": {
+                  "content": "met",
+                  "action": "met",
+                  "purpose": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                }
+              }
+            },
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 4,
+                "analysis_approach": 4,
+                "sql_accuracy": 4,
+                "interpretation": 4,
+                "next_actions": 4
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "met",
+                  "target": "met",
+                  "period": "met",
+                  "unit": "met",
+                  "metric": "met",
+                  "observation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "analysis_approach": {
+                  "content": "met",
+                  "method": "met",
+                  "validation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "sql_accuracy": {
+                  "content": "met",
+                  "execution": "met",
+                  "calculation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "met",
+                  "scope": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "next_actions": {
+                  "content": "met",
+                  "action": "met",
+                  "purpose": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                }
+              }
+            },
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 4,
+                "analysis_approach": 4,
+                "sql_accuracy": 4,
+                "interpretation": 4,
+                "next_actions": 4
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "met",
+                  "target": "met",
+                  "period": "met",
+                  "unit": "met",
+                  "metric": "met",
+                  "observation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "analysis_approach": {
+                  "content": "met",
+                  "method": "met",
+                  "validation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "sql_accuracy": {
+                  "content": "met",
+                  "execution": "met",
+                  "calculation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "met",
+                  "scope": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "next_actions": {
+                  "content": "met",
+                  "action": "met",
+                  "purpose": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "run_id": "634f0ecd-29d6-4a88-a1b5-eb64de68a2cb",
+      "replay_with_latest_server": false,
+      "ai_calls_for_replay": 0,
+      "original_verdict": "pending",
+      "original_variation": {
+        "missing_evidence": {
+          "score_range": 0.0,
+          "level_variation": {},
+          "critical_state_variation": {}
+        },
+        "plan_in_other_section": {
+          "score_range": 0.0,
+          "level_variation": {},
+          "critical_state_variation": {}
+        }
+      },
+      "actual_model": true,
+      "actual_db": true,
+      "status": "completed",
+      "verdict": "pending",
+      "human_quality": "pending",
+      "calls": 6,
+      "samples": [
+        {
+          "id": "missing_evidence",
+          "verdict": "pending",
+          "score_range": 0.0,
+          "level_variation": {},
+          "critical_state_variation": {},
+          "repetitions": [
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 0,
+                "analysis_approach": 0,
+                "sql_accuracy": 0,
+                "interpretation": 1,
+                "next_actions": 0
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "missing",
+                  "target": "missing",
+                  "period": "missing",
+                  "unit": "missing",
+                  "metric": "missing",
+                  "observation": "missing",
+                  "critical": "met",
+                  "advanced": "missing"
+                },
+                "analysis_approach": {
+                  "content": "missing",
+                  "method": "missing",
+                  "validation": "missing",
+                  "critical": "met",
+                  "advanced": "missing"
+                },
+                "sql_accuracy": {
+                  "content": "missing",
+                  "execution": "missing",
+                  "calculation": "missing",
+                  "critical": "met",
+                  "advanced": "missing"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "error",
+                  "scope": "error",
+                  "critical": "error",
+                  "advanced": "missing"
+                },
+                "next_actions": {
+                  "content": "missing",
+                  "action": "missing",
+                  "purpose": "missing",
+                  "critical": "met",
+                  "advanced": "missing"
+                }
+              }
+            },
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 0,
+                "analysis_approach": 0,
+                "sql_accuracy": 0,
+                "interpretation": 1,
+                "next_actions": 0
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "missing",
+                  "target": "missing",
+                  "period": "missing",
+                  "unit": "missing",
+                  "metric": "missing",
+                  "observation": "missing",
+                  "critical": "met",
+                  "advanced": "missing"
+                },
+                "analysis_approach": {
+                  "content": "missing",
+                  "method": "missing",
+                  "validation": "missing",
+                  "critical": "met",
+                  "advanced": "missing"
+                },
+                "sql_accuracy": {
+                  "content": "missing",
+                  "execution": "missing",
+                  "calculation": "missing",
+                  "critical": "met",
+                  "advanced": "missing"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "missing",
+                  "scope": "missing",
+                  "critical": "error",
+                  "advanced": "missing"
+                },
+                "next_actions": {
+                  "content": "missing",
+                  "action": "missing",
+                  "purpose": "missing",
+                  "critical": "met",
+                  "advanced": "missing"
+                }
+              }
+            },
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 0,
+                "analysis_approach": 0,
+                "sql_accuracy": 0,
+                "interpretation": 1,
+                "next_actions": 0
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "missing",
+                  "target": "missing",
+                  "period": "missing",
+                  "unit": "missing",
+                  "metric": "missing",
+                  "observation": "missing",
+                  "critical": "met",
+                  "advanced": "missing"
+                },
+                "analysis_approach": {
+                  "content": "missing",
+                  "method": "missing",
+                  "validation": "missing",
+                  "critical": "met",
+                  "advanced": "missing"
+                },
+                "sql_accuracy": {
+                  "content": "missing",
+                  "execution": "missing",
+                  "calculation": "missing",
+                  "critical": "met",
+                  "advanced": "missing"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "missing",
+                  "scope": "missing",
+                  "critical": "error",
+                  "advanced": "missing"
+                },
+                "next_actions": {
+                  "content": "missing",
+                  "action": "missing",
+                  "purpose": "missing",
+                  "critical": "met",
+                  "advanced": "missing"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "plan_in_other_section",
+          "verdict": "pending",
+          "score_range": 0.0,
+          "level_variation": {},
+          "critical_state_variation": {},
+          "repetitions": [
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 4,
+                "analysis_approach": 4,
+                "sql_accuracy": 4,
+                "interpretation": 4,
+                "next_actions": 4
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "met",
+                  "target": "met",
+                  "period": "met",
+                  "unit": "met",
+                  "metric": "met",
+                  "observation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "analysis_approach": {
+                  "content": "met",
+                  "method": "met",
+                  "validation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "sql_accuracy": {
+                  "content": "met",
+                  "execution": "met",
+                  "calculation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "met",
+                  "scope": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "next_actions": {
+                  "content": "met",
+                  "action": "met",
+                  "purpose": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                }
+              }
+            },
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 4,
+                "analysis_approach": 4,
+                "sql_accuracy": 4,
+                "interpretation": 4,
+                "next_actions": 4
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "met",
+                  "target": "met",
+                  "period": "met",
+                  "unit": "met",
+                  "metric": "met",
+                  "observation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "analysis_approach": {
+                  "content": "met",
+                  "method": "met",
+                  "validation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "sql_accuracy": {
+                  "content": "met",
+                  "execution": "met",
+                  "calculation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "met",
+                  "scope": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "next_actions": {
+                  "content": "met",
+                  "action": "met",
+                  "purpose": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                }
+              }
+            },
+            {
+              "status": "completed",
+              "error": null,
+              "automatic_verdict": "pass",
+              "levels": {
+                "problem_definition": 4,
+                "analysis_approach": 4,
+                "sql_accuracy": 4,
+                "interpretation": 4,
+                "next_actions": 4
+              },
+              "conditions": {
+                "problem_definition": {
+                  "content": "met",
+                  "target": "met",
+                  "period": "met",
+                  "unit": "met",
+                  "metric": "met",
+                  "observation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "analysis_approach": {
+                  "content": "met",
+                  "method": "met",
+                  "validation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "sql_accuracy": {
+                  "content": "met",
+                  "execution": "met",
+                  "calculation": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "interpretation": {
+                  "content": "met",
+                  "meaning": "met",
+                  "scope": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                },
+                "next_actions": {
+                  "content": "met",
+                  "action": "met",
+                  "purpose": "met",
+                  "critical": "met",
+                  "advanced": "met"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "original_raw_runs_preserved": true
+}

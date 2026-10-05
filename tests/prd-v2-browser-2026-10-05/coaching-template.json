@@ -1,0 +1,63 @@
+{
+  "actual_browser": true,
+  "actual_model": true,
+  "actual_db": true,
+  "attempt_id": "a1a57551-2c55-4dbd-b7d7-f9a14f1e1010",
+  "checks": [
+    {
+      "name": "actual_coaching",
+      "passed": true,
+      "response": {
+        "status": "completed",
+        "feedback": {
+          "action_type": "suggest_analysis",
+          "reason": "전체 유저 수만 확인되어 미재접속 조건을 적용한 수치는 아직 미확인 상태입니다.",
+          "next_action": "D1부터 D7까지의 미재접속 여부를 판별하여 고유 유저 분모와 미재접속자 수를 다시 집계해주세요.",
+          "evidence_ids": [
+            "public-task",
+            "draft",
+            "3549c772-2305-48a3-a8c9-081f889e19f3"
+          ],
+          "uncertainty": "현재 전체 유저 수만으로는 미재접속률을 정확히 확정할 수 없습니다.",
+          "evidence_state": "mixed"
+        },
+        "error": null,
+        "model": "gemini-3.5-flash-lite",
+        "contract_version": "coaching-v2",
+        "prompt_version": "cumulative-coach-v3",
+        "transient": false,
+        "action_id": "f8b0f23f-61c9-4343-998b-deed63cdf33d"
+      }
+    },
+    {
+      "name": "reload_preserves_readable_feedback",
+      "passed": true
+    },
+    {
+      "name": "temporary_feedback_disappears_after_reload",
+      "passed": true,
+      "response": {
+        "status": "completed",
+        "feedback": {
+          "action_type": "clarify",
+          "reason": "현재 유저 수만 확인되었으며 미재접속 조건을 적용한 수치는 아직 미확인 상태입니다.",
+          "next_action": "미재접속자 수와 관측 제외 인원을 분리하여 명확히 정의해주세요.",
+          "evidence_ids": [
+            "public-task",
+            "draft"
+          ],
+          "uncertainty": "현재 자료만으로는 미재접속률과 그 원인을 확정할 수 없습니다.",
+          "evidence_state": "mixed"
+        },
+        "error": null,
+        "model": "gemini-3.5-flash-lite",
+        "contract_version": "coaching-v2",
+        "prompt_version": "cumulative-coach-v3",
+        "transient": true,
+        "action_id": "b2256beb-afdf-47b1-9955-110f4b046a13"
+      }
+    }
+  ],
+  "page_errors": [],
+  "passed": true
+}

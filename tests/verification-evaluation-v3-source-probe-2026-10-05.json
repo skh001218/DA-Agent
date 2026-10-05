@@ -1,0 +1,11 @@
+{
+  "actual_model": true,
+  "sample_id": "valid_alternative",
+  "prompt_version": "condition-review-v3",
+  "source_text_recorded": false,
+  "issues": [
+    {"criterion": "sql_accuracy", "condition": "execution", "kind": "quote_not_exact"},
+    {"criterion": "sql_accuracy", "condition": "calculation", "kind": "quote_not_exact"}
+  ],
+  "fix": "condition-review-v3-source-ids selects allowed source paths; the server copies exact excerpts."
+}

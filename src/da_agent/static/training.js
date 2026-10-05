@@ -104,7 +104,8 @@ function renderConversation(messages) {
   $('#conversation-history').replaceChildren();
   for (const message of messages) {
     const node = el('article');
-    node.append(el('p', `질문: ${message.message}`), el('p', message.response.feedback || message.response.error?.message || ''), el('p', '저장된 대화', 'muted'));
+    const feedback = message.response.feedback;
+    node.append(el('p', `질문: ${message.message}`), el('p', feedback && typeof feedback === 'object' ? pretty(feedback) : feedback || message.response.error?.message || '', 'prose'), el('p', '저장된 대화', 'muted'));
     $('#conversation-history').append(node);
   }
 }

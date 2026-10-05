@@ -18,7 +18,7 @@ def request(**changes):
 def selection(**changes):
     return dict(dict(analysis_topic='return_observation', capability_id='access-investigation',
         difficulty='intermediate', task_kind='investigation', goal='접속 관측 조건 비교',
-        reason='요청의 분석 목표 확인', unsupported=False), **changes)
+        reason='요청의 분석 목표 확인', unsupported=False, questions=[]), **changes)
 
 
 def parse(value, data=None):

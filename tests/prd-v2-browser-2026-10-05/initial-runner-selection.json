@@ -1,0 +1,70 @@
+{
+  "actual_browser": true,
+  "actual_api": true,
+  "provider_mocked": false,
+  "checks": {
+    "learning_revision_conflict": {
+      "passed": true,
+      "input_preserved": true
+    },
+    "delete_cancel_keyboard": {
+      "passed": true,
+      "delete_requests": 0
+    },
+    "unsupported_input_preserved": {
+      "passed": true,
+      "request_id": "6bd9fd15-ad36-4ff7-9c62-e125ec4fc2fd",
+      "status": "failed"
+    },
+    "clarification_answer": {
+      "passed": true,
+      "request_id": "9022096f-c271-446b-bbbd-dbd4e0d0cc0d",
+      "attempt_id": "36cf1fc7-27d3-49a1-947c-3a6adc40eceb"
+    }
+  },
+  "flows": [
+    {
+      "kind": "calculation",
+      "level": "beginner",
+      "request_id": "878081f5-9cc9-4b92-8dea-dfb8cea0a204",
+      "request_status": "ready",
+      "planning_calls": 1,
+      "attempt_id": "207ba085-2262-46e5-a16d-904daf47a32b",
+      "sql_error_preserved": true,
+      "sql_saved": true,
+      "coaching_status": "completed",
+      "coaching_error": null,
+      "passed": false,
+      "error": "locator.check: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#claims input[type=checkbox]').first()\u001b[22m\n"
+    },
+    {
+      "kind": "review",
+      "level": "intermediate",
+      "request_id": "290bd5ff-411e-4cce-b002-67ca90dfbd77",
+      "request_status": "ready",
+      "planning_calls": 1,
+      "attempt_id": "a3bc11e7-d0bf-42b2-84e0-cd4ee651c29b",
+      "sql_error_preserved": true,
+      "sql_saved": true,
+      "coaching_status": "completed",
+      "coaching_error": null,
+      "passed": false,
+      "error": "locator.check: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#claims input[type=checkbox]').first()\u001b[22m\n"
+    }
+  ],
+  "console_errors": [],
+  "retained_samples": [
+    {
+      "purpose": "clarification",
+      "attempt_id": "36cf1fc7-27d3-49a1-947c-3a6adc40eceb"
+    },
+    {
+      "purpose": "calculation",
+      "attempt_id": "207ba085-2262-46e5-a16d-904daf47a32b"
+    },
+    {
+      "purpose": "review",
+      "attempt_id": "a3bc11e7-d0bf-42b2-84e0-cd4ee651c29b"
+    }
+  ]
+}

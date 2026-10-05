@@ -26,8 +26,8 @@ async function listRuns() {
 }
 function renderFeedback(container, result) {
   if (result.status !== 'completed') { container.append(node('p', result.error?.message || '평가 응답을 완료하지 못했습니다.', 'error')); return; }
-  const feedback = result.feedback; container.append(node('h3', `${feedback.total_score} / 100점`));
-  for (const criterion of feedback.criteria) container.append(node('p', `${labels[criterion.key]}: ${criterion.score}/${criterion.weight}`, 'muted'), node('p', criterion.reason, 'prose'));
+  const feedback = result.feedback; container.append(node('h3', feedback.total_score == null ? `총점 보류 · 확정 ${feedback.confirmed_score ?? 0}점` : `${feedback.total_score} / 100점`));
+  for (const criterion of feedback.criteria) container.append(node('p', criterion.level == null ? `${labels[criterion.key]}: 판정 보류` : `${labels[criterion.key]}: ${criterion.score}/${criterion.weight}`, 'muted'), node('p', criterion.reason, 'prose'));
   for (const [key, title] of [['strengths', '잘한 점'], ['improvements', '보완할 점'], ['next_steps', '다음 행동']]) { container.append(node('h3', title)); for (const text of feedback[key]) container.append(node('p', text, 'prose')); }
 }
 async function openRun(id) {

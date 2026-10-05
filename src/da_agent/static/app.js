@@ -10,6 +10,14 @@ const sectionLabels = { problem_definition: '문제 정의', hypothesis: '가설
 function kst(value) { const date = new Date(value); return Number.isNaN(date.getTime()) ? String(value) : `${new Intl.DateTimeFormat('ko-KR', { timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23' }).format(date)} KST`; }
 function renderProblemMetadata(problem) {
   const container = $('#problem-metadata'); container.replaceChildren();
+  if (problem.evaluation_rubric) {
+    const detail = el('details'); detail.append(el('summary', '고정 평가 조건 · v3'));
+    for (const criterion of problem.evaluation_rubric.criteria) {
+      detail.append(el('h3', ({problem_definition:'문제 정의',analysis_approach:'분석 접근',sql_accuracy:'SQL 정확성',interpretation:'결과 해석',next_actions:'다음 행동'})[criterion.key] || criterion.key));
+      for (const condition of criterion.conditions) detail.append(el('p', condition.description, 'prose'));
+    }
+    container.append(detail);
+  }
   if (problem.original_request) container.append(el('p', `내 요청: ${problem.original_request}`, 'prose'));
   if (problem.evaluation_status) container.append(el('p', problem.evaluation_status, 'muted'));
   if (problem.goal) container.append(el('p', `학습 목표: ${problem.goal}`, 'prose'));
@@ -171,10 +179,11 @@ function renderReports() {
 function renderFeedback(container, review) {
   const feedback = review.feedback;
   if (!feedback?.criteria) { container.append(el('p', review.error?.message || (typeof review.error === 'string' ? 'ChatGPT 연결을 확인한 뒤 다시 요청하세요.' : feedback || '리뷰 처리 중입니다.'), 'prose')); return; }
-  container.append(el('p', `총점 ${feedback.total_score} / 100점`));
+  container.append(el('p', feedback.total_score == null ? `총점 보류 · 확정 점수 ${feedback.confirmed_score ?? 0} / 확인된 배점 ${feedback.confirmed_weight ?? 0}점` : `총점 ${feedback.total_score} / 100점`));
+  if (feedback.excluded_criteria?.includes('sql_accuracy')) container.append(el('p', 'SQL 정확성: 미적용 · 설계 과제', 'muted'));
   const labels = { problem_definition: '문제 정의', analysis_approach: '분석 접근', sql_accuracy: 'SQL 정확성', interpretation: '결과 해석', next_actions: '추가 분석·액션' };
   for (const item of feedback.criteria) {
-    container.append(el('h3', `${labels[item.key] || item.key} · ${item.score}/${item.weight}점 (수준 ${item.level}/4)`), el('p', item.reason, 'prose'));
+    container.append(el('h3', item.level == null ? `${labels[item.key] || item.key} · 판정 보류 (${item.weight}점)` : `${labels[item.key] || item.key} · ${item.score}/${item.weight}점 (수준 ${item.level}/4)`), el('p', item.reason, 'prose'));
     if (item.evidence_refs || item.evidence) container.append(el('p', `평가 근거: ${pretty(item.evidence_refs || item.evidence)}`, 'prose'));
     if (item.missing_evidence) container.append(el('p', `부족한 근거: ${pretty(item.missing_evidence)}`, 'muted'));
     if (item.next_action) container.append(el('p', `수정 행동: ${item.next_action}`, 'prose'));

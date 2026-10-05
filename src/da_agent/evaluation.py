@@ -20,6 +20,13 @@ def freeze_evaluation(public, reference):
         raise ValueError('design task cannot require SQL accuracy')
     frozen = {k: copy.deepcopy(reference[k]) for k in ('expected', 'comparison_expected', 'rubric', 'required_judgments', 'required_evidence', 'allowed_limitations', 'excluded_criteria', 'verification_contracts') if k in reference}
     frozen.update(weights=weights, completion_conditions=copy.deepcopy(public.get('completion_conditions', [])), rules_version=RULES_VERSION)
+    if public.get('evaluation_version') == 'request-review-v3':
+        from .evaluation_v3 import public_rubric, VERSION
+        rubric = public_rubric(public)
+        if public.get('evaluation_rubric') and public['evaluation_rubric'] != rubric:
+            raise ValueError('public rubric differs from frozen rules')
+        public['evaluation_rubric'] = copy.deepcopy(rubric)
+        frozen.update(rules_version=VERSION, condition_rubric=rubric)
     frozen['contract_hash'] = hashlib.sha256(json.dumps(frozen, ensure_ascii=False, sort_keys=True).encode()).hexdigest()
     return frozen
 

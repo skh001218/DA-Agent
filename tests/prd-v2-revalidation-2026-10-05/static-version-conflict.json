@@ -1,0 +1,16 @@
+{
+  "host": {
+    "index.html": "d8af0a728fc62426e70885825ae84c6b387d5edd8a0a8f95bb06a7b238b9fff5",
+    "app.js": "9ec2a4c31a1cccf6b1e78663e89c974d2de4459138ecd70f3d12127bcdd1ccd6",
+    "training.js": "97d27ff97b16f5ade9526187448852f2a4acab5ba169d9e5c31cbe5fce161261",
+    "styles.css": "da212652e931dedd8e8eb7f08df46263487ed2c2eec497578c52107657e9eafb"
+  },
+  "live": {
+    "index.html": "0c809b44942b2580d3508f73cb62d577b6a4def8979d955f8613b526c7d8afeb",
+    "app.js": "bc9e506fb20e5a1b6aa1c969cdbd6d5f04e97f842783b77e62ceec2a73257226",
+    "training.js": "8807b4e69d9a24b656e950b094bdaf052e30f4bf41ce01a65a2e859a90b4505d",
+    "styles.css": "d21fdfc7a0bb6978853b38223a28c84e5ffc284c66e0ad930b782dda0b89dad6"
+  },
+  "matches": false,
+  "scope": "end of browser run; initial DB snapshot matched host"
+}

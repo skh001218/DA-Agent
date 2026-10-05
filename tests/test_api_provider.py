@@ -28,6 +28,22 @@ def test_explicit_provider_selection_and_missing_key(tmp_path, monkeypatch):
         configured_provider()
 
 
+@pytest.mark.parametrize('kind', ['http', 'timeout', 'transport', 'invalid_json'])
+def test_failure_diagnostics_are_safe_and_survive_normalization(tmp_path, kind):
+    from da_agent.reviews import normalize_ai
+    def handler(request):
+        if kind=='http': return httpx.Response(503,json={'error':{'message':'sk-test-secret'}})
+        if kind=='timeout': raise httpx.ReadTimeout('sk-test-secret',request=request)
+        if kind=='transport': raise httpx.ConnectError('sk-test-secret',request=request)
+        return httpx.Response(200,text='sk-test-secret')
+    result=provider(tmp_path,handler).review([{'role':'user','content':'private submission'}])
+    diagnostic=normalize_ai(result)['error']['provider_diagnostic']
+    assert diagnostic['timeout']==(kind=='timeout')
+    assert len(diagnostic['request_id'])==36
+    assert 'sk-test-secret' not in json.dumps(result)
+    assert 'private submission' not in json.dumps(result)
+
+
 def test_completed_request_and_secret_boundary(tmp_path):
     requests = []
     def handler(request):
@@ -53,6 +69,23 @@ def test_provider_returns_observed_usage_without_estimation(tmp_path):
     assert value.review([])['usage'] == {'input_tokens': 11, 'output_tokens': 7, 'total_tokens': 18}
 
 
+def test_coaching_provider_enforces_five_fields_and_actual_source_ids(tmp_path):
+    from da_agent.coaching import coaching_messages, coaching_schema
+    requests = []
+    def handler(request):
+        requests.append(json.loads(request.content))
+        return httpx.Response(200, json=completed('{}'))
+    context = {'contract_version': 'coaching-v2', 'sources': [{'id': 'public-task', 'state': 'public'}], 'message': '질문'}
+    provider(tmp_path, handler).review(coaching_messages(context))
+    assert requests[0]['generationConfig']['responseMimeType'] == 'application/json'
+    schema = requests[0]['generationConfig']['responseJsonSchema']
+    assert set(schema['required']) == {'action_type', 'reason', 'next_action', 'evidence_ids', 'uncertainty'}
+    assert schema['additionalProperties'] is False
+    assert schema['properties']['evidence_ids']['items']['enum'] == ['public-task']
+    assert 'evidence_state' not in schema['properties']
+    assert coaching_schema({'sources': []})['properties']['evidence_ids']['maxItems'] == 0
+
+
 def test_adaptive_json_mode_preserves_general_text_calls(tmp_path):
     requests=[]
     def handler(request):
@@ -64,6 +97,45 @@ def test_adaptive_json_mode_preserves_general_text_calls(tmp_path):
         assert requests[-1]['generationConfig']=={'maxOutputTokens':8192,'responseMimeType':'application/json'}
     value.review([{'role':'user','content':'코칭 질문'}])
     assert requests[-1]['generationConfig']=={'maxOutputTokens':4096}
+
+
+def test_interpretation_json_schema_and_capability_bounds(tmp_path):
+    from da_agent.task_planner import interpretation_messages
+    from da_agent.task_contracts import RequestV2
+    from da_agent.capabilities import CAPABILITIES
+    requests=[]
+    def handler(request):
+        requests.append(json.loads(request.content))
+        return httpx.Response(200,json=completed('{}'))
+    value=provider(tmp_path,handler)
+    data=RequestV2(contract_version='request-v2',request_id='test',message='접속 분석',data_mode='existing')
+    caps=[dict(c,domain='access',tables=['users','sessions'],supported_topic='return_observation',scope='D1~D7 미재접속') for c in CAPABILITIES]
+    value.review(interpretation_messages(data,caps,[]))
+    config=requests[-1]['generationConfig']
+    assert config['responseMimeType']=='application/json'
+    schema=config['responseJsonSchema']
+    assert schema['additionalProperties'] is False
+    assert set(schema['required'])=={'analysis_topic','capability_id','difficulty','task_kind','goal','questions','unsupported','reason'}
+    assert schema['properties']['capability_id']['anyOf'][0]['enum']==[c['capability_id'] for c in CAPABILITIES]
+    assert config['maxOutputTokens']==4096
+
+
+def test_v3_condition_review_schema_without_model_grades(tmp_path):
+    from da_agent.evaluation import freeze_evaluation
+    from da_agent.evaluation_v3 import review_messages, review_envelope
+    calls=[]
+    def handler(request):
+        calls.append(json.loads(request.content))
+        return httpx.Response(200,json=completed('{}'))
+    p={'evaluation_version':'request-review-v3','task_kind':'design','weights':{'analysis_approach':100},'completion_conditions':['분석 방법 설계']}
+    f=freeze_evaluation(p,{'weights':p['weights']})
+    provider(tmp_path,handler).review(review_messages(review_envelope(p,{'content':{'hypothesis':'방법 설계'},'claims':[]},[],f)))
+    config=calls[-1]['generationConfig']
+    assert config['maxOutputTokens']==8192
+    assert config['responseMimeType']=='application/json'
+    schema=config['responseJsonSchema']['properties']['criteria']['items']
+    assert set(schema['properties'])=={'key','conditions'}
+    assert schema['additionalProperties'] is False
 
 
 @pytest.mark.parametrize("status,code,expected", [(401,"invalid_api_key","api_key_invalid"), (403,None,"api_permission_denied"), (404,None,"model_unavailable"), (429,"RESOURCE_EXHAUSTED","api_rate_limited"), (429,"rate_limit_exceeded","api_rate_limited"), (500,None,"api_unavailable"), (400,None,"api_request_invalid"), (400,"API_KEY_INVALID","api_key_invalid")])

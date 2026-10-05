@@ -286,12 +286,18 @@ class Training:
                     used=row['payload'].get('ai_calls',0)
                     if used>=int(os.getenv('DA_TRAINING_AI_LIMIT','30')): return {'state':'error','reason':'usage_limit_exceeded'}
                     conn.execute('UPDATE attempts SET payload=payload || %s WHERE attempt_id=%s',(Jsonb({'ai_calls':used+1}),attempt_id))
-                op=telemetry.begin(self.store,'ai',operation_id='ai-'+operation_id,attempt_id=attempt_id,domain=self.store.get(attempt_id).get('domain','access'),rules_version='request-review-v2',prompt_version='request-prompt-v2')
+                from .evaluation_v3 import PROMPT_VERSION as REVIEW_PROMPT_VERSION
+                from .coaching import PROMPT_VERSION as COACHING_PROMPT_VERSION
+                envelope = {}
+                try: envelope=json.loads(messages[-1]['content'])
+                except (ValueError, TypeError, KeyError): pass
+                evaluation_version=envelope.get('evaluation_version') or self.store.get(attempt_id).get('evaluation_rules_version','request-review-v2')
+                op=telemetry.begin(self.store,'ai',operation_id='ai-'+operation_id,attempt_id=attempt_id,domain=self.store.get(attempt_id).get('domain','access'),rules_version=evaluation_version,prompt_version=COACHING_PROMPT_VERSION if envelope.get('contract_version')=='coaching-v2' else REVIEW_PROMPT_VERSION if envelope.get('evaluation_version')=='request-review-v3' else 'request-prompt-v2')
                 try: result=dict(self.auth.review(messages))
                 except Exception: result={'state':'error','reason':'api_unavailable'}
                 normal=normalize_ai(result)
                 usage=result.get('usage') or {}
-                telemetry.finish(self.store,op,'completed' if normal['status']=='completed' else 'failed',error_code=None if normal['status']=='completed' else 'provider_failure',model_version=result.get('model'),input_tokens=usage.get('input_tokens'),output_tokens=usage.get('output_tokens'),usage_missing_reason=None if usage else 'not_reported')
+                telemetry.finish(self.store,op,'completed' if normal['status']=='completed' else 'failed',error_code=None if normal['status']=='completed' else 'provider_failure',model_version=result.get('model'),input_tokens=usage.get('input_tokens'),output_tokens=usage.get('output_tokens'),usage_missing_reason=None if usage else 'not_reported', provider_diagnostic=result.get('provider_diagnostic'))
                 return result
         with self.ai_lock:
             with self.store.locked(attempt_id) as (conn, row):

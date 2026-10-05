@@ -1,0 +1,101 @@
+{
+  "actual_browser": true,
+  "actual_db": true,
+  "model_calls": 0,
+  "approval_actions": 0,
+  "rules": [
+    {
+      "capability_id": "access-calculation",
+      "samples": [
+        {
+          "sample_id": "2c55e452-195e-4878-83d7-7b6cdb9fe7dd",
+          "difficulty": "beginner",
+          "status": "validated",
+          "package_id": "sample-2c55e452195e487883d77b6cdb9fe7dd"
+        },
+        {
+          "sample_id": "e3a0acfe-878e-44b5-8ce4-a60fa121eac7",
+          "difficulty": "intermediate",
+          "status": "validated",
+          "package_id": "sample-e3a0acfe878e44b58ce4a60fa121eac7"
+        },
+        {
+          "sample_id": "2b06fc4f-5cc5-4a36-8683-a329d8edea2c",
+          "difficulty": "advanced",
+          "status": "validated",
+          "package_id": "sample-2b06fc4f5cc54a368683a329d8edea2c"
+        }
+      ]
+    },
+    {
+      "capability_id": "access-review",
+      "samples": [
+        {
+          "sample_id": "42f2a028-d75c-405d-9e10-4f26f2071ac4",
+          "difficulty": "beginner",
+          "status": "validated",
+          "package_id": "sample-42f2a028d75c405d9e104f26f2071ac4"
+        },
+        {
+          "sample_id": "ca6c82f9-1047-4c59-8e65-45400c5a5fe6",
+          "difficulty": "intermediate",
+          "status": "validated",
+          "package_id": "sample-ca6c82f910474c598e6545400c5a5fe6"
+        },
+        {
+          "sample_id": "526d527f-a24f-4cc3-a778-343c69415e8c",
+          "difficulty": "advanced",
+          "status": "validated",
+          "package_id": "sample-526d527fa24f4cc3a778343c69415e8c"
+        }
+      ]
+    },
+    {
+      "capability_id": "access-design",
+      "samples": [
+        {
+          "sample_id": "a9445cb4-849a-41ac-96b2-4806aa8a7545",
+          "difficulty": "beginner",
+          "status": "validated",
+          "package_id": "sample-a9445cb4849a41ac96b24806aa8a7545"
+        },
+        {
+          "sample_id": "db306661-a52d-48a4-a496-a85c159e9864",
+          "difficulty": "intermediate",
+          "status": "validated",
+          "package_id": "sample-db306661a52d48a4a496a85c159e9864"
+        },
+        {
+          "sample_id": "c2232f32-c92c-4d4e-bf3a-003a04657add",
+          "difficulty": "advanced",
+          "status": "validated",
+          "package_id": "sample-c2232f32c92c4d4ebf3a003a04657add"
+        }
+      ]
+    },
+    {
+      "capability_id": "access-investigation",
+      "samples": [
+        {
+          "sample_id": "e049dbcf-b8fa-4fbd-9e77-c25fb0cafd31",
+          "difficulty": "beginner",
+          "status": "validated",
+          "package_id": "sample-e049dbcfb8fa4fbd9e77c25fb0cafd31"
+        },
+        {
+          "sample_id": "ac45dd95-0563-4ce7-a2a9-2cabe560922a",
+          "difficulty": "intermediate",
+          "status": "validated",
+          "package_id": "sample-ac45dd9505634ce7a2a92cabe560922a"
+        },
+        {
+          "sample_id": "f64c5c5d-65ab-459a-a68e-24a16fb96457",
+          "difficulty": "advanced",
+          "status": "validated",
+          "package_id": "sample-f64c5c5d65ab459aa68e24a16fb96457"
+        }
+      ]
+    }
+  ],
+  "status": "passed"
+}

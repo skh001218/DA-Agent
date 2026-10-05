@@ -190,12 +190,12 @@ def create_app(settings=None, auth=None):
         ids = {ref["saved_execution_id"] for claim in report["claims"] for ref in claim["evidence_refs"]}
         evidence = [x for x in attempt["saved_executions"] if x["saved_execution_id"] in ids]
         if attempt.get('contract_version') in ('request-v1','request-v2'):
-            review_op=telemetry.begin(store,'review',attempt_id=attempt_id,review_id=value['review_id'],report_id=report_id,domain=attempt.get('domain','access'),rules_version='request-review-v2') if attempt.get('contract_version')=='request-v2' else None
+            review_op=telemetry.begin(store,'review',attempt_id=attempt_id,review_id=value['review_id'],report_id=report_id,domain=attempt.get('domain','access'),rules_version=package.problem(report['problem_id']).get('evaluation_version','request-review-v2')) if attempt.get('contract_version')=='request-v2' else None
             class MeteredProvider:
                 def review(self, messages):
                     return training.ai(attempt_id, value['review_id'], messages)
             result = review_report(MeteredProvider(), package, report, evidence)
-            result['rules_version'] = 'request-review-v2' if attempt.get('contract_version')=='request-v2' else 'request-review-v1'
+            result['rules_version'] = result.get('rules_version') or ('request-review-v2' if attempt.get('contract_version')=='request-v2' else 'request-review-v1')
             training.review_outcome(value['review_id'], result)
             if review_op: telemetry.finish(store,review_op,'completed' if result['status']=='completed' else 'failed',error_code=None if result['status']=='completed' else 'format_invalid')
         else:

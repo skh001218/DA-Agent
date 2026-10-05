@@ -1,0 +1,13 @@
+{
+  "executed_at": "2026-10-05T13:25:00.761735+00:00",
+  "actual_db": true,
+  "isolated_recorder_schema": true,
+  "source_bind_mount": true,
+  "existing_app_preserved": true,
+  "exit_code": 0,
+  "counts": {
+    "passed": 276,
+    "warnings": 2
+  },
+  "raw_output": "........................................................................ [ 26%]\n........................................................................ [ 52%]\n........................................................................ [ 78%]\n............................................................             [100%]\n=============================== warnings summary ===============================\ntests/test_adaptive_dependencies.py::test_db_infeasible_fixed_data_is_repaired_before_pinning\n  /usr/local/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.\n    from starlette.testclient import TestClient as TestClient  # noqa\n\ntests/test_integration.py::test_static_errors_and_local_boundary\n  /usr/local/lib/python3.12/site-packages/httpx/_models.py:408: DeprecationWarning: Use 'content=<...>' to upload raw bytes/text content.\n    headers, stream = encode_request(\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n276 passed, 2 warnings in 92.11s (0:01:32)\n"
+}

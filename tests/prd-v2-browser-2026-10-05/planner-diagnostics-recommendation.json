@@ -1,0 +1,13 @@
+{
+  "actual_browser": true,
+  "actual_api": true,
+  "checks": {},
+  "recommendation_id": "rec-dcb12b1e6491e29e1d6a85af",
+  "request_id": "c40ce5af-5c4c-4a83-a6b5-a724d8968fae",
+  "initial_status": "needs_clarification",
+  "clarification_answer": true,
+  "attempt_id": "c5871d92-2f82-4a9c-bc5c-c7021a80eacf",
+  "status": "passed",
+  "actual_kind": "design",
+  "actual_difficulty": "intermediate"
+}

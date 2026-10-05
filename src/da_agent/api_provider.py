@@ -5,6 +5,7 @@ import re
 import json
 from pathlib import Path
 import threading
+import uuid
 
 import httpx
 
@@ -46,11 +47,14 @@ class GeminiProvider:
             pass
         return {401: "api_key_invalid", 403: "api_permission_denied", 404: "model_unavailable", 429: "api_rate_limited"}.get(response.status_code, "api_unavailable" if response.status_code >= 500 else "api_request_invalid")
 
-    def _failed(self, reason):
+    def _failed(self, reason, diagnostic=None):
         self.last_error = reason
         if reason in {"api_key_invalid", "api_permission_denied"}:
             self.verified_key = None
-        return {"state": "error", "reason": reason, "model": self.model}
+        result = {"state": "error", "reason": reason, "model": self.model}
+        if diagnostic:
+            result['provider_diagnostic'] = diagnostic
+        return result
 
     def review(self, messages, model=None):
         with self.lock:
@@ -58,6 +62,7 @@ class GeminiProvider:
             if not key:
                 return self._failed("api_key_missing")
             selected = model or self.model
+            diagnostic = dict(request_id=str(uuid.uuid4()), stage='request', timeout=False)
             if not re.fullmatch(r"[a-zA-Z0-9][a-zA-Z0-9._-]{0,100}", selected):
                 return self._failed("model_unavailable")
             try:
@@ -78,25 +83,39 @@ class GeminiProvider:
                     or {'task','dictionary','private_generation_recipe'}.issubset(envelope)):
                     body['generationConfig']['responseMimeType']='application/json'
                     body['generationConfig']['maxOutputTokens']=8192
+                if isinstance(envelope, dict) and envelope.get('contract_version') == 'coaching-v2' and isinstance(envelope.get('sources'), list):
+                    from .coaching import coaching_schema
+                    body['generationConfig']['responseMimeType'] = 'application/json'
+                    body['generationConfig']['responseJsonSchema'] = coaching_schema(envelope)
+                if isinstance(envelope, dict) and envelope.get('interpretation_version') == 'interpretation-v3' and isinstance(envelope.get('capabilities'), list):
+                    from .task_planner import interpretation_schema
+                    body['generationConfig']['responseMimeType'] = 'application/json'
+                    body['generationConfig']['responseJsonSchema'] = interpretation_schema(envelope)
+                if isinstance(envelope, dict) and envelope.get('evaluation_version') == 'request-review-v3' and isinstance(envelope.get('rubric'), dict):
+                    from .evaluation_v3 import response_schema
+                    body['generationConfig']['responseMimeType'] = 'application/json'
+                    body['generationConfig']['responseJsonSchema'] = response_schema(envelope)
+                    body['generationConfig']['maxOutputTokens'] = 8192
                 if selected == "gemini-3.8-flash":
                     body["generationConfig"]["thinkingConfig"] = {"thinkingLevel": "low"}
                 response = self.http.post("https://generativelanguage.googleapis.com/v1beta/models/" + selected + ":generateContent",
                     headers={"x-goog-api-key": key}, json=body)
                 if response.status_code >= 400:
-                    return self._failed(self._error(response))
+                    return self._failed(self._error(response), dict(diagnostic, stage='http', http_status=response.status_code))
+                diagnostic.update(stage='response', http_status=response.status_code)
                 data = response.json()
                 if data.get("promptFeedback", {}).get("blockReason"):
-                    return self._failed("api_content_blocked")
+                    return self._failed("api_content_blocked", diagnostic)
                 candidates = data.get("candidates", [])
                 if not candidates:
-                    return self._failed("api_empty_response")
+                    return self._failed("api_empty_response", diagnostic)
                 candidate = candidates[0]
                 if candidate.get("finishReason") != "STOP":
-                    return self._failed("api_content_blocked" if candidate.get("finishReason") in {"SAFETY", "RECITATION", "BLOCKLIST", "PROHIBITED_CONTENT"} else "response_incomplete")
+                    return self._failed("api_content_blocked" if candidate.get("finishReason") in {"SAFETY", "RECITATION", "BLOCKLIST", "PROHIBITED_CONTENT"} else "response_incomplete", diagnostic)
                 text = "".join(part["text"] for part in candidate.get("content", {}).get("parts", [])
                     if isinstance(part.get("text"), str) and not part.get("thought"))
                 if not text.strip():
-                    return self._failed("api_empty_response")
+                    return self._failed("api_empty_response", diagnostic)
                 self.verified_key, self.last_error = hashlib.sha256(key.encode()).digest(), None
                 metadata = data.get('usageMetadata') or {}
                 usage = {key: metadata.get(source) for key, source in {'input_tokens': 'promptTokenCount', 'output_tokens': 'candidatesTokenCount', 'total_tokens': 'totalTokenCount'}.items()}
@@ -105,11 +124,11 @@ class GeminiProvider:
                     result['usage'] = usage
                 return result
             except httpx.TimeoutException:
-                return self._failed("api_timeout")
+                return self._failed("api_timeout", dict(diagnostic, timeout=True, stage='transport'))
             except httpx.HTTPError:
-                return self._failed("api_unavailable")
+                return self._failed("api_unavailable", dict(diagnostic, stage='transport'))
             except (ValueError, TypeError, KeyError, AttributeError):
-                return self._failed("api_invalid_response")
+                return self._failed("api_invalid_response", diagnostic)
 
     def models(self):
         key = self._key()

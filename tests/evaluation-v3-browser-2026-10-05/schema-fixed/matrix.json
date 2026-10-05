@@ -1,0 +1,118 @@
+{
+  "actual_browser": true,
+  "actual_api": true,
+  "actual_model": true,
+  "flows": [
+    {
+      "kind": "calculation",
+      "level": "beginner",
+      "request_id": "b9ea56a8-94f7-46d6-80a8-490d4ca4d799",
+      "initial_status": "ready",
+      "request_status": "ready",
+      "planning_calls": 1,
+      "attempt_id": "82027251-a759-450d-a837-11f7dccbef30",
+      "ready": true,
+      "evaluation_version": "request-review-v3",
+      "sql_error_preserved": true,
+      "sql_saved": true,
+      "coaching": {
+        "status": "completed",
+        "error": null,
+        "action": "check",
+        "prompt_version": "cumulative-coach-v3"
+      },
+      "report_id": "c376a37b-d1cf-4d17-90aa-0769837b010a",
+      "review": {
+        "status": "completed",
+        "error": null,
+        "criteria": [
+          {
+            "key": "problem_definition",
+            "level": 4,
+            "status": "confirmed"
+          },
+          {
+            "key": "analysis_approach",
+            "level": 4,
+            "status": "confirmed"
+          },
+          {
+            "key": "sql_accuracy",
+            "level": null,
+            "status": "held"
+          },
+          {
+            "key": "interpretation",
+            "level": 4,
+            "status": "confirmed"
+          },
+          {
+            "key": "next_actions",
+            "level": 4,
+            "status": "confirmed"
+          }
+        ],
+        "score": null,
+        "score_status": "held"
+      },
+      "revised_report_id": "74befd24-4a67-403d-9bb0-e5b8ee27364a",
+      "resume": true,
+      "narrow": true,
+      "passed": true
+    },
+    {
+      "kind": "design",
+      "level": "advanced",
+      "request_id": "c960e59a-ac0c-4970-b27d-109b25960647",
+      "initial_status": "ready",
+      "request_status": "ready",
+      "planning_calls": 1,
+      "attempt_id": "28c3fb34-89e5-400f-81c8-373554f99f9c",
+      "ready": true,
+      "evaluation_version": "request-review-v3",
+      "no_sql": true,
+      "coaching": {
+        "status": "completed",
+        "error": null,
+        "action": "suggest_analysis",
+        "prompt_version": "cumulative-coach-v3"
+      },
+      "report_id": "0635a3c0-ba1b-4348-9b5d-4163e9adc704",
+      "review": {
+        "status": "completed",
+        "error": null,
+        "criteria": [
+          {
+            "key": "problem_definition",
+            "level": 4,
+            "status": "confirmed"
+          },
+          {
+            "key": "analysis_approach",
+            "level": 4,
+            "status": "confirmed"
+          },
+          {
+            "key": "interpretation",
+            "level": 4,
+            "status": "confirmed"
+          },
+          {
+            "key": "next_actions",
+            "level": 4,
+            "status": "confirmed"
+          }
+        ],
+        "score": 100,
+        "score_status": "confirmed"
+      },
+      "revised_report_id": "8c8863bc-7112-43f0-9d64-2dbbf695f6ab",
+      "resume": true,
+      "narrow": true,
+      "passed": true
+    }
+  ],
+  "page_errors": [],
+  "started_at": "2026-10-05T13:15:41.358Z",
+  "finished_at": "2026-10-05T13:16:24.061Z"
+}

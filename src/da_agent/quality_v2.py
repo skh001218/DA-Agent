@@ -13,8 +13,9 @@ from pydantic import BaseModel, ConfigDict, Field
 from psycopg.types.json import Jsonb
 from .errors import DomainError
 from .store import now
-from .coaching import build_context, coaching_messages, normalize_coaching
+from .coaching import build_context, coaching_messages, normalize_coaching, PROMPT_VERSION as COACHING_PROMPT_VERSION
 from .evaluation import verify_for_contract
+from .evaluation_v3 import PROMPT_VERSION as REVIEW_PROMPT_VERSION
 from .reviews import review_report
 from . import telemetry
 
@@ -102,6 +103,11 @@ def prepare_samples(training, attempt, package, mode, run_id):
         elif case == 'uncertainty':
             report['content']['limitations'] += ' 차이가 원인이라는 가설은 미확인이고 별도 설계가 필요하다. 알 수 없는 사실은 미확인으로 남긴다.'
         sample = {'id': case, 'title': case, 'operation': mode, 'task_kind': kind, 'report': report, 'evidence': evidence, 'expected_levels': levels, 'checks': ['고정 기대 판정과 타당한 대안 인정', '허위 계산 승인·원인 단정·비공개 노출 없음'], 'results': [], 'expectation_version': FIXTURE_VERSION, 'source_contract_hash': frozen['contract_hash']}
+        if frozen['rules_version'] == 'evaluation-rubric-v3' and mode == 'review':
+            sample['expectation_version'] = 'condition-quality-v3'
+            if case == 'core_error' and 'sql_accuracy' in levels and any(verify_for_contract(e, frozen)['status'] == 'unverified' for e in evidence):
+                sample['expected_statuses'] = {'sql_accuracy':'held'}
+                sample['expected_levels'].pop('sql_accuracy')
         if mode == 'coaching':
             fixture_attempt = dict(attempt, draft={'sections': copy.deepcopy(base['content'])}, hints=[])
             history = []
@@ -144,7 +150,8 @@ def automatic_verdict(sample, result):
         expected = sample.get('expected_action')
         return 'pass' if not expected or feedback.get('action_type') == expected else 'fail'
     levels = {c['key']: c['level'] for c in feedback.get('criteria', [])}
-    return 'pass' if all(key in levels and low <= levels[key] <= high for key, (low, high) in sample['expected_levels'].items()) else 'fail'
+    statuses = {c['key']: c.get('status') for c in feedback.get('criteria', [])}
+    return 'pass' if all(key in levels and type(levels[key]) is int and low <= levels[key] <= high for key, (low, high) in sample['expected_levels'].items()) and all(statuses.get(k)==v for k,v in sample.get('expected_statuses',{}).items()) else 'fail'
 
 
 def summarize(run, human_assessments=()):
@@ -169,6 +176,23 @@ def summarize(run, human_assessments=()):
             if isinstance(feedback, dict) and feedback.get('total_score') is not None:
                 scores.append(feedback['total_score'])
         sample['score_range'] = round(max(scores)-min(scores), 1) if scores else None
+        critical_states = {}
+        for result in sample['results']:
+            for criterion in (result.get('feedback') or {}).get('criteria', []):
+                for condition in criterion.get('conditions', []):
+                    if condition.get('kind') == 'error':
+                        critical_states.setdefault(criterion['key'], set()).add(condition['state'])
+        sample['critical_state_variation'] = {key: sorted(states) for key, states in critical_states.items() if len(states)>1}
+        levels = {}
+        for result in sample['results']:
+            for criterion in (result.get('feedback') or {}).get('criteria', []):
+                levels.setdefault(criterion['key'], set()).add(criterion.get('level'))
+        sample['level_variation'] = {key: sorted(states, key=lambda v: -1 if v is None else v)
+                                     for key, states in levels.items() if len(states)>1}
+        # A held total must not hide changes in recognition of a critical error.
+        failed |= bool(sample['critical_state_variation'])
+        if value.get('evaluation_version') == 'request-review-v3':
+            failed |= bool(sample['level_variation'])
         failed |= sample['score_range'] is not None and sample['score_range'] > 10
         sample['verdict'] = 'fail' if failed else 'pass' if approved else 'pending'
     value['verdict'] = 'fail' if any(s['verdict'] == 'fail' for s in value['samples']) else 'pass' if value['status'] == 'completed' and value['samples'] and all(s['verdict'] == 'pass' for s in value['samples']) else 'pending'
@@ -184,10 +208,10 @@ class MeteredProvider:
         self.last_started = None
     def review(self, messages):
         training, run = self.training, self.run
-        op = telemetry.begin(training.store, 'ai', request_id='quality-v2:' + run['run_id'], call_limit=18, domain=run.get('domain', 'access'), task_kind=run['task_kind'], difficulty=run['difficulty'], evaluation_version=run['evaluation_version'], rules_version='evaluation-v2', prompt_version='fixed-plan-quality-v2')
+        op = telemetry.begin(training.store, 'ai', request_id='quality-v2:' + run['run_id'], call_limit=18, domain=run.get('domain', 'access'), task_kind=run['task_kind'], difficulty=run['difficulty'], evaluation_version=run['evaluation_version'], rules_version=run.get('rules_version','evaluation-v2'), prompt_version=COACHING_PROMPT_VERSION if run['mode'] == 'coaching' else REVIEW_PROMPT_VERSION if run['evaluation_version']=='request-review-v3' else FIXTURE_VERSION)
         try:
             messages = copy.deepcopy(messages)
-            if run['mode'] == 'review':
+            if run['mode'] == 'review' and run['evaluation_version'] != 'request-review-v3':
                 messages[0]['content'] += ' 최상위 키는 정확히 criteria,strengths,improvements,next_steps,uncertainty 다섯 개만 허용. weights,total_score,score,metadata를 출력에 추가하지 마세요. 입력 weights는 평가 기준이며 출력 필드가 아닙니다.'
             with training.ai_lock:
                 interval=max(0.0,float(os.getenv('QUALITY_CALL_INTERVAL_SECONDS','5')))
@@ -197,7 +221,7 @@ class MeteredProvider:
                 result = training.auth.review(messages)
             usage = result.get('usage') or {}
             completed = result.get('state') == 'completed' or result.get('status') in {'completed', 'success'}
-            telemetry.finish(training.store, op, 'completed' if completed else 'failed', error_code=None if completed else 'provider_failure', model_version=result.get('model'), input_tokens=usage.get('input_tokens'), output_tokens=usage.get('output_tokens'), usage_missing_reason=None if usage else 'not_reported')
+            telemetry.finish(training.store, op, 'completed' if completed else 'failed', error_code=None if completed else 'provider_failure', model_version=result.get('model'), input_tokens=usage.get('input_tokens'), output_tokens=usage.get('output_tokens'), usage_missing_reason=None if usage else 'not_reported', provider_diagnostic=result.get('provider_diagnostic'))
             self.last = {'operation_id': op, 'model': result.get('model'), 'usage': usage or None}
             return result
         except Exception:
@@ -219,7 +243,7 @@ def evaluate(training, package, run, append):
                     result = normalize_coaching(provider.review(coaching_messages(sample['context'])), sample['context'], private)
             except Exception:
                 result = {'status': 'failed', 'feedback': None, 'error': {'code': 'quality_call_failed', 'message': '품질 평가 호출을 완료하지 못했습니다.'}}
-            result.update(repetition=repetition, finished_at=now(), automatic_verdict=automatic_verdict(sample, result), human={'checks': ['pending', 'pending'], 'critical_error': 'pending'}, prompt_version=FIXTURE_VERSION, rules_version='evaluation-v2', **(provider.last or {}))
+            result.update(repetition=repetition, finished_at=now(), automatic_verdict=automatic_verdict(sample, result), human={'checks': ['pending', 'pending'], 'critical_error': 'pending'}, prompt_version=COACHING_PROMPT_VERSION if run['mode'] == 'coaching' else REVIEW_PROMPT_VERSION if run['evaluation_version']=='request-review-v3' else FIXTURE_VERSION, rules_version=run.get('rules_version','evaluation-v2'), **(provider.last or {}))
             append(sample['id'], result)
 
 
@@ -278,7 +302,7 @@ def routes(app, training, context):
             samples = prepare_samples(training, attempt, package, data.mode, run_id)
             status = training.auth.status()
             value = dict(data.model_dump(), run_id=run_id, signature=signature, started_at=now(), status='running', samples=samples,
-                         package_id=attempt['package_id'], release_version=attempt['release_version'], dataset_id=attempt['dataset_id'], problem_id=attempt['problem_id'], domain=attempt.get('domain', 'access'), task_kind=attempt['task_kind'], difficulty=attempt['difficulty'], fixture_version=FIXTURE_VERSION, rules_version='evaluation-v2', evaluation_version='request-review-v2', configured_model=status.get('model'), provider=status.get('provider'), semantic_approval=False)
+                         package_id=attempt['package_id'], release_version=attempt['release_version'], dataset_id=attempt['dataset_id'], problem_id=attempt['problem_id'], domain=attempt.get('domain', 'access'), task_kind=attempt['task_kind'], difficulty=attempt['difficulty'], fixture_version=FIXTURE_VERSION, rules_version=package.reference(attempt['problem_id'])['frozen_evaluation']['rules_version'], evaluation_version=package.problem(attempt['problem_id']).get('evaluation_version', 'request-review-v2'), configured_model=status.get('model'), provider=status.get('provider'), semantic_approval=False)
             conn.execute('INSERT INTO quality_runs VALUES(%s,%s)', (run_id, Jsonb(value)))
         tasks.add_task(execute, run_id, package)
         return summarize(value)

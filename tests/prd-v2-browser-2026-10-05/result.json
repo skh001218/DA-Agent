@@ -1,0 +1,129 @@
+{
+  "actual_browser": true,
+  "actual_api": true,
+  "provider_mocked": false,
+  "checks": {
+    "learning_revision_conflict": {
+      "passed": true,
+      "input_preserved": true
+    },
+    "delete_cancel_keyboard": {
+      "passed": true,
+      "delete_requests": 0
+    },
+    "unsupported_input_preserved": {
+      "passed": true,
+      "request_id": "1b11f2a1-07c9-4df5-a681-032e435a53a6",
+      "status": "failed"
+    },
+    "clarification_answer": {
+      "passed": true,
+      "request_id": "c3113099-0c39-4d5e-ad4f-00646460e72e",
+      "attempt_id": "d4d624a1-afeb-45f7-b379-0d2def66b09c"
+    },
+    "recommendation_start": {
+      "passed": false,
+      "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'needs_clarification'\n- 'ready'\n"
+    },
+    "metrics_download_and_quality_ui": {
+      "passed": true,
+      "eight_metrics": true,
+      "json": true,
+      "csv": true
+    }
+  },
+  "flows": [
+    {
+      "kind": "calculation",
+      "level": "beginner",
+      "request_id": "f225b32e-5666-4166-868d-a68e12cbddca",
+      "request_status": "ready",
+      "planning_calls": 1,
+      "attempt_id": "a1a57551-2c55-4dbd-b7d7-f9a14f1e1010",
+      "sql_error_preserved": true,
+      "sql_saved": true,
+      "coaching_status": "failed",
+      "coaching_error": {
+        "code": "coaching_format",
+        "message": "코칭 행동·근거 형식을 확인하지 못했습니다."
+      },
+      "passed": false,
+      "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'failed'\n- 'completed'\n"
+    },
+    {
+      "kind": "review",
+      "level": "intermediate",
+      "request_id": "e794ff2c-cc40-4063-9a24-c518d2a6fa3d",
+      "request_status": "ready",
+      "planning_calls": 1,
+      "attempt_id": "9a5d8f47-5c63-49f7-a935-8c5b0bc4748d",
+      "sql_error_preserved": true,
+      "sql_saved": true,
+      "coaching_status": "failed",
+      "coaching_error": {
+        "code": "coaching_format",
+        "message": "코칭 행동·근거 형식을 확인하지 못했습니다."
+      },
+      "passed": false,
+      "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'failed'\n- 'completed'\n"
+    },
+    {
+      "kind": "design",
+      "level": "advanced",
+      "request_id": "ae048a26-e270-421f-8890-f83b05dc1611",
+      "request_status": "ready",
+      "planning_calls": 1,
+      "attempt_id": "4c3da72f-fd90-422d-bf42-6d37a647f8ad",
+      "sql_error_preserved": true,
+      "sql_saved": true,
+      "coaching_status": "failed",
+      "coaching_error": {
+        "code": "coaching_format",
+        "message": "코칭 행동·근거 형식을 확인하지 못했습니다."
+      },
+      "passed": false,
+      "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'failed'\n- 'completed'\n"
+    },
+    {
+      "kind": "investigation",
+      "level": "advanced",
+      "request_id": "28ebca33-2623-48db-8f60-9e75609fd465",
+      "request_status": "ready",
+      "planning_calls": 1,
+      "attempt_id": "ea3aa76d-7230-4365-87c2-51e6a1498a26",
+      "sql_error_preserved": true,
+      "sql_saved": true,
+      "coaching_status": "failed",
+      "coaching_error": {
+        "code": "coaching_format",
+        "message": "코칭 행동·근거 형식을 확인하지 못했습니다."
+      },
+      "passed": false,
+      "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'failed'\n- 'completed'\n"
+    }
+  ],
+  "console_errors": [],
+  "retained_samples": [
+    {
+      "purpose": "clarification",
+      "attempt_id": "d4d624a1-afeb-45f7-b379-0d2def66b09c"
+    },
+    {
+      "purpose": "calculation",
+      "attempt_id": "a1a57551-2c55-4dbd-b7d7-f9a14f1e1010"
+    },
+    {
+      "purpose": "review",
+      "attempt_id": "9a5d8f47-5c63-49f7-a935-8c5b0bc4748d"
+    },
+    {
+      "purpose": "design",
+      "attempt_id": "4c3da72f-fd90-422d-bf42-6d37a647f8ad"
+    },
+    {
+      "purpose": "investigation",
+      "attempt_id": "ea3aa76d-7230-4365-87c2-51e6a1498a26"
+    }
+  ],
+  "finished_at": "2026-10-05T10:41:33.579Z"
+}

@@ -1,0 +1,186 @@
+{
+  "run_id": "b24dec9c-18c0-43d5-8d14-a462601c13a2",
+  "attempt_id": "a1a57551-2c55-4dbd-b7d7-f9a14f1e1010",
+  "mode": "coaching",
+  "status": "completed",
+  "configured_model": "gemini-3.5-flash-lite",
+  "provider": "gemini",
+  "fixture_version": "fixed-plan-quality-v2",
+  "evaluation_version": "request-review-v2",
+  "completed_calls": 18,
+  "verdict": "fail",
+  "semantic_approval": false,
+  "actual_model": true,
+  "actual_db": true,
+  "human_quality": "pending",
+  "samples": [
+    {
+      "id": "definition",
+      "score_range": null,
+      "verdict": "pending",
+      "repetitions": [
+        {
+          "repetition": 1,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null,
+          "model": "gemini-3.5-flash-lite"
+        },
+        {
+          "repetition": 2,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null,
+          "model": "gemini-3.5-flash-lite"
+        },
+        {
+          "repetition": 3,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null,
+          "model": "gemini-3.5-flash-lite"
+        }
+      ]
+    },
+    {
+      "id": "aggregation",
+      "score_range": null,
+      "verdict": "fail",
+      "repetitions": [
+        {
+          "repetition": 1,
+          "status": "failed",
+          "automatic_verdict": "fail",
+          "error_code": "api_unavailable",
+          "model": "gemini-3.5-flash-lite"
+        },
+        {
+          "repetition": 2,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null,
+          "model": "gemini-3.5-flash-lite"
+        },
+        {
+          "repetition": 3,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null,
+          "model": "gemini-3.5-flash-lite"
+        }
+      ]
+    },
+    {
+      "id": "hypothesis_conflict",
+      "score_range": null,
+      "verdict": "fail",
+      "repetitions": [
+        {
+          "repetition": 1,
+          "status": "completed",
+          "automatic_verdict": "fail",
+          "error_code": null,
+          "model": "gemini-3.5-flash-lite"
+        },
+        {
+          "repetition": 2,
+          "status": "failed",
+          "automatic_verdict": "fail",
+          "error_code": "api_unavailable",
+          "model": "gemini-3.5-flash-lite"
+        },
+        {
+          "repetition": 3,
+          "status": "completed",
+          "automatic_verdict": "fail",
+          "error_code": null,
+          "model": "gemini-3.5-flash-lite"
+        }
+      ]
+    },
+    {
+      "id": "valid_alternative",
+      "score_range": null,
+      "verdict": "pending",
+      "repetitions": [
+        {
+          "repetition": 1,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null,
+          "model": "gemini-3.5-flash-lite"
+        },
+        {
+          "repetition": 2,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null,
+          "model": "gemini-3.5-flash-lite"
+        },
+        {
+          "repetition": 3,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null,
+          "model": "gemini-3.5-flash-lite"
+        }
+      ]
+    },
+    {
+      "id": "sufficient",
+      "score_range": null,
+      "verdict": "pending",
+      "repetitions": [
+        {
+          "repetition": 1,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null,
+          "model": "gemini-3.5-flash-lite"
+        },
+        {
+          "repetition": 2,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null,
+          "model": "gemini-3.5-flash-lite"
+        },
+        {
+          "repetition": 3,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null,
+          "model": "gemini-3.5-flash-lite"
+        }
+      ]
+    },
+    {
+      "id": "help",
+      "score_range": null,
+      "verdict": "pending",
+      "repetitions": [
+        {
+          "repetition": 1,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null,
+          "model": "gemini-3.5-flash-lite"
+        },
+        {
+          "repetition": 2,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null,
+          "model": "gemini-3.5-flash-lite"
+        },
+        {
+          "repetition": 3,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null,
+          "model": "gemini-3.5-flash-lite"
+        }
+      ]
+    }
+  ]
+}

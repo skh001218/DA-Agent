@@ -86,6 +86,38 @@ def test_recent_semantic_signature_avoids_exact_repeat():
     assert first != second
 
 
+@pytest.mark.parametrize('payload,stage,field,kind', [
+    ('not json SECRET_TEST', 'json', 'output', 'invalid_json'),
+    (dict(interpretation(), difficulty='SECRET_TEST'), 'schema', 'difficulty', 'enum'),
+    (dict(interpretation(), unsupported='false'), 'schema', 'unsupported', 'type'),
+    (dict(interpretation(), goal='x'*201), 'schema', 'goal', 'length'),
+    (dict(interpretation(), SECRET_TEST='raw private'), 'schema', 'unknown_field', 'extra'),
+    (dict(interpretation(), capability_id='SECRET_TEST'), 'selection', 'capability_id', 'unknown_capability'),
+    (dict(interpretation(), capability_id='access-design'), 'selection', 'capability_id', 'capability_kind_mismatch'),
+])
+def test_interpretation_diagnostics_are_specific_and_raw_free(payload, stage, field, kind):
+    result = completed(payload) if isinstance(payload, dict) else {'state':'completed', 'text':payload}
+    with pytest.raises(DomainError) as caught:
+        parse_interpretation(result, request_v2())
+    detail = caught.value.failure_detail
+    assert detail['stage'] == stage
+    assert {'field':field, 'kind':kind} in detail['issues']
+    assert 'SECRET_TEST' not in json.dumps(detail) and 'raw private' not in json.dumps(detail)
+
+
+def test_interpretation_missing_fields_and_provider_reasons():
+    value = interpretation()
+    del value['reason']
+    with pytest.raises(DomainError) as caught:
+        parse_interpretation(completed(value), request_v2())
+    assert caught.value.failure_detail['issues'] == [{'field':'reason', 'kind':'missing'}]
+    for reason, expected in [('api_rate_limited','api_rate_limited'), ('SECRET_TEST','unknown')]:
+        with pytest.raises(DomainError) as caught:
+            parse_interpretation({'state':'error', 'reason':reason}, request_v2())
+        assert caught.value.failure_detail['stage'] == 'provider'
+        assert caught.value.failure_detail['provider_reason'] == expected
+
+
 class StructuredProvider:
     def __init__(self):
         self.calls = 0
@@ -105,7 +137,10 @@ class StructuredProvider:
             return completed(interpretation(data['task_kind'] if data['task_kind'] != 'auto' else 'calculation', data['difficulty'] if data['difficulty'] != 'auto' else 'advanced', questions))
         if payload.get('contract_version') == 'coaching-v2':
             self.contexts.append(copy.deepcopy(payload))
-            return completed({'action_type': 'check', 'reason': '공개 조건을 확인', 'next_action': '관측 조건을 확인하세요.', 'evidence_ids': ['public-task'], 'evidence_state': 'public', 'uncertainty': ''})
+            return completed({'action_type': 'check', 'reason': '공개 조건을 확인', 'next_action': '관측 조건을 확인하세요.', 'evidence_ids': ['public-task'], 'uncertainty': ''})
+        if payload.get('evaluation_version') == 'request-review-v3':
+            scopes = payload['criterion_inputs']
+            return completed({'criteria':[{'key':r['key'],'conditions':[{'id':c['id'],'state':'met' if c['kind']=='error' else 'missing' if c['kind']=='advanced' or not any(scopes[r['key']].values()) else 'met','reason':'계약 검증용 고정 응답','sources':[] if c['kind'] in ('advanced','error') else [{'path':next(p for p,t in scopes[r['key']].items() if t)}] if any(scopes[r['key']].values()) else []} for c in r['conditions']]} for r in payload['rubric']['criteria']], 'strengths':[], 'improvements':[], 'next_steps':[], 'uncertainty':''})
         if 'weights' in payload:
             return completed({'criteria': [{'key': key, 'level': 2 if key == 'sql_accuracy' else 3, 'reason': '공개 완료 조건 검토', 'claim_ids': [], 'saved_execution_ids': []} for key in payload['weights']], 'strengths': [], 'improvements': [], 'next_steps': ['조건을 정리하세요.'], 'uncertainty': '실행 근거 없는 계산은 미확인'})
         return {'state': 'completed', 'model': 'fixture-v2', 'text': '관측 조건을 확인하세요.'}
@@ -145,6 +180,33 @@ def begin_v2(client, kind='calculation', **changes):
     return body, value
 
 
+def test_interpretation_failure_logs_survive_retry_without_raw_material(v2_db_client):
+    client, provider = v2_db_client
+    original = provider.review
+    provider.review = lambda messages: {'state':'completed', 'model':'fixture-v2', 'usage':{'input_tokens':11,'output_tokens':7}, 'text':json.dumps(dict(interpretation(), SECRET_TEST='private response', unsupported='private value'))}
+    body, failed = begin_v2(client)
+    rid = body['request_id']
+    assert failed['status']=='failed' and failed['planning_calls']==1
+    assert failed['failure_detail']['stage']=='schema'
+    assert 'SECRET_TEST' not in json.dumps(failed['failure_detail'])
+    logs = client.get('/api/quality/diagnostics',params={'request_id':rid}).json()['events']
+    assert len(logs)==2
+    assert all(e['error_code']=='format_invalid' for e in logs)
+    assert all(e['prompt_version']=='bounded-planner-v3' for e in logs if e['event_type']=='ai_finished')
+    assert 'private response' not in json.dumps(logs) and 'private value' not in json.dumps(logs) and 'SECRET_TEST' not in json.dumps(logs)
+    with client.app.state.store.connect() as conn:
+        ended=conn.execute("SELECT payload FROM quality_events_v2 WHERE payload->>'request_id'=%s AND payload->>'event_type'='ai_finished'",(rid,)).fetchone()['payload']
+    assert ended['input_tokens']==11 and ended['output_tokens']==7
+    provider.review = original
+    retry = client.post('/api/training/requests/'+rid+'/retry',json={'action_id':str(uuid.uuid4()),'expected_revision':failed['revision']})
+    assert retry.status_code==200
+    ready = client.get('/api/training/requests/'+rid).json()
+    assert ready['status']=='ready' and ready['failure_detail'] is None
+    assert len(ready['failure_history'])==1 and ready['failure_history'][0]['failure_detail']['stage']=='schema'
+    assert len(client.get('/api/quality/diagnostics',params={'request_id':rid}).json()['events'])==2
+    assert client.get('/api/quality/diagnostics?limit=101').status_code==422
+
+
 def test_db_all_four_ready_resume_idempotency_and_v1(v2_db_client):
     client, provider = v2_db_client
     for kind in ('calculation', 'review', 'design', 'investigation'):
@@ -172,6 +234,9 @@ def test_db_clarification_revision_and_action_conflict(v2_db_client):
     provider.clarify_once = True
     body, result = begin_v2(client, 'design')
     assert result['status'] == 'needs_clarification' and result['attempt_id'] is None
+    with client.app.state.store.connect() as conn:
+        ended = conn.execute("SELECT payload FROM quality_events_v2 WHERE payload->>'request_id'=%s AND payload->>'event_type'='generation_finished'",(body['request_id'],)).fetchone()['payload']
+    assert ended['status']=='completed' and not ended.get('error_code') and not ended.get('failure_detail')
     path = '/api/training/requests/' + body['request_id'] + '/clarify'
     action = {'action_id': 'clarify-1', 'expected_revision': result['revision'], 'message': '업무 목표를 구체화하겠습니다.'}
     assert client.post(path, json=dict(action, expected_revision=99)).status_code == 409
@@ -205,7 +270,8 @@ def test_db_v2_coaching_noncollection_and_design_review(v2_db_client):
     report = client.post(prefix + '/reports', json=payload).json()
     review = client.post(prefix + '/reports/' + report['report_id'] + '/review', json={'request_id': str(uuid.uuid4())}).json()
     assert review['status'] == 'completed', review
-    assert review['rules_version'] == 'request-review-v2'
+    assert review['rules_version'] == 'evaluation-rubric-v3'
+    assert review['evaluation_version'] == 'request-review-v3'
     assert not any(c['key'] == 'sql_accuracy' for c in review['feedback']['criteria'])
 
 

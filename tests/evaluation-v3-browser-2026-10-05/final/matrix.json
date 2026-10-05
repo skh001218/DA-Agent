@@ -1,0 +1,71 @@
+{
+  "actual_browser": true,
+  "actual_api": true,
+  "actual_model": true,
+  "flows": [
+    {
+      "kind": "calculation",
+      "level": "beginner",
+      "request_id": "62f4bec3-f6be-4f2f-850a-f3bcdadbc2b0",
+      "initial_status": "ready",
+      "request_status": "ready",
+      "planning_calls": 1,
+      "attempt_id": "3f4e99b0-7a92-4543-b555-74b14bc62e3b",
+      "ready": true,
+      "evaluation_version": "request-review-v3",
+      "sql_error_preserved": true,
+      "sql_saved": true,
+      "coaching": {
+        "status": "completed",
+        "error": null,
+        "action": "check",
+        "prompt_version": "cumulative-coach-v3"
+      },
+      "report_id": "f75b924a-5f7a-40e4-88f7-92547767243d",
+      "review": {
+        "status": "failed",
+        "error": {
+          "code": "api_request_invalid",
+          "message": "AI 연결을 확인한 뒤 다시 요청하세요."
+        }
+      },
+      "revised_report_id": "51915150-4089-48d8-9a76-f05211391dc5",
+      "resume": true,
+      "narrow": true,
+      "passed": false
+    },
+    {
+      "kind": "design",
+      "level": "advanced",
+      "request_id": "00932f34-c612-4325-8973-782eef0a52a4",
+      "initial_status": "ready",
+      "request_status": "ready",
+      "planning_calls": 1,
+      "attempt_id": "7a49be8f-83dd-486e-af31-1ccc22e004a7",
+      "ready": true,
+      "evaluation_version": "request-review-v3",
+      "no_sql": true,
+      "coaching": {
+        "status": "completed",
+        "error": null,
+        "action": "hint",
+        "prompt_version": "cumulative-coach-v3"
+      },
+      "report_id": "37b605f4-f713-416b-95e8-af4ee76af9f5",
+      "review": {
+        "status": "failed",
+        "error": {
+          "code": "api_request_invalid",
+          "message": "AI 연결을 확인한 뒤 다시 요청하세요."
+        }
+      },
+      "revised_report_id": "b21190ad-4d37-4e86-aa31-36fffe8bb3aa",
+      "resume": true,
+      "narrow": true,
+      "passed": false
+    }
+  ],
+  "page_errors": [],
+  "started_at": "2026-10-05T13:13:00.303Z",
+  "finished_at": "2026-10-05T13:13:28.820Z"
+}
