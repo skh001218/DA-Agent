@@ -1,0 +1,51 @@
+{
+  "actual_browser": true,
+  "actual_api": true,
+  "model_calls": 0,
+  "flows": [
+    {
+      "kind": "calculation",
+      "attempt_id": "a1a57551-2c55-4dbd-b7d7-f9a14f1e1010",
+      "report_id": "d42dc902-8dda-4c6f-adf3-67d012941be0",
+      "revised_report_id": "3d2707cd-11b4-42a7-9114-5c7b74c7f23d",
+      "resume": true,
+      "narrow_screen": true,
+      "passed": true
+    },
+    {
+      "kind": "review",
+      "attempt_id": "9a5d8f47-5c63-49f7-a935-8c5b0bc4748d",
+      "report_id": "f243459b-8abc-48f8-a874-a3c96ffe7235",
+      "revised_report_id": "102e8d79-9d81-4651-8586-3a50760d1787",
+      "resume": true,
+      "narrow_screen": true,
+      "passed": true
+    },
+    {
+      "kind": "design",
+      "attempt_id": "4c3da72f-fd90-422d-bf42-6d37a647f8ad",
+      "report_id": "6595fe6d-a738-490e-b0a2-962a83cd0df5",
+      "revised_report_id": "5de59a2d-f7fc-4f8a-95a5-62f5a4a18c85",
+      "resume": true,
+      "narrow_screen": true,
+      "passed": true
+    },
+    {
+      "kind": "investigation",
+      "attempt_id": "ea3aa76d-7230-4365-87c2-51e6a1498a26",
+      "report_id": "0f8d7626-9f50-4f7c-a393-f0d3195ff4d0",
+      "revised_report_id": "49d237c1-4ec6-49fa-be81-5d15ee6086cd",
+      "resume": true,
+      "narrow_screen": true,
+      "passed": true
+    }
+  ],
+  "checks": {
+    "owned_delete_confirm": {
+      "passed": true,
+      "attempt_id": "bed1794c-2995-4f67-8325-da4f6c2fab63"
+    }
+  },
+  "console_errors": [],
+  "scratch_id": "bed1794c-2995-4f67-8325-da4f6c2fab63"
+}

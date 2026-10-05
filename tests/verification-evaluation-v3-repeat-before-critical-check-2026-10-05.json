@@ -1,0 +1,186 @@
+{
+  "run_id": "edb0229d-b6f4-45ae-9b3d-7525a01f8cda",
+  "attempt_id": "82027251-a759-450d-a837-11f7dccbef30",
+  "mode": "review",
+  "status": "completed",
+  "configured_model": "gemini-3.5-flash-lite",
+  "provider": "gemini",
+  "fixture_version": "fixed-plan-quality-v2",
+  "evaluation_version": "request-review-v3",
+  "completed_calls": 18,
+  "verdict": "pending",
+  "semantic_approval": false,
+  "actual_model": true,
+  "actual_db": true,
+  "human_quality": "pending",
+  "samples": [
+    {
+      "id": "correct",
+      "score_range": 0.0,
+      "verdict": "pending",
+      "repetitions": [
+        {
+          "repetition": 1,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null,
+          "model": "gemini-3.5-flash-lite"
+        },
+        {
+          "repetition": 2,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null,
+          "model": "gemini-3.5-flash-lite"
+        },
+        {
+          "repetition": 3,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null,
+          "model": "gemini-3.5-flash-lite"
+        }
+      ]
+    },
+    {
+      "id": "core_error",
+      "score_range": null,
+      "verdict": "pending",
+      "repetitions": [
+        {
+          "repetition": 1,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null,
+          "model": "gemini-3.5-flash-lite"
+        },
+        {
+          "repetition": 2,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null,
+          "model": "gemini-3.5-flash-lite"
+        },
+        {
+          "repetition": 3,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null,
+          "model": "gemini-3.5-flash-lite"
+        }
+      ]
+    },
+    {
+      "id": "missing_evidence",
+      "score_range": 0.0,
+      "verdict": "pending",
+      "repetitions": [
+        {
+          "repetition": 1,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null,
+          "model": "gemini-3.5-flash-lite"
+        },
+        {
+          "repetition": 2,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null,
+          "model": "gemini-3.5-flash-lite"
+        },
+        {
+          "repetition": 3,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null,
+          "model": "gemini-3.5-flash-lite"
+        }
+      ]
+    },
+    {
+      "id": "valid_alternative",
+      "score_range": 0.0,
+      "verdict": "pending",
+      "repetitions": [
+        {
+          "repetition": 1,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null,
+          "model": "gemini-3.5-flash-lite"
+        },
+        {
+          "repetition": 2,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null,
+          "model": "gemini-3.5-flash-lite"
+        },
+        {
+          "repetition": 3,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null,
+          "model": "gemini-3.5-flash-lite"
+        }
+      ]
+    },
+    {
+      "id": "uncertainty",
+      "score_range": 0.0,
+      "verdict": "pending",
+      "repetitions": [
+        {
+          "repetition": 1,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null,
+          "model": "gemini-3.5-flash-lite"
+        },
+        {
+          "repetition": 2,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null,
+          "model": "gemini-3.5-flash-lite"
+        },
+        {
+          "repetition": 3,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null,
+          "model": "gemini-3.5-flash-lite"
+        }
+      ]
+    },
+    {
+      "id": "private_request",
+      "score_range": 0.0,
+      "verdict": "pending",
+      "repetitions": [
+        {
+          "repetition": 1,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null,
+          "model": "gemini-3.5-flash-lite"
+        },
+        {
+          "repetition": 2,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null,
+          "model": "gemini-3.5-flash-lite"
+        },
+        {
+          "repetition": 3,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null,
+          "model": "gemini-3.5-flash-lite"
+        }
+      ]
+    }
+  ]
+}

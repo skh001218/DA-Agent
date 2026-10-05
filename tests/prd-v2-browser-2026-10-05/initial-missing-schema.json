@@ -1,0 +1,75 @@
+{
+  "actual_browser": true,
+  "actual_api": true,
+  "provider_mocked": false,
+  "checks": {
+    "learning_revision_conflict": {
+      "passed": true,
+      "input_preserved": true
+    },
+    "delete_cancel_keyboard": {
+      "passed": true,
+      "delete_requests": 0
+    },
+    "unsupported_input_preserved": {
+      "passed": true,
+      "request_id": "f3aa457c-39e8-4cbc-8e85-4dd5aac6ed06",
+      "status": "failed"
+    },
+    "clarification_answer": {
+      "passed": false,
+      "error": "Expected values to be strictly equal:\n\n'failed' !== 'ready'\n"
+    },
+    "recommendation_start": {
+      "passed": false,
+      "error": "Expected values to be strictly equal:\n\n'failed' !== 'ready'\n"
+    },
+    "metrics_download_and_quality_ui": {
+      "passed": true,
+      "eight_metrics": true,
+      "json": true,
+      "csv": true
+    }
+  },
+  "flows": [
+    {
+      "kind": "calculation",
+      "level": "beginner",
+      "request_id": "a284e586-4645-4003-98fd-d3688f562e9d",
+      "request_status": "failed",
+      "planning_calls": 1,
+      "passed": false,
+      "error": "실제 DB 기준 계산 검증에 실패했습니다.\n\n'failed' !== 'ready'\n"
+    },
+    {
+      "kind": "review",
+      "level": "intermediate",
+      "request_id": "0775963d-18db-4e1a-8594-004e6d470b5b",
+      "request_status": "failed",
+      "planning_calls": 1,
+      "passed": false,
+      "error": "실제 DB 기준 계산 검증에 실패했습니다.\n\n'failed' !== 'ready'\n"
+    },
+    {
+      "kind": "design",
+      "level": "advanced",
+      "request_id": "4e92adc0-69c8-4238-8ebd-b0cd74a03d56",
+      "request_status": "failed",
+      "planning_calls": 1,
+      "passed": false,
+      "error": "실제 DB 기준 계산 검증에 실패했습니다.\n\n'failed' !== 'ready'\n"
+    },
+    {
+      "kind": "investigation",
+      "level": "advanced",
+      "request_id": "f932fad4-bb4e-42fa-aafc-afcf33419238",
+      "request_status": "failed",
+      "planning_calls": 1,
+      "passed": false,
+      "error": "실제 DB 기준 계산 검증에 실패했습니다.\n\n'failed' !== 'ready'\n"
+    }
+  ],
+  "console_errors": [],
+  "retained_samples": [],
+  "finished_at": "2026-10-05T10:36:03.837Z"
+}

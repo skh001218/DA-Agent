@@ -1,6 +1,6 @@
 """Separate request-v2 contracts; v1 records retain their original meaning."""
 from typing import Literal
-from pydantic import Field, model_validator
+from pydantic import ConfigDict, Field, model_validator
 from .contracts import Contract
 from .training_contracts import PublicTask
 
@@ -27,14 +27,15 @@ class RequestAction(Contract):
     task_kind: Literal['calculation','review','design','investigation'] | None = None
 
 class Interpretation(Contract):
+    model_config = ConfigDict(extra='forbid', strict=True)
     analysis_topic: Literal['return_observation', 'unsupported', 'unclear']
-    capability_id: str | None = None
-    difficulty: Literal['beginner','intermediate','advanced'] = 'intermediate'
-    task_kind: Literal['calculation','review','design','investigation'] = 'calculation'
-    goal: str = Field(max_length=200)
-    questions: list[str] = Field(default_factory=list,max_length=5)
-    unsupported: bool = False
-    reason: str = Field(max_length=1000)
+    capability_id: str | None
+    difficulty: Literal['beginner','intermediate','advanced']
+    task_kind: Literal['calculation','review','design','investigation']
+    goal: str = Field(min_length=1,max_length=200)
+    questions: list[str] = Field(max_length=5)
+    unsupported: bool
+    reason: str = Field(min_length=1,max_length=1000)
 
 class PublicTaskV2(PublicTask):
     original_request: str | None = Field(default=None,max_length=4000)
@@ -42,7 +43,8 @@ class PublicTaskV2(PublicTask):
     task_kind: Literal['calculation','review','design','investigation']
     contract_version: Literal['request-v2']
     plan_version: Literal['access-plan-v2', 'adaptive-plan-v1']
-    evaluation_version: Literal['request-review-v2']
+    evaluation_version: Literal['request-review-v2', 'request-review-v3']
+    evaluation_rubric: dict | None = None
     difficulty_version: Literal['ambiguity-v2']
     plan_id: str
     revision: int

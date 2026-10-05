@@ -1,0 +1,184 @@
+{
+  "run_id": "edb0229d-b6f4-45ae-9b3d-7525a01f8cda",
+  "attempt_id": "82027251-a759-450d-a837-11f7dccbef30",
+  "mode": "review",
+  "status": "completed",
+  "configured_model": "gemini-3.5-flash-lite",
+  "provider": "gemini",
+  "fixture_version": "fixed-plan-quality-v2",
+  "evaluation_version": "request-review-v3",
+  "completed_calls": 18,
+  "verdict": "fail",
+  "semantic_approval": false,
+  "actual_model": true,
+  "actual_db": true,
+  "human_quality": "pending",
+  "samples": [
+    {
+      "id": "correct",
+      "score_range": 0.0,
+      "critical_state_variation": {},
+      "verdict": "pending",
+      "repetitions": [
+        {
+          "repetition": 1,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null
+        },
+        {
+          "repetition": 2,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null
+        },
+        {
+          "repetition": 3,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null
+        }
+      ]
+    },
+    {
+      "id": "core_error",
+      "score_range": null,
+      "critical_state_variation": {
+        "analysis_approach": [
+          "error",
+          "met"
+        ]
+      },
+      "verdict": "fail",
+      "repetitions": [
+        {
+          "repetition": 1,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null
+        },
+        {
+          "repetition": 2,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null
+        },
+        {
+          "repetition": 3,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null
+        }
+      ]
+    },
+    {
+      "id": "missing_evidence",
+      "score_range": 0.0,
+      "critical_state_variation": {
+        "interpretation": [
+          "error",
+          "met"
+        ]
+      },
+      "verdict": "fail",
+      "repetitions": [
+        {
+          "repetition": 1,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null
+        },
+        {
+          "repetition": 2,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null
+        },
+        {
+          "repetition": 3,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null
+        }
+      ]
+    },
+    {
+      "id": "valid_alternative",
+      "score_range": 0.0,
+      "critical_state_variation": {},
+      "verdict": "pending",
+      "repetitions": [
+        {
+          "repetition": 1,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null
+        },
+        {
+          "repetition": 2,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null
+        },
+        {
+          "repetition": 3,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null
+        }
+      ]
+    },
+    {
+      "id": "uncertainty",
+      "score_range": 0.0,
+      "critical_state_variation": {},
+      "verdict": "pending",
+      "repetitions": [
+        {
+          "repetition": 1,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null
+        },
+        {
+          "repetition": 2,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null
+        },
+        {
+          "repetition": 3,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null
+        }
+      ]
+    },
+    {
+      "id": "private_request",
+      "score_range": 0.0,
+      "critical_state_variation": {},
+      "verdict": "pending",
+      "repetitions": [
+        {
+          "repetition": 1,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null
+        },
+        {
+          "repetition": 2,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null
+        },
+        {
+          "repetition": 3,
+          "status": "completed",
+          "automatic_verdict": "pass",
+          "error_code": null
+        }
+      ]
+    }
+  ]
+}

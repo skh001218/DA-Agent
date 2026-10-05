@@ -1,0 +1,59 @@
+metric,field,value,metrics_version
+filters,domain,access,quality-metrics-v2
+generation_success,numerator,9,quality-metrics-v2
+generation_success,denominator,9,quality-metrics-v2
+generation_success,rate,1.0,quality-metrics-v2
+generation_success,measurement,measured,quality-metrics-v2
+generation_success,statuses,"{""ready"": 9}",quality-metrics-v2
+generation_success,unsupported,0,quality-metrics-v2
+diversity,numerator,0,quality-metrics-v2
+diversity,denominator,0,quality-metrics-v2
+diversity,rate,,quality-metrics-v2
+diversity,measurement,unmeasured,quality-metrics-v2
+diversity,intentional_repeat,0,quality-metrics-v2
+diversity,pending,0,quality-metrics-v2
+difficulty_fit,numerator,0,quality-metrics-v2
+difficulty_fit,denominator,0,quality-metrics-v2
+difficulty_fit,rate,,quality-metrics-v2
+difficulty_fit,measurement,unmeasured,quality-metrics-v2
+difficulty_fit,human_results,{},quality-metrics-v2
+difficulty_fit,learner_results,{},quality-metrics-v2
+difficulty_fit,unanswered,0,quality-metrics-v2
+coaching_appropriateness,numerator,0,quality-metrics-v2
+coaching_appropriateness,denominator,0,quality-metrics-v2
+coaching_appropriateness,rate,,quality-metrics-v2
+coaching_appropriateness,measurement,unmeasured,quality-metrics-v2
+coaching_appropriateness,results,{},quality-metrics-v2
+evaluation_reliability,numerator,0,quality-metrics-v2
+evaluation_reliability,denominator,0,quality-metrics-v2
+evaluation_reliability,rate,,quality-metrics-v2
+evaluation_reliability,measurement,unmeasured,quality-metrics-v2
+evaluation_reliability,errors,{},quality-metrics-v2
+evaluation_reliability,human_sample_count,0,quality-metrics-v2
+evaluation_reliability,human_results,{},quality-metrics-v2
+evaluation_reliability,repeated_samples,[],quality-metrics-v2
+independent_performance,numerator,0,quality-metrics-v2
+independent_performance,denominator,0,quality-metrics-v2
+independent_performance,rate,,quality-metrics-v2
+independent_performance,measurement,unmeasured,quality-metrics-v2
+independent_performance,interrupted,0,quality-metrics-v2
+independent_performance,ongoing,0,quality-metrics-v2
+independent_performance,assistance_unknown,0,quality-metrics-v2
+revision_effect,numerator,0,quality-metrics-v2
+revision_effect,denominator,0,quality-metrics-v2
+revision_effect,rate,,quality-metrics-v2
+revision_effect,measurement,unmeasured,quality-metrics-v2
+revision_effect,unsubmitted,0,quality-metrics-v2
+revision_effect,unassessed,0,quality-metrics-v2
+wait_usage,duration,"{""count"": 74, ""missing"": 0, ""median_ms"": 1334.0, ""p95_ms"": 5389}",quality-metrics-v2
+wait_usage,request_duration,"{""count"": 9, ""missing"": 0, ""median_ms"": 5339, ""p95_ms"": 7500}",quality-metrics-v2
+wait_usage,statuses,"{""failed"": 25, ""completed"": 49}",quality-metrics-v2
+wait_usage,ai_attempts,25,quality-metrics-v2
+wait_usage,ai_retries,0,quality-metrics-v2
+wait_usage,groups,"{""f232720c-cd6c-4383-b7f4-752e9ac50565"": {""attempts"": 2, ""retries"": 0, ""observed_tokens"": 2498, ""missing_calls"": 0}, ""a284e586-4645-4003-98fd-d3688f562e9d"": {""attempts"": 1, ""retries"": 0, ""observed_tokens"": 1211, ""missing_calls"": 0}, ""0775963d-18db-4e1a-8594-004e6d470b5b"": {""attempts"": 1, ""retries"": 0, ""observed_tokens"": 1244, ""missing_calls"": 0}, ""4e92adc0-69c8-4238-8ebd-b0cd74a03d56"": {""attempts"": 1, ""retries"": 0, ""observed_tokens"": 1212, ""missing_calls"": 0}, ""f932fad4-bb4e-42fa-aafc-afcf33419238"": {""attempts"": 1, ""retries"": 0, ""observed_tokens"": 1242, ""missing_calls"": 0}, ""453e5e8b-ee3d-4189-becd-32aa5b0110fd"": {""attempts"": 1, ""retries"": 0, ""observed_tokens"": 1190, ""missing_calls"": 0}, ""9022096f-c271-446b-bbbd-dbd4e0d0cc0d"": {""attempts"": 2, ""retries"": 0, ""observed_tokens"": 2459, ""missing_calls"": 0}, ""878081f5-9cc9-4b92-8dea-dfb8cea0a204"": {""attempts"": 1, ""retries"": 0, ""observed_tokens"": 1293, ""missing_calls"": 0}, ""207ba085-2262-46e5-a16d-904daf47a32b"": {""attempts"": 1, ""retries"": 0, ""observed_tokens"": 1495, ""missing_calls"": 0}, ""290bd5ff-411e-4cce-b002-67ca90dfbd77"": {""attempts"": 1, ""retries"": 0, ""observed_tokens"": 1334, ""missing_calls"": 0}, ""a3bc11e7-d0bf-42b2-84e0-cd4ee651c29b"": {""attempts"": 1, ""retries"": 0, ""observed_tokens"": 1458, ""missing_calls"": 0}, ""764875dc-d059-43ff-9699-e23d874c4d6a"": {""attempts"": 1, ""retries"": 0, ""observed_tokens"": 1437, ""missing_calls"": 0}, ""c3113099-0c39-4d5e-ad4f-00646460e72e"": {""attempts"": 2, ""retries"": 0, ""observed_tokens"": 2785, ""missing_calls"": 0}, ""f225b32e-5666-4166-868d-a68e12cbddca"": {""attempts"": 1, ""retries"": 0, ""observed_tokens"": 1346, ""missing_calls"": 0}, ""a1a57551-2c55-4dbd-b7d7-f9a14f1e1010"": {""attempts"": 1, ""retries"": 0, ""observed_tokens"": 1674, ""missing_calls"": 0}, ""e794ff2c-cc40-4063-9a24-c518d2a6fa3d"": {""attempts"": 1, ""retries"": 0, ""observed_tokens"": 1352, ""missing_calls"": 0}, ""9a5d8f47-5c63-49f7-a935-8c5b0bc4748d"": {""attempts"": 1, ""retries"": 0, ""observed_tokens"": 1659, ""missing_calls"": 0}, ""ae048a26-e270-421f-8890-f83b05dc1611"": {""attempts"": 1, ""retries"": 0, ""observed_tokens"": 1379, ""missing_calls"": 0}, ""4c3da72f-fd90-422d-bf42-6d37a647f8ad"": {""attempts"": 1, ""retries"": 0, ""observed_tokens"": 1571, ""missing_calls"": 0}, ""28ebca33-2623-48db-8f60-9e75609fd465"": {""attempts"": 1, ""retries"": 0, ""observed_tokens"": 1382, ""missing_calls"": 0}, ""ea3aa76d-7230-4365-87c2-51e6a1498a26"": {""attempts"": 1, ""retries"": 0, ""observed_tokens"": 1485, ""missing_calls"": 0}, ""b938daaa-a2aa-40cb-aeb3-d3674699e02d"": {""attempts"": 1, ""retries"": 0, ""observed_tokens"": 1373, ""missing_calls"": 0}}",quality-metrics-v2
+versions,event_schema,"{""event-v2"": 205, ""event-v1"": 95}",quality-metrics-v2
+versions,rules,"{""history-recommendation-v2"": 25, ""access-plan-v2"": 192, ""adaptive-recipe-v1"": 12, ""adaptive-validation-v1"": 4, ""unknown"": 25, ""access-validation-v2"": 30, ""request-review-v2"": 12}",quality-metrics-v2
+versions,criteria,{},quality-metrics-v2
+collection,incomplete,False,quality-metrics-v2
+collection,retention_days,30,quality-metrics-v2
+collection,outside_retention,False,quality-metrics-v2

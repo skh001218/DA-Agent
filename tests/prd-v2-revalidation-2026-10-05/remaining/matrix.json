@@ -1,0 +1,22 @@
+{
+  "actual_browser": true,
+  "actual_api": true,
+  "actual_model": true,
+  "flows": [
+    {
+      "kind": "investigation",
+      "level": "intermediate",
+      "passed": false,
+      "error": "locator.selectOption: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#request-kind')\u001b[22m\n"
+    },
+    {
+      "kind": "investigation",
+      "level": "advanced",
+      "passed": false,
+      "error": "locator.selectOption: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#request-kind')\u001b[22m\n"
+    }
+  ],
+  "page_errors": [],
+  "started_at": "2026-10-05T12:32:47.087Z",
+  "finished_at": "2026-10-05T12:33:47.626Z"
+}

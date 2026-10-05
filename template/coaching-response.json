@@ -1,0 +1,7 @@
+{
+  "action_type": "clarify",
+  "reason": "비교 기간이 정해지지 않아 집단 간 차이를 판단하기 어렵습니다.",
+  "next_action": "변화 전후를 비교할 기간을 각각 정해주세요.",
+  "evidence_ids": ["public-task"],
+  "uncertainty": "현재 자료만으로 변화의 원인을 확정할 수 없습니다."
+}

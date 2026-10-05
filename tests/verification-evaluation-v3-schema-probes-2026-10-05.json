@@ -1,0 +1,13 @@
+{
+  "synthetic_input_only": true,
+  "actual_provider": "gemini",
+  "probes": [
+    {"schema": "bounded_nested_arrays", "criteria_count": 1, "max_output_tokens": 8192, "http_status": 400},
+    {"schema": "bounded_nested_arrays", "criteria_count": 5, "max_output_tokens": 8192, "http_status": 400},
+    {"schema": "bounded_nested_arrays", "criteria_count": 1, "max_output_tokens": 4096, "http_status": 400},
+    {"schema": "minimal_object", "criteria_count": 1, "max_output_tokens": 8192, "state": "completed"},
+    {"schema": "same_shape_without_length_constraints", "criteria_count": 1, "max_output_tokens": 8192, "state": "completed"}
+  ],
+  "provider_error": "INVALID_ARGUMENT: Request contains an invalid argument.",
+  "conclusion": "Removing nested array/string length constraints resolves this observed schema rejection; server bounds and source validation remain strict. Individual rejected keywords were not isolated."
+}

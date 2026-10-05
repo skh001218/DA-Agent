@@ -1,0 +1,66 @@
+{
+  "actual_browser": true,
+  "actual_api": true,
+  "checks": {
+    "retry_preserved_fixed_request": {
+      "passed": true,
+      "request_id": "a284e586-4645-4003-98fd-d3688f562e9d",
+      "attempt_id": "cc998f7e-02a7-41b6-9251-72632814531f",
+      "new_planning_calls": 0,
+      "evidence": "initial-report-selection.json; original successful retry preserved"
+    },
+    "request_cancel": {
+      "passed": true,
+      "request_id": "d424a23e-ec62-469b-9acc-372bf979ec97",
+      "failed_task_unpublished": true
+    },
+    "assessment_revision_conflict": {
+      "passed": true,
+      "input_preserved": true,
+      "pending_fixture_deleted": true
+    }
+  },
+  "reviews": [
+    {
+      "kind": "calculation",
+      "attempt_id": "a1a57551-2c55-4dbd-b7d7-f9a14f1e1010",
+      "status": "completed",
+      "error": null,
+      "total_score": 53.8,
+      "record_preserved": true,
+      "explicit_explanation": true,
+      "passed": true
+    },
+    {
+      "kind": "review",
+      "attempt_id": "9a5d8f47-5c63-49f7-a935-8c5b0bc4748d",
+      "status": "completed",
+      "error": null,
+      "total_score": 65,
+      "record_preserved": true,
+      "explicit_explanation": true,
+      "passed": true
+    },
+    {
+      "kind": "design",
+      "attempt_id": "4c3da72f-fd90-422d-bf42-6d37a647f8ad",
+      "status": "completed",
+      "error": null,
+      "total_score": 75,
+      "record_preserved": true,
+      "explicit_explanation": true,
+      "passed": true
+    },
+    {
+      "kind": "investigation",
+      "attempt_id": "ea3aa76d-7230-4365-87c2-51e6a1498a26",
+      "status": "completed",
+      "error": null,
+      "total_score": 65,
+      "record_preserved": true,
+      "explicit_explanation": true,
+      "passed": true
+    }
+  ],
+  "console_errors": []
+}

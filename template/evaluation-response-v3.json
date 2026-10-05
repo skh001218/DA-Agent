@@ -1,0 +1,205 @@
+{
+  "criteria": [
+    {
+      "key": "problem_definition",
+      "conditions": [
+        {
+          "id": "content",
+          "state": "missing",
+          "reason": "제출 자료에서 해당 내용을 확인하지 못했습니다.",
+          "sources": []
+        },
+        {
+          "id": "target",
+          "state": "missing",
+          "reason": "제출 자료에서 해당 내용을 확인하지 못했습니다.",
+          "sources": []
+        },
+        {
+          "id": "period",
+          "state": "missing",
+          "reason": "제출 자료에서 해당 내용을 확인하지 못했습니다.",
+          "sources": []
+        },
+        {
+          "id": "unit",
+          "state": "missing",
+          "reason": "제출 자료에서 해당 내용을 확인하지 못했습니다.",
+          "sources": []
+        },
+        {
+          "id": "metric",
+          "state": "missing",
+          "reason": "제출 자료에서 해당 내용을 확인하지 못했습니다.",
+          "sources": []
+        },
+        {
+          "id": "observation",
+          "state": "missing",
+          "reason": "제출 자료에서 해당 내용을 확인하지 못했습니다.",
+          "sources": []
+        },
+        {
+          "id": "critical",
+          "state": "met",
+          "reason": "제출 자료에서 해당 내용을 확인하지 못했습니다.",
+          "sources": []
+        },
+        {
+          "id": "advanced",
+          "state": "missing",
+          "reason": "제출 자료에서 해당 내용을 확인하지 못했습니다.",
+          "sources": []
+        }
+      ]
+    },
+    {
+      "key": "analysis_approach",
+      "conditions": [
+        {
+          "id": "content",
+          "state": "missing",
+          "reason": "제출 자료에서 해당 내용을 확인하지 못했습니다.",
+          "sources": []
+        },
+        {
+          "id": "method",
+          "state": "missing",
+          "reason": "제출 자료에서 해당 내용을 확인하지 못했습니다.",
+          "sources": []
+        },
+        {
+          "id": "validation",
+          "state": "missing",
+          "reason": "제출 자료에서 해당 내용을 확인하지 못했습니다.",
+          "sources": []
+        },
+        {
+          "id": "critical",
+          "state": "met",
+          "reason": "제출 자료에서 해당 내용을 확인하지 못했습니다.",
+          "sources": []
+        },
+        {
+          "id": "advanced",
+          "state": "missing",
+          "reason": "제출 자료에서 해당 내용을 확인하지 못했습니다.",
+          "sources": []
+        }
+      ]
+    },
+    {
+      "key": "sql_accuracy",
+      "conditions": [
+        {
+          "id": "content",
+          "state": "missing",
+          "reason": "제출 자료에서 해당 내용을 확인하지 못했습니다.",
+          "sources": []
+        },
+        {
+          "id": "execution",
+          "state": "missing",
+          "reason": "제출 자료에서 해당 내용을 확인하지 못했습니다.",
+          "sources": []
+        },
+        {
+          "id": "calculation",
+          "state": "missing",
+          "reason": "제출 자료에서 해당 내용을 확인하지 못했습니다.",
+          "sources": []
+        },
+        {
+          "id": "critical",
+          "state": "met",
+          "reason": "제출 자료에서 해당 내용을 확인하지 못했습니다.",
+          "sources": []
+        },
+        {
+          "id": "advanced",
+          "state": "missing",
+          "reason": "제출 자료에서 해당 내용을 확인하지 못했습니다.",
+          "sources": []
+        }
+      ]
+    },
+    {
+      "key": "interpretation",
+      "conditions": [
+        {
+          "id": "content",
+          "state": "missing",
+          "reason": "제출 자료에서 해당 내용을 확인하지 못했습니다.",
+          "sources": []
+        },
+        {
+          "id": "meaning",
+          "state": "missing",
+          "reason": "제출 자료에서 해당 내용을 확인하지 못했습니다.",
+          "sources": []
+        },
+        {
+          "id": "scope",
+          "state": "missing",
+          "reason": "제출 자료에서 해당 내용을 확인하지 못했습니다.",
+          "sources": []
+        },
+        {
+          "id": "critical",
+          "state": "met",
+          "reason": "제출 자료에서 해당 내용을 확인하지 못했습니다.",
+          "sources": []
+        },
+        {
+          "id": "advanced",
+          "state": "missing",
+          "reason": "제출 자료에서 해당 내용을 확인하지 못했습니다.",
+          "sources": []
+        }
+      ]
+    },
+    {
+      "key": "next_actions",
+      "conditions": [
+        {
+          "id": "content",
+          "state": "missing",
+          "reason": "제출 자료에서 해당 내용을 확인하지 못했습니다.",
+          "sources": []
+        },
+        {
+          "id": "action",
+          "state": "missing",
+          "reason": "제출 자료에서 해당 내용을 확인하지 못했습니다.",
+          "sources": []
+        },
+        {
+          "id": "purpose",
+          "state": "missing",
+          "reason": "제출 자료에서 해당 내용을 확인하지 못했습니다.",
+          "sources": []
+        },
+        {
+          "id": "critical",
+          "state": "met",
+          "reason": "제출 자료에서 해당 내용을 확인하지 못했습니다.",
+          "sources": []
+        },
+        {
+          "id": "advanced",
+          "state": "missing",
+          "reason": "제출 자료에서 해당 내용을 확인하지 못했습니다.",
+          "sources": []
+        }
+      ]
+    }
+  ],
+  "strengths": [],
+  "improvements": [
+    "누락된 공개 조건을 보완해주세요."
+  ],
+  "next_steps": [
+    "대상과 지표 정의부터 작성해주세요."
+  ],
+  "uncertainty": "실행 근거가 제출되지 않았습니다."
+}

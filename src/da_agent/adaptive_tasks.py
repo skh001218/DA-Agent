@@ -492,11 +492,11 @@ def stage_adaptive(root, package_id, recipe, seed, plan_id, revision):
             required_tables=[t.name for t in recipe.tables], data_complete_before=max([r[c.name] for t in recipe.tables for c in t.columns if generator_type(c.generator) in ('timestamp','timestamp_sequence','timestamp_offset') for r in rows[t.name] if r[c.name] is not None] or [dt.datetime.now(dt.timezone.utc).isoformat()]),
             task_kind=recipe.task_kind, difficulty=recipe.difficulty, completion_conditions=recipe.completion_conditions,
             weights=weights, selection_reason='요청한 분석 대상과 난이도에 맞춰 공개 자료로 분석하는 연습 과제입니다.', difficulty_reason=recipe.difficulty_reason,
-            contract_version='request-v2', plan_version='adaptive-plan-v1', evaluation_version='request-review-v2',
+            contract_version='request-v2', plan_version='adaptive-plan-v1', evaluation_version='request-review-v3',
             difficulty_version='ambiguity-v2', data_preparation='요청별 합성 데이터 · 자동 검증', evaluation_status='시험 과제 · 자동 검증 통과 · 사람 품질 검토 전',
             plan_id=plan_id, revision=revision, capability_id='adaptive', goal=recipe.goal,
             semantic_signature={'domain':recipe.topic, 'goal':recipe.goal, 'required_judgment':recipe.task_kind, 'format':recipe.task_kind, 'situation':recipe_hash[:12], 'ambiguity':recipe.difficulty, 'evaluation':'adaptive'},
-            evaluation_rules_version='request-review-v2', generator_version=VERSION, validation_version='adaptive-validation-v1',
+            evaluation_rules_version='request-review-v3', generator_version=VERSION, validation_version='adaptive-validation-v1',
             ambiguity={'goal':'public', 'cause':'learner'}, required_judgments=recipe.completion_conditions,
             allowed_limits=recipe.limitations, disclosed_on_question=[])).model_dump(exclude_none=True)
         private = dict(identity, evaluation_version='v1', sql=reference_sql, expected=expected, weights=weights,

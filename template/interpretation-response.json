@@ -1,0 +1,10 @@
+{
+  "analysis_topic": "return_observation",
+  "capability_id": "access-calculation",
+  "difficulty": "beginner",
+  "task_kind": "calculation",
+  "goal": "신규 유저의 D1~D7 미재접속 지표 계산",
+  "questions": [],
+  "unsupported": false,
+  "reason": "계산 과제의 공개 조건을 확인하는 연습"
+}

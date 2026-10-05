@@ -1,0 +1,19 @@
+{
+  "actual_browser": true,
+  "actual_model": true,
+  "attempt_id": "82027251-a759-450d-a837-11f7dccbef30",
+  "coaching": {
+    "status": "completed",
+    "action": "suggest_analysis",
+    "prompt_version": "cumulative-coach-v4-conflict-guard",
+    "reload_preserved": true
+  },
+  "review": {
+    "review_id": "719a345c-ec48-4897-b2e9-6b6a938ae682",
+    "status": "completed",
+    "prompt_version": "condition-review-v3-scoped-inputs",
+    "score_status": "held",
+    "reload_preserved": true
+  },
+  "page_errors": []
+}

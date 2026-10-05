@@ -31,6 +31,16 @@ def test_telemetry_types_event_specific_fields_and_utc():
     assert telemetry.EventV2.model_validate(event(row_count=3, complete=False)).row_count == 3
 
 
+def test_interpretation_diagnostic_closed_vocabulary_and_failure_scope():
+    detail={'stage':'schema','issues':[{'field':'goal','kind':'length'}]}
+    data=event()
+    data.update(event_type='ai_finished',status='failed',error_code='format_invalid',failure_detail=detail)
+    assert telemetry.EventV2.model_validate(data).failure_detail.stage=='schema'
+    for bad in ({'stage':'raw private'}, {'stage':'schema','issues':[{'field':'raw private','kind':'length'}]}, {'stage':'schema','message':'SELECT SECRET'}):
+        with pytest.raises(ValidationError):telemetry.EventV2.model_validate(dict(data,failure_detail=bad))
+    with pytest.raises(ValidationError):telemetry.EventV2.model_validate(dict(data,status='completed',error_code=None))
+
+
 def test_provisional_observation_never_copies_feedback_or_claims_mastery():
     review = {'review_id': 'r', 'report_id': 'report', 'attempt_id': 'a', 'status': 'completed',
               'rules_version': 'rv2', 'feedback': {'criteria': [{'key': 'interpretation', 'score': 20, 'reason': 'SECRET SELECT 123'}]}}

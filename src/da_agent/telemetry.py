@@ -3,12 +3,13 @@ import datetime as dt
 import uuid
 from typing import Literal
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Query
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 from psycopg.types.json import Jsonb
 
 from .errors import DomainError
 from .store import now
+from .planning_diagnostics import InterpretationDiagnostic
 
 EVENT_TYPES = {'request_state', 'generation_started', 'generation_finished', 'loading_started',
                'loading_finished', 'validation_started', 'validation_finished', 'task_published',
@@ -18,6 +19,14 @@ EVENT_TYPES = {'request_state', 'generation_started', 'generation_finished', 'lo
                'pilot_started', 'pilot_finished', 'ai_started', 'ai_finished'}
 ERROR_CODES = {'server_restart', 'provider_failure', 'timeout', 'cancelled', 'format_invalid',
                'validation_failed', 'storage_failure', 'collection_failure', 'limit_reached'}
+
+
+class ProviderDiagnostic(BaseModel):
+    model_config = ConfigDict(extra='forbid', strict=True)
+    request_id: str = Field(pattern=r'^[0-9a-f-]{36}$')
+    stage: Literal['request', 'http', 'response', 'transport']
+    timeout: bool
+    http_status: int | None = Field(default=None, ge=100, le=599)
 
 
 class EventV2(BaseModel):
@@ -46,6 +55,8 @@ class EventV2(BaseModel):
     task_kind: str | None = None
     status: Literal['running', 'success', 'failed', 'cancelled', 'interrupted', 'ready', 'unsupported', 'completed']
     error_code: str | None = None
+    failure_detail: InterpretationDiagnostic | None = None
+    provider_diagnostic: ProviderDiagnostic | None = None
     duration_ms: int | None = Field(default=None, ge=0)
     row_count: int | None = Field(default=None, ge=0)
     complete: bool | None = None
@@ -76,6 +87,10 @@ class EventV2(BaseModel):
             raise ValueError('start event cannot contain terminal failure/time metadata')
         if self.error_code and self.status not in {'failed', 'cancelled', 'interrupted'}:
             raise ValueError('error metadata needs a failure state')
+        if self.failure_detail and (self.status != 'failed' or self.event_type not in {'ai_finished', 'generation_finished'}):
+            raise ValueError('interpretation diagnostics belong to failed AI/generation finishes')
+        if self.provider_diagnostic and (self.status != 'failed' or self.event_type != 'ai_finished'):
+            raise ValueError('provider diagnostics belong to failed AI finishes')
         return self
 
 
@@ -182,6 +197,13 @@ def delete_for_attempt(conn, attempt_id):
 
 def routes(app, store):
     router = APIRouter()
+
+    @router.get('/api/quality/diagnostics')
+    def read_diagnostics(request_id: str | None = Query(default=None, max_length=100), limit: int = Query(default=30, ge=1, le=100)):
+        with store.connect() as conn:
+            rows = conn.execute("SELECT payload FROM quality_events_v2 WHERE payload ? 'failure_detail' AND (%s::text IS NULL OR payload->>'request_id'=%s) ORDER BY payload->>'occurred_at' DESC LIMIT %s", (request_id, request_id, limit)).fetchall()
+        fields = {'event_id', 'operation_id', 'request_id', 'occurred_at', 'event_type', 'error_code', 'failure_detail', 'model_version', 'prompt_version', 'duration_ms'}
+        return {'schema_version': 'interpretation-diagnostics-v1', 'events': [{k: v for k, v in row['payload'].items() if k in fields} for row in rows]}
 
     @router.post('/api/quality/events')
     def create_event(event: EventV2):

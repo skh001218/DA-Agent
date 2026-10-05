@@ -1,0 +1,10 @@
+{
+  "actual_browser": true,
+  "actual_api": true,
+  "checks": {},
+  "recommendation_id": "rec-1aef88198d26fe9f5c4f4035",
+  "request_id": "8a0bbad5-36bc-4b6b-9468-b88745483837",
+  "initial_status": "failed",
+  "status": "failed",
+  "error": "AI 해석 형식이 올바르지 않습니다. 출제하지 않았습니다.\n\n'failed' !== 'ready'\n"
+}

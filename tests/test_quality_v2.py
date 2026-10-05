@@ -35,6 +35,16 @@ def test_fixed_expectations_keep_alternative_and_low_error_levels():
     assert q.automatic_verdict({'operation': 'coaching', 'expected_action': 'hint'}, {'status': 'completed', 'feedback': {'action_type': 'submit'}}) == 'fail'
 
 
+def test_v3_held_total_cannot_hide_grade_variation_without_critical_drift():
+    run={'run_id':'r','evaluation_version':'request-review-v3','status':'completed','samples':[
+        {'id':'s','results':[{'repetition':i,'status':'completed','automatic_verdict':'pass',
+            'feedback':{'total_score':None,'criteria':[{'key':'analysis_approach','level':level,'conditions':[]}]}}
+            for i,level in enumerate([3,4,3],1)]}]}
+    summary=q.summarize(run)
+    assert summary['verdict']=='fail'
+    assert summary['samples'][0]['level_variation']=={'analysis_approach':[3,4]}
+
+
 def test_prepare_six_cases_for_each_fixed_task_and_coaching_mode(tmp_path):
     from da_agent.data import generate_package
     from da_agent.task_planner import assemble_plan
@@ -94,7 +104,7 @@ def test_evaluate_exactly_eighteen_metered_calls_retains_provider_failures(monke
             self.calls += 1
             if self.calls == 2:
                 raise RuntimeError('SECRET_PROVIDER_ERROR')
-            return {'state': 'completed', 'model': 'fixture', 'usage': {'input_tokens': 2, 'output_tokens': 3}, 'text': json.dumps({'action_type': 'none', 'reason': '개입 불필요', 'next_action': '', 'evidence_ids': [], 'evidence_state': 'unverified', 'uncertainty': ''})}
+            return {'state': 'completed', 'model': 'fixture', 'usage': {'input_tokens': 2, 'output_tokens': 3}, 'text': json.dumps({'action_type': 'none', 'reason': '개입 불필요', 'next_action': '', 'evidence_ids': [], 'uncertainty': ''})}
     class Package:
         def reference(self, _): return {}
     training = SimpleNamespace(store=object(), auth=Provider(), ai_lock=threading.Lock())
@@ -110,6 +120,19 @@ def test_evaluate_exactly_eighteen_metered_calls_retains_provider_failures(monke
 
 # Reuse the isolated recorder schema and temporary package-root fixture.
 from test_task_generation_v2 import v2_db_client as quality_db_client, begin_v2
+
+
+def test_db_failed_provider_metadata_is_persisted_without_raw_material(quality_db_client, monkeypatch):
+    client, provider=quality_db_client
+    _,ready=begin_v2(client,'design')
+    diagnostic={'request_id':'12345678-1234-1234-1234-123456789abc','stage':'http','timeout':False,'http_status':503}
+    monkeypatch.setattr(provider,'review',lambda messages: {'state':'error','reason':'api_unavailable','provider_diagnostic':diagnostic})
+    run=client.post('/api/quality/v2/runs',json={'request_id':__import__('uuid').uuid4().hex,'attempt_id':ready['attempt_id'],'mode':'coaching'}).json()
+    with client.app.state.store.connect() as conn:
+        events=conn.execute("SELECT payload FROM quality_events_v2 WHERE payload->>'request_id'=%s AND payload->>'event_type'='ai_finished'",('quality-v2:'+run['run_id'],)).fetchall()
+    assert len(events)==18
+    assert all(e['payload']['provider_diagnostic']==diagnostic for e in events)
+    assert all('message' not in e['payload'] and 'sql' not in e['payload'] for e in events)
 
 
 def test_db_operator_suite_actual_evidence_eighteen_calls_and_idempotency(quality_db_client):

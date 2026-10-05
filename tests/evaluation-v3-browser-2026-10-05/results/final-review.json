@@ -1,0 +1,11 @@
+{
+  "actual_model": true,
+  "actual_browser": true,
+  "attempt_id": "82027251-a759-450d-a837-11f7dccbef30",
+  "review_id": "cade02fb-44b7-4245-a7b5-fa3739c7dcc1",
+  "evaluation_version": "request-review-v3",
+  "prompt_version": "condition-review-v3-source-ids",
+  "server_excerpts": true,
+  "score_status": "held",
+  "reload_preserved": true
+}

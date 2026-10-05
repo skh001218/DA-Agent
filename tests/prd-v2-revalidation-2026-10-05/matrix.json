@@ -1,0 +1,467 @@
+{
+  "actual_browser": true,
+  "actual_api": true,
+  "actual_model": true,
+  "flows": [
+    {
+      "kind": "calculation",
+      "level": "beginner",
+      "request_id": "fcccbd3c-09ce-40e0-8032-c9e52e77cf0e",
+      "initial_status": "ready",
+      "request_status": "ready",
+      "planning_calls": 1,
+      "attempt_id": "64fa1327-9638-42d2-9a59-ab2ae8f2f2c7",
+      "ready": true,
+      "sql_error_preserved": true,
+      "sql_saved": true,
+      "coaching": {
+        "status": "completed",
+        "error": null,
+        "action": "submit",
+        "prompt_version": "cumulative-coach-v3"
+      },
+      "report_id": "71b7d22b-637f-4f51-9928-f5634fe5d124",
+      "review": {
+        "status": "completed",
+        "error": null,
+        "criteria": [
+          {
+            "key": "problem_definition",
+            "level": 3
+          },
+          {
+            "key": "analysis_approach",
+            "level": 2
+          },
+          {
+            "key": "sql_accuracy",
+            "level": 1
+          },
+          {
+            "key": "interpretation",
+            "level": 2
+          },
+          {
+            "key": "next_actions",
+            "level": 3
+          }
+        ],
+        "score": 53.8
+      },
+      "revised_report_id": "0df80596-edd3-4882-9b34-7204f2101a9f",
+      "resume": true,
+      "narrow": true,
+      "passed": true
+    },
+    {
+      "kind": "calculation",
+      "level": "intermediate",
+      "request_id": "d73cd1c6-5c7a-476f-a5f4-fd172c012119",
+      "initial_status": "ready",
+      "request_status": "ready",
+      "planning_calls": 1,
+      "attempt_id": "8adaf453-5d6c-4605-9dc5-5fd3230be6d6",
+      "ready": true,
+      "sql_error_preserved": true,
+      "sql_saved": true,
+      "coaching": {
+        "status": "completed",
+        "error": null,
+        "action": "hint",
+        "prompt_version": "cumulative-coach-v3"
+      },
+      "report_id": "3cb12dc8-a439-4ca0-b6d2-bf7d746a2ff6",
+      "review": {
+        "status": "completed",
+        "error": null,
+        "criteria": [
+          {
+            "key": "problem_definition",
+            "level": 3
+          },
+          {
+            "key": "analysis_approach",
+            "level": 2
+          },
+          {
+            "key": "sql_accuracy",
+            "level": 1
+          },
+          {
+            "key": "interpretation",
+            "level": 2
+          },
+          {
+            "key": "next_actions",
+            "level": 3
+          }
+        ],
+        "score": 53.8
+      },
+      "revised_report_id": "13882267-c2a5-4f6c-872c-80524ad88516",
+      "resume": true,
+      "narrow": true,
+      "passed": true
+    },
+    {
+      "kind": "calculation",
+      "level": "advanced",
+      "request_id": "e136333e-2692-4e29-977c-d7ff392b2d96",
+      "initial_status": "ready",
+      "request_status": "ready",
+      "planning_calls": 1,
+      "attempt_id": "9d2f8ab7-9cd1-46e6-8908-b51639362648",
+      "ready": true,
+      "sql_error_preserved": true,
+      "sql_saved": true,
+      "coaching": {
+        "status": "completed",
+        "error": null,
+        "action": "clarify",
+        "prompt_version": "cumulative-coach-v3"
+      },
+      "report_id": "efdb07f5-abd6-40ee-8511-d446474ab37c",
+      "review": {
+        "status": "completed",
+        "error": null,
+        "criteria": [
+          {
+            "key": "problem_definition",
+            "level": 3
+          },
+          {
+            "key": "analysis_approach",
+            "level": 2
+          },
+          {
+            "key": "sql_accuracy",
+            "level": 1
+          },
+          {
+            "key": "interpretation",
+            "level": 3
+          },
+          {
+            "key": "next_actions",
+            "level": 3
+          }
+        ],
+        "score": 58.8
+      },
+      "revised_report_id": "97786b7f-37ac-48b4-b086-057c5e0d2cc5",
+      "resume": true,
+      "narrow": true,
+      "passed": true
+    },
+    {
+      "kind": "review",
+      "level": "beginner",
+      "request_id": "f3d1dd16-3cab-443a-bad8-7b50962c0556",
+      "initial_status": "ready",
+      "request_status": "ready",
+      "planning_calls": 1,
+      "attempt_id": "e912c7e9-dd55-4209-bf06-3d7187543d27",
+      "ready": true,
+      "sql_error_preserved": true,
+      "sql_saved": true,
+      "coaching": {
+        "status": "completed",
+        "error": null,
+        "action": "check",
+        "prompt_version": "cumulative-coach-v3"
+      },
+      "report_id": "df5b0dc7-8984-445a-ad1a-7c566791f70d",
+      "review": {
+        "status": "failed",
+        "error": {
+          "code": "api_rate_limited",
+          "message": "Gemini 요청·토큰·일일 사용 한도에 도달했습니다. AI Studio에서 한도를 확인한 뒤 재시도하세요."
+        }
+      },
+      "revised_report_id": "afdbb3c4-e60b-4cd3-a631-b7d86eeb51a3",
+      "resume": true,
+      "narrow": true,
+      "passed": false
+    },
+    {
+      "kind": "review",
+      "level": "intermediate",
+      "request_id": "d2bc002d-bf0f-40ad-b9c7-d6fa9ed662b1",
+      "initial_status": "ready",
+      "request_status": "ready",
+      "planning_calls": 1,
+      "attempt_id": "468b86ca-5052-403b-9766-475e739ba4c3",
+      "ready": true,
+      "sql_error_preserved": true,
+      "sql_saved": true,
+      "coaching": {
+        "status": "completed",
+        "error": null,
+        "action": "check",
+        "prompt_version": "cumulative-coach-v3"
+      },
+      "report_id": "b589984b-bd3a-4f6b-b3da-928ffb419997",
+      "review": {
+        "status": "completed",
+        "error": null,
+        "criteria": [
+          {
+            "key": "problem_definition",
+            "level": 4
+          },
+          {
+            "key": "analysis_approach",
+            "level": 4
+          },
+          {
+            "key": "sql_accuracy",
+            "level": 1
+          },
+          {
+            "key": "interpretation",
+            "level": 4
+          },
+          {
+            "key": "next_actions",
+            "level": 4
+          }
+        ],
+        "score": 85
+      },
+      "revised_report_id": "3094214e-f7be-400f-8cf0-63f5ba37ca3c",
+      "resume": true,
+      "narrow": true,
+      "passed": true
+    },
+    {
+      "kind": "review",
+      "level": "advanced",
+      "request_id": "7fc0c842-7d19-493a-83aa-cbad394abf3b",
+      "initial_status": "ready",
+      "request_status": "ready",
+      "planning_calls": 1,
+      "attempt_id": "b57f2c02-c898-4646-95c1-bdbcd6befc1a",
+      "ready": true,
+      "sql_error_preserved": true,
+      "sql_saved": true,
+      "coaching": {
+        "status": "completed",
+        "error": null,
+        "action": "check",
+        "prompt_version": "cumulative-coach-v3"
+      },
+      "report_id": "8edf731d-1106-448f-b03b-3236488aa6fc",
+      "review": {
+        "status": "completed",
+        "error": null,
+        "criteria": [
+          {
+            "key": "problem_definition",
+            "level": 3
+          },
+          {
+            "key": "analysis_approach",
+            "level": 3
+          },
+          {
+            "key": "interpretation",
+            "level": 3
+          },
+          {
+            "key": "sql_accuracy",
+            "level": 1
+          },
+          {
+            "key": "next_actions",
+            "level": 3
+          }
+        ],
+        "score": 65
+      },
+      "revised_report_id": "c095c23a-7175-4ef8-b7ad-c8ce49386db7",
+      "resume": true,
+      "narrow": true,
+      "passed": true
+    },
+    {
+      "kind": "design",
+      "level": "beginner",
+      "request_id": "cde6f887-b75d-44d3-850a-ea09ee6a6042",
+      "initial_status": "ready",
+      "request_status": "ready",
+      "planning_calls": 1,
+      "attempt_id": "d5419611-afb1-45c8-a541-6e9262800837",
+      "ready": true,
+      "no_sql": true,
+      "coaching": {
+        "status": "completed",
+        "error": null,
+        "action": "suggest_analysis",
+        "prompt_version": "cumulative-coach-v3"
+      },
+      "report_id": "90b3309d-f9fb-497d-9a1e-49c539653a86",
+      "review": {
+        "status": "completed",
+        "error": null,
+        "criteria": [
+          {
+            "key": "problem_definition",
+            "level": 4
+          },
+          {
+            "key": "analysis_approach",
+            "level": 4
+          },
+          {
+            "key": "interpretation",
+            "level": 4
+          },
+          {
+            "key": "next_actions",
+            "level": 4
+          }
+        ],
+        "score": 100
+      },
+      "revised_report_id": "ee5ca144-3af4-4ea8-be5e-311ee6852689",
+      "resume": true,
+      "narrow": true,
+      "passed": true
+    },
+    {
+      "kind": "design",
+      "level": "intermediate",
+      "request_id": "bfbefb50-3df1-4541-850c-f8e1219becd7",
+      "initial_status": "ready",
+      "request_status": "ready",
+      "planning_calls": 1,
+      "attempt_id": "89692ea7-1ca1-403a-b749-445881a72358",
+      "ready": true,
+      "no_sql": true,
+      "coaching": {
+        "status": "completed",
+        "error": null,
+        "action": "suggest_analysis",
+        "prompt_version": "cumulative-coach-v3"
+      },
+      "report_id": "ca78b270-b45c-416d-a94b-0e322c25180f",
+      "review": {
+        "status": "completed",
+        "error": null,
+        "criteria": [
+          {
+            "key": "problem_definition",
+            "level": 4
+          },
+          {
+            "key": "analysis_approach",
+            "level": 4
+          },
+          {
+            "key": "interpretation",
+            "level": 4
+          },
+          {
+            "key": "next_actions",
+            "level": 4
+          }
+        ],
+        "score": 100
+      },
+      "revised_report_id": "0af7c7f5-a952-4796-bdfb-252beaccfd1f",
+      "resume": true,
+      "narrow": true,
+      "passed": true
+    },
+    {
+      "kind": "design",
+      "level": "advanced",
+      "request_id": "c5d6d8d4-2aaf-44f2-8c39-43b9d3a289a0",
+      "initial_status": "ready",
+      "request_status": "ready",
+      "planning_calls": 1,
+      "attempt_id": "25115ea9-ab0f-4dcf-9974-c5b27d3f9f80",
+      "ready": true,
+      "no_sql": true,
+      "coaching": {
+        "status": "completed",
+        "error": null,
+        "action": "suggest_analysis",
+        "prompt_version": "cumulative-coach-v3"
+      },
+      "report_id": "cd208ace-efcb-497e-b0d2-b6ec04e175e2",
+      "review": {
+        "status": "completed",
+        "error": null,
+        "criteria": [
+          {
+            "key": "problem_definition",
+            "level": 4
+          },
+          {
+            "key": "analysis_approach",
+            "level": 4
+          },
+          {
+            "key": "interpretation",
+            "level": 4
+          },
+          {
+            "key": "next_actions",
+            "level": 4
+          }
+        ],
+        "score": 100
+      },
+      "revised_report_id": "9ab59555-a067-4c76-9d67-b4fea94fedb2",
+      "resume": true,
+      "narrow": true,
+      "passed": true
+    },
+    {
+      "kind": "investigation",
+      "level": "beginner",
+      "request_id": "1f674d8f-b0fb-430a-a761-4a954086b90e",
+      "initial_status": "ready",
+      "request_status": "ready",
+      "planning_calls": 1,
+      "attempt_id": "eeff358e-c7fd-4c8a-ae04-5b127fb60152",
+      "ready": true,
+      "sql_error_preserved": true,
+      "sql_saved": true,
+      "coaching": {
+        "status": "completed",
+        "error": null,
+        "action": "suggest_analysis",
+        "prompt_version": "cumulative-coach-v3"
+      },
+      "report_id": "1021d8ad-676c-403b-ba59-59ddb94e18a2",
+      "review": {
+        "status": "failed",
+        "error": {
+          "code": "answer_exposure",
+          "message": "해설 전 비공개 정보가 포함된 리뷰를 차단했습니다. 제출본은 보존했습니다."
+        }
+      },
+      "revised_report_id": "bb1f1b8f-9ea0-4c0a-8c0d-6f1e072eeb20",
+      "resume": true,
+      "narrow": true,
+      "passed": false
+    },
+    {
+      "kind": "investigation",
+      "level": "intermediate",
+      "passed": false,
+      "error": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#recommendation').filter({ hasText: '제안' }) to be visible\u001b[22m\n"
+    },
+    {
+      "kind": "investigation",
+      "level": "advanced",
+      "passed": false,
+      "error": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#recommendation').filter({ hasText: '제안' }) to be visible\u001b[22m\n"
+    }
+  ],
+  "page_errors": [],
+  "started_at": "2026-10-05T12:26:56.350Z",
+  "finished_at": "2026-10-05T12:32:06.916Z"
+}

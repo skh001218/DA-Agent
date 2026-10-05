@@ -1,0 +1,19 @@
+{
+  "actual_browser": true,
+  "actual_api": true,
+  "actual_model": true,
+  "flows": [
+    {
+      "kind": "calculation",
+      "level": "beginner",
+      "passed": false,
+      "error": "page.waitForResponse: Timeout 150000ms exceeded while waiting for event \"response\""
+    },
+    {
+      "kind": "design",
+      "level": "advanced"
+    }
+  ],
+  "page_errors": [],
+  "started_at": "2026-10-05T13:09:51.408Z"
+}

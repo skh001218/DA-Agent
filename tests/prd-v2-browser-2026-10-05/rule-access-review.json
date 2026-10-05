@@ -1,0 +1,959 @@
+[
+  {
+    "public": {
+      "goal": "지표·집계 오류 검토",
+      "title": "초급 · 분석 오류 수정",
+      "plan_id": "a8a14e86-0c6b-4d1c-a3e1-36860cd2e185",
+      "weights": {
+        "next_actions": 10,
+        "sql_accuracy": 20,
+        "interpretation": 20,
+        "analysis_approach": 25,
+        "problem_definition": 25
+      },
+      "revision": 0,
+      "timezone": "Asia/Seoul",
+      "ambiguity": {
+        "goal": "public",
+        "cause": "learner",
+        "comparison": "public",
+        "target_period": "public"
+      },
+      "task_kind": "review",
+      "cohort_end": "2026-09-14T15:00:00Z",
+      "dataset_id": "ds-07ba86af72c3d82b0ecde812f238a50c",
+      "difficulty": "beginner",
+      "package_id": "sample-42f2a028d75c405d9e104f26f2071ac4",
+      "problem_id": "problem-001",
+      "definitions": {
+        "return": "관측 구간 안에서 시작한 로그인 1회 이상",
+        "display": "이탈률 소수점 한 자리",
+        "complete": "D8 00:00 <= data_complete_before",
+        "observation": "KST 가입 날짜 D1 00:00 포함부터 D8 00:00 제외",
+        "empty_denominator": "계산 불가 (null)"
+      },
+      "description": "대상 기간 신규 유저의 D1~D7 미재접속을 정확히 확인해주세요.\n\n제공된 SQL 초안의 집계 단위·대상·관측 조건 검토\n오류를 실제 근거로 확인하고 수정 결과 또는 타당한 수정 방법 제출\n오류 영향과 확인 한계 설명\n\n동료는 아래 조회의 행 수를 신규 유저 수로 해석하려고 합니다. 이 해석과 조회 범위를 검토해주세요.\nSELECT count(*) AS joined_rows FROM users u JOIN sessions s ON s.user_id = u.user_id;",
+      "cohort_start": "2026-08-31T15:00:00Z",
+      "plan_version": "access-plan-v2",
+      "capability_id": "access-review",
+      "allowed_limits": [
+        "관측 자료만으로 원인을 단정할 수 없음",
+        "관측 기간·표본 부족을 설명"
+      ],
+      "analysis_draft": "SELECT count(*) AS joined_rows FROM users u JOIN sessions s ON s.user_id = u.user_id;",
+      "problem_type_id": "new-user-churn",
+      "problem_version": "v1",
+      "release_version": "v1",
+      "required_tables": [
+        "users",
+        "sessions"
+      ],
+      "contract_version": "request-v2",
+      "data_preparation": "요청별 신규 접속 데이터",
+      "selection_reason": "운영자 규칙 검토 표본",
+      "difficulty_reason": "계산 대상과 조건을 처음부터 공개합니다.",
+      "evaluation_status": "시험 운영 · 의미적 평가 품질 승인 전",
+      "generator_version": "access-rules-v2",
+      "difficulty_version": "ambiguity-v2",
+      "evaluation_version": "request-review-v2",
+      "required_judgments": [
+        "제공된 SQL 초안의 집계 단위·대상·관측 조건 검토",
+        "오류를 실제 근거로 확인하고 수정 결과 또는 타당한 수정 방법 제출",
+        "오류 영향과 확인 한계 설명"
+      ],
+      "semantic_signature": {
+        "goal": "지표·집계 오류 검토",
+        "domain": "access",
+        "format": "review",
+        "ambiguity": "beginner",
+        "situation": "s-8ba8496a2525",
+        "evaluation": "unit-observation-calculation",
+        "required_judgment": "review"
+      },
+      "validation_version": "access-validation-v2",
+      "data_complete_before": "2026-09-18T15:00:00Z",
+      "completion_conditions": [
+        "제공된 SQL 초안의 집계 단위·대상·관측 조건 검토",
+        "오류를 실제 근거로 확인하고 수정 결과 또는 타당한 수정 방법 제출",
+        "오류 영향과 확인 한계 설명"
+      ],
+      "disclosed_on_question": [
+        "cohort_start",
+        "cohort_end",
+        "definitions"
+      ],
+      "evaluation_rules_version": "request-review-v2"
+    },
+    "status": "validated",
+    "sample_id": "42f2a028-d75c-405d-9e10-4f26f2071ac4",
+    "created_at": "2026-10-05T10:50:23.313327Z",
+    "difficulty": "beginner",
+    "package_id": "sample-42f2a028d75c405d9e104f26f2071ac4",
+    "row_counts": {
+      "users": 200,
+      "sessions": 526
+    },
+    "data_preview": {
+      "users": [
+        {
+          "country": "KR",
+          "user_id": "u0001",
+          "platform": "android",
+          "signup_at": "2026-08-31T15:00:00Z",
+          "signup_app_version": "1.0.0",
+          "acquisition_channel": "referral"
+        },
+        {
+          "country": "KR",
+          "user_id": "u0002",
+          "platform": "ios",
+          "signup_at": "2026-08-31T15:00:00Z",
+          "signup_app_version": "1.0.0",
+          "acquisition_channel": "referral"
+        },
+        {
+          "country": "KR",
+          "user_id": "u0003",
+          "platform": "ios",
+          "signup_at": "2026-08-31T15:00:00Z",
+          "signup_app_version": "1.0.0",
+          "acquisition_channel": "organic"
+        },
+        {
+          "country": "KR",
+          "user_id": "u0004",
+          "platform": "pc",
+          "signup_at": "2026-08-31T15:00:00Z",
+          "signup_app_version": "1.0.0",
+          "acquisition_channel": "ad"
+        },
+        {
+          "country": "KR",
+          "user_id": "u0005",
+          "platform": "ios",
+          "signup_at": "2026-08-31T15:00:00Z",
+          "signup_app_version": "1.0.0",
+          "acquisition_channel": "referral"
+        },
+        {
+          "country": "KR",
+          "user_id": "u0006",
+          "platform": "android",
+          "signup_at": "2026-08-31T15:00:00Z",
+          "signup_app_version": "1.0.0",
+          "acquisition_channel": "referral"
+        },
+        {
+          "country": "KR",
+          "user_id": "u0007",
+          "platform": "ios",
+          "signup_at": "2026-08-31T15:00:00Z",
+          "signup_app_version": "1.0.0",
+          "acquisition_channel": "organic"
+        },
+        {
+          "country": "KR",
+          "user_id": "u0008",
+          "platform": "android",
+          "signup_at": "2026-08-31T15:00:00Z",
+          "signup_app_version": "1.0.0",
+          "acquisition_channel": "ad"
+        },
+        {
+          "country": "KR",
+          "user_id": "u0009",
+          "platform": "pc",
+          "signup_at": "2026-09-01T14:00:00Z",
+          "signup_app_version": "1.0.0",
+          "acquisition_channel": "ad"
+        },
+        {
+          "country": "KR",
+          "user_id": "u0010",
+          "platform": "pc",
+          "signup_at": "2026-09-14T15:00:00Z",
+          "signup_app_version": "1.0.0",
+          "acquisition_channel": "referral"
+        },
+        {
+          "country": "KR",
+          "user_id": "u0011",
+          "platform": "pc",
+          "signup_at": "2026-09-10T15:00:00Z",
+          "signup_app_version": "1.0.0",
+          "acquisition_channel": "referral"
+        },
+        {
+          "country": "KR",
+          "user_id": "u0012",
+          "platform": "android",
+          "signup_at": "2026-09-11T15:00:00Z",
+          "signup_app_version": "1.0.0",
+          "acquisition_channel": "organic"
+        }
+      ],
+      "sessions": [
+        {
+          "user_id": "u0001",
+          "login_at": "2026-08-31T15:00:00Z",
+          "logout_at": "2026-08-31T15:20:00Z",
+          "session_id": "s00001",
+          "app_version": "1.0.0"
+        },
+        {
+          "user_id": "u0002",
+          "login_at": "2026-08-31T15:00:00Z",
+          "logout_at": "2026-08-31T15:20:00Z",
+          "session_id": "s00002",
+          "app_version": "1.0.0"
+        },
+        {
+          "user_id": "u0003",
+          "login_at": "2026-08-31T15:00:00Z",
+          "logout_at": "2026-08-31T15:20:00Z",
+          "session_id": "s00003",
+          "app_version": "1.0.0"
+        },
+        {
+          "user_id": "u0003",
+          "login_at": "2026-09-01T15:00:00Z",
+          "logout_at": "",
+          "session_id": "s00004",
+          "app_version": "1.0.0"
+        },
+        {
+          "user_id": "u0004",
+          "login_at": "2026-08-31T15:00:00Z",
+          "logout_at": "2026-08-31T15:20:00Z",
+          "session_id": "s00005",
+          "app_version": "1.0.0"
+        },
+        {
+          "user_id": "u0004",
+          "login_at": "2026-09-08T14:59:59Z",
+          "logout_at": "",
+          "session_id": "s00006",
+          "app_version": "1.0.0"
+        },
+        {
+          "user_id": "u0005",
+          "login_at": "2026-08-31T15:00:00Z",
+          "logout_at": "2026-08-31T15:20:00Z",
+          "session_id": "s00007",
+          "app_version": "1.0.0"
+        },
+        {
+          "user_id": "u0005",
+          "login_at": "2026-09-08T15:00:00Z",
+          "logout_at": "",
+          "session_id": "s00008",
+          "app_version": "1.0.0"
+        },
+        {
+          "user_id": "u0006",
+          "login_at": "2026-08-31T15:00:00Z",
+          "logout_at": "2026-08-31T15:20:00Z",
+          "session_id": "s00009",
+          "app_version": "1.0.0"
+        },
+        {
+          "user_id": "u0006",
+          "login_at": "2026-09-03T15:00:00Z",
+          "logout_at": "",
+          "session_id": "s00010",
+          "app_version": "1.0.0"
+        },
+        {
+          "user_id": "u0007",
+          "login_at": "2026-08-31T15:00:00Z",
+          "logout_at": "2026-08-31T15:20:00Z",
+          "session_id": "s00011",
+          "app_version": "1.0.0"
+        },
+        {
+          "user_id": "u0007",
+          "login_at": "2026-09-02T03:00:00Z",
+          "logout_at": "",
+          "session_id": "s00012",
+          "app_version": "1.0.0"
+        }
+      ]
+    },
+    "capability_id": "access-review",
+    "rules_version": "access-rules-v2",
+    "data_dictionary": {
+      "users": {
+        "grain": "유저 1명",
+        "columns": {
+          "country": "text, 가입 국가 KR",
+          "user_id": "text, 유저 고유 ID (기본 키)",
+          "platform": "text, 가입 플랫폼 android/ios/pc",
+          "signup_at": "timestamptz, 가입 시각",
+          "signup_app_version": "text, 가입 앱 버전",
+          "acquisition_channel": "text, 유입 채널 organic/ad/referral"
+        }
+      },
+      "sessions": {
+        "grain": "로그인 세션 1회",
+        "columns": {
+          "user_id": "text, users.user_id 참조 (외래 키)",
+          "login_at": "timestamptz, 로그인 시작 시각",
+          "logout_at": "nullable timestamptz, 종료 시각; 종료 미기록은 null",
+          "session_id": "text, 세션 고유 ID (기본 키)",
+          "app_version": "text, 세션 앱 버전"
+        }
+      },
+      "categories": {
+        "country": [
+          "KR"
+        ],
+        "platform": [
+          "android",
+          "ios",
+          "pc"
+        ],
+        "app_version": [
+          "1.0.0"
+        ],
+        "acquisition_channel": [
+          "organic",
+          "ad",
+          "referral"
+        ]
+      },
+      "time_rules": "파일 시각은 UTC ISO 8601 초 단위. PostgreSQL timestamptz 저장. 날짜 집계는 signup_at AT TIME ZONE 'Asia/Seoul'로 변환하세요."
+    }
+  },
+  {
+    "public": {
+      "goal": "지표·집계 오류 검토",
+      "title": "중급 · 분석 오류 수정",
+      "plan_id": "6eb3a8e8-8278-4c22-b659-074f2559013c",
+      "weights": {
+        "next_actions": 10,
+        "sql_accuracy": 20,
+        "interpretation": 20,
+        "analysis_approach": 25,
+        "problem_definition": 25
+      },
+      "revision": 0,
+      "timezone": "Asia/Seoul",
+      "ambiguity": {
+        "goal": "public",
+        "cause": "learner",
+        "comparison": "learner",
+        "target_period": "question"
+      },
+      "task_kind": "review",
+      "dataset_id": "ds-06b6737808c330236b81dfa4aee0dbe1",
+      "difficulty": "intermediate",
+      "package_id": "sample-ca6c82f910474c598e6545400c5a5fe6",
+      "problem_id": "problem-001",
+      "description": "신규 유저의 재방문 현황을 분석하려고 합니다. 어떤 유저를 비교 가능한 대상으로 볼지 정하고 확인해주세요.\n\n제공된 SQL 초안의 집계 단위·대상·관측 조건 검토\n오류를 실제 근거로 확인하고 수정 결과 또는 타당한 수정 방법 제출\n오류 영향과 확인 한계 설명\n\n대상 기간·관측 기준 등 업무 조건은 ‘업무 조건 확인’에서 확인할 수 있습니다.\n\n동료는 아래 조회의 행 수를 신규 유저 수로 해석하려고 합니다. 이 해석과 조회 범위를 검토해주세요.\nSELECT count(*) AS joined_rows FROM users u JOIN sessions s ON s.user_id = u.user_id;",
+      "plan_version": "access-plan-v2",
+      "capability_id": "access-review",
+      "allowed_limits": [
+        "관측 자료만으로 원인을 단정할 수 없음",
+        "관측 기간·표본 부족을 설명"
+      ],
+      "analysis_draft": "SELECT count(*) AS joined_rows FROM users u JOIN sessions s ON s.user_id = u.user_id;",
+      "problem_type_id": "new-user-churn",
+      "problem_version": "v1",
+      "release_version": "v1",
+      "required_tables": [
+        "users",
+        "sessions"
+      ],
+      "contract_version": "request-v2",
+      "data_preparation": "요청별 신규 접속 데이터",
+      "selection_reason": "운영자 규칙 검토 표본",
+      "difficulty_reason": "관측·지표 조건은 질문으로 확인하고 분석 대상을 정합니다.",
+      "evaluation_status": "시험 운영 · 의미적 평가 품질 승인 전",
+      "generator_version": "access-rules-v2",
+      "difficulty_version": "ambiguity-v2",
+      "evaluation_version": "request-review-v2",
+      "required_judgments": [
+        "제공된 SQL 초안의 집계 단위·대상·관측 조건 검토",
+        "오류를 실제 근거로 확인하고 수정 결과 또는 타당한 수정 방법 제출",
+        "오류 영향과 확인 한계 설명"
+      ],
+      "semantic_signature": {
+        "goal": "지표·집계 오류 검토",
+        "domain": "access",
+        "format": "review",
+        "ambiguity": "intermediate",
+        "situation": "s-8ba8496a2525",
+        "evaluation": "unit-observation-calculation",
+        "required_judgment": "review"
+      },
+      "validation_version": "access-validation-v2",
+      "data_complete_before": "2026-09-18T15:00:00Z",
+      "completion_conditions": [
+        "제공된 SQL 초안의 집계 단위·대상·관측 조건 검토",
+        "오류를 실제 근거로 확인하고 수정 결과 또는 타당한 수정 방법 제출",
+        "오류 영향과 확인 한계 설명"
+      ],
+      "disclosed_on_question": [
+        "cohort_start",
+        "cohort_end",
+        "definitions"
+      ],
+      "evaluation_rules_version": "request-review-v2"
+    },
+    "status": "validated",
+    "sample_id": "ca6c82f9-1047-4c59-8e65-45400c5a5fe6",
+    "created_at": "2026-10-05T10:50:24.130673Z",
+    "difficulty": "intermediate",
+    "package_id": "sample-ca6c82f910474c598e6545400c5a5fe6",
+    "row_counts": {
+      "users": 200,
+      "sessions": 498
+    },
+    "data_preview": {
+      "users": [
+        {
+          "country": "KR",
+          "user_id": "u0001",
+          "platform": "ios",
+          "signup_at": "2026-08-31T15:00:00Z",
+          "signup_app_version": "1.0.0",
+          "acquisition_channel": "referral"
+        },
+        {
+          "country": "KR",
+          "user_id": "u0002",
+          "platform": "ios",
+          "signup_at": "2026-08-31T15:00:00Z",
+          "signup_app_version": "1.0.0",
+          "acquisition_channel": "referral"
+        },
+        {
+          "country": "KR",
+          "user_id": "u0003",
+          "platform": "pc",
+          "signup_at": "2026-08-31T15:00:00Z",
+          "signup_app_version": "1.0.0",
+          "acquisition_channel": "ad"
+        },
+        {
+          "country": "KR",
+          "user_id": "u0004",
+          "platform": "android",
+          "signup_at": "2026-08-31T15:00:00Z",
+          "signup_app_version": "1.0.0",
+          "acquisition_channel": "organic"
+        },
+        {
+          "country": "KR",
+          "user_id": "u0005",
+          "platform": "android",
+          "signup_at": "2026-08-31T15:00:00Z",
+          "signup_app_version": "1.0.0",
+          "acquisition_channel": "organic"
+        },
+        {
+          "country": "KR",
+          "user_id": "u0006",
+          "platform": "android",
+          "signup_at": "2026-08-31T15:00:00Z",
+          "signup_app_version": "1.0.0",
+          "acquisition_channel": "organic"
+        },
+        {
+          "country": "KR",
+          "user_id": "u0007",
+          "platform": "pc",
+          "signup_at": "2026-08-31T15:00:00Z",
+          "signup_app_version": "1.0.0",
+          "acquisition_channel": "organic"
+        },
+        {
+          "country": "KR",
+          "user_id": "u0008",
+          "platform": "ios",
+          "signup_at": "2026-08-31T15:00:00Z",
+          "signup_app_version": "1.0.0",
+          "acquisition_channel": "referral"
+        },
+        {
+          "country": "KR",
+          "user_id": "u0009",
+          "platform": "pc",
+          "signup_at": "2026-09-01T14:00:00Z",
+          "signup_app_version": "1.0.0",
+          "acquisition_channel": "organic"
+        },
+        {
+          "country": "KR",
+          "user_id": "u0010",
+          "platform": "pc",
+          "signup_at": "2026-09-14T15:00:00Z",
+          "signup_app_version": "1.0.0",
+          "acquisition_channel": "referral"
+        },
+        {
+          "country": "KR",
+          "user_id": "u0011",
+          "platform": "ios",
+          "signup_at": "2026-09-10T15:00:00Z",
+          "signup_app_version": "1.0.0",
+          "acquisition_channel": "organic"
+        },
+        {
+          "country": "KR",
+          "user_id": "u0012",
+          "platform": "pc",
+          "signup_at": "2026-09-11T15:00:00Z",
+          "signup_app_version": "1.0.0",
+          "acquisition_channel": "referral"
+        }
+      ],
+      "sessions": [
+        {
+          "user_id": "u0001",
+          "login_at": "2026-08-31T15:00:00Z",
+          "logout_at": "2026-08-31T15:20:00Z",
+          "session_id": "s00001",
+          "app_version": "1.0.0"
+        },
+        {
+          "user_id": "u0002",
+          "login_at": "2026-08-31T15:00:00Z",
+          "logout_at": "2026-08-31T15:20:00Z",
+          "session_id": "s00002",
+          "app_version": "1.0.0"
+        },
+        {
+          "user_id": "u0003",
+          "login_at": "2026-08-31T15:00:00Z",
+          "logout_at": "2026-08-31T15:20:00Z",
+          "session_id": "s00003",
+          "app_version": "1.0.0"
+        },
+        {
+          "user_id": "u0003",
+          "login_at": "2026-09-01T15:00:00Z",
+          "logout_at": "",
+          "session_id": "s00004",
+          "app_version": "1.0.0"
+        },
+        {
+          "user_id": "u0004",
+          "login_at": "2026-08-31T15:00:00Z",
+          "logout_at": "2026-08-31T15:20:00Z",
+          "session_id": "s00005",
+          "app_version": "1.0.0"
+        },
+        {
+          "user_id": "u0004",
+          "login_at": "2026-09-08T14:59:59Z",
+          "logout_at": "",
+          "session_id": "s00006",
+          "app_version": "1.0.0"
+        },
+        {
+          "user_id": "u0005",
+          "login_at": "2026-08-31T15:00:00Z",
+          "logout_at": "2026-08-31T15:20:00Z",
+          "session_id": "s00007",
+          "app_version": "1.0.0"
+        },
+        {
+          "user_id": "u0005",
+          "login_at": "2026-09-08T15:00:00Z",
+          "logout_at": "",
+          "session_id": "s00008",
+          "app_version": "1.0.0"
+        },
+        {
+          "user_id": "u0006",
+          "login_at": "2026-08-31T15:00:00Z",
+          "logout_at": "2026-08-31T15:20:00Z",
+          "session_id": "s00009",
+          "app_version": "1.0.0"
+        },
+        {
+          "user_id": "u0006",
+          "login_at": "2026-09-03T15:00:00Z",
+          "logout_at": "",
+          "session_id": "s00010",
+          "app_version": "1.0.0"
+        },
+        {
+          "user_id": "u0007",
+          "login_at": "2026-08-31T15:00:00Z",
+          "logout_at": "2026-08-31T15:20:00Z",
+          "session_id": "s00011",
+          "app_version": "1.0.0"
+        },
+        {
+          "user_id": "u0007",
+          "login_at": "2026-09-02T03:00:00Z",
+          "logout_at": "",
+          "session_id": "s00012",
+          "app_version": "1.0.0"
+        }
+      ]
+    },
+    "capability_id": "access-review",
+    "rules_version": "access-rules-v2",
+    "data_dictionary": {
+      "users": {
+        "grain": "유저 1명",
+        "columns": {
+          "country": "text, 가입 국가 KR",
+          "user_id": "text, 유저 고유 ID (기본 키)",
+          "platform": "text, 가입 플랫폼 android/ios/pc",
+          "signup_at": "timestamptz, 가입 시각",
+          "signup_app_version": "text, 가입 앱 버전",
+          "acquisition_channel": "text, 유입 채널 organic/ad/referral"
+        }
+      },
+      "sessions": {
+        "grain": "로그인 세션 1회",
+        "columns": {
+          "user_id": "text, users.user_id 참조 (외래 키)",
+          "login_at": "timestamptz, 로그인 시작 시각",
+          "logout_at": "nullable timestamptz, 종료 시각; 종료 미기록은 null",
+          "session_id": "text, 세션 고유 ID (기본 키)",
+          "app_version": "text, 세션 앱 버전"
+        }
+      },
+      "categories": {
+        "country": [
+          "KR"
+        ],
+        "platform": [
+          "android",
+          "ios",
+          "pc"
+        ],
+        "app_version": [
+          "1.0.0"
+        ],
+        "acquisition_channel": [
+          "organic",
+          "ad",
+          "referral"
+        ]
+      },
+      "time_rules": "파일 시각은 UTC ISO 8601 초 단위. PostgreSQL timestamptz 저장. 날짜 집계는 signup_at AT TIME ZONE 'Asia/Seoul'로 변환하세요."
+    }
+  },
+  {
+    "public": {
+      "goal": "지표·집계 오류 검토",
+      "title": "고급 · 분석 오류 수정",
+      "plan_id": "b5f13c8b-78ba-426e-b557-6052fc7dbd00",
+      "weights": {
+        "next_actions": 10,
+        "sql_accuracy": 20,
+        "interpretation": 20,
+        "analysis_approach": 25,
+        "problem_definition": 25
+      },
+      "revision": 0,
+      "timezone": "Asia/Seoul",
+      "ambiguity": {
+        "goal": "public",
+        "cause": "learner",
+        "comparison": "learner",
+        "target_period": "question"
+      },
+      "task_kind": "review",
+      "dataset_id": "ds-8dbf37fc19a6e2fd6d8090a1d655cfe8",
+      "difficulty": "advanced",
+      "package_id": "sample-526d527fa24f4cc3a778343c69415e8c",
+      "problem_id": "problem-001",
+      "description": "운영팀이 신규 유저의 재방문 현황을 파악하려 합니다. 무엇부터 정의하고 확인해야 할지 제안해주세요. 특정 변화나 원인이 이미 확인된 상황은 아닙니다.\n\n제공된 SQL 초안의 집계 단위·대상·관측 조건 검토\n오류를 실제 근거로 확인하고 수정 결과 또는 타당한 수정 방법 제출\n오류 영향과 확인 한계 설명\n\n대상 기간·관측 기준 등 업무 조건은 ‘업무 조건 확인’에서 확인할 수 있습니다.\n\n동료는 아래 조회의 행 수를 신규 유저 수로 해석하려고 합니다. 이 해석과 조회 범위를 검토해주세요.\nSELECT count(*) AS joined_rows FROM users u JOIN sessions s ON s.user_id = u.user_id;",
+      "plan_version": "access-plan-v2",
+      "capability_id": "access-review",
+      "allowed_limits": [
+        "관측 자료만으로 원인을 단정할 수 없음",
+        "관측 기간·표본 부족을 설명"
+      ],
+      "analysis_draft": "SELECT count(*) AS joined_rows FROM users u JOIN sessions s ON s.user_id = u.user_id;",
+      "problem_type_id": "new-user-churn",
+      "problem_version": "v1",
+      "release_version": "v1",
+      "required_tables": [
+        "users",
+        "sessions"
+      ],
+      "contract_version": "request-v2",
+      "data_preparation": "요청별 신규 접속 데이터",
+      "selection_reason": "운영자 규칙 검토 표본",
+      "difficulty_reason": "업무 목표에서 질문·지표·우선순위를 정합니다. 고정된 업무 조건은 질문으로 확인할 수 있습니다.",
+      "evaluation_status": "시험 운영 · 의미적 평가 품질 승인 전",
+      "generator_version": "access-rules-v2",
+      "difficulty_version": "ambiguity-v2",
+      "evaluation_version": "request-review-v2",
+      "required_judgments": [
+        "제공된 SQL 초안의 집계 단위·대상·관측 조건 검토",
+        "오류를 실제 근거로 확인하고 수정 결과 또는 타당한 수정 방법 제출",
+        "오류 영향과 확인 한계 설명"
+      ],
+      "semantic_signature": {
+        "goal": "지표·집계 오류 검토",
+        "domain": "access",
+        "format": "review",
+        "ambiguity": "advanced",
+        "situation": "s-8ba8496a2525",
+        "evaluation": "unit-observation-calculation",
+        "required_judgment": "review"
+      },
+      "validation_version": "access-validation-v2",
+      "data_complete_before": "2026-09-18T15:00:00Z",
+      "completion_conditions": [
+        "제공된 SQL 초안의 집계 단위·대상·관측 조건 검토",
+        "오류를 실제 근거로 확인하고 수정 결과 또는 타당한 수정 방법 제출",
+        "오류 영향과 확인 한계 설명"
+      ],
+      "disclosed_on_question": [
+        "cohort_start",
+        "cohort_end",
+        "definitions"
+      ],
+      "evaluation_rules_version": "request-review-v2"
+    },
+    "status": "validated",
+    "sample_id": "526d527f-a24f-4cc3-a778-343c69415e8c",
+    "created_at": "2026-10-05T10:50:24.896341Z",
+    "difficulty": "advanced",
+    "package_id": "sample-526d527fa24f4cc3a778343c69415e8c",
+    "row_counts": {
+      "users": 200,
+      "sessions": 465
+    },
+    "data_preview": {
+      "users": [
+        {
+          "country": "KR",
+          "user_id": "u0001",
+          "platform": "pc",
+          "signup_at": "2026-08-31T15:00:00Z",
+          "signup_app_version": "1.0.0",
+          "acquisition_channel": "organic"
+        },
+        {
+          "country": "KR",
+          "user_id": "u0002",
+          "platform": "android",
+          "signup_at": "2026-08-31T15:00:00Z",
+          "signup_app_version": "1.0.0",
+          "acquisition_channel": "organic"
+        },
+        {
+          "country": "KR",
+          "user_id": "u0003",
+          "platform": "ios",
+          "signup_at": "2026-08-31T15:00:00Z",
+          "signup_app_version": "1.0.0",
+          "acquisition_channel": "referral"
+        },
+        {
+          "country": "KR",
+          "user_id": "u0004",
+          "platform": "android",
+          "signup_at": "2026-08-31T15:00:00Z",
+          "signup_app_version": "1.0.0",
+          "acquisition_channel": "ad"
+        },
+        {
+          "country": "KR",
+          "user_id": "u0005",
+          "platform": "pc",
+          "signup_at": "2026-08-31T15:00:00Z",
+          "signup_app_version": "1.0.0",
+          "acquisition_channel": "referral"
+        },
+        {
+          "country": "KR",
+          "user_id": "u0006",
+          "platform": "ios",
+          "signup_at": "2026-08-31T15:00:00Z",
+          "signup_app_version": "1.0.0",
+          "acquisition_channel": "referral"
+        },
+        {
+          "country": "KR",
+          "user_id": "u0007",
+          "platform": "pc",
+          "signup_at": "2026-08-31T15:00:00Z",
+          "signup_app_version": "1.0.0",
+          "acquisition_channel": "ad"
+        },
+        {
+          "country": "KR",
+          "user_id": "u0008",
+          "platform": "ios",
+          "signup_at": "2026-08-31T15:00:00Z",
+          "signup_app_version": "1.0.0",
+          "acquisition_channel": "referral"
+        },
+        {
+          "country": "KR",
+          "user_id": "u0009",
+          "platform": "pc",
+          "signup_at": "2026-09-01T14:00:00Z",
+          "signup_app_version": "1.0.0",
+          "acquisition_channel": "organic"
+        },
+        {
+          "country": "KR",
+          "user_id": "u0010",
+          "platform": "pc",
+          "signup_at": "2026-09-14T15:00:00Z",
+          "signup_app_version": "1.0.0",
+          "acquisition_channel": "ad"
+        },
+        {
+          "country": "KR",
+          "user_id": "u0011",
+          "platform": "pc",
+          "signup_at": "2026-09-10T15:00:00Z",
+          "signup_app_version": "1.0.0",
+          "acquisition_channel": "organic"
+        },
+        {
+          "country": "KR",
+          "user_id": "u0012",
+          "platform": "pc",
+          "signup_at": "2026-09-11T15:00:00Z",
+          "signup_app_version": "1.0.0",
+          "acquisition_channel": "ad"
+        }
+      ],
+      "sessions": [
+        {
+          "user_id": "u0001",
+          "login_at": "2026-08-31T15:00:00Z",
+          "logout_at": "2026-08-31T15:20:00Z",
+          "session_id": "s00001",
+          "app_version": "1.0.0"
+        },
+        {
+          "user_id": "u0002",
+          "login_at": "2026-08-31T15:00:00Z",
+          "logout_at": "2026-08-31T15:20:00Z",
+          "session_id": "s00002",
+          "app_version": "1.0.0"
+        },
+        {
+          "user_id": "u0003",
+          "login_at": "2026-08-31T15:00:00Z",
+          "logout_at": "2026-08-31T15:20:00Z",
+          "session_id": "s00003",
+          "app_version": "1.0.0"
+        },
+        {
+          "user_id": "u0003",
+          "login_at": "2026-09-01T15:00:00Z",
+          "logout_at": "",
+          "session_id": "s00004",
+          "app_version": "1.0.0"
+        },
+        {
+          "user_id": "u0004",
+          "login_at": "2026-08-31T15:00:00Z",
+          "logout_at": "2026-08-31T15:20:00Z",
+          "session_id": "s00005",
+          "app_version": "1.0.0"
+        },
+        {
+          "user_id": "u0004",
+          "login_at": "2026-09-08T14:59:59Z",
+          "logout_at": "",
+          "session_id": "s00006",
+          "app_version": "1.0.0"
+        },
+        {
+          "user_id": "u0005",
+          "login_at": "2026-08-31T15:00:00Z",
+          "logout_at": "2026-08-31T15:20:00Z",
+          "session_id": "s00007",
+          "app_version": "1.0.0"
+        },
+        {
+          "user_id": "u0005",
+          "login_at": "2026-09-08T15:00:00Z",
+          "logout_at": "",
+          "session_id": "s00008",
+          "app_version": "1.0.0"
+        },
+        {
+          "user_id": "u0006",
+          "login_at": "2026-08-31T15:00:00Z",
+          "logout_at": "2026-08-31T15:20:00Z",
+          "session_id": "s00009",
+          "app_version": "1.0.0"
+        },
+        {
+          "user_id": "u0006",
+          "login_at": "2026-09-03T15:00:00Z",
+          "logout_at": "",
+          "session_id": "s00010",
+          "app_version": "1.0.0"
+        },
+        {
+          "user_id": "u0007",
+          "login_at": "2026-08-31T15:00:00Z",
+          "logout_at": "2026-08-31T15:20:00Z",
+          "session_id": "s00011",
+          "app_version": "1.0.0"
+        },
+        {
+          "user_id": "u0007",
+          "login_at": "2026-09-02T03:00:00Z",
+          "logout_at": "",
+          "session_id": "s00012",
+          "app_version": "1.0.0"
+        }
+      ]
+    },
+    "capability_id": "access-review",
+    "rules_version": "access-rules-v2",
+    "data_dictionary": {
+      "users": {
+        "grain": "유저 1명",
+        "columns": {
+          "country": "text, 가입 국가 KR",
+          "user_id": "text, 유저 고유 ID (기본 키)",
+          "platform": "text, 가입 플랫폼 android/ios/pc",
+          "signup_at": "timestamptz, 가입 시각",
+          "signup_app_version": "text, 가입 앱 버전",
+          "acquisition_channel": "text, 유입 채널 organic/ad/referral"
+        }
+      },
+      "sessions": {
+        "grain": "로그인 세션 1회",
+        "columns": {
+          "user_id": "text, users.user_id 참조 (외래 키)",
+          "login_at": "timestamptz, 로그인 시작 시각",
+          "logout_at": "nullable timestamptz, 종료 시각; 종료 미기록은 null",
+          "session_id": "text, 세션 고유 ID (기본 키)",
+          "app_version": "text, 세션 앱 버전"
+        }
+      },
+      "categories": {
+        "country": [
+          "KR"
+        ],
+        "platform": [
+          "android",
+          "ios",
+          "pc"
+        ],
+        "app_version": [
+          "1.0.0"
+        ],
+        "acquisition_channel": [
+          "organic",
+          "ad",
+          "referral"
+        ]
+      },
+      "time_rules": "파일 시각은 UTC ISO 8601 초 단위. PostgreSQL timestamptz 저장. 날짜 집계는 signup_at AT TIME ZONE 'Asia/Seoul'로 변환하세요."
+    }
+  }
+]

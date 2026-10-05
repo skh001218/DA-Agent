@@ -13,7 +13,7 @@ class CoachingV2Tests(unittest.TestCase):
         self.report = {'attempt_id': 'a', 'claims': [{'claim_id': 'c', 'evidence_refs': [{'saved_execution_id': 'e'}]}]}
         self.frozen = freeze_evaluation(self.public, {'weights': {'sql_accuracy': 100}, 'expected': {'n': 42}})
     def response(self, **kw):
-        value = dict(action_type='check', reason='집계를 확인', next_action='조건을 확인하세요', evidence_ids=['e'], evidence_state='saved', uncertainty='')
+        value = dict(action_type='check', reason='집계를 확인', next_action='조건을 확인하세요', evidence_ids=['e'], uncertainty='')
         value.update(kw)
         return {'status': 'completed', 'feedback': json.dumps(value, ensure_ascii=False)}
     def review(self, **kw):
@@ -27,11 +27,21 @@ class CoachingV2Tests(unittest.TestCase):
         self.assertEqual(normalize_coaching(self.response(), ctx)['status'], 'completed')
         self.assertEqual(normalize_coaching(self.response(evidence_ids=['fake']), ctx)['status'], 'failed')
         self.assertEqual(normalize_coaching(self.response(evidence_state='public'), ctx)['status'], 'failed')
+    def test_explicit_conflict_blocks_submission_but_resolution_does_not(self):
+        for message, expected in [('가설과 관측이 충돌하면 어떤 비교를 해야 하나요?', 'suggest_analysis'),
+                                  ('가설과 관측이 충돌합니다. 가설을 철회해야 하나요?', 'suggest_analysis'),
+                                  ('가설과 관측의 충돌을 해결했습니다.', 'submit'),
+                                  ('가설을 철회했고 관측 차이만 보고합니다.', 'submit'),
+                                  ('비교 결과를 정리했습니다.', 'submit')]:
+            ctx=build_context(self.public,self.attempt,[],message,self.evidence)
+            result=normalize_coaching(self.response(action_type='submit',next_action='보고서를 제출하세요.'),ctx)
+            self.assertEqual(result['feedback']['action_type'],expected)
+            self.assertEqual(result['status'],'completed')
     def test_temporary_state_and_no_intervention(self):
         evidence = {'execution_id': 'temp', 'rows': [[1]]}
         ctx = build_context(self.public, self.attempt, [], '질문', evidence)
         self.assertTrue(ctx['transient'])
-        result = normalize_coaching(self.response(action_type='none', next_action='', evidence_ids=[], evidence_state='unverified'), ctx)
+        result = normalize_coaching(self.response(action_type='none', next_action='', evidence_ids=[]), ctx)
         self.assertEqual(result['status'], 'completed')
         self.assertFalse(should_coach('sql'))
         self.assertTrue(should_coach('sql', True))
@@ -43,6 +53,23 @@ class CoachingV2Tests(unittest.TestCase):
         altered['result']['result_complete'] = False
         self.assertEqual(verify_evidence(altered, {'n': 42})['status'], 'unverified')
         self.assertEqual(verify_evidence(self.evidence, {'missing': 42})['status'], 'unverified')
+
+    def test_server_derives_states_and_classifies_failures(self):
+        ctx = build_context(self.public, self.attempt, [], '질문', self.evidence)
+        for ids, state in [(['e'], 'saved'), (['public-task'], 'public'), (['e', 'public-task'], 'mixed'), ([], 'unverified')]:
+            self.assertEqual(normalize_coaching(self.response(evidence_ids=ids), ctx)['feedback']['evidence_state'], state)
+        temporary = build_context(self.public, self.attempt, [], '질문', {'execution_id': 'temp'})
+        self.assertEqual(normalize_coaching(self.response(evidence_ids=['temp']), temporary)['feedback']['evidence_state'], 'temporary')
+        for response, code in [(self.response(evidence_ids=['fake']), 'coaching_source'), (self.response(evidence_ids=['e', 'e']), 'coaching_source'), (self.response(action_type='none'), 'coaching_action'), (self.response(next_action=' '), 'coaching_action'), (self.response(reason=None), 'coaching_schema'), (self.response(evidence_state='saved'), 'coaching_schema'), ({'status': 'completed', 'feedback': 'private raw text'}, 'coaching_json')]:
+            result = normalize_coaching(response, ctx)
+            self.assertEqual(result['error']['code'], code)
+            self.assertIsNone(result['feedback'])
+            self.assertNotIn('private raw text', json.dumps(result))
+        missing = self.response()
+        value = json.loads(missing['feedback'])
+        del value['uncertainty']
+        missing['feedback'] = json.dumps(value)
+        self.assertEqual(normalize_coaching(missing, ctx)['error']['fields'], ['uncertainty'])
     def test_fixed_weights_review_and_false_approval(self):
         result = normalize_evaluation(self.review(), self.report, [self.evidence], self.frozen)
         self.assertEqual(result['feedback']['total_score'], 100)

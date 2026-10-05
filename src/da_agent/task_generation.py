@@ -12,7 +12,8 @@ from .store import now
 from .errors import DomainError
 from .task_contracts import RequestV2, RequestAction, RuleApproval, RuleSample
 from .capabilities import initialize as initialize_capabilities, list_capabilities, approve, CAPABILITIES
-from .task_planner import interpretation_messages, parse_interpretation, choose_scenario, assemble_plan, unsupported_request
+from .task_planner import interpretation_messages, parse_interpretation, choose_scenario, assemble_plan, unsupported_request, PROMPT_VERSION
+from .planning_diagnostics import diagnostic, InterpretationDiagnostic
 from .package_validation import stage, grant, revoke, publish, validate_plan
 from .training import contains_material
 
@@ -97,7 +98,7 @@ class TaskGeneration:
                 return False
             value.update(status=status,**fields)
             if status == 'failed':
-                value.setdefault('failure_history', []).append({'at':now(), 'error_code':value.get('error_code'), 'error':value.get('error'), 'planning_calls':value['planning_calls']})
+                value.setdefault('failure_history', []).append({'at':now(), 'error_code':value.get('error_code'), 'error':value.get('error'), 'planning_calls':value['planning_calls'], 'failure_detail': value.get('failure_detail')})
             value['states'].append({'status':status,'at':now()})
             conn.execute('UPDATE training_requests SET payload=%s WHERE request_id=%s',(Jsonb(value),rid))
         self.training.event(event_type='request_state',operation_id=value['operation_id'],request_id=rid,status=status,rules_version='access-plan-v2',error_code=value.get('error_code'))
@@ -125,7 +126,7 @@ class TaskGeneration:
                 telemetry.finish(self.store,op,'failed',error_code='provider_failure',usage_missing_reason='failed_call')
                 raise
             usage=result.get('usage') or {}
-            telemetry.finish(self.store,op,'completed' if result.get('state')=='completed' else 'failed',error_code=None if result.get('state')=='completed' else 'provider_failure',model_version=result.get('model'),input_tokens=usage.get('input_tokens'),output_tokens=usage.get('output_tokens'),usage_missing_reason=None if usage else 'not_reported')
+            telemetry.finish(self.store,op,'completed' if result.get('state')=='completed' else 'failed',error_code=None if result.get('state')=='completed' else 'provider_failure',model_version=result.get('model'),input_tokens=usage.get('input_tokens'),output_tokens=usage.get('output_tokens'),usage_missing_reason=None if usage else 'not_reported',provider_diagnostic=result.get('provider_diagnostic'))
             return result
         if not fixed.get('adaptive_recipe') or not fixed.get('alignment'):
             def parse(result):
@@ -239,6 +240,7 @@ class TaskGeneration:
         from . import telemetry
         op=None
         validation_op=None
+        failure_detail=None
         try:
             value=self.training.request(rid)
             data=RequestV2.model_validate(value['body'])
@@ -261,16 +263,20 @@ class TaskGeneration:
                     if value['planning_calls']>=3:
                         raise DomainError('planning_limit','요청 설계 호출 상한에 도달했습니다. 새 요청을 작성하세요.',422)
                     self.update(rid,'planning',planning_calls=value['planning_calls']+1)
-                    ai_op=telemetry.begin(self.store,'ai',request_id=rid,call_limit=3,domain='access',rules_version='access-plan-v2',prompt_version='bounded-planner-v2')
+                    ai_op=telemetry.begin(self.store,'ai',request_id=rid,call_limit=3,domain='access',rules_version='access-plan-v2',prompt_version=PROMPT_VERSION)
+                    result={}
                     try:
                         with self.training.ai_lock:
                             result=self.training.auth.review(interpretation_messages(data,list_capabilities(self.store),self.recent()))
                         selection=parse_interpretation(result,data)
-                    except Exception:
-                        telemetry.finish(self.store,ai_op,'failed',error_code='provider_failure',usage_missing_reason='failed_call')
+                    except Exception as exc:
+                        failure_detail=getattr(exc, 'failure_detail', None) or diagnostic('internal', [{'field':'output', 'kind':'unexpected'}])
+                        failure_detail=InterpretationDiagnostic.model_validate(failure_detail).model_dump(exclude_none=True)
+                        usage=result.get('usage') or {}
+                        telemetry.finish(self.store,ai_op,'failed',error_code='provider_failure' if failure_detail['stage'] in {'provider','internal'} else 'format_invalid',failure_detail=failure_detail,model_version=result.get('model'),input_tokens=usage.get('input_tokens'),output_tokens=usage.get('output_tokens'),usage_missing_reason=None if usage else 'not_reported' if result.get('state')=='completed' else 'failed_call',provider_diagnostic=result.get('provider_diagnostic'))
                         raise
                     usage=result.get('usage') or {}
-                    telemetry.finish(self.store,ai_op,'completed',model_version=result.get('model'),input_tokens=usage.get('input_tokens'),output_tokens=usage.get('output_tokens'),usage_missing_reason=None if usage else 'not_reported')
+                    telemetry.finish(self.store,ai_op,'completed',model_version=result.get('model'),input_tokens=usage.get('input_tokens'),output_tokens=usage.get('output_tokens'),usage_missing_reason=None if usage else 'not_reported',provider_diagnostic=result.get('provider_diagnostic'))
                     if selection.unsupported:
                         self.update(rid,'failed',error_code='unsupported_scope',error='현재는 접속 데이터만 지원합니다. 입력을 수정해 새 요청으로 시작하세요.',retry_allowed=False)
                         return
@@ -335,7 +341,7 @@ class TaskGeneration:
                 content.update(attempt_id=aid,problem_id='problem-001',contract_version='request-v2',started_at=now(),explanation_viewed=False,
                     task_kind=public['task_kind'],difficulty=public['difficulty'],domain=public['semantic_signature']['domain'],request_id=rid,title=public['title'],
                     plan_hash=digest(public),semantic_signature=public['semantic_signature'],intentional_repeat=data.intentional_repeat,
-                    ai_calls=value['planning_calls'],evaluation_rules_version='request-review-v2')
+                    ai_calls=value['planning_calls'],evaluation_rules_version=public['evaluation_version'])
                 conn.execute('INSERT INTO attempts(attempt_id,payload) VALUES(%s,%s)',(aid,Jsonb(content)))
                 conn.execute('INSERT INTO training_plans VALUES(%s,%s,%s)',(aid,Jsonb(public),Jsonb(private)))
                 value.update(status='ready',attempt_id=aid,error=None,error_code=None,retry_allowed=False,finished_at=now(),duration_ms=round((time.monotonic()-started)*1000))
@@ -351,9 +357,9 @@ class TaskGeneration:
                 with self.store.connect() as conn:
                     fixed=conn.execute('SELECT private FROM generation_jobs WHERE request_id=%s',(rid,)).fetchone()['private']
                 retry_allowed=retry_allowed and (bool(fixed.get('alignment')) or (current['planning_calls']<limit-1 and not fixed.get('alignment_repair_used')))
-            self.update(rid,'failed',error_code=exc.code,error=exc.message,retry_allowed=retry_allowed)
+            self.update(rid,'failed',error_code=exc.code,error=exc.message,retry_allowed=retry_allowed,failure_detail=failure_detail)
         except Exception:
-            self.update(rid,'failed',error_code='generation_failed',error='출제 작업에 실패했습니다. 원 입력과 고정 계획을 보존했습니다.',retry_allowed=True)
+            self.update(rid,'failed',error_code='generation_failed',error='출제 작업에 실패했습니다. 원 입력과 고정 계획을 보존했습니다.',retry_allowed=True,failure_detail=failure_detail)
         finally:
             if generated and package and self.training.request(rid)['status']!='ready':
                 try: revoke(package)
@@ -365,8 +371,8 @@ class TaskGeneration:
                     if active: telemetry.finish(self.store,validation_op,'failed',error_code='validation_failed')
                 if op:
                     final=self.training.request(rid)
-                    status='completed' if final['status']=='ready' else 'cancelled' if final['status']=='cancelled' else 'failed'
-                    telemetry.finish(self.store,op,status,error_code='validation_failed' if status=='failed' else None)
+                    status='completed' if final['status'] in {'ready','needs_clarification'} else 'cancelled' if final['status']=='cancelled' else 'failed'
+                    telemetry.finish(self.store,op,status,error_code=('provider_failure' if failure_detail['stage'] in {'provider','internal'} else 'format_invalid') if status=='failed' and failure_detail else 'validation_failed' if status=='failed' else None, **({'failure_detail':failure_detail} if status=='failed' and failure_detail else {}))
             finally:
                 self.slot.release()
 
@@ -405,7 +411,7 @@ class TaskGeneration:
                         fixed=conn.execute('SELECT private FROM generation_jobs WHERE request_id=%s',(rid,)).fetchone()['private']
                         if not fixed.get('alignment') and value['planning_calls']>=PLANNING_LIMIT-1:
                             raise DomainError('planning_limit','설계 호출 상한에 도달했습니다. 기존 실패 이유를 유지하며 입력을 보완해 새 요청으로 시작하세요.',409)
-                value.update(status='accepted',revision=value['revision']+1,parent_operation_id=value['operation_id'],operation_id=uid(),error=None,error_code=None,questions=[])
+                value.update(status='accepted',revision=value['revision']+1,parent_operation_id=value['operation_id'],operation_id=uid(),error=None,error_code=None,failure_detail=None,questions=[])
                 conn.execute('UPDATE training_requests SET payload=%s WHERE request_id=%s',(Jsonb(value),rid))
                 conn.execute('INSERT INTO generation_actions VALUES(%s,%s,%s,%s)',(rid,data.action_id,signature,Jsonb({'revision':value['revision']})))
             tasks.add_task(self.prepare,rid)

@@ -1,0 +1,18 @@
+{
+  "held": {
+    "attempt_id": "82027251-a759-450d-a837-11f7dccbef30",
+    "visible": true,
+    "reload_preserved": true
+  },
+  "design": {
+    "attempt_id": "28c3fb34-89e5-400f-81c8-373554f99f9c",
+    "visible": true,
+    "reload_preserved": true
+  },
+  "failure": {
+    "attempt_id": "3f4e99b0-7a92-4543-b555-74b14bc62e3b",
+    "visible": true,
+    "reload_preserved": true
+  },
+  "page_errors": []
+}
