@@ -57,18 +57,32 @@ async function api(path, options = {}) {
 const post = (path, body) => api(path, { method: 'POST', body: JSON.stringify(body) });
 const attemptPath = (suffix = '') => `/api/attempts/${encodeURIComponent(state.attempt.attempt_id)}${suffix}`;
 async function busy(button, action) { if (button.disabled) return; button.disabled = true; try { await action(); } catch (error) { notice(error.message); } finally { button.disabled = false; } }
-function tab(name) { $$('.tab-panel').forEach(node => { node.hidden = node.id !== name; }); $$('nav button').forEach(node => node.classList.toggle('active', node.dataset.tab === name)); if (state.attempt?.pilot_linked) post(`/api/quality/pilots/${encodeURIComponent(state.attempt.attempt_id)}/stage`, { stage: name }).catch(() => notice('파일럿 단계 기록을 저장하지 못했습니다. 훈련 입력은 유지됩니다.')); }
+function sqlText() { return window.sqlEditor ? window.sqlEditor.getValue() : $('#sql').value; }
+function resetSql() { if (window.sqlEditor) window.sqlEditor.reset(); else $('#sql').value = ''; }
+function tab(name) { $$('.tab-panel').forEach(node => { node.hidden = node.id !== name; }); $$('[data-tab]').forEach(node => node.classList.toggle('active', node.dataset.tab === name)); if (name === 'sql-workspace') requestAnimationFrame(() => window.sqlEditor?.refresh()); if (state.attempt?.pilot_linked) post(`/api/quality/pilots/${encodeURIComponent(state.attempt.attempt_id)}/stage`, { stage: name === 'sql-workspace' ? 'analysis' : name }).catch(() => notice('파일럿 단계 기록을 저장하지 못했습니다. 훈련 입력은 유지됩니다.')); }
+function homeTab(name, updateUrl = true) {
+  $$('[data-home-tab]').forEach(button => {
+    const selected = button.dataset.homeTab === name;
+    button.classList.toggle('active', selected);
+    button.setAttribute('aria-selected', String(selected));
+    button.tabIndex = selected ? 0 : -1;
+    $('#' + button.getAttribute('aria-controls')).hidden = !selected;
+  });
+  if (updateUrl) {
+    const url = new URL(location.href);
+    if (name === 'resume') url.searchParams.set('home', 'resume');
+    else url.searchParams.delete('home');
+    history.replaceState(null, '', url.pathname + url.search);
+  }
+}
 async function authStatus() {
   try { const auth = await api('/api/auth/status'); if (auth.provider === 'gemini') { $('#auth-status').textContent = auth.message; $('#connect').hidden = true; $('#disconnect').hidden = true; return; } const connected = ['connected', 'ready'].includes(auth.status); $('#auth-status').textContent = connected ? (auth.plan_enabled === false ? '로그인 연결됨 · 플랜 사용 권한 확인 필요' : auth.inference_verified ? 'ChatGPT 연결 · 실제 호출 확인됨' : '로그인 연결됨 · 실제 호출 검증 전') : (auth.message || 'ChatGPT 미연결'); $('#disconnect').hidden = !connected; $('#connect').hidden = connected; }
   catch (error) { $('#auth-status').textContent = 'AI 연결 확인 실패'; }
 }
 async function home() {
-  const [packages, attempts] = await Promise.all([api('/api/packages'), api('/api/attempts')]);
-  $('#packages').replaceChildren(); $('#attempts').replaceChildren();
-  for (const pack of packages.packages) for (const problem of pack.problems) {
-    const card = el('article', undefined, 'card'); card.append(el('h3', problem.title), el('p', `${pack.package_id} · ${pack.release_version}`));
-    const button = el('button', '새 훈련 시작', 'primary'); button.onclick = () => busy(button, async () => { if (!(await canLeave())) return; const attempt = await post('/api/attempts', { package_id: pack.package_id, release_version: pack.release_version, problem_id: problem.problem_id }); await openAttempt(attempt.attempt_id); }); card.append(button); $('#packages').append(card);
-  }
+  homeTab(new URLSearchParams(location.search).get('home') === 'resume' ? 'resume' : 'new', false);
+  const attempts = await api('/api/attempts');
+  $('#attempts').replaceChildren();
   for (const attempt of attempts.attempts) { const card = el('article', undefined, 'card'); card.append(el('h3', attempt.title || attempt.problem?.title || attempt.problem_id), el('p', `${attempt.release_version} · 훈련 ${attempt.attempt_id}`)); const button = el('button', '이어서 분석'); button.onclick = () => busy(button, async () => { if (await canLeave()) await openAttempt(attempt.attempt_id); }); card.append(button); addTrainingDelete(card, attempt); $('#attempts').append(card); }
   if (!attempts.attempts.length) $('#attempts').append(el('p', '아직 시작한 훈련이 없습니다.', 'muted'));
   await trainingHome();
@@ -85,14 +99,14 @@ function confirmAction(message, action='계속') {
 async function canLeave() {
   if (!state.attempt) return true;
   try { await flushDraft(); } catch (error) { notice(error.message); return false; }
-  if ($('#sql').value.trim() || state.executions.some(item => !item.saved)) return await confirmAction('미저장 SQL과 실행 결과가 사라집니다. 취소하면 현재 입력을 유지합니다. 훈련 목록으로 이동할까요?','목록으로 이동');
+  if (sqlText().trim() || state.executions.some(item => !item.saved)) return await confirmAction('미저장 SQL과 실행 결과가 사라집니다. 취소하면 현재 입력을 유지합니다. 훈련 목록으로 이동할까요?','목록으로 이동');
   return true;
 }
 async function openAttempt(id) {
   const attempt = await api(`/api/attempts/${encodeURIComponent(id)}`); clearTimeout(state.saveTimer);
   state.attempt = attempt; state.executions = []; state.sections = { ...(attempt.draft?.sections || {}) }; state.revision = attempt.draft?.revision ?? 0; state.dirty = false; state.generation = 0; state.conflict = false; state.previousReport = null; state.reportRequest = null; state.claimEvidence.clear();
   try { const evidence = JSON.parse(state.sections.report_evidence || '{}'); const allowed = new Set(successfulSaved().map(saved => saved.saved_execution_id)); for (const [index, ids] of Object.entries(evidence)) if (/^\d+$/.test(index) && Array.isArray(ids)) state.claimEvidence.set(Number(index), new Set(ids.filter(id => typeof id === 'string' && allowed.has(id)))); } catch { notice('보고서 근거 초안을 읽지 못했습니다. 저장된 성공 실행을 다시 선택하세요.'); }
-  $('#sql').value = ''; $('#executions').replaceChildren(); $('#coach-result').replaceChildren(); $('#coach-message').value = ''; $('#draft-error').textContent = ''; $('#resolve-conflict').hidden = true; $('#save-status').textContent = '저장됨'; $('#report-status').textContent = ''; $('#explanation').textContent = attempt.explanation_viewed ? '이 훈련에서 해설을 참조했습니다. 다시 보려면 해설 공개를 선택하세요.' : '';
+  resetSql(); $('#executions').replaceChildren(); $('#coach-result').replaceChildren(); $('#coach-message').value = ''; $('#draft-error').textContent = ''; $('#resolve-conflict').hidden = true; $('#save-status').textContent = '저장됨'; $('#report-status').textContent = ''; $('#explanation').textContent = attempt.explanation_viewed ? '이 훈련에서 해설을 참조했습니다. 다시 보려면 해설 공개를 선택하세요.' : '';
   $$('[data-section]').forEach(node => { node.value = state.sections[node.dataset.section] || ''; });
   $('#home').hidden = true; $('#workspace').hidden = false; $('#problem-title').textContent = attempt.title || attempt.problem?.title || attempt.problem_id; $('#version').textContent = `자료 버전 ${attempt.release_version} · PostgreSQL 분석 훈련`; $('#attempt-label').textContent = `훈련 기록: ${attempt.attempt_id.slice(0, 8)}`;
   $('#problem-description').textContent = pretty(attempt.problem?.description || ''); $('#problem-metadata').replaceChildren();
@@ -176,19 +190,33 @@ function renderFeedback(container, review) {
   }
   for (const [key, label] of Object.entries({ strengths: '잘한 점', improvements: '보완할 점', next_steps: '다음 행동' })) { container.append(el('h3', label)); for (const text of feedback[key] || []) container.append(el('p', text, 'prose')); }
 }
-$$('nav button').forEach(button => { button.onclick = () => { if (button.dataset.tab === 'report') renderClaims(); tab(button.dataset.tab); }; });
+$$('[data-tab]').forEach(button => { button.onclick = () => { if (button.dataset.tab === 'report') renderClaims(); tab(button.dataset.tab); }; });
+$$('[data-home-tab]').forEach((button, index, buttons) => {
+  button.onclick = () => homeTab(button.dataset.homeTab);
+  button.onkeydown = event => {
+    let next;
+    if (event.key === 'ArrowRight') next = (index + 1) % buttons.length;
+    else if (event.key === 'ArrowLeft') next = (index + buttons.length - 1) % buttons.length;
+    else if (event.key === 'Home') next = 0;
+    else if (event.key === 'End') next = buttons.length - 1;
+    else return;
+    event.preventDefault();
+    homeTab(buttons[next].dataset.homeTab);
+    buttons[next].focus();
+  };
+});
 $$('[data-section]').forEach(node => { node.addEventListener('input', () => { draftChanged(); state.reportRequest = null; if (node.id === 'discoveries') renderClaims(); }); });
 $('#save-draft').onclick = () => busy($('#save-draft'), flushDraft);
 $('#resolve-conflict').onclick = () => busy($('#resolve-conflict'), async () => { const latest = await api(attemptPath()); state.revision = latest.draft.revision; state.conflict = false; await flushDraft(); $('#resolve-conflict').hidden = true; });
-$('#execute').onclick = () => busy($('#execute'), async () => { const sql = $('#sql').value; if (!sql.trim()) throw new Error('실행할 SQL을 입력하세요.'); notice('SQL 실행 중…'); const result = await post(attemptPath('/execute'), { sql }); const item = { sql, result, requestId: uid(), saved: false }; state.executions.push(item); renderExecution(item); notice(); await afterTrainingExecution(result); });
+$('#execute').onclick = () => busy($('#execute'), async () => { const sql = sqlText(); if (!sql.trim()) throw new Error('실행할 SQL을 입력하세요.'); notice('SQL 실행 중…'); const result = await post(attemptPath('/execute'), { sql }); const item = { sql, result, requestId: uid(), saved: false }; state.executions.push(item); renderExecution(item); notice(); await afterTrainingExecution(result); });
 $('#submit-report').onclick = () => busy($('#submit-report'), async () => { await flushDraft(); const claims = claimTexts().map((text, index) => ({ claim_id: `claim-${index + 1}`, text, evidence_refs: [...(state.claimEvidence.get(index) || [])].map(saved_execution_id => ({ saved_execution_id })) })); const payload = { revision: state.revision, previous_report_id: state.previousReport, content: Object.fromEntries(['problem_definition', 'hypothesis', 'limitations', 'next_actions'].map(key => [key, state.sections[key] || ''])), claims }; const signature = JSON.stringify(payload); if (state.reportRequest?.signature !== signature) state.reportRequest = { signature, requestId: uid() }; const report = await post(attemptPath('/reports'), { ...payload, request_id: state.reportRequest.requestId }); if (!(state.attempt.reports || []).some(item => item.report_id === report.report_id)) (state.attempt.reports ||= []).push(report); $('#report-status').textContent = `보고서 v${report.report_version ?? '?'} 제출 완료`; renderReports(); tab('history'); notice('보고서가 제출되었습니다. 해당 제출본으로 리뷰를 요청할 수 있습니다.'); });
 $$('[data-hint]').forEach(button => { button.onclick = () => busy(button, async () => { const hint = await post(attemptPath('/hints'), { level: button.dataset.hint }); $('#hints').append(el('p', hint.content)); }); });
 $('#explanation-button').onclick = () => busy($('#explanation-button'), async () => { const result = await post(attemptPath('/explanation'), {}); $('#explanation').textContent = `${result.sql || ''}\n\n${pretty(result.explanation || '')}`; state.attempt.explanation_viewed = true; });
 $('#coach').onclick = () => busy($('#coach'), async () => { const message = $('#coach-message').value.trim(); if (!message) throw new Error('코칭 질문을 입력하세요.'); await flushDraft(); if (['request-v1', 'request-v2'].includes(state.attempt.contract_version)) { await requestConversation(message, $('#coach-evidence').value); } else { const result = await post(attemptPath('/coach'), { message, saved_execution_id: $('#coach-evidence').value || null }); $('#coach-result').textContent = pretty(result.feedback || result.error?.message || result); } await authStatus(); });
 $('#connect').onclick = () => busy($('#connect'), async () => { const popup = window.open('about:blank', '_blank'); if (!popup) throw new Error('로그인 창이 차단됐습니다. 이 앱의 팝업을 허용한 뒤 다시 연결하세요.'); popup.opener = null; try { const result = await post('/api/auth/start', {}); if (!result.authorization_url) throw new Error(result.message || '인증 주소를 받지 못했습니다.'); const url = new URL(result.authorization_url); if (url.protocol !== 'https:' || url.hostname !== 'auth.openai.com') throw new Error('공식 인증 주소를 확인할 수 없습니다.'); popup.location.replace(url.href); notice('새 창에서 공식 로그인과 권한 승인을 완료한 뒤 이 분석 창으로 돌아오세요. 입력은 이 창에 유지됩니다.'); } catch (error) { popup.close(); throw error; } });
 $('#disconnect').onclick = () => busy($('#disconnect'), async () => { await post('/api/auth/disconnect', {}); await authStatus(); });
-$('#home-button').onclick = () => busy($('#home-button'), async () => { if (!(await canLeave())) return; await home(); clearTimeout(state.saveTimer); state.attempt = null; $('#workspace').hidden = true; $('#home').hidden = false; history.replaceState(null, '', '/'); notice(); });
-window.addEventListener('beforeunload', event => { if (state.dirty || (state.attempt && ($('#sql').value.trim() || state.executions.some(item => !item.saved)))) { event.preventDefault(); event.returnValue = ''; } });
+$('#home-button').onclick = () => busy($('#home-button'), async () => { if (!(await canLeave())) return; await home(); clearTimeout(state.saveTimer); state.attempt = null; $('#workspace').hidden = true; $('#home').hidden = false; history.replaceState(null, '', '/?home=resume'); homeTab('resume', false); notice(); });
+window.addEventListener('beforeunload', event => { if (state.dirty || (state.attempt && (sqlText().trim() || state.executions.some(item => !item.saved)))) { event.preventDefault(); event.returnValue = ''; } });
 window.addEventListener('focus', authStatus);
 (async () => { const params = new URLSearchParams(location.search); const authReturned = params.get('auth') === 'returned'; if (authReturned) { params.delete('auth'); history.replaceState(null, '', `/${params.size ? '?' + params.toString() : ''}`); } await authStatus(); try { await home(); const id = params.get('attempt'); if (id) await openAttempt(id); if (authReturned) notice('로그인 절차가 끝났습니다. 연결 상태를 확인하고 원래 분석 창으로 돌아가세요. 실제 AI 호출 성공 여부는 별도로 표시됩니다.'); } catch (error) { notice(error.message); } })();
 

@@ -1,0 +1,25 @@
+{
+  "actual_browser": true,
+  "actual_api": true,
+  "actual_database": true,
+  "actual_model": false,
+  "current_source_ui": true,
+  "checks": [
+    "analysis excludes dictionary and SQL workbench",
+    "SQL tab and empty input guidance",
+    "typed PostgreSQL syntax colors and line numbers",
+    "editing and undo preserve source",
+    "tab changes preserve SQL",
+    "real SQL execution and exact source saved",
+    "SQL failure keeps input and results",
+    "390px layout and long line input",
+    "refresh clears temporary SQL and restores saved evidence",
+    "keyboard focus can leave editor",
+    "no browser or CSP errors",
+    "basic textarea fallback still executes SQL"
+  ],
+  "errors": [],
+  "consoleErrors": [],
+  "status": "passed",
+  "owned_test_cleanup": true
+}
