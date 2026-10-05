@@ -36,13 +36,20 @@ DA-Agent는 사용자가 데이터 분석을 훈련할 수 있도록 돕는 에�
 DA-Agent/
 ├─ README.md          # 프로젝트 소개
 ├─ docs/              # PRD 등 제품 관련 문서
-├─ scripts/           # 기능 생성 및 검증 자동화 스크립트
+├─ scripts/           # 설치·DB·데이터 준비 도구
+│  ├─ verification/   # 자동·브라우저·모델 검증 도구
+│  └─ diagnostics/    # 문제 조사 도구
 ├─ specs/             # 기능별 Spec 문서
 │  └─ examples/       # 완성된 Spec 예시
 ├─ src/               # 소스 코드
 ├─ template/          # 반복 사용하는 문서 템플릿
-└─ tests/             # 자동 테스트와 수동 검증 자료
+└─ tests/
+   ├─ automated/      # pytest 자동 테스트
+   ├─ reports/        # 검증 보고서·수동 검증 절차
+   └─ artifacts/      # 기능별 JSON·화면·다운로드 결과
 ```
+
+도구와 자료의 저장 규칙은 [스크립트 안내](scripts/README.md)와 [테스트 안내](tests/README.md)를 참고하세요. `.local`의 비밀키는 기존 위치에 보관하고 PR 초안·임시 작업 자료는 `.local/work/`에 모읍니다.
 
 ## 현재 구현 범위
 
@@ -50,9 +57,9 @@ DA-Agent/
 
 ## 프로토타입 실행
 
-[실행 안내](./docs/prototype-runbook.md)를 따라 Docker Compose로 시작합니다. 기본 접속 주소는 [DA-Agent](http://127.0.0.1:8087)입니다.
+[실행 안내](docs/prototype-runbook.md)를 따라 Docker Compose로 시작합니다. 기본 접속 주소는 [DA-Agent](http://127.0.0.1:8087)입니다.
 
-문제 시작, PostgreSQL 조회, SQL 선택 저장, 초안·근거 재개, 보고서 수정 제출을 구현하고 실제 화면에서 확인했습니다. [검증 기록](./tests/verification-2026-10-03.md)에 확인 결과와 남은 항목을 기록했습니다. 실제 ChatGPT 계정 승인·응답, 다른 PC·ARM 실행과 5명 파일럿은 미수행입니다. 현재 Gemini의 실제 모델·DB 연결 결과는 아래 v2 검증 기록을 따릅니다.
+문제 시작, PostgreSQL 조회, SQL 선택 저장, 초안·근거 재개, 보고서 수정 제출을 구현하고 실제 화면에서 확인했습니다. [검증 기록](tests/reports/verification-2026-10-03.md)에 확인 결과와 남은 항목을 기록했습니다. 실제 ChatGPT 계정 승인·응답, 다른 PC·ARM 실행과 5명 파일럿은 미수행입니다. 현재 Gemini의 실제 모델·DB 연결 결과는 아래 v2 검증 기록을 따릅니다.
 
 
 현재 LLM 테스트 경로는 [Gemini API 설정](docs/gemini-setup.md)을 따른다. ChatGPT 로그인 접근 거부에 대한 대안으로 사용자가 선택했으며, 실제 키 설정·모델 호출·품질은 별도로 검증한다.
@@ -63,13 +70,13 @@ DA-Agent/
 
 파일럿 탭에서는 실제 참가자의 훈련을 연결하고 도움·중단·다음 수정 행동을 기록하며 최초·수정 보고서를 비교합니다. 미저장 SQL과 결과는 수집하지 않습니다. 이 화면은 로컬 운영자용 별도 페이지이며, 학습자의 일반 훈련 화면에 검증 자료를 넣지 않습니다.
 
-[명세](./specs/005-quality-and-pilot.md)와 [검증 결과](./tests/verification-quality-2026-10-03.md)를 참고하세요. 검증 도구 구현과 실제 AI 평가 품질·파일럿 성공은 별도로 관리합니다.
+[명세](specs/005-quality-and-pilot.md)와 [검증 결과](tests/reports/verification-quality-2026-10-03.md)를 참고하세요. 검증 도구 구현과 실제 AI 평가 품질·파일럿 성공은 별도로 관리합니다.
 
 ## 요청 기반 v2 훈련
 
 [훈련 화면](http://127.0.0.1:8087)에서 자연어 요청과 난이도·선택 SQL 수준을 입력합니다. 분야·과제 유형·학습 목표·기간 등 필요한 조건은 요청문에 적습니다. 데이터는 요청별 합성 데이터 모드를 기본으로 준비합니다. 화면 단순화의 범위와 검증은 [Spec 016](specs/016-simple-training-request.md)을 참고하세요.
 
-훈련 중에는 분석하기·SQL 작업·보고서 작성·제출/리뷰 탭을 사용합니다. SQL 작업 탭에서 데이터 사전을 보며 문법 색상과 줄 번호가 있는 편집기로 작성·실행합니다. [Spec 017](specs/017-sql-workspace-and-editor.md)과 [실제 검증](tests/verification-sql-workspace-2026-10-05.md)에 변경 범위를 기록했습니다.
+훈련 중에는 분석하기·SQL 작업·보고서 작성·제출/리뷰 탭을 사용합니다. SQL 작업 탭에서 데이터 사전을 보며 문법 색상과 줄 번호가 있는 편집기로 작성·실행합니다. [Spec 017](specs/017-sql-workspace-and-editor.md)과 [실제 검증](tests/reports/verification-sql-workspace-2026-10-05.md)에 변경 범위를 기록했습니다.
 
 - 요청 해석·추가 질문·고정 계획·데이터 준비·검증·출제·취소·재시도를 연결했습니다. 설계 과제는 SQL 제출이 필수가 아닙니다.
 - 기존 검증 데이터를 선택하면 생성 규칙 승인 없이 시작할 수 있습니다. 새 규칙은 `draft`로 시작합니다. 생성 데이터를 활성화하려면 운영자가 초급·중급·고급 표본을 생성하고 공개 과제·사전·행 수·미리보기·검증 상태를 실제 검토한 뒤 승인해야 합니다. 표본 생성 성공만으로 승인하지 않습니다.
@@ -80,16 +87,16 @@ DA-Agent/
 
 실제 평가 반복 18회도 실행했으나 최종 판정은 **미달**입니다. 불확실성 표본의 점수 범위 25점과 비공개 요청 표본의 API 호출 제한 실패 2회가 남았고 사람의 의미적 품질 승인은 대기입니다. 코칭 반복·전 과제 유형의 모든 흐름, 다른 PC·ARM 재현, 실제 5명 파일럿을 완료했다고 표시하지 않습니다.
 
-[현재 UI 검증](./tests/verification-v2-ui-2026-10-04.md), [실제 모델·DB 결과](./tests/verification-v2-live-2026-10-04.json), [반복 평가 결과](./tests/verification-v2-quality-live-2026-10-04.json), [브라우저 결과](./tests/browser-v2/result.json)를 참고하세요. [이전 첫 사용 구간 기록](./tests/verification-request-training-2026-10-04.md)은 해당 시점의 검증 범위입니다. Spec·PRD의 진행도는 각 문서의 구현 진행도 표를 기준으로 확인합니다.
+[현재 UI 검증](tests/reports/verification-v2-ui-2026-10-04.md), [실제 모델·DB 결과](tests/artifacts/verification-v2-live-2026-10-04.json), [반복 평가 결과](tests/artifacts/verification-v2-quality-live-2026-10-04.json), [브라우저 결과](tests/artifacts/browser-v2/result.json)를 참고하세요. [이전 첫 사용 구간 기록](tests/reports/verification-request-training-2026-10-04.md)은 해당 시점의 검증 범위입니다. Spec·PRD의 진행도는 각 문서의 구현 진행도 표를 기준으로 확인합니다.
 
 
-2026-10-04 최종 보완: 호출 간격 5초로 18회 모두 응답했고, 없는 판단의 평가 기준을 명확히 한 결과 근거 부족·불확실성 표본은 편차0이었다. 핵심 오류 표본의 편차12.5가 기준10을 초과해 [최종 반복 결과](tests/verification-v2-quality-live-2026-10-04-final.json)의 verdict=fail을 유지한다. 신규 규칙 네 개의 세 수준 검토 표본12개는 준비됐으나 실제 사람 승인은 대기다. 전체 DB 회귀는196개 통과했다.
+2026-10-04 최종 보완: 호출 간격 5초로 18회 모두 응답했고, 없는 판단의 평가 기준을 명확히 한 결과 근거 부족·불확실성 표본은 편차0이었다. 핵심 오류 표본의 편차12.5가 기준10을 초과해 [최종 반복 결과](tests/artifacts/verification-v2-quality-live-2026-10-04-final.json)의 verdict=fail을 유지한다. 신규 규칙 네 개의 세 수준 검토 표본12개는 준비됐으나 실제 사람 승인은 대기다. 전체 DB 회귀는196개 통과했다.
 
 
 ## 요청에 맞춘 데이터와 시험 과제
 
 2026-10-05부터 훈련 요청의 기본 모드는 **요청별 합성 데이터 · 시험 과제**입니다. 원하는 주제와 목표를 입력하면 필요한 과제·테이블·컬럼·관계를 설계하고 실제 PostgreSQL 검산 후 제공합니다. 요청한 목표를 충족하지 못하면 다른 주제로 바꾸지 않고 질문하거나 실패 이유를 안내합니다.
 
-비정상 이용자 분석과 재화 분석의 실제 출제·SQL·저장·재개·코칭/리뷰 결과는 [검증 기록](tests/verification-adaptive-2026-10-05.md), 구현 범위와 한계는 [Spec 014](specs/014-request-specific-synthetic-data.md)에 있습니다. 자동 검증을 통과한 연습용 합성 데이터이며 사람의 의미적 품질 승인과 구분합니다.
+비정상 이용자 분석과 재화 분석의 실제 출제·SQL·저장·재개·코칭/리뷰 결과는 [검증 기록](tests/reports/verification-adaptive-2026-10-05.md), 구현 범위와 한계는 [Spec 014](specs/014-request-specific-synthetic-data.md)에 있습니다. 자동 검증을 통과한 연습용 합성 데이터이며 사람의 의미적 품질 승인과 구분합니다.
 
 요청별 생성의 원본 기반 요약·이벤트 시간·날짜 집계와 제한된 자동 설계 수정, 실패 이력·재시도 처리 개선은 [Spec 015](specs/015-adaptive-generation-repair.md)를 참고하세요.

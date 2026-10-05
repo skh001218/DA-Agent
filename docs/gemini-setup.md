@@ -38,6 +38,6 @@ Gemini generateContent의 systemInstruction/contents로 지시와 사용자 자�
 
 실제 키 확인 후 모델 목록 조회200을 확인했지만 gemini-2.5-flash의 생성 요청은 신규 사용자에게 제공하지 않는다는404 응답을 받았다. Google 응답과 [현재 모델 안내](https://ai.google.dev/gemini-api/docs/generate-content/latest-model)에 따라 기본 모델을 gemini-3.8-flash로 변경했다. 무료 티어가 가격표에 명시되어 있으나 현재 프로젝트의 결제 상태는 별도 확인 대상이다.
 
-실제 확인 결과: Gemini3.8 Flash 코칭·보고서 리뷰 완료 및 화면 표시·새로고침 후 보존을 검증했다. 모델의 평가 품질·반복 일관성 전체 검증은 아직 완료하지 않았다. 상세 내용은 [검증 기록](../tests/verification-2026-10-03.md)을 따른다.
+실제 확인 결과: Gemini3.8 Flash 코칭·보고서 리뷰 완료 및 화면 표시·새로고침 후 보존을 검증했다. 모델의 평가 품질·반복 일관성 전체 검증은 아직 완료하지 않았다. 상세 내용은 [검증 기록](../tests/reports/verification-2026-10-03.md)을 따른다.
 
 2026-10-03 후속: 사용자 요청으로 현재 모델과 신규 설정의 기본값을 gemini-3.5-flash-lite로 변경했다. 위3.8 Flash 완료 검증은 이전 모델의 검증 이력이다.

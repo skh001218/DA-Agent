@@ -11,7 +11,7 @@
 | --- | --- | --- | --- |
 | 계약 모델 | 완료 | 요청·과제·근거·상태·이벤트의 타입과 허용 값 검증 | training_contracts.py, 비공개 필드·배점·이벤트 허용 목록 테스트 |
 | 서버 연결 | 완료 | 과제 계획과 버전 고정, 공개 정보 분리, 중복 요청 처리 | training.py·app.py, 실제 DB·중복·취소·검증 실패 확인 |
-| 호환·경계 검증 | 완료 | 기존 훈련 재개, 잘못된 근거·임시 원문 저장 차단 | tests/test_training.py, verification-request-training-2026-10-04.md |
+| 호환·경계 검증 | 완료 | 기존 훈련 재개, 잘못된 근거·임시 원문 저장 차단 | tests/automated/test_training.py, verification-request-training-2026-10-04.md |
 
 ## 목적과 적용 범위
 
@@ -76,4 +76,4 @@ event_id, event_type, schema_version, occurred_at(UTC), operation_id, parent_ope
 
 ## 검증 결과
 
-전체 실제 PostgreSQL 테스트 108개 통과. 내보내기 수정 후 관련 테스트 10개 추가 통과. 실제 화면·모델·재시작 검증은 [검증 기록](../tests/verification-request-training-2026-10-04.md) 참조. 본 진행도는 첫 사용 구간의 공통 계약 작업이며 PRD 전체 기능 완료 비율과 다르다.
+전체 실제 PostgreSQL 테스트 108개 통과. 내보내기 수정 후 관련 테스트 10개 추가 통과. 실제 화면·모델·재시작 검증은 [검증 기록](../tests/reports/verification-request-training-2026-10-04.md) 참조. 본 진행도는 첫 사용 구간의 공통 계약 작업이며 PRD 전체 기능 완료 비율과 다르다.

@@ -2,7 +2,7 @@
 
 ## 구현 진행도
 
-최신 근거: [수정 후 재검증](../tests/verification-prd-v2-revalidation-2026-10-05.md). 추천 회귀는 실제 DB255개 통과에 포함되며 앞선 실제 추천→기존 데이터ready 결과를 유지한다. 승인 신규 생성은 이번 승인/검증 대상에 포함하지 않아3/4를 유지한다. 화면 변경 반영 후 실행 버전 일치를 확인한다.
+최신 근거: [수정 후 재검증](../tests/reports/verification-prd-v2-revalidation-2026-10-05.md). 추천 회귀는 실제 DB255개 통과에 포함되며 앞선 실제 추천→기존 데이터ready 결과를 유지한다. 승인 신규 생성은 이번 승인/검증 대상에 포함하지 않아3/4를 유지한다. 화면 변경 반영 후 실행 버전 일치를 확인한다.
 
 - 진행도: 3/4개 완료 (75.0%)
 - 마지막 갱신일: 2026-10-05
@@ -16,9 +16,9 @@
 | 추천 계약·화면 연결 | 완료 | 추천 이유·사용자 변경·계획 변경 전 재계산 확인 | 이전 사용자 변경 네 유형ready·추천ID/재계산 회귀 및 새 해석 템플릿 적용 후 추천 그대로 기존 데이터ready 실제 모델·화면 확인. verification-planner-diagnostics-2026-10-05.md |
 | 이력·삭제·회귀 검증 | 검증 대기 | 기존 이력·근거 삭제·혼합 버전·실제 새 과제 출제 확인 | 삭제 근거/혼합 버전·추천 ID 변경 회귀 확인. 승인 신규 과제 실제 전체 연결 대기 |
 
-구현 코드와 자동 검증이 준비되어 있어도 위 완료 조건에 실제 화면·사람 판정이 포함된 행은 검증 대기 또는 차단으로 남긴다. 검증 근거는 [백엔드 기록](../tests/verification-v2-backend-2026-10-04.md), [화면 기록](../tests/verification-v2-ui-2026-10-04.md)을 따른다.
+구현 코드와 자동 검증이 준비되어 있어도 위 완료 조건에 실제 화면·사람 판정이 포함된 행은 검증 대기 또는 차단으로 남긴다. 검증 근거는 [백엔드 기록](../tests/reports/verification-v2-backend-2026-10-04.md), [화면 기록](../tests/reports/verification-v2-ui-2026-10-04.md)을 따른다.
 
-이전 [실패 검증](../tests/verification-prd-v2-pending-2026-10-05.md)과 [최초 추천 실패](../tests/prd-v2-browser-2026-10-05/recommendation.json)를 보존한다. [해석 템플릿·진단 적용 후 검증](../tests/verification-planner-diagnostics-2026-10-05.md)에서 추천 그대로 기존 데이터ready를 확인해 계약·화면 연결을 완료로 갱신했다. 승인 신규 생성 전체 연결은 남아3/4이며 제품 전체5/11을 유지한다.
+이전 [실패 검증](../tests/reports/verification-prd-v2-pending-2026-10-05.md)과 [최초 추천 실패](../tests/artifacts/prd-v2-browser-2026-10-05/recommendation.json)를 보존한다. [해석 템플릿·진단 적용 후 검증](../tests/reports/verification-planner-diagnostics-2026-10-05.md)에서 추천 그대로 기존 데이터ready를 확인해 계약·화면 연결을 완료로 갱신했다. 승인 신규 생성 전체 연결은 남아3/4이며 제품 전체5/11을 유지한다.
 
 ## 목적과 의존성
 

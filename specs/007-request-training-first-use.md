@@ -9,11 +9,11 @@
 
 | 작업 | 상태 | 완료 조건 | 관련 코드 / 검증 결과 |
 | --- | --- | --- | --- |
-| 요청·출제 | 완료 | 지원 범위·3개 사고 과제·난이도·검증 후 공개·중복/취소 처리 | tests/verification-request-training-2026-10-04.md |
-| 기록·코칭 | 완료 | 대화·행동 중복·임시 근거 경계·기존 재개·삭제 | tests/verification-request-training-2026-10-04.md |
-| 과제별 평가 | 완료 | 배점 고정·계산 없는 과제·참조 검증·AI 실패 보존 | tests/verification-request-training-2026-10-04.md |
-| 학습·운영 화면 | 완료 | 요청·진행·대화·조건 확인·추천·집계·삭제·내보내기 | tests/verification-request-training-2026-10-04.md; browser-v2/result.json 삭제 취소 확인 |
-| 통합 검증 | 완료 | 실제 DB와 화면 핵심 흐름, 실제 AI 호출·한계 기록 | tests/verification-request-training-2026-10-04.md |
+| 요청·출제 | 완료 | 지원 범위·3개 사고 과제·난이도·검증 후 공개·중복/취소 처리 | tests/reports/verification-request-training-2026-10-04.md |
+| 기록·코칭 | 완료 | 대화·행동 중복·임시 근거 경계·기존 재개·삭제 | tests/reports/verification-request-training-2026-10-04.md |
+| 과제별 평가 | 완료 | 배점 고정·계산 없는 과제·참조 검증·AI 실패 보존 | tests/reports/verification-request-training-2026-10-04.md |
+| 학습·운영 화면 | 완료 | 요청·진행·대화·조건 확인·추천·집계·삭제·내보내기 | tests/reports/verification-request-training-2026-10-04.md; browser-v2/result.json 삭제 취소 확인 |
+| 통합 검증 | 완료 | 실제 DB와 화면 핵심 흐름, 실제 AI 호출·한계 기록 | tests/reports/verification-request-training-2026-10-04.md |
 
 ## 목표
 
@@ -35,4 +35,4 @@
 
 ## 실제 확인과 사용 시작
 
-[검증 기록](../tests/verification-request-training-2026-10-04.md)에 전체 108개·후속 10개 테스트, 실제 Gemini 5회와 세 과제 화면·수정 제출·재개·내보내기 결과를 기록했다. 요청→분석→리뷰의 첫 사용은 가능하다. 삭제 확인창 취소는 브라우저 제어 제한으로 미확인이며 사용자가 검증용 훈련에서 삭제→취소 후 목록 유지 여부를 확인하면 된다. 실제 평가 품질 승인과 학습자 파일럿은 아직 완료하지 않았다.
+[검증 기록](../tests/reports/verification-request-training-2026-10-04.md)에 전체 108개·후속 10개 테스트, 실제 Gemini 5회와 세 과제 화면·수정 제출·재개·내보내기 결과를 기록했다. 요청→분석→리뷰의 첫 사용은 가능하다. 삭제 확인창 취소는 브라우저 제어 제한으로 미확인이며 사용자가 검증용 훈련에서 삭제→취소 후 목록 유지 여부를 확인하면 된다. 실제 평가 품질 승인과 학습자 파일럿은 아직 완료하지 않았다.

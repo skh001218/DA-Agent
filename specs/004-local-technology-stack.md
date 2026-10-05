@@ -16,7 +16,7 @@
 | LLM 평가 품질 | 검증 대기 | 표본5개·반복3회로 평가 일관성 및 대안 SQL 인정 여부 확인 | 실제 미완성 보고서1개만 확인. 표본·반복 평가는 미실행 |
 | 다른 PC 검증 | 검증 대기 | Git으로 같은 커밋을 받아 신규 환경에서 핵심 흐름과 버전 일치 확인 | docs/prototype-runbook.md·release-fingerprints.json, 실제 타 PC 미실행 |
 
-2026-10-03 구현·검증: Python3.12.10·PostgreSQL17.4 컨테이너와 requirements.lock.txt를 사용했다. Windows/AMD64에서 Linux/AMD64 실행을 확인했고 ARM은 미확인이다. 기본 포트8000을 다른 앱이 사용 중이어서 8087을 사용한다. [검증 기록](../tests/verification-2026-10-03.md), [인증 안내](../docs/auth-setup.md)를 따른다. 아래 초기 미실행 표현은 작성 당시 기록이다.
+2026-10-03 구현·검증: Python3.12.10·PostgreSQL17.4 컨테이너와 requirements.lock.txt를 사용했다. Windows/AMD64에서 Linux/AMD64 실행을 확인했고 ARM은 미확인이다. 기본 포트8000을 다른 앱이 사용 중이어서 8087을 사용한다. [검증 기록](../tests/reports/verification-2026-10-03.md), [인증 안내](../docs/auth-setup.md)를 따른다. 아래 초기 미실행 표현은 작성 당시 기록이다.
 
 ## 확정 구성
 
@@ -97,7 +97,7 @@ Git에는 소스, Dockerfile·Compose 설정, 의존성 고정 파일, DB 스키
 
 ## 관련 명세와 공식 근거
 
-- [문제 1](./001-new-user-churn.md), [데이터 패키지](./002-training-data-packages.md), [입출력·선택 저장](./003-training-record-contracts.md)
+- [문제 1](001-new-user-churn.md), [데이터 패키지](002-training-data-packages.md), [입출력·선택 저장](003-training-record-contracts.md)
 - [Docker Compose](https://docs.docker.com/compose/intro/compose-application-model/), [Windows 설치 조건](https://docs.docker.com/desktop/setup/install/windows-install/)
 - [OpenAI 공식 로그인 안내](https://developers.openai.com/siwc/quickstart), [플랜 사용 개요](https://developers.openai.com/siwc/token-sharing-open-source), [로그인 절차](https://developers.openai.com/siwc/token-sharing-open-source/sign-in), [모델·호출](https://developers.openai.com/siwc/token-sharing-open-source/models-and-inference), [미리보기 제약](https://developers.openai.com/siwc/token-sharing-open-source/preview-limitations)
 

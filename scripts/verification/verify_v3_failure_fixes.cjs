@@ -1,0 +1,40 @@
+const {chromium}=require(process.env.PLAYWRIGHT_MODULE);
+const fs=require('node:fs/promises');
+const assert=require('node:assert/strict');
+(async()=>{
+ const browser=await chromium.launch({headless:true,executablePath:process.env.BROWSER_EXECUTABLE});
+ try {
+  const page=await browser.newPage({viewport:{width:1280,height:900}});
+  const errors=[];page.on('pageerror',e=>errors.push(e.message));
+  const attempt='82027251-a759-450d-a837-11f7dccbef30';
+  const output='tests/artifacts/evaluation-v3-browser-2026-10-05/failure-fixes';
+  await fs.mkdir(output,{recursive:true});
+  await page.goto('http://127.0.0.1:8088/?attempt='+attempt);
+  await page.locator('#workspace').waitFor();
+  await page.locator('#coach-message').fill('가설과 관측이 충돌하면 어떤 비교나 대안 설명을 확인해야 하나요?');
+  const waiting=page.waitForResponse(r=>r.url().endsWith('/conversation')&&r.request().method()==='POST',{timeout:150000});
+  await page.locator('#coach').click();
+  const coach=await(await waiting).json();
+  assert.equal(coach.status,'completed',JSON.stringify(coach.error));
+  assert.equal(coach.feedback.action_type,'suggest_analysis');
+  assert.equal(coach.prompt_version,'cumulative-coach-v4-conflict-guard');
+  await page.locator('#coach-result').filter({hasText:coach.feedback.reason}).waitFor();
+  await page.screenshot({path:output+'/coaching.png'});
+  await page.reload();await page.locator('#workspace').waitFor();
+  await page.locator('#conversation-history').filter({hasText:coach.feedback.reason}).waitFor();
+  await page.locator('nav button[data-tab="history"]').click();
+  const reviewing=page.waitForResponse(r=>r.url().endsWith('/review')&&r.request().method()==='POST',{timeout:150000});
+  await page.getByRole('button',{name:'이 제출본 리뷰 요청',exact:true}).first().click();
+  const review=await(await reviewing).json();
+  assert.equal(review.status,'completed',JSON.stringify(review.error));
+  assert.equal(review.prompt_version,'condition-review-v3-scoped-inputs');
+  await page.reload();await page.locator('#workspace').waitFor();
+  await page.locator('nav button[data-tab="history"]').click();
+  await page.getByText('총점 보류',{exact:false}).first().waitFor();
+  await page.screenshot({path:output+'/review.png'});
+  assert.deepEqual(errors,[]);
+  const result={actual_browser:true,actual_model:true,attempt_id:attempt,coaching:{status:coach.status,action:coach.feedback.action_type,prompt_version:coach.prompt_version,reload_preserved:true},review:{review_id:review.review_id,status:review.status,prompt_version:review.prompt_version,score_status:review.feedback.score_status,reload_preserved:true},page_errors:errors};
+  await fs.writeFile(output+'/checks.json',JSON.stringify(result,null,2));
+  console.log(JSON.stringify(result));
+ } finally {await browser.close();}
+})().catch(e=>{console.error(e.message);process.exitCode=1;});

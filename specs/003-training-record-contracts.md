@@ -15,7 +15,7 @@
 | 보고서·리뷰 연결 | 완료 | 저장된 근거와 제출본을 버전별 연결하고 기존 자료 보존 | Gemini 실제 리뷰 완료·5개 평가 기준·근거 ID·서버 점수·실패 기록·새로고침 보존 확인; 평가 품질 표본은 Spec004 대기 |
 | 핵심 흐름 검증 | 완료 | 선택 저장·새로고침·저장 실패·보고서 수정·리뷰 재시도 확인 | SQL~수정 제출 화면 및 실제 Gemini 코칭·리뷰·실패 후 재시도·재개 확인 |
 
-2026-10-03 구현: contracts.py·store.py·sql_runner.py·app.py와 웹 화면을 연결했다. 프로토타입 한도는 임시 실행 10분/최대100개, 저장 최대1,000행/1MiB, 미리보기200행이다. 스키마·API 형식과 한도 선택은 쉽게 조정 가능한 구현 기본값이며 [실행 안내](../docs/prototype-runbook.md)에 설명했다. 실제 모델·리뷰 품질은 확정하지 않았다. [검증 기록](../tests/verification-2026-10-03.md)을 따른다. 아래 미구현 표현은 초기 설계 기록이다.
+2026-10-03 구현: contracts.py·store.py·sql_runner.py·app.py와 웹 화면을 연결했다. 프로토타입 한도는 임시 실행 10분/최대100개, 저장 최대1,000행/1MiB, 미리보기200행이다. 스키마·API 형식과 한도 선택은 쉽게 조정 가능한 구현 기본값이며 [실행 안내](../docs/prototype-runbook.md)에 설명했다. 실제 모델·리뷰 품질은 확정하지 않았다. [검증 기록](../tests/reports/verification-2026-10-03.md)을 따른다. 아래 미구현 표현은 초기 설계 기록이다.
 
 ## 확정 사항
 
@@ -59,7 +59,7 @@
 - 초기 실행 제한은 5초, 화면 미리보기는 200행 제안을 유지한다. 전체 결과 보관의 행·용량 한도는 구현 전에 정하고, 부분 결과를 저장한 경우 결과 범위도 보존한다.
 - error는 오류 코드·사용자가 이해할 메시지를 포함한다. 연결 자격 증명과 비공개 서버 경로를 노출하지 않는다.
 
-학습자 연결에는 공개 데이터에만 접근하는 전용 최소 권한 계정을 사용하고 읽기 전용 트랜잭션과 실행 제한을 적용한다. 임의 SQL을 관리자·학습 기록 저장 계정으로 실행하지 않는다. 사용자 SQL에서 쓰기, 외부 접근, 위험한 함수 실행을 차단하는 정책과 Docker 실행 방식은 [기술 구성 명세](./004-local-technology-stack.md)를 따른다. 정확한 PostgreSQL 버전과 세부 권한은 구현 시 검증한다.
+학습자 연결에는 공개 데이터에만 접근하는 전용 최소 권한 계정을 사용하고 읽기 전용 트랜잭션과 실행 제한을 적용한다. 임의 SQL을 관리자·학습 기록 저장 계정으로 실행하지 않는다. 사용자 SQL에서 쓰기, 외부 접근, 위험한 함수 실행을 차단하는 정책과 Docker 실행 방식은 [기술 구성 명세](004-local-technology-stack.md)를 따른다. 정확한 PostgreSQL 버전과 세부 권한은 구현 시 검증한다.
 
 ## 사용자가 선택한 실행만 저장
 
@@ -91,7 +91,7 @@ SQL 원문을 사용자가 자유 서술이나 보고서에 직접 입력해 저
 
 초안은 revision을 함께 보내 이전 수정 번호로 덮어쓰려는 요청을 충돌로 반환한다. 실행 저장·보고서 제출·리뷰 생성은 중복 요청 방지 ID를 사용한다. 보고서와 근거 연결은 함께 저장하고 하나라도 실패하면 제출 성공으로 처리하지 않는다.
 
-학습 SQL 엔진과 학습 기록 저장소는 각각 별도의 PostgreSQL DB로 확정됐다. [기술 구성 명세](./004-local-technology-stack.md)에 따라 Docker Compose로 실행하고 Python + FastAPI·Psycopg 3로 연결한다. PostgreSQL 학습자 계정은 기록 저장소에 접근할 수 없어야 한다. AI는 공식 ChatGPT 로그인 기반으로 연결한다.
+학습 SQL 엔진과 학습 기록 저장소는 각각 별도의 PostgreSQL DB로 확정됐다. [기술 구성 명세](004-local-technology-stack.md)에 따라 Docker Compose로 실행하고 Python + FastAPI·Psycopg 3로 연결한다. PostgreSQL 학습자 계정은 기록 저장소에 접근할 수 없어야 한다. AI는 공식 ChatGPT 로그인 기반으로 연결한다.
 
 ## 구현 후 검증
 
@@ -114,8 +114,8 @@ SQL 원문을 사용자가 자유 서술이나 보고서에 직접 입력해 저
 ## 관련 문서
 
 - [제품 요구사항](../docs/PRD-v1.md)
-- [문제 1](./001-new-user-churn.md)
-- [데이터·패키지 버전](./002-training-data-packages.md)
+- [문제 1](001-new-user-churn.md)
+- [데이터·패키지 버전](002-training-data-packages.md)
 - PostgreSQL 공식 참고: [날짜·시각 자료형](https://www.postgresql.org/docs/current/datatype-datetime.html), [읽기 전용 트랜잭션·실행 제한](https://www.postgresql.org/docs/current/runtime-config-client.html)
 
 2026-10-03 범위 변경: 비용 우려로 Gemini API를 기본 테스트 경로로 선택했다. 기존 ChatGPT OAuth 구현은 보존하지만 접근 거부는 미해결이다. Gemini API의 모의 응답·오류·DB 통합 검증은 실제 AI 호출·품질 검증으로 계산하지 않는다. 전체5개 작업은 유지하며 LLM 작업의 완료 조건을 선택한 제공자 기준으로 변경했다. [Gemini 안내](../docs/gemini-setup.md)를 따른다.
