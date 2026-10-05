@@ -10,13 +10,13 @@ class RequestV2(Contract):
     message: str = Field(min_length=1, max_length=4000)
     difficulty: Literal['auto','beginner','intermediate','advanced'] = 'auto'
     task_kind: Literal['auto','calculation','review','design','investigation'] = 'auto'
-    domain: str = Field(default='access', max_length=100)
+    domain: str = Field(default='auto', max_length=100)
     goal: str | None = Field(default=None, max_length=200)
     sql_level: str | None = Field(default=None, max_length=100)
     time_condition: str | None = Field(default=None, max_length=200)
     intentional_repeat: bool = False
     recommendation_id: str | None = Field(default=None, max_length=100)
-    data_mode: Literal['generated','existing'] = 'generated'
+    data_mode: Literal['adaptive','generated','existing'] = 'adaptive'
     user_count: int = Field(default=200, ge=50, le=1000)
 
 class RequestAction(Contract):
@@ -27,6 +27,7 @@ class RequestAction(Contract):
     task_kind: Literal['calculation','review','design','investigation'] | None = None
 
 class Interpretation(Contract):
+    analysis_topic: Literal['return_observation', 'unsupported', 'unclear']
     capability_id: str | None = None
     difficulty: Literal['beginner','intermediate','advanced'] = 'intermediate'
     task_kind: Literal['calculation','review','design','investigation'] = 'calculation'
@@ -36,9 +37,11 @@ class Interpretation(Contract):
     reason: str = Field(max_length=1000)
 
 class PublicTaskV2(PublicTask):
+    original_request: str | None = Field(default=None,max_length=4000)
+    required_tables: list[str] = Field(min_length=1, max_length=4)
     task_kind: Literal['calculation','review','design','investigation']
     contract_version: Literal['request-v2']
-    plan_version: Literal['access-plan-v2']
+    plan_version: Literal['access-plan-v2', 'adaptive-plan-v1']
     evaluation_version: Literal['request-review-v2']
     difficulty_version: Literal['ambiguity-v2']
     plan_id: str

@@ -1,0 +1,26 @@
+[
+  {
+    "request_id": "578fa655-5986-44df-b708-f4fc1d42620d",
+    "attempt_id": "8c2b021f-283a-45f2-b56d-1fe91f1fc601",
+    "package_id": "generated-e690eaa30a77f132ceb5c99e",
+    "status": "obsolete-own-trial-removed"
+  },
+  {
+    "request_id": "54c58f36-3390-4447-8991-53e35e63a267",
+    "attempt_id": "04c123ee-e55b-4a81-865d-802a7070e2cc",
+    "package_id": "generated-63368e4655268f8fad26be1a",
+    "status": "obsolete-own-trial-removed"
+  },
+  {
+    "request_id": "145f91ad-2bcb-4e20-b0e5-ef063c71bf3c",
+    "attempt_id": "6c9a0814-203a-4c98-b025-dac8fe7bacbd",
+    "package_id": "generated-c4b92e06185e730c06bd939a",
+    "status": "obsolete-own-trial-removed"
+  },
+  {
+    "request_id": "c21bebdd-b9bc-4bd7-9776-3c120ab886dc",
+    "attempt_id": "99cc36d6-1c62-4129-85c5-95ce2fde2a1a",
+    "package_id": "generated-2539a5c8b9d9ede6f61c4844",
+    "status": "obsolete-own-trial-removed"
+  }
+]

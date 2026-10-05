@@ -36,10 +36,11 @@ def contains_material(text):
 
 
 def interpret(data, recent):
+    from .task_planner import unsupported_request
     text = data.message.strip()
     if not text or contains_material(text):
         return None, '출제 요청에는 학습 목표를 적어주세요. SQL·결과 자료는 훈련 안의 임시 질문 입력을 사용하세요.'
-    if re.search(r'매출|결제|전투|경제|튜토리얼|아이템|레벨업|구매|광고 효과|실험|A/B|revenue|sales|combat|D30|D7\s*리텐션', text, re.I) or ('리텐션' in text and 'D1' not in text):
+    if unsupported_request(data) or re.search(r'레벨업|구매|광고 효과|실험|A/B|sales|D30|D7\s*리텐션', text, re.I) or ('리텐션' in text and 'D1' not in text):
         return None, '현재는 접속 데이터의 D1~D7 미재접속 계산·분석 검토·업무 요청 구체화를 지원합니다. 이 범위로 바꾸려면 요청을 수정해주세요.'
     if not re.search(r'접속|재방문|이탈|로그인|게임|분석|훈련|문제|연습', text):
         return None, '접속 데이터 분석에서 연습하고 싶은 목표를 알려주세요. 계산·분석 검토·업무 요청 구체화를 지원합니다.'
@@ -285,7 +286,7 @@ class Training:
                     used=row['payload'].get('ai_calls',0)
                     if used>=int(os.getenv('DA_TRAINING_AI_LIMIT','30')): return {'state':'error','reason':'usage_limit_exceeded'}
                     conn.execute('UPDATE attempts SET payload=payload || %s WHERE attempt_id=%s',(Jsonb({'ai_calls':used+1}),attempt_id))
-                op=telemetry.begin(self.store,'ai',operation_id='ai-'+operation_id,attempt_id=attempt_id,domain='access',rules_version='request-review-v2',prompt_version='request-prompt-v2')
+                op=telemetry.begin(self.store,'ai',operation_id='ai-'+operation_id,attempt_id=attempt_id,domain=self.store.get(attempt_id).get('domain','access'),rules_version='request-review-v2',prompt_version='request-prompt-v2')
                 try: result=dict(self.auth.review(messages))
                 except Exception: result={'state':'error','reason':'api_unavailable'}
                 normal=normalize_ai(result)
@@ -360,7 +361,7 @@ class Training:
                    'evidence': evidence, 'trigger': data.trigger}
         if attempt.get('contract_version') == 'request-v2':
             from .coaching import build_context, coaching_messages, normalize_coaching
-            ctx=build_context(public,attempt,history,data.message,evidence,data.trigger,
+            ctx=build_context(dict(public,schema=package.public.get('data_dictionary', {})),attempt,history,data.message,evidence,data.trigger,
                               disclosed_facts=package.reference(attempt['problem_id']).get('question_facts') if attempt.get('business_facts_viewed') else None)
             result=normalize_coaching(self.ai(attempt_id,data.action_id,coaching_messages(ctx)),ctx,package.reference(attempt['problem_id']),attempt.get('explanation_viewed',False))
         else:

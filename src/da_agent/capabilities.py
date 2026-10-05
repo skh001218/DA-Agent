@@ -19,6 +19,8 @@ def list_capabilities(store):
     with store.connect() as conn:
         approvals = {r['capability_id']:r['payload'] for r in conn.execute('SELECT * FROM generation_approvals')}
     return [dict(c,domain='access',tables=['users','sessions'],rules_version=RULES_VERSION,
+                 supported_topic='return_observation',
+                 scope='신규 유저 D1~D7 미재접속과 관측 조건, 플랫폼별 비교. 비정상 이용자 탐지·봇·부정행위 판단은 지원하지 않음.',
                  status=approvals.get(c['capability_id'],{}).get('result','draft'),approval=approvals.get(c['capability_id'])) for c in CAPABILITIES]
 
 def approve(store, capability_id, data):

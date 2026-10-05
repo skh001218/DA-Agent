@@ -1,0 +1,17 @@
+{
+  "actual_browser": true,
+  "actual_api": true,
+  "actual_model": true,
+  "cases": [
+    {
+      "name": "boss-advanced",
+      "request_id": "0b80d414-ac5b-4e67-9723-bb60a14c115a",
+      "status": "failed",
+      "error_code": "plan_invalid",
+      "planning_calls": 2
+    }
+  ],
+  "errors": [],
+  "status": "fail",
+  "failure": "{\"error\":\"요청별 데이터 설계가 생성·검증 규칙을 충족하지 않아 출제하지 않았습니다.\",\"states\":[{\"at\":\"2026-10-05T07:47:26.496426Z\",\"status\":\"accepted\"},{\"at\":\"2026-10-05T07:47:26.606805Z\",\"status\":\"planning\"},{\"at\":\"2026-10-05T07:47:31.950309Z\",\"status\":\"planning\"},{\"at\":\"2026-10-05T07:47:42.000685Z\",\"status\":\"failed\"}],\"status\":\"failed\",\"message\":\"사용자가 해당 보스를 얼마만에 클리어 하는지 알 수 있는 고급 분석을 하고 싶어\",\"revision\":0,\"questions\":[],\"attempt_id\":null,\"created_at\":\"2026-10-05T07:47:26.496410Z\",\"error_code\":\"plan_invalid\",\"request_id\":\"0b80d414-ac5b-4e67-9723-bb60a14c115a\",\"operation_id\":\"8b3041de-45b7-4eb6-aa80-ddf9ab3f33f2\",\"retry_allowed\":true,\"planning_calls\":2,\"failure_history\":[{\"at\":\"2026-10-05T07:47:42.000669Z\",\"error\":\"요청별 데이터 설계가 생성·검증 규칙을 충족하지 않아 출제하지 않았습니다.\",\"error_code\":\"plan_invalid\",\"planning_calls\":2}],\"contract_version\":\"request-v2\",\"generation_attempts\":0,\"recommendation_change\":null}\n\n'failed' !== 'ready'\n"
+}

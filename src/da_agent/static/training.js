@@ -1,7 +1,7 @@
 'use strict';
 let preparingRequest = null;
 let requestPolling = false;
-const taskNames = {calculation: '지표 계산', review: '분석 오류 수정', design: '업무 요청 구체화', investigation: '접속 현상 조사'};
+const taskNames = {calculation: '지표 계산', review: '분석 오류 수정', design: '업무 요청 구체화', investigation: '현상 조사'};
 const levelNames = {beginner: '초급', intermediate: '중급', advanced: '고급'};
 
 let currentRequest = null;
@@ -40,7 +40,7 @@ async function trainingHome() {
   $('#recommendation').textContent = `다음 훈련 제안: ${levelNames[recommendation.difficulty]} ${taskNames[recommendation.task_kind]} · ${recommendation.reason || recommendation.selection_reason}\n근거: ${recommendation.evidence_ids?.length ? '저장된 관측 '+recommendation.evidence_ids.length+'건 (학습 상태에서 출처 확인)' : '관측 근거 없음'} · ${recommendation.provisional ? '잠정 추천' : '이력 기반 추천'}\n다른 후보: ${(recommendation.candidates || []).filter(x=>x.task_kind!==recommendation.task_kind).slice(0,3).map(x=>`${levelNames[x.difficulty]} ${taskNames[x.task_kind]} · 최근 반복 ${x.duplicate_count || 0}회`).join(' / ') || '다른 지원 후보 없음'}`;
   try {
     const capabilities = await api('/api/training/capabilities');
-    $('#capability-status').textContent = `지원 상태: ${(capabilities.capabilities || []).map(x => `${x.title}: ${x.status}`).join(' · ')}\n한도: ${pretty(capabilities.limits || {})}`;
+    $('#capability-status').textContent = `${capabilities.adaptive_status || ''}\n기존 접속 규칙 상태: ${(capabilities.capabilities || []).map(x => `${x.title}: ${x.status}`).join(' · ')}\n한도: ${pretty(capabilities.limits || {})}`;
     const generated = $('#request-data').querySelector('[value="generated"]');
     generated.disabled = !capabilities.generated_data_enabled;
     generated.textContent = generated.disabled ? '생성 데이터 · 승인 또는 지원 확인 필요' : '생성 데이터';
@@ -85,6 +85,8 @@ async function pollTraining(id) {
       const started = Date.parse(result.created_at || result.states?.[0]?.at || result.states?.[0]?.timestamp);
       const elapsed = Number.isFinite(started) ? ` · 경과 ${Math.max(0,Math.floor((Date.now()-started)/1000))}초` : '';
       $('#request-status').textContent = `${labels[result.status] || result.status}${elapsed} · 수정 번호 ${result.revision ?? '없음'}${result.error ? '\n'+pretty(result.error) : ''}\n${(result.states || []).map(x => labels[x.status] || x.status).join(' → ')}${result.questions?.length ? '\n'+result.questions.join('\n') : result.clarification ? '\n'+pretty(result.clarification) : ''}`;
+      if (result.failure_history?.length > 1) $('#request-status').textContent += `\n최초 실패: ${result.failure_history[0].error}`;
+      if (result.status === 'failed' && !result.retry_allowed) $('#request-status').textContent += '\n현재 요청은 재시도할 수 없습니다. 입력을 보완해 새 요청으로 시작하세요.';
       $('#cancel-training').hidden = ['ready','failed','cancelled','interrupted'].includes(result.status);
       if (result.status === 'ready') { await openAttempt(result.attempt_id); return; }
       if (result.status === 'needs_clarification') { $('#clarification').hidden=false; $('#clarification-message').focus(); return; }

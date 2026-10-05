@@ -1,0 +1,61 @@
+{
+  "actual_browser": true,
+  "actual_api": true,
+  "actual_model": true,
+  "cases": [
+    {
+      "name": "abnormal-users",
+      "request_id": "6a6ddcd7-f714-4e5d-87ae-8bb4f18aa889",
+      "status": "ready",
+      "error_code": null,
+      "planning_calls": 2,
+      "attempt_id": "61f919f0-982e-416c-82b6-61e7f8f800f4",
+      "title": "게임 비정상 이용자 탐지 및 행동 패턴 비교 조사",
+      "goal": "행동 빈도와 행동 간격의 규칙성을 분석하여 비정상 의심 계정을 탐지하고, 고빈도로 활동하는 정상 이용자와 비교하여 판단의 근거와 한계를 해석한다.",
+      "description": "본 과제에서는 게임 내 플레이어의 행동 로그를 활용하여 매크로 또는 비정상 이용자로 의심되는 계정의 특성을 조사합니다. 단순히 활동량이 많다는 이유만으로 정상 유저를 오인하지 않도록, 행동 간격의 규칙성과 반복 패턴을 분석하고 고빈도 정상 이용자와 비교하여 타당한 판단 기준을 세우는 연습을 진행합니다. 데이터에서 관측되는 차이와 유사성을 바탕으로 분석의 한계와 해석 시 주의할 점을 고찰해 보세요.\n\n이 과제의 데이터는 요청에 맞춰 생성한 연습용 합성 데이터입니다.",
+      "tables": [
+        "player_actions"
+      ],
+      "dictionary": {
+        "player_actions": {
+          "grain": "플레이어별 개별 행동 로그 단위",
+          "columns": [
+            {
+              "name": "action_id",
+              "type": "bigint",
+              "description": "행동 로그 고유 식별자"
+            },
+            {
+              "name": "player_id",
+              "type": "bigint",
+              "description": "플레이어 고유 식별자"
+            },
+            {
+              "name": "action_type",
+              "type": "text",
+              "description": "수행한 행동 유형"
+            },
+            {
+              "name": "action_interval",
+              "type": "double precision",
+              "description": "직전 행동과의 시간 간격(초)"
+            },
+            {
+              "name": "action_timestamp",
+              "type": "timestamptz",
+              "description": "행동 발생 시각"
+            }
+          ]
+        }
+      },
+      "sql_rows": [
+        [
+          200
+        ]
+      ]
+    }
+  ],
+  "errors": [],
+  "status": "fail",
+  "failure": "page.waitForFunction: Timeout 30000ms exceeded."
+}

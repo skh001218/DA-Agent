@@ -1,0 +1,132 @@
+{
+  "actual_browser": true,
+  "actual_api": true,
+  "actual_model": true,
+  "cases": [
+    {
+      "name": "abnormal-users",
+      "request_id": "d8f0fcea-33d8-4d4e-a7c2-1953d172dcf4",
+      "status": "ready",
+      "error_code": null,
+      "planning_calls": 3,
+      "attempt_id": "f59c9b3d-8828-454f-8103-522105fe7786",
+      "title": "게임 이용자 행동 패턴 분석: 의심 계정 탐지와 정상 고활동 유저 비교",
+      "goal": "행동 빈도와 행동 간격의 규칙성을 분석하여 비정상 의심 계정을 탐지하고, 고빈도로 활동하는 정상 이용자와 비교하여 판단의 근거와 한계를 해석한다.",
+      "description": "본 과제에서는 게임 내 행동 로그 데이터를 활용하여 매크로 또는 비정상 자동화 프로그램 사용이 의심되는 계정을 탐지하는 연습을 진행합니다. 단순히 활동량이 많다는 이유만으로 비정상으로 단정하기 쉬운 함정을 경계하고, 행동 간격의 규칙성, 반복률 등을 고빈도 정상 이용자와 비교하여 다각도로 검토해야 합니다.\n\n이 과제의 데이터는 요청에 맞춰 생성한 연습용 합성 데이터입니다.",
+      "tables": [
+        "accounts",
+        "action_summaries"
+      ],
+      "dictionary": {
+        "accounts": {
+          "grain": "각 계정별 기본 정보 및 성향 그룹",
+          "columns": [
+            {
+              "name": "account_id",
+              "type": "bigint",
+              "description": "계정 고유 식별 번호"
+            },
+            {
+              "name": "account_type",
+              "type": "text",
+              "description": "계정 유형 분류"
+            },
+            {
+              "name": "level",
+              "type": "bigint",
+              "description": "계정 레벨"
+            }
+          ]
+        },
+        "action_summaries": {
+          "grain": "계정별 행동 요약 및 규칙성 지표",
+          "columns": [
+            {
+              "name": "summary_id",
+              "type": "bigint",
+              "description": "요약 데이터 고유 식별 번호"
+            },
+            {
+              "name": "account_id",
+              "type": "bigint",
+              "description": "계정 고유 식별 번호 (외래키)"
+            },
+            {
+              "name": "action_count",
+              "type": "bigint",
+              "description": "관측 기간 내 총 행동 횟수"
+            },
+            {
+              "name": "interval_stddev",
+              "type": "double precision",
+              "description": "행동 간 시간 간격의 표준편차"
+            }
+          ]
+        }
+      },
+      "sql_rows": [
+        [
+          200
+        ]
+      ],
+      "saved_resume": true,
+      "narrow": {
+        "width": 390,
+        "scrollWidth": 390
+      }
+    },
+    {
+      "name": "currency",
+      "request_id": "e06da95e-8af2-4964-bba7-599057d853cb",
+      "status": "ready",
+      "error_code": null,
+      "planning_calls": 2,
+      "attempt_id": "7899b9ba-cd95-4f29-8891-3ed019e2049a",
+      "title": "일별 게임 재화 획득·소비 및 순증감 계산 과제",
+      "goal": "일별 게임 재화 획득량과 소비량을 집계하고, 순증감을 계산하여 경제 지표의 변동 흐름을 파악한다.",
+      "description": "본 과제에서는 게임 내에서 발생하는 재화 획득 및 소비 로그를 바탕으로 일자별 총 획득량, 총 소비량, 그리고 순증감(획득량 - 소비량)을 계산하는 방법을 학습합니다. 제공된 데이터를 활용하여 특정 기간 동안 재화의 흐름을 정확히 산출하고 경제 균형 상태를 검토하세요.\n\n이 과제의 데이터는 요청에 맞춰 생성한 연습용 합성 데이터입니다.",
+      "tables": [
+        "currency_logs"
+      ],
+      "dictionary": {
+        "currency_logs": {
+          "grain": "로그 ID 기준 단건",
+          "columns": [
+            {
+              "name": "log_id",
+              "type": "bigint",
+              "description": "로그 고유 식별자"
+            },
+            {
+              "name": "timestamp",
+              "type": "timestamptz",
+              "description": "로그 발생 시각"
+            },
+            {
+              "name": "action_type",
+              "type": "text",
+              "description": "재화 관련 액션 유형 (acquire: 획득, consume: 소비)"
+            },
+            {
+              "name": "amount",
+              "type": "bigint",
+              "description": "변동된 재화 양"
+            }
+          ]
+        }
+      },
+      "sql_rows": [
+        [
+          200
+        ]
+      ],
+      "saved_resume": true,
+      "narrow": {
+        "width": 390,
+        "scrollWidth": 390
+      }
+    }
+  ],
+  "errors": [],
+  "status": "pass"
+}
