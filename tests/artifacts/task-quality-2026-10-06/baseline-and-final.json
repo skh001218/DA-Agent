@@ -1,0 +1,5491 @@
+[
+  {
+    "request": {
+      "error": null,
+      "states": [
+        {
+          "at": "2026-10-05T18:02:37.246402Z",
+          "status": "accepted"
+        },
+        {
+          "at": "2026-10-05T18:02:37.315860Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T18:02:41.040284Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T18:02:49.583822Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T18:02:58.132826Z",
+          "status": "preparing_data"
+        },
+        {
+          "at": "2026-10-05T18:02:58.224479Z",
+          "status": "validating"
+        },
+        {
+          "at": "2026-10-05T18:02:58.277469Z",
+          "status": "ready"
+        }
+      ],
+      "status": "ready",
+      "message": "실제 게임 업계 실무에서 발생하는 문제를 분석하고 싶어",
+      "revision": 0,
+      "questions": [],
+      "attempt_id": "02ec3588-d3b2-4cd7-95fb-fa48bd2ec1aa",
+      "created_at": "2026-10-05T18:02:37.246390Z",
+      "error_code": null,
+      "request_id": "01f0b05a-8158-4c60-9bd4-012241d3f6c0",
+      "duration_ms": 21015,
+      "finished_at": "2026-10-05T18:02:58.277454Z",
+      "operation_id": "c74c2f59-8f07-45ec-bc24-d6d68e74018a",
+      "retry_allowed": false,
+      "planning_calls": 3,
+      "contract_version": "request-v2",
+      "generation_attempts": 1,
+      "recommendation_change": null
+    },
+    "schema_reviews": [
+      {
+        "issues": [
+          {
+            "type": "value_error",
+            "message": "Value error, investigation requires a nonempty diagnostic subset",
+            "location": []
+          }
+        ],
+        "planning_calls": 1
+      }
+    ],
+    "alignment_reviews": [
+      {
+        "passed": true
+      }
+    ],
+    "recipe": {
+      "goal": "계정별 행동 요약 데이터를 활용하여 특정 조건을 만족하는 이용자 표본의 규모를 파악하고 그룹 간 차이를 진단합니다.",
+      "title": "게임 계정별 행동량 및 변동성 진단 과제",
+      "topic": "게임 이용자 활동 패턴 및 변동성 진단",
+      "reason": "실제 게임 서비스에서 발생하는 계정별 활동량 및 간격 변동성 분석 과제를 진단형태로 구성하고 검증 조건을 충족하도록 보완했습니다.",
+      "rubric": "계정별 요약 데이터를 활용하여 조건에 맞는 표본을 정확히 진단하고 그룹 간 차이를 유의미하게 도출했는가? 변동성 지표 해석의 한계를 잘 고려했는가?",
+      "status": "ready",
+      "tables": [
+        {
+          "name": "account_summary",
+          "grain": "계정별 1행 활동 요약",
+          "groups": [
+            {
+              "name": "group_normal",
+              "count": 120,
+              "overrides": {}
+            },
+            {
+              "name": "group_active",
+              "count": 80,
+              "overrides": {
+                "interval_cv": {
+                  "end": null,
+                  "kind": "number",
+                  "group": null,
+                  "start": null,
+                  "table": null,
+                  "bucket": null,
+                  "values": [],
+                  "maximum": 0.4,
+                  "minimum": 0.1,
+                  "timezone": "Asia/Seoul",
+                  "operation": null,
+                  "conditions": [],
+                  "value_type": null,
+                  "entity_column": null,
+                  "source_column": null,
+                  "duration_column": null,
+                  "interval_column": null,
+                  "partition_columns": []
+                },
+                "activity_count": {
+                  "end": null,
+                  "kind": "integer",
+                  "group": null,
+                  "start": null,
+                  "table": null,
+                  "bucket": null,
+                  "values": [],
+                  "maximum": 300.0,
+                  "minimum": 150.0,
+                  "timezone": "Asia/Seoul",
+                  "operation": null,
+                  "conditions": [],
+                  "value_type": null,
+                  "entity_column": null,
+                  "source_column": null,
+                  "duration_column": null,
+                  "interval_column": null,
+                  "partition_columns": []
+                }
+              }
+            }
+          ],
+          "columns": [
+            {
+              "name": "account_id",
+              "generator": {
+                "end": null,
+                "kind": "id",
+                "group": null,
+                "start": null,
+                "table": null,
+                "bucket": null,
+                "values": [],
+                "maximum": null,
+                "minimum": null,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": null,
+                "entity_column": null,
+                "source_column": null,
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "계정 식별자"
+            },
+            {
+              "name": "activity_count",
+              "generator": {
+                "end": null,
+                "kind": "integer",
+                "group": null,
+                "start": null,
+                "table": null,
+                "bucket": null,
+                "values": [],
+                "maximum": 100.0,
+                "minimum": 10.0,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": null,
+                "entity_column": null,
+                "source_column": null,
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "관측 기간 동안의 총 활동 횟수"
+            },
+            {
+              "name": "interval_cv",
+              "generator": {
+                "end": null,
+                "kind": "number",
+                "group": null,
+                "start": null,
+                "table": null,
+                "bucket": null,
+                "values": [],
+                "maximum": 1.5,
+                "minimum": 0.5,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": null,
+                "entity_column": null,
+                "source_column": null,
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "행동 간격의 변동계수"
+            }
+          ],
+          "group_by": [],
+          "unique_keys": [
+            [
+              "account_id"
+            ]
+          ],
+          "derived_from": null
+        }
+      ],
+      "metrics": [
+        {
+          "name": "total_accounts",
+          "table": "account_summary",
+          "column": null,
+          "maximum": null,
+          "minimum": 200.0,
+          "operation": "count",
+          "conditions": []
+        },
+        {
+          "name": "low_variation_active_count",
+          "table": "account_summary",
+          "column": null,
+          "maximum": null,
+          "minimum": 1.0,
+          "operation": "count",
+          "conditions": [
+            {
+              "value": 0.5,
+              "column": "interval_cv",
+              "operator": "lt"
+            }
+          ]
+        }
+      ],
+      "questions": [],
+      "task_kind": "investigation",
+      "difficulty": "intermediate",
+      "description": "본 과제에서는 게임 내 계정별 활동 횟수와 행동 간격의 변동계수를 분석하여 이상 징후나 특정 패턴을 보이는 표본을 진단합니다. 제공된 요약 표를 바탕으로 조건에 부합하는 계정 수를 도출하고 이용자 성향의 차이를 해석하세요.",
+      "limitations": [
+        "제공된 요약 표의 관측 범위 내에서만 분석을 수행해야 합니다.",
+        "표본 데이터의 특성상 현실의 모든 원인을 단정할 수 없습니다."
+      ],
+      "labels_public": false,
+      "difficulty_reason": "계정별 요약 데이터를 조건별로 필터링하여 표본을 진단하고 그 의미를 해석하는 중급 난이도 분석 과제입니다.",
+      "completion_conditions": [
+        "특정 조건을 만족하는 계정 표본의 수를 올바르게 집계했다.",
+        "그룹별 행동 패턴의 차이점을 명확히 비교하고 설명했다.",
+        "분석 결과에 따른 한계점과 시사점을 논리적으로 기술했다."
+      ]
+    },
+    "usage": [
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "f05b6729-3c5c-46a2-977c-e563cf801b1b",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "01f0b05a-8158-4c60-9bd4-012241d3f6c0",
+        "started_at": "2026-10-05T18:02:37.334550Z",
+        "duration_ms": 3671,
+        "finished_at": "2026-10-05T18:02:41.005634Z",
+        "occurred_at": "2026-10-05T18:02:37.334550Z",
+        "input_tokens": 4291,
+        "operation_id": "f14f5022-37ee-4ff8-a672-6c29eb756af0",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 960,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-v1",
+        "schema_version": "event-v2",
+        "usage_missing_reason": null
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "7738dd3d-2c1a-4c24-8666-43cd485ee0c9",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "01f0b05a-8158-4c60-9bd4-012241d3f6c0",
+        "started_at": "2026-10-05T18:02:41.055272Z",
+        "duration_ms": 8501,
+        "finished_at": "2026-10-05T18:02:49.556612Z",
+        "occurred_at": "2026-10-05T18:02:41.055272Z",
+        "input_tokens": 5440,
+        "operation_id": "a71517d3-b707-4bdb-bd49-3c9adf4cfc1a",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 987,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-repair-v1",
+        "schema_version": "event-v2",
+        "usage_missing_reason": null
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "fb358ee8-dc5c-40c2-8446-9a52a929a42f",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "01f0b05a-8158-4c60-9bd4-012241d3f6c0",
+        "started_at": "2026-10-05T18:02:49.598350Z",
+        "duration_ms": 8511,
+        "finished_at": "2026-10-05T18:02:58.109904Z",
+        "occurred_at": "2026-10-05T18:02:49.598350Z",
+        "input_tokens": 1979,
+        "operation_id": "0612bd26-58c0-4e48-bc7e-b6d56d08bd6e",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 16,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-alignment-v1",
+        "schema_version": "event-v2",
+        "usage_missing_reason": null
+      }
+    ],
+    "attempt": {
+      "title": "게임 계정별 행동량 및 변동성 진단 과제",
+      "domain": "게임 이용자 활동 패턴 및 변동성 진단",
+      "ai_calls": 4,
+      "plan_hash": "27429198fa0ba8a9990fce68622032b8f40a0cfb0a8fad9bbe4f8f9a1506799c",
+      "task_kind": "investigation",
+      "attempt_id": "02ec3588-d3b2-4cd7-95fb-fa48bd2ec1aa",
+      "dataset_id": "generated-0135e362cacf5319d479ec7b-data",
+      "difficulty": "intermediate",
+      "package_id": "generated-0135e362cacf5319d479ec7b",
+      "problem_id": "problem-001",
+      "request_id": "01f0b05a-8158-4c60-9bd4-012241d3f6c0",
+      "started_at": "2026-10-05T18:02:58.276002Z",
+      "release_version": "v1",
+      "contract_version": "request-v2",
+      "explanation_viewed": false,
+      "intentional_repeat": false,
+      "semantic_signature": {
+        "goal": "계정별 행동 요약 데이터를 활용하여 특정 조건을 만족하는 이용자 표본의 규모를 파악하고 그룹 간 차이를 진단합니다.",
+        "domain": "게임 이용자 활동 패턴 및 변동성 진단",
+        "format": "investigation",
+        "ambiguity": "intermediate",
+        "situation": "e685f886e6db",
+        "evaluation": "adaptive",
+        "required_judgment": "investigation"
+      },
+      "evaluation_rules_version": "request-review-v2",
+      "draft": {
+        "revision": 5,
+        "sections": {
+          "hypothesis": "",
+          "limitations": "해당 내용만 보고 알 수 있는 것이 없어보인다",
+          "report_text": "해당 내용만 보고 알 수 있는 것이 없어보인다",
+          "next_actions": "",
+          "interpretation": "",
+          "report_evidence": "{\"0\":[]}",
+          "problem_definition": ""
+        }
+      },
+      "saved_executions": [
+        {
+          "sql": "select * from account_summary",
+          "result": {
+            "rows": [
+              [
+                6,
+                44,
+                0.753424
+              ],
+              [
+                126,
+                228,
+                0.30884
+              ],
+              [
+                190,
+                261,
+                0.147259
+              ],
+              [
+                93,
+                180,
+                0.317641
+              ],
+              [
+                41,
+                189,
+                0.12511
+              ],
+              [
+                163,
+                251,
+                0.113735
+              ],
+              [
+                136,
+                281,
+                0.170218
+              ],
+              [
+                123,
+                75,
+                0.933482
+              ],
+              [
+                83,
+                84,
+                1.04504
+              ],
+              [
+                101,
+                62,
+                0.680506
+              ],
+              [
+                65,
+                95,
+                0.784638
+              ],
+              [
+                76,
+                72,
+                0.777921
+              ],
+              [
+                134,
+                52,
+                0.909579
+              ],
+              [
+                170,
+                87,
+                1.058603
+              ],
+              [
+                145,
+                57,
+                0.695008
+              ],
+              [
+                11,
+                64,
+                0.760993
+              ],
+              [
+                128,
+                270,
+                0.264168
+              ],
+              [
+                15,
+                200,
+                0.17281
+              ],
+              [
+                127,
+                28,
+                0.855641
+              ],
+              [
+                87,
+                29,
+                0.567688
+              ],
+              [
+                139,
+                79,
+                0.60706
+              ],
+              [
+                26,
+                23,
+                1.209235
+              ],
+              [
+                178,
+                187,
+                0.124698
+              ],
+              [
+                200,
+                272,
+                0.237552
+              ],
+              [
+                24,
+                210,
+                0.371245
+              ],
+              [
+                180,
+                216,
+                0.343265
+              ],
+              [
+                199,
+                100,
+                0.865534
+              ],
+              [
+                125,
+                29,
+                1.498279
+              ],
+              [
+                160,
+                82,
+                0.736088
+              ],
+              [
+                147,
+                198,
+                0.337523
+              ],
+              [
+                55,
+                82,
+                1.453367
+              ],
+              [
+                172,
+                57,
+                0.920508
+              ],
+              [
+                74,
+                260,
+                0.211579
+              ],
+              [
+                158,
+                205,
+                0.337075
+              ],
+              [
+                40,
+                88,
+                1.453477
+              ],
+              [
+                100,
+                65,
+                0.516461
+              ],
+              [
+                94,
+                94,
+                1.464533
+              ],
+              [
+                13,
+                41,
+                0.880662
+              ],
+              [
+                81,
+                43,
+                1.121026
+              ],
+              [
+                22,
+                150,
+                0.183829
+              ],
+              [
+                39,
+                63,
+                0.690171
+              ],
+              [
+                10,
+                154,
+                0.349103
+              ],
+              [
+                82,
+                74,
+                0.916781
+              ],
+              [
+                193,
+                100,
+                0.551817
+              ],
+              [
+                192,
+                174,
+                0.329819
+              ],
+              [
+                52,
+                91,
+                0.671503
+              ],
+              [
+                198,
+                23,
+                0.781679
+              ],
+              [
+                78,
+                205,
+                0.107238
+              ],
+              [
+                135,
+                226,
+                0.168903
+              ],
+              [
+                86,
+                195,
+                0.132643
+              ],
+              [
+                184,
+                268,
+                0.197483
+              ],
+              [
+                62,
+                39,
+                0.537932
+              ],
+              [
+                150,
+                234,
+                0.371926
+              ],
+              [
+                162,
+                272,
+                0.170976
+              ],
+              [
+                70,
+                65,
+                0.536588
+              ],
+              [
+                53,
+                70,
+                0.525663
+              ],
+              [
+                89,
+                43,
+                1.212785
+              ],
+              [
+                117,
+                94,
+                1.228212
+              ],
+              [
+                16,
+                286,
+                0.105757
+              ],
+              [
+                140,
+                160,
+                0.221825
+              ],
+              [
+                47,
+                12,
+                0.819684
+              ],
+              [
+                48,
+                206,
+                0.27353
+              ],
+              [
+                149,
+                84,
+                0.585718
+              ],
+              [
+                12,
+                181,
+                0.289676
+              ],
+              [
+                73,
+                268,
+                0.166398
+              ],
+              [
+                183,
+                261,
+                0.236381
+              ],
+              [
+                56,
+                82,
+                1.402153
+              ],
+              [
+                131,
+                78,
+                1.001082
+              ],
+              [
+                114,
+                160,
+                0.180122
+              ],
+              [
+                142,
+                56,
+                1.317236
+              ],
+              [
+                91,
+                157,
+                0.290156
+              ],
+              [
+                181,
+                239,
+                0.342598
+              ],
+              [
+                168,
+                92,
+                1.332509
+              ],
+              [
+                108,
+                28,
+                0.538331
+              ],
+              [
+                175,
+                35,
+                0.599712
+              ],
+              [
+                68,
+                163,
+                0.118361
+              ],
+              [
+                92,
+                24,
+                1.191732
+              ],
+              [
+                191,
+                28,
+                0.653739
+              ],
+              [
+                21,
+                45,
+                1.036834
+              ],
+              [
+                143,
+                10,
+                1.093842
+              ],
+              [
+                29,
+                18,
+                1.103853
+              ],
+              [
+                59,
+                283,
+                0.232968
+              ],
+              [
+                196,
+                164,
+                0.149516
+              ],
+              [
+                174,
+                242,
+                0.180821
+              ],
+              [
+                153,
+                62,
+                1.481723
+              ],
+              [
+                113,
+                197,
+                0.1406
+              ],
+              [
+                115,
+                75,
+                1.228747
+              ],
+              [
+                42,
+                82,
+                1.122397
+              ],
+              [
+                61,
+                87,
+                1.49261
+              ],
+              [
+                95,
+                81,
+                0.726719
+              ],
+              [
+                186,
+                46,
+                0.581313
+              ],
+              [
+                154,
+                22,
+                0.650716
+              ],
+              [
+                129,
+                95,
+                1.148044
+              ],
+              [
+                36,
+                58,
+                0.857025
+              ],
+              [
+                28,
+                36,
+                0.760124
+              ],
+              [
+                119,
+                14,
+                1.257606
+              ],
+              [
+                79,
+                22,
+                0.923462
+              ],
+              [
+                187,
+                171,
+                0.281244
+              ],
+              [
+                104,
+                45,
+                1.264541
+              ],
+              [
+                31,
+                35,
+                0.603637
+              ],
+              [
+                9,
+                83,
+                1.374784
+              ],
+              [
+                2,
+                35,
+                1.481417
+              ],
+              [
+                107,
+                82,
+                0.884221
+              ],
+              [
+                177,
+                270,
+                0.276603
+              ],
+              [
+                132,
+                31,
+                0.598869
+              ],
+              [
+                105,
+                39,
+                1.217797
+              ],
+              [
+                171,
+                220,
+                0.118003
+              ],
+              [
+                30,
+                38,
+                0.545998
+              ],
+              [
+                112,
+                192,
+                0.277549
+              ],
+              [
+                38,
+                71,
+                0.523279
+              ],
+              [
+                111,
+                71,
+                1.051881
+              ],
+              [
+                84,
+                12,
+                0.78897
+              ],
+              [
+                182,
+                217,
+                0.189577
+              ],
+              [
+                106,
+                239,
+                0.388186
+              ],
+              [
+                176,
+                42,
+                1.073152
+              ],
+              [
+                157,
+                154,
+                0.162566
+              ],
+              [
+                44,
+                97,
+                1.076204
+              ],
+              [
+                46,
+                211,
+                0.117408
+              ],
+              [
+                8,
+                65,
+                0.854826
+              ],
+              [
+                121,
+                70,
+                0.60904
+              ],
+              [
+                138,
+                16,
+                0.712911
+              ],
+              [
+                102,
+                290,
+                0.364659
+              ],
+              [
+                77,
+                50,
+                1.044175
+              ],
+              [
+                166,
+                89,
+                0.636421
+              ],
+              [
+                51,
+                79,
+                0.589985
+              ],
+              [
+                80,
+                63,
+                0.623506
+              ],
+              [
+                25,
+                238,
+                0.219418
+              ],
+              [
+                124,
+                237,
+                0.197021
+              ],
+              [
+                43,
+                186,
+                0.285227
+              ],
+              [
+                116,
+                61,
+                0.736533
+              ],
+              [
+                167,
+                82,
+                0.737425
+              ],
+              [
+                188,
+                78,
+                0.854574
+              ],
+              [
+                152,
+                16,
+                1.206366
+              ],
+              [
+                4,
+                74,
+                1.332143
+              ],
+              [
+                120,
+                300,
+                0.287835
+              ],
+              [
+                96,
+                96,
+                1.208338
+              ],
+              [
+                88,
+                241,
+                0.211667
+              ],
+              [
+                194,
+                179,
+                0.226601
+              ],
+              [
+                179,
+                153,
+                0.217853
+              ],
+              [
+                103,
+                13,
+                0.634986
+              ],
+              [
+                1,
+                13,
+                0.657994
+              ],
+              [
+                58,
+                21,
+                0.752729
+              ],
+              [
+                23,
+                92,
+                0.936899
+              ],
+              [
+                156,
+                216,
+                0.129381
+              ],
+              [
+                159,
+                85,
+                0.66023
+              ],
+              [
+                35,
+                58,
+                1.268768
+              ],
+              [
+                98,
+                74,
+                1.383321
+              ],
+              [
+                5,
+                42,
+                1.057879
+              ],
+              [
+                75,
+                77,
+                0.517395
+              ],
+              [
+                173,
+                69,
+                1.216462
+              ],
+              [
+                54,
+                260,
+                0.339652
+              ],
+              [
+                122,
+                205,
+                0.190076
+              ],
+              [
+                17,
+                171,
+                0.164009
+              ],
+              [
+                197,
+                56,
+                0.577191
+              ],
+              [
+                133,
+                237,
+                0.309285
+              ],
+              [
+                97,
+                62,
+                0.774503
+              ],
+              [
+                34,
+                213,
+                0.280413
+              ],
+              [
+                72,
+                242,
+                0.128019
+              ],
+              [
+                67,
+                237,
+                0.336453
+              ],
+              [
+                169,
+                234,
+                0.302064
+              ],
+              [
+                27,
+                89,
+                0.679761
+              ],
+              [
+                90,
+                65,
+                0.857659
+              ],
+              [
+                45,
+                275,
+                0.233981
+              ],
+              [
+                118,
+                206,
+                0.184626
+              ],
+              [
+                146,
+                291,
+                0.359138
+              ],
+              [
+                14,
+                257,
+                0.131129
+              ],
+              [
+                85,
+                90,
+                1.015505
+              ],
+              [
+                18,
+                244,
+                0.23618
+              ],
+              [
+                20,
+                241,
+                0.338511
+              ],
+              [
+                60,
+                184,
+                0.254832
+              ],
+              [
+                49,
+                234,
+                0.16227
+              ],
+              [
+                63,
+                68,
+                0.935978
+              ],
+              [
+                37,
+                165,
+                0.134739
+              ],
+              [
+                141,
+                74,
+                1.343915
+              ],
+              [
+                185,
+                37,
+                0.533082
+              ],
+              [
+                189,
+                44,
+                0.835978
+              ],
+              [
+                19,
+                57,
+                0.896012
+              ],
+              [
+                151,
+                252,
+                0.207477
+              ],
+              [
+                69,
+                254,
+                0.347275
+              ],
+              [
+                50,
+                24,
+                1.440393
+              ],
+              [
+                3,
+                16,
+                1.382778
+              ],
+              [
+                148,
+                87,
+                1.214575
+              ],
+              [
+                33,
+                259,
+                0.130725
+              ],
+              [
+                195,
+                297,
+                0.123213
+              ],
+              [
+                110,
+                50,
+                1.05103
+              ],
+              [
+                164,
+                225,
+                0.157561
+              ],
+              [
+                7,
+                27,
+                0.961378
+              ],
+              [
+                99,
+                37,
+                1.219545
+              ],
+              [
+                137,
+                26,
+                1.453823
+              ],
+              [
+                57,
+                52,
+                0.788097
+              ],
+              [
+                109,
+                11,
+                0.529715
+              ],
+              [
+                165,
+                25,
+                1.430087
+              ],
+              [
+                66,
+                87,
+                0.781736
+              ],
+              [
+                155,
+                239,
+                0.245528
+              ],
+              [
+                144,
+                44,
+                1.140611
+              ],
+              [
+                32,
+                205,
+                0.287411
+              ],
+              [
+                161,
+                29,
+                0.630033
+              ],
+              [
+                130,
+                170,
+                0.215524
+              ],
+              [
+                71,
+                19,
+                1.196303
+              ],
+              [
+                64,
+                33,
+                1.499131
+              ]
+            ],
+            "error": null,
+            "status": "success",
+            "columns": [
+              {
+                "name": "account_id",
+                "type": "int8"
+              },
+              {
+                "name": "activity_count",
+                "type": "int8"
+              },
+              {
+                "name": "interval_cv",
+                "type": "float8"
+              }
+            ],
+            "truncated": false,
+            "duration_ms": 7,
+            "executed_at": "2026-10-05T18:03:49.338149Z",
+            "execution_id": "d4ae556b-09e7-4fd1-baf2-c145011ad5f1",
+            "result_complete": true,
+            "total_row_count": 200,
+            "preview_row_count": 200,
+            "expires_in_seconds": 600
+          },
+          "attempt_id": "02ec3588-d3b2-4cd7-95fb-fa48bd2ec1aa",
+          "created_at": "2026-10-05T18:04:56.576040Z",
+          "dataset_id": "generated-0135e362cacf5319d479ec7b-data",
+          "package_id": "generated-0135e362cacf5319d479ec7b",
+          "problem_id": "problem-001",
+          "release_version": "v1",
+          "saved_execution_id": "15b06c53-7ad6-46c9-8e09-72b2090283e3"
+        }
+      ],
+      "reports": [
+        {
+          "claims": [
+            {
+              "text": "해당 내용만 보고 알 수 있는 것이 없어보인다",
+              "claim_id": "claim-1",
+              "evidence_refs": []
+            }
+          ],
+          "content": {
+            "hypothesis": "",
+            "limitations": "해당 내용만 보고 알 수 있는 것이 없어보인다",
+            "next_actions": "",
+            "problem_definition": ""
+          },
+          "revision": 5,
+          "report_id": "c5c44928-5ef5-474c-850f-e6041e44a702",
+          "attempt_id": "02ec3588-d3b2-4cd7-95fb-fa48bd2ec1aa",
+          "created_at": "2026-10-05T18:05:00.637283Z",
+          "dataset_id": "generated-0135e362cacf5319d479ec7b-data",
+          "package_id": "generated-0135e362cacf5319d479ec7b",
+          "problem_id": "problem-001",
+          "submitted_at": "2026-10-05T18:05:00.637253Z",
+          "report_version": 1,
+          "release_version": "v1",
+          "previous_report_id": null
+        }
+      ],
+      "reviews": [
+        {
+          "error": null,
+          "model": "gemini-3.5-flash-lite",
+          "status": "completed",
+          "feedback": {
+            "criteria": [
+              {
+                "key": "problem_definition",
+                "level": 0,
+                "score": 0.0,
+                "reason": "대상, 기간, 관측, 지표를 정의하지 않고 내용을 알 수 없다고만 기술하여 문제 정의가 전혀 이루어지지 않았습니다.",
+                "weight": 25,
+                "claim_ids": [
+                  "claim-1"
+                ],
+                "saved_execution_ids": []
+              },
+              {
+                "key": "analysis_approach",
+                "level": 0,
+                "score": 0.0,
+                "reason": "제출된 내용에 분석 접근 방식이나 방법론에 대한 설명이 전혀 존재하지 않습니다.",
+                "weight": 25,
+                "claim_ids": [
+                  "claim-1"
+                ],
+                "saved_execution_ids": []
+              },
+              {
+                "key": "interpretation",
+                "level": 0,
+                "score": 0.0,
+                "reason": "표본 집계나 그룹 간 차이에 대한 해석이 전혀 포함되어 있지 않습니다.",
+                "weight": 20,
+                "claim_ids": [
+                  "claim-1"
+                ],
+                "saved_execution_ids": []
+              },
+              {
+                "key": "sql_accuracy",
+                "level": 0,
+                "score": 0.0,
+                "reason": "실행된 저장 근거나 SQL 관련 내용이 전혀 존재하지 않습니다.",
+                "weight": 20,
+                "claim_ids": [
+                  "claim-1"
+                ],
+                "saved_execution_ids": []
+              },
+              {
+                "key": "next_actions",
+                "level": 0,
+                "score": 0.0,
+                "reason": "후속 조치나 다음 행동에 대한 계획이 전혀 제시되지 않았습니다.",
+                "weight": 10,
+                "claim_ids": [
+                  "claim-1"
+                ],
+                "saved_execution_ids": []
+              }
+            ],
+            "strengths": [],
+            "next_steps": [
+              "제공된 요약 표 데이터를 활용하여 조건에 부합하는 계정 수를 집계하는 SQL 또는 분석 절차를 수립합니다.",
+              "그룹별 행동 패턴의 차이를 비교하고 해석하는 내용을 추가합니다."
+            ],
+            "total_score": 0.0,
+            "uncertainty": "제출된 보고서 내용이 전적으로 비어 있거나 분석을 수행하지 않아 추가적인 검증이나 해석이 불가능합니다.",
+            "improvements": [
+              "분석 대상, 기간, 관측 지표를 명확히 정의하여 문제 정의를 구체화해야 합니다.",
+              "요구된 조건에 맞는 표본 규모 파악 및 그룹 간 차이 분석 과정을 체계적으로 작성해야 합니다.",
+              "분석 결과에 따른 한계점과 후속 조치 계획을 논리적으로 기술해야 합니다."
+            ]
+          },
+          "report_id": "c5c44928-5ef5-474c-850f-e6041e44a702",
+          "review_id": "4e53f727-5d36-484a-b64b-a4cb0fe243a5",
+          "attempt_id": "02ec3588-d3b2-4cd7-95fb-fa48bd2ec1aa",
+          "created_at": "2026-10-05T18:05:05.317046Z",
+          "contract_hash": "44a348082ab80ac06f7c4ca0e3dfd64639ea34079909a08caf5a00e0fdded373",
+          "rules_version": "request-review-v2",
+          "calculation_verification": []
+        }
+      ],
+      "hints": [],
+      "pilot_linked": false,
+      "problem": {
+        "goal": "계정별 행동 요약 데이터를 활용하여 특정 조건을 만족하는 이용자 표본의 규모를 파악하고 그룹 간 차이를 진단합니다.",
+        "title": "게임 계정별 행동량 및 변동성 진단 과제",
+        "plan_id": "7d940e2f-a59e-471a-a09d-1f9767ff45cc",
+        "weights": {
+          "next_actions": 10,
+          "sql_accuracy": 20,
+          "interpretation": 20,
+          "analysis_approach": 25,
+          "problem_definition": 25
+        },
+        "revision": 0,
+        "timezone": "Asia/Seoul",
+        "ambiguity": {
+          "goal": "public",
+          "cause": "learner"
+        },
+        "task_kind": "investigation",
+        "dataset_id": "generated-0135e362cacf5319d479ec7b-data",
+        "difficulty": "intermediate",
+        "package_id": "generated-0135e362cacf5319d479ec7b",
+        "problem_id": "problem-001",
+        "description": "본 과제에서는 게임 내 계정별 활동 횟수와 행동 간격의 변동계수를 분석하여 이상 징후나 특정 패턴을 보이는 표본을 진단합니다. 제공된 요약 표를 바탕으로 조건에 부합하는 계정 수를 도출하고 이용자 성향의 차이를 해석하세요.\n\n이 과제의 데이터는 요청에 맞춰 생성한 연습용 합성 데이터입니다.",
+        "plan_version": "adaptive-plan-v1",
+        "capability_id": "adaptive",
+        "allowed_limits": [
+          "제공된 요약 표의 관측 범위 내에서만 분석을 수행해야 합니다.",
+          "표본 데이터의 특성상 현실의 모든 원인을 단정할 수 없습니다."
+        ],
+        "problem_type_id": "adaptive",
+        "problem_version": "v1",
+        "release_version": "v1",
+        "required_tables": [
+          "account_summary"
+        ],
+        "contract_version": "request-v2",
+        "data_preparation": "요청별 합성 데이터 · 자동 검증",
+        "original_request": "실제 게임 업계 실무에서 발생하는 문제를 분석하고 싶어",
+        "selection_reason": "요청한 분석 대상과 난이도에 맞춰 공개 자료로 분석하는 연습 과제입니다.",
+        "difficulty_reason": "계정별 요약 데이터를 조건별로 필터링하여 표본을 진단하고 그 의미를 해석하는 중급 난이도 분석 과제입니다.",
+        "evaluation_status": "시험 과제 · 자동 검증 통과 · 사람 품질 검토 전",
+        "generator_version": "adaptive-recipe-v1",
+        "difficulty_version": "ambiguity-v2",
+        "evaluation_version": "request-review-v2",
+        "required_judgments": [
+          "특정 조건을 만족하는 계정 표본의 수를 올바르게 집계했다.",
+          "그룹별 행동 패턴의 차이점을 명확히 비교하고 설명했다.",
+          "분석 결과에 따른 한계점과 시사점을 논리적으로 기술했다."
+        ],
+        "semantic_signature": {
+          "goal": "계정별 행동 요약 데이터를 활용하여 특정 조건을 만족하는 이용자 표본의 규모를 파악하고 그룹 간 차이를 진단합니다.",
+          "domain": "게임 이용자 활동 패턴 및 변동성 진단",
+          "format": "investigation",
+          "ambiguity": "intermediate",
+          "situation": "e685f886e6db",
+          "evaluation": "adaptive",
+          "required_judgment": "investigation"
+        },
+        "validation_version": "adaptive-validation-v1",
+        "data_complete_before": "2026-10-05T18:02:58.154852+00:00",
+        "completion_conditions": [
+          "특정 조건을 만족하는 계정 표본의 수를 올바르게 집계했다.",
+          "그룹별 행동 패턴의 차이점을 명확히 비교하고 설명했다.",
+          "분석 결과에 따른 한계점과 시사점을 논리적으로 기술했다."
+        ],
+        "disclosed_on_question": [],
+        "evaluation_rules_version": "request-review-v2",
+        "schema": {
+          "account_summary": {
+            "grain": "계정별 1행 활동 요약",
+            "columns": [
+              {
+                "name": "account_id",
+                "type": "bigint",
+                "description": "계정 식별자"
+              },
+              {
+                "name": "activity_count",
+                "type": "bigint",
+                "description": "관측 기간 동안의 총 활동 횟수"
+              },
+              {
+                "name": "interval_cv",
+                "type": "double precision",
+                "description": "행동 간격의 변동계수"
+              }
+            ]
+          }
+        }
+      },
+      "messages": []
+    },
+    "private_reference": {
+      "package_id": "generated-0135e362cacf5319d479ec7b",
+      "release_version": "v1",
+      "dataset_id": "generated-0135e362cacf5319d479ec7b-data",
+      "problem_id": "problem-001",
+      "evaluation_version": "v1",
+      "sql": "SELECT (SELECT COUNT(*) FROM \"account_summary\") AS \"total_accounts\", (SELECT COUNT(*) FROM \"account_summary\" WHERE \"interval_cv\" < 0.5) AS \"low_variation_active_count\"",
+      "expected": {
+        "total_accounts": 200,
+        "low_variation_active_count": 80
+      },
+      "weights": {
+        "problem_definition": 25,
+        "analysis_approach": 25,
+        "sql_accuracy": 20,
+        "interpretation": 20,
+        "next_actions": 10
+      },
+      "rubric": "계정별 요약 데이터를 활용하여 조건에 맞는 표본을 정확히 진단하고 그룹 간 차이를 유의미하게 도출했는가? 변동성 지표 해석의 한계를 잘 고려했는가? 검증하지 못한 타당한 대안을 틀렸다고 단정하지 말고, 비공개 생성 그룹을 맞히도록 요구하지 마세요.",
+      "question_facts": {},
+      "explanation": "계정별 요약 데이터를 활용하여 조건에 맞는 표본을 정확히 진단하고 그룹 간 차이를 유의미하게 도출했는가? 변동성 지표 해석의 한계를 잘 고려했는가?",
+      "hints": {
+        "direction": "공개 목표와 데이터의 집계 단위를 확인하세요.",
+        "metric": "비교 기준과 정상 행동에서도 나타날 가능성을 정리하세요.",
+        "sql_structure": "공개 테이블의 컬럼으로 가설을 검증하세요."
+      },
+      "frozen_evaluation": {
+        "expected": {
+          "total_accounts": 200,
+          "low_variation_active_count": 80
+        },
+        "rubric": "계정별 요약 데이터를 활용하여 조건에 맞는 표본을 정확히 진단하고 그룹 간 차이를 유의미하게 도출했는가? 변동성 지표 해석의 한계를 잘 고려했는가? 검증하지 못한 타당한 대안을 틀렸다고 단정하지 말고, 비공개 생성 그룹을 맞히도록 요구하지 마세요.",
+        "weights": {
+          "problem_definition": 25,
+          "analysis_approach": 25,
+          "sql_accuracy": 20,
+          "interpretation": 20,
+          "next_actions": 10
+        },
+        "completion_conditions": [
+          "특정 조건을 만족하는 계정 표본의 수를 올바르게 집계했다.",
+          "그룹별 행동 패턴의 차이점을 명확히 비교하고 설명했다.",
+          "분석 결과에 따른 한계점과 시사점을 논리적으로 기술했다."
+        ],
+        "rules_version": "evaluation-v2",
+        "contract_hash": "44a348082ab80ac06f7c4ca0e3dfd64639ea34079909a08caf5a00e0fdded373"
+      }
+    }
+  },
+  {
+    "request": {
+      "error": null,
+      "states": [
+        {
+          "at": "2026-10-05T18:05:42.224174Z",
+          "status": "accepted"
+        },
+        {
+          "at": "2026-10-05T18:05:42.288687Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T18:05:47.095287Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T18:05:53.098013Z",
+          "status": "preparing_data"
+        },
+        {
+          "at": "2026-10-05T18:05:53.172942Z",
+          "status": "validating"
+        },
+        {
+          "at": "2026-10-05T18:05:53.223446Z",
+          "status": "ready"
+        }
+      ],
+      "status": "ready",
+      "message": "실제 게임 업계 실무에서 발생하는 문제를 분석하고 싶어",
+      "revision": 0,
+      "questions": [],
+      "attempt_id": "1a71d54a-f7e5-44f4-a546-c90322996b1c",
+      "created_at": "2026-10-05T18:05:42.224158Z",
+      "error_code": null,
+      "request_id": "31a59b71-4850-4650-811d-0652fcbadc55",
+      "duration_ms": 10982,
+      "finished_at": "2026-10-05T18:05:53.223431Z",
+      "operation_id": "43b0c861-a7eb-47e1-b04d-78f94270671b",
+      "retry_allowed": false,
+      "planning_calls": 2,
+      "contract_version": "request-v2",
+      "generation_attempts": 1,
+      "recommendation_change": null
+    },
+    "schema_reviews": [],
+    "alignment_reviews": [
+      {
+        "passed": true
+      }
+    ],
+    "recipe": {
+      "goal": "계정별 행동 요약 데이터를 활용하여 특정 조건을 만족하는 이용자 표본의 규모를 파악하고 그룹 간 차이를 진단합니다.",
+      "title": "이용자 활동 패턴 및 변동성 심층 진단 과제",
+      "topic": "게임 이용자 활동 패턴 및 변동성 진단",
+      "reason": "고급 난이도의 게임 이용자 활동 패턴 및 변동성 진단 과제로서, 계정별 행동 요약 데이터를 활용하여 표본 규모를 파악하고 그룹 간 차이를 분석할 수 있도록 최소 필수 테이블과 메트릭을 설계했습니다.",
+      "rubric": "제공된 계정별 요약 데이터를 정확히 조회하여 전체 계정 수와 조건별 표본 규모를 바르게 도출했는지 평가합니다. 그룹 간 변동성 및 행동 횟수 차이에 대한 논리적 해석이 포함되었는지 확인합니다.",
+      "status": "ready",
+      "tables": [
+        {
+          "name": "account_summary",
+          "grain": "계정별 1행 활동 요약",
+          "groups": [
+            {
+              "name": "standard_group",
+              "count": 120,
+              "overrides": {}
+            },
+            {
+              "name": "high_activity_group",
+              "count": 80,
+              "overrides": {
+                "interval_cv": {
+                  "end": null,
+                  "kind": "number",
+                  "group": null,
+                  "start": null,
+                  "table": null,
+                  "bucket": null,
+                  "values": [],
+                  "maximum": 0.5,
+                  "minimum": 0.05,
+                  "timezone": "Asia/Seoul",
+                  "operation": null,
+                  "conditions": [],
+                  "value_type": null,
+                  "entity_column": null,
+                  "source_column": null,
+                  "duration_column": null,
+                  "interval_column": null,
+                  "partition_columns": []
+                },
+                "activity_count": {
+                  "end": null,
+                  "kind": "integer",
+                  "group": null,
+                  "start": null,
+                  "table": null,
+                  "bucket": null,
+                  "values": [],
+                  "maximum": 500.0,
+                  "minimum": 250.0,
+                  "timezone": "Asia/Seoul",
+                  "operation": null,
+                  "conditions": [],
+                  "value_type": null,
+                  "entity_column": null,
+                  "source_column": null,
+                  "duration_column": null,
+                  "interval_column": null,
+                  "partition_columns": []
+                }
+              }
+            }
+          ],
+          "columns": [
+            {
+              "name": "account_id",
+              "generator": {
+                "end": null,
+                "kind": "id",
+                "group": null,
+                "start": null,
+                "table": null,
+                "bucket": null,
+                "values": [],
+                "maximum": null,
+                "minimum": null,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": null,
+                "entity_column": null,
+                "source_column": null,
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "계정 고유 식별자"
+            },
+            {
+              "name": "activity_count",
+              "generator": {
+                "end": null,
+                "kind": "integer",
+                "group": null,
+                "start": null,
+                "table": null,
+                "bucket": null,
+                "values": [],
+                "maximum": 200.0,
+                "minimum": 10.0,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": null,
+                "entity_column": null,
+                "source_column": null,
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "관측 기간 동안의 총 행동 횟수"
+            },
+            {
+              "name": "avg_interval",
+              "generator": {
+                "end": null,
+                "kind": "number",
+                "group": null,
+                "start": null,
+                "table": null,
+                "bucket": null,
+                "values": [],
+                "maximum": 300.0,
+                "minimum": 5.0,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": null,
+                "entity_column": null,
+                "source_column": null,
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "행동 간 평균 시간 간격(초)"
+            },
+            {
+              "name": "interval_cv",
+              "generator": {
+                "end": null,
+                "kind": "number",
+                "group": null,
+                "start": null,
+                "table": null,
+                "bucket": null,
+                "values": [],
+                "maximum": 2.0,
+                "minimum": 0.1,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": null,
+                "entity_column": null,
+                "source_column": null,
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "행동 간격의 변동계수(CV)"
+            }
+          ],
+          "group_by": [],
+          "unique_keys": [
+            [
+              "account_id"
+            ]
+          ],
+          "derived_from": null
+        }
+      ],
+      "metrics": [
+        {
+          "name": "total_accounts",
+          "table": "account_summary",
+          "column": null,
+          "maximum": null,
+          "minimum": 150.0,
+          "operation": "count",
+          "conditions": []
+        },
+        {
+          "name": "high_activity_count",
+          "table": "account_summary",
+          "column": null,
+          "maximum": null,
+          "minimum": 50.0,
+          "operation": "count",
+          "conditions": [
+            {
+              "value": 200,
+              "column": "activity_count",
+              "operator": "gte"
+            }
+          ]
+        }
+      ],
+      "questions": [],
+      "task_kind": "investigation",
+      "difficulty": "advanced",
+      "description": "본 과제에서는 게임 내 계정별 행동 횟수, 평균 간격, 변동성 등의 요약 데이터를 바탕으로 이용자들의 활동 성향을 진단합니다. 제공된 데이터를 활용하여 특정 조건을 충족하는 이용자 표본의 규모를 산정하고, 그룹 간 행동 특성의 차이를 분석하여 인사이트를 도출해 보세요.",
+      "limitations": [
+        "제공된 요약 데이터 범위 내에서만 분석을 수행합니다.",
+        "현실의 복잡한 원인을 단정 짓지 않고 관측된 수치적 경향성을 중심으로 해석합니다."
+      ],
+      "labels_public": false,
+      "difficulty_reason": "고급 난이도에 맞추어 여러 지표 간의 복합적인 조건 필터링과 그룹별 특성 비교를 수행하도록 설계되었습니다.",
+      "completion_conditions": [
+        "계정별 행동 요약 데이터를 활용해 전체 관측 대상 계정 수를 정확히 집계합니다.",
+        "행동 횟수 및 간격 변동성 조건에 부합하는 표본 규모를 산출합니다.",
+        "그룹별 행동 패턴의 차이점을 명확히 진단하고 서술합니다."
+      ]
+    },
+    "usage": [
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "c0052121-80e4-419d-a56d-0e34c56b5d0b",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "31a59b71-4850-4650-811d-0652fcbadc55",
+        "started_at": "2026-10-05T18:05:42.306523Z",
+        "duration_ms": 4755,
+        "finished_at": "2026-10-05T18:05:47.062471Z",
+        "occurred_at": "2026-10-05T18:05:42.306523Z",
+        "input_tokens": 4387,
+        "operation_id": "a7e0508f-08d8-49ef-9d5a-286f9ae09e41",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 1126,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-v1",
+        "schema_version": "event-v2",
+        "usage_missing_reason": null
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "f98059d8-aaa5-421a-ac3b-1da611f941e7",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "31a59b71-4850-4650-811d-0652fcbadc55",
+        "started_at": "2026-10-05T18:05:47.110545Z",
+        "duration_ms": 5966,
+        "finished_at": "2026-10-05T18:05:53.077018Z",
+        "occurred_at": "2026-10-05T18:05:47.110545Z",
+        "input_tokens": 2232,
+        "operation_id": "36954ac5-9d3b-4c1a-9d55-9e3a2322cec8",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 16,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-alignment-v1",
+        "schema_version": "event-v2",
+        "usage_missing_reason": null
+      }
+    ],
+    "attempt": {
+      "title": "이용자 활동 패턴 및 변동성 심층 진단 과제",
+      "domain": "게임 이용자 활동 패턴 및 변동성 진단",
+      "ai_calls": 2,
+      "plan_hash": "f15909ce58059fcffc46702d31205756457b5de8f5a84bd4060a19cec918e1c5",
+      "task_kind": "investigation",
+      "attempt_id": "1a71d54a-f7e5-44f4-a546-c90322996b1c",
+      "dataset_id": "generated-fa224dcccf202499bf281403-data",
+      "difficulty": "advanced",
+      "package_id": "generated-fa224dcccf202499bf281403",
+      "problem_id": "problem-001",
+      "request_id": "31a59b71-4850-4650-811d-0652fcbadc55",
+      "started_at": "2026-10-05T18:05:53.221972Z",
+      "release_version": "v1",
+      "contract_version": "request-v2",
+      "explanation_viewed": true,
+      "intentional_repeat": false,
+      "semantic_signature": {
+        "goal": "계정별 행동 요약 데이터를 활용하여 특정 조건을 만족하는 이용자 표본의 규모를 파악하고 그룹 간 차이를 진단합니다.",
+        "domain": "게임 이용자 활동 패턴 및 변동성 진단",
+        "format": "investigation",
+        "ambiguity": "advanced",
+        "situation": "f7fad49bfc2c",
+        "evaluation": "adaptive",
+        "required_judgment": "investigation"
+      },
+      "evaluation_rules_version": "request-review-v2",
+      "draft": {
+        "revision": 0,
+        "sections": {}
+      },
+      "saved_executions": [],
+      "reports": [],
+      "reviews": [],
+      "hints": [
+        {
+          "level": "sql_structure",
+          "content": "공개 테이블의 컬럼으로 가설을 검증하세요.",
+          "hint_id": "ffa6c4a0-86b3-4667-95be-7205db05fcd1",
+          "attempt_id": "1a71d54a-f7e5-44f4-a546-c90322996b1c",
+          "created_at": "2026-10-05T18:06:25.341753Z"
+        },
+        {
+          "level": "metric",
+          "content": "비교 기준과 정상 행동에서도 나타날 가능성을 정리하세요.",
+          "hint_id": "6ddb203d-5ebf-431c-ad19-4134dd45cc62",
+          "attempt_id": "1a71d54a-f7e5-44f4-a546-c90322996b1c",
+          "created_at": "2026-10-05T18:06:41.055366Z"
+        },
+        {
+          "level": "direction",
+          "content": "공개 목표와 데이터의 집계 단위를 확인하세요.",
+          "hint_id": "cf3be8d0-5ad3-4d01-8aed-0966fbc12995",
+          "attempt_id": "1a71d54a-f7e5-44f4-a546-c90322996b1c",
+          "created_at": "2026-10-05T18:06:44.126210Z"
+        },
+        {
+          "level": "metric",
+          "content": "비교 기준과 정상 행동에서도 나타날 가능성을 정리하세요.",
+          "hint_id": "09f71659-1d14-4f19-b398-88199edaf7f3",
+          "attempt_id": "1a71d54a-f7e5-44f4-a546-c90322996b1c",
+          "created_at": "2026-10-05T18:06:46.715100Z"
+        },
+        {
+          "level": "metric",
+          "content": "비교 기준과 정상 행동에서도 나타날 가능성을 정리하세요.",
+          "hint_id": "7741bc04-cc1a-422e-9024-64b1f0ba0f49",
+          "attempt_id": "1a71d54a-f7e5-44f4-a546-c90322996b1c",
+          "created_at": "2026-10-05T18:06:47.757946Z"
+        },
+        {
+          "level": "metric",
+          "content": "비교 기준과 정상 행동에서도 나타날 가능성을 정리하세요.",
+          "hint_id": "d9f7da46-5fb8-4008-ae4a-5f0a5da2a3ff",
+          "attempt_id": "1a71d54a-f7e5-44f4-a546-c90322996b1c",
+          "created_at": "2026-10-05T18:06:48.199082Z"
+        },
+        {
+          "level": "metric",
+          "content": "비교 기준과 정상 행동에서도 나타날 가능성을 정리하세요.",
+          "hint_id": "ad071248-b0a2-47be-91ad-9a6c0a10ae64",
+          "attempt_id": "1a71d54a-f7e5-44f4-a546-c90322996b1c",
+          "created_at": "2026-10-05T18:06:48.459818Z"
+        },
+        {
+          "level": "metric",
+          "content": "비교 기준과 정상 행동에서도 나타날 가능성을 정리하세요.",
+          "hint_id": "c5f36d7b-1cf0-476f-b556-7045cd52ff4a",
+          "attempt_id": "1a71d54a-f7e5-44f4-a546-c90322996b1c",
+          "created_at": "2026-10-05T18:06:48.720571Z"
+        },
+        {
+          "level": "direction",
+          "content": "공개 목표와 데이터의 집계 단위를 확인하세요.",
+          "hint_id": "e3c0ebc4-b861-4887-8c61-3691e472f574",
+          "attempt_id": "1a71d54a-f7e5-44f4-a546-c90322996b1c",
+          "created_at": "2026-10-05T18:06:58.314798Z"
+        }
+      ],
+      "pilot_linked": false,
+      "problem": {
+        "goal": "계정별 행동 요약 데이터를 활용하여 특정 조건을 만족하는 이용자 표본의 규모를 파악하고 그룹 간 차이를 진단합니다.",
+        "title": "이용자 활동 패턴 및 변동성 심층 진단 과제",
+        "plan_id": "00d1c6e6-4f73-44ca-91b4-d8f10308566b",
+        "weights": {
+          "next_actions": 10,
+          "sql_accuracy": 20,
+          "interpretation": 20,
+          "analysis_approach": 25,
+          "problem_definition": 25
+        },
+        "revision": 0,
+        "timezone": "Asia/Seoul",
+        "ambiguity": {
+          "goal": "public",
+          "cause": "learner"
+        },
+        "task_kind": "investigation",
+        "dataset_id": "generated-fa224dcccf202499bf281403-data",
+        "difficulty": "advanced",
+        "package_id": "generated-fa224dcccf202499bf281403",
+        "problem_id": "problem-001",
+        "description": "본 과제에서는 게임 내 계정별 행동 횟수, 평균 간격, 변동성 등의 요약 데이터를 바탕으로 이용자들의 활동 성향을 진단합니다. 제공된 데이터를 활용하여 특정 조건을 충족하는 이용자 표본의 규모를 산정하고, 그룹 간 행동 특성의 차이를 분석하여 인사이트를 도출해 보세요.\n\n이 과제의 데이터는 요청에 맞춰 생성한 연습용 합성 데이터입니다.",
+        "plan_version": "adaptive-plan-v1",
+        "capability_id": "adaptive",
+        "allowed_limits": [
+          "제공된 요약 데이터 범위 내에서만 분석을 수행합니다.",
+          "현실의 복잡한 원인을 단정 짓지 않고 관측된 수치적 경향성을 중심으로 해석합니다."
+        ],
+        "problem_type_id": "adaptive",
+        "problem_version": "v1",
+        "release_version": "v1",
+        "required_tables": [
+          "account_summary"
+        ],
+        "contract_version": "request-v2",
+        "data_preparation": "요청별 합성 데이터 · 자동 검증",
+        "original_request": "실제 게임 업계 실무에서 발생하는 문제를 분석하고 싶어",
+        "selection_reason": "요청한 분석 대상과 난이도에 맞춰 공개 자료로 분석하는 연습 과제입니다.",
+        "difficulty_reason": "고급 난이도에 맞추어 여러 지표 간의 복합적인 조건 필터링과 그룹별 특성 비교를 수행하도록 설계되었습니다.",
+        "evaluation_status": "시험 과제 · 자동 검증 통과 · 사람 품질 검토 전",
+        "generator_version": "adaptive-recipe-v1",
+        "difficulty_version": "ambiguity-v2",
+        "evaluation_version": "request-review-v2",
+        "required_judgments": [
+          "계정별 행동 요약 데이터를 활용해 전체 관측 대상 계정 수를 정확히 집계합니다.",
+          "행동 횟수 및 간격 변동성 조건에 부합하는 표본 규모를 산출합니다.",
+          "그룹별 행동 패턴의 차이점을 명확히 진단하고 서술합니다."
+        ],
+        "semantic_signature": {
+          "goal": "계정별 행동 요약 데이터를 활용하여 특정 조건을 만족하는 이용자 표본의 규모를 파악하고 그룹 간 차이를 진단합니다.",
+          "domain": "게임 이용자 활동 패턴 및 변동성 진단",
+          "format": "investigation",
+          "ambiguity": "advanced",
+          "situation": "f7fad49bfc2c",
+          "evaluation": "adaptive",
+          "required_judgment": "investigation"
+        },
+        "validation_version": "adaptive-validation-v1",
+        "data_complete_before": "2026-10-05T18:05:53.115316+00:00",
+        "completion_conditions": [
+          "계정별 행동 요약 데이터를 활용해 전체 관측 대상 계정 수를 정확히 집계합니다.",
+          "행동 횟수 및 간격 변동성 조건에 부합하는 표본 규모를 산출합니다.",
+          "그룹별 행동 패턴의 차이점을 명확히 진단하고 서술합니다."
+        ],
+        "disclosed_on_question": [],
+        "evaluation_rules_version": "request-review-v2",
+        "schema": {
+          "account_summary": {
+            "grain": "계정별 1행 활동 요약",
+            "columns": [
+              {
+                "name": "account_id",
+                "type": "bigint",
+                "description": "계정 고유 식별자"
+              },
+              {
+                "name": "activity_count",
+                "type": "bigint",
+                "description": "관측 기간 동안의 총 행동 횟수"
+              },
+              {
+                "name": "avg_interval",
+                "type": "double precision",
+                "description": "행동 간 평균 시간 간격(초)"
+              },
+              {
+                "name": "interval_cv",
+                "type": "double precision",
+                "description": "행동 간격의 변동계수(CV)"
+              }
+            ]
+          }
+        }
+      },
+      "messages": []
+    },
+    "private_reference": {
+      "package_id": "generated-fa224dcccf202499bf281403",
+      "release_version": "v1",
+      "dataset_id": "generated-fa224dcccf202499bf281403-data",
+      "problem_id": "problem-001",
+      "evaluation_version": "v1",
+      "sql": "SELECT (SELECT COUNT(*) FROM \"account_summary\") AS \"total_accounts\", (SELECT COUNT(*) FROM \"account_summary\" WHERE \"activity_count\" >= 200) AS \"high_activity_count\"",
+      "expected": {
+        "total_accounts": 200,
+        "high_activity_count": 80
+      },
+      "weights": {
+        "problem_definition": 25,
+        "analysis_approach": 25,
+        "sql_accuracy": 20,
+        "interpretation": 20,
+        "next_actions": 10
+      },
+      "rubric": "제공된 계정별 요약 데이터를 정확히 조회하여 전체 계정 수와 조건별 표본 규모를 바르게 도출했는지 평가합니다. 그룹 간 변동성 및 행동 횟수 차이에 대한 논리적 해석이 포함되었는지 확인합니다. 검증하지 못한 타당한 대안을 틀렸다고 단정하지 말고, 비공개 생성 그룹을 맞히도록 요구하지 마세요.",
+      "question_facts": {},
+      "explanation": "제공된 계정별 요약 데이터를 정확히 조회하여 전체 계정 수와 조건별 표본 규모를 바르게 도출했는지 평가합니다. 그룹 간 변동성 및 행동 횟수 차이에 대한 논리적 해석이 포함되었는지 확인합니다.",
+      "hints": {
+        "direction": "공개 목표와 데이터의 집계 단위를 확인하세요.",
+        "metric": "비교 기준과 정상 행동에서도 나타날 가능성을 정리하세요.",
+        "sql_structure": "공개 테이블의 컬럼으로 가설을 검증하세요."
+      },
+      "frozen_evaluation": {
+        "expected": {
+          "total_accounts": 200,
+          "high_activity_count": 80
+        },
+        "rubric": "제공된 계정별 요약 데이터를 정확히 조회하여 전체 계정 수와 조건별 표본 규모를 바르게 도출했는지 평가합니다. 그룹 간 변동성 및 행동 횟수 차이에 대한 논리적 해석이 포함되었는지 확인합니다. 검증하지 못한 타당한 대안을 틀렸다고 단정하지 말고, 비공개 생성 그룹을 맞히도록 요구하지 마세요.",
+        "weights": {
+          "problem_definition": 25,
+          "analysis_approach": 25,
+          "sql_accuracy": 20,
+          "interpretation": 20,
+          "next_actions": 10
+        },
+        "completion_conditions": [
+          "계정별 행동 요약 데이터를 활용해 전체 관측 대상 계정 수를 정확히 집계합니다.",
+          "행동 횟수 및 간격 변동성 조건에 부합하는 표본 규모를 산출합니다.",
+          "그룹별 행동 패턴의 차이점을 명확히 진단하고 서술합니다."
+        ],
+        "rules_version": "evaluation-v2",
+        "contract_hash": "40d14e1caa71b942b7951e7cb358dff622060264408818cda1c26ddd5182be32"
+      }
+    }
+  },
+  {
+    "request": {
+      "error": null,
+      "states": [
+        {
+          "at": "2026-10-05T19:01:50.060497Z",
+          "status": "accepted"
+        },
+        {
+          "at": "2026-10-05T19:01:50.157190Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T19:01:57.922805Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T19:02:10.335829Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T19:02:21.977721Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T19:02:28.243907Z",
+          "status": "preparing_data"
+        },
+        {
+          "at": "2026-10-05T19:02:28.347186Z",
+          "status": "validating"
+        },
+        {
+          "at": "2026-10-05T19:02:28.415365Z",
+          "status": "ready"
+        }
+      ],
+      "status": "ready",
+      "message": "실제 게임 업계 실무에서 발생하는 문제를 분석하고 싶어",
+      "revision": 0,
+      "questions": [],
+      "attempt_id": "eedda9c9-bb79-4319-9278-f522e32fb265",
+      "created_at": "2026-10-05T19:01:50.060485Z",
+      "error_code": null,
+      "request_id": "345c9f93-da0e-4a46-a250-502aca4f5008",
+      "duration_ms": 38344,
+      "finished_at": "2026-10-05T19:02:28.415346Z",
+      "operation_id": "26ae73d0-06fc-4923-a059-5cec4aea430a",
+      "retry_allowed": false,
+      "planning_calls": 4,
+      "contract_version": "request-v2",
+      "generation_attempts": 1,
+      "recommendation_change": null
+    },
+    "schema_reviews": [
+      {
+        "issues": [
+          {
+            "type": "value_error",
+            "message": "Value error, investigation requires a nonempty diagnostic subset",
+            "location": []
+          }
+        ],
+        "planning_calls": 1
+      },
+      {
+        "issues": [
+          {
+            "type": "data_dependency",
+            "message": "task quality: retention/churn claims require a defined observable outcome and executable ratio metric; choose a supported current-content performance question instead",
+            "location": []
+          }
+        ],
+        "planning_calls": 2
+      }
+    ],
+    "alignment_reviews": [
+      {
+        "passed": true
+      }
+    ],
+    "recipe": {
+      "goal": "신규 콘텐츠 업데이트 이후 보스 공략 성공률과 소요 시간을 숙련도별로 비교하고, 공략 실패 및 지연 현상을 진단하여 밸런스 조정 의사결정을 도출합니다.",
+      "title": "신규 콘텐츠 보스 공략 성과 및 플레이 패턴 비교 분석",
+      "topic": "모바일 게임 신규 콘텐츠 보스 공략 성공률 및 플레이 시간 분석",
+      "reason": "이탈/잔류 대신 보스 공략 성공률 및 소요 시간 비교라는 지원되는 현재 콘텐츠 성과 분석 문제로 수정하여 데이터 품질 검증을 통과하도록 설계했습니다.",
+      "rubric": "공개된 질문과 완료 조건에 따라 숙련도별 비교, 불확실성 진단, 의사결정의 타당성을 종합적으로 평가합니다.",
+      "status": "ready",
+      "tables": [
+        {
+          "name": "profiles",
+          "grain": "계정별 1행",
+          "groups": [
+            {
+              "name": "sample",
+              "count": 200,
+              "overrides": {}
+            }
+          ],
+          "columns": [
+            {
+              "name": "id",
+              "generator": {
+                "end": null,
+                "kind": "id",
+                "group": null,
+                "start": null,
+                "table": null,
+                "bucket": null,
+                "values": [],
+                "maximum": null,
+                "minimum": null,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": null,
+                "entity_column": null,
+                "source_column": null,
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "계정 고유 식별자"
+            },
+            {
+              "name": "skill_band",
+              "generator": {
+                "end": null,
+                "kind": "category",
+                "group": null,
+                "start": null,
+                "table": null,
+                "bucket": null,
+                "values": [
+                  "beginner",
+                  "intermediate",
+                  "advanced"
+                ],
+                "maximum": null,
+                "minimum": null,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": null,
+                "entity_column": null,
+                "source_column": null,
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "이용자 숙련도 구간"
+            },
+            {
+              "name": "level",
+              "generator": {
+                "end": null,
+                "kind": "integer",
+                "group": null,
+                "start": null,
+                "table": null,
+                "bucket": null,
+                "values": [],
+                "maximum": 50.0,
+                "minimum": 1.0,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": null,
+                "entity_column": null,
+                "source_column": null,
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "계정 레벨"
+            }
+          ],
+          "group_by": [],
+          "unique_keys": [
+            [
+              "id"
+            ]
+          ],
+          "derived_from": null
+        },
+        {
+          "name": "attempts",
+          "grain": "보스 도전 시도별 1행",
+          "groups": [
+            {
+              "name": "sample",
+              "count": 200,
+              "overrides": {}
+            }
+          ],
+          "columns": [
+            {
+              "name": "id",
+              "generator": {
+                "end": null,
+                "kind": "id",
+                "group": null,
+                "start": null,
+                "table": null,
+                "bucket": null,
+                "values": [],
+                "maximum": null,
+                "minimum": null,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": null,
+                "entity_column": null,
+                "source_column": null,
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "도전 기록 고유 식별자"
+            },
+            {
+              "name": "account_id",
+              "generator": {
+                "end": null,
+                "kind": "foreign_key",
+                "group": "sample",
+                "start": null,
+                "table": "profiles",
+                "bucket": null,
+                "values": [],
+                "maximum": null,
+                "minimum": null,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": null,
+                "entity_column": null,
+                "source_column": null,
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "도전한 계정 식별자"
+            },
+            {
+              "name": "boss_type",
+              "generator": {
+                "end": null,
+                "kind": "category",
+                "group": null,
+                "start": null,
+                "table": null,
+                "bucket": null,
+                "values": [
+                  "boss_a",
+                  "boss_b"
+                ],
+                "maximum": null,
+                "minimum": null,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": null,
+                "entity_column": null,
+                "source_column": null,
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "상대 보스 종류"
+            },
+            {
+              "name": "success",
+              "generator": {
+                "end": null,
+                "kind": "integer",
+                "group": null,
+                "start": null,
+                "table": null,
+                "bucket": null,
+                "values": [],
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": null,
+                "entity_column": null,
+                "source_column": null,
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "클리어 성공 여부 (1: 성공, 0: 실패)"
+            },
+            {
+              "name": "duration_seconds",
+              "generator": {
+                "end": null,
+                "kind": "integer",
+                "group": null,
+                "start": null,
+                "table": null,
+                "bucket": null,
+                "values": [],
+                "maximum": 600.0,
+                "minimum": 30.0,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": null,
+                "entity_column": null,
+                "source_column": null,
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "전투 소요 시간(초)"
+            },
+            {
+              "name": "event_at",
+              "generator": {
+                "end": "2026-09-07T23:59:59+09:00",
+                "kind": "timestamp",
+                "group": null,
+                "start": "2026-09-01T00:00:00+09:00",
+                "table": null,
+                "bucket": null,
+                "values": [],
+                "maximum": null,
+                "minimum": null,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": null,
+                "entity_column": null,
+                "source_column": null,
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "도전 시각"
+            }
+          ],
+          "group_by": [],
+          "unique_keys": [
+            [
+              "id"
+            ]
+          ],
+          "derived_from": null
+        }
+      ],
+      "metrics": [
+        {
+          "name": "total_attempts",
+          "joins": [],
+          "table": "attempts",
+          "column": null,
+          "maximum": null,
+          "minimum": null,
+          "purpose": "validation",
+          "group_by": [],
+          "operation": "count",
+          "conditions": [],
+          "denominator_conditions": []
+        },
+        {
+          "name": "failure_count_diagnostic",
+          "joins": [],
+          "table": "attempts",
+          "column": null,
+          "maximum": null,
+          "minimum": 1.0,
+          "purpose": "validation",
+          "group_by": [],
+          "operation": "count",
+          "conditions": [
+            {
+              "value": 0,
+              "column": "success",
+              "operator": "eq"
+            }
+          ],
+          "denominator_conditions": []
+        },
+        {
+          "name": "success_rate",
+          "joins": [
+            {
+              "table": "profiles",
+              "source_column": "account_id"
+            }
+          ],
+          "table": "attempts",
+          "column": null,
+          "maximum": null,
+          "minimum": null,
+          "purpose": "analysis",
+          "group_by": [
+            "profiles.skill_band",
+            "attempts.boss_type"
+          ],
+          "operation": "ratio",
+          "conditions": [
+            {
+              "value": 1,
+              "column": "success",
+              "operator": "eq"
+            }
+          ],
+          "denominator_conditions": []
+        },
+        {
+          "name": "avg_duration",
+          "joins": [
+            {
+              "table": "profiles",
+              "source_column": "account_id"
+            }
+          ],
+          "table": "attempts",
+          "column": "duration_seconds",
+          "maximum": null,
+          "minimum": null,
+          "purpose": "analysis",
+          "group_by": [
+            "profiles.skill_band"
+          ],
+          "operation": "avg",
+          "conditions": [],
+          "denominator_conditions": []
+        }
+      ],
+      "questions": [],
+      "task_kind": "investigation",
+      "difficulty": "intermediate",
+      "description": "본 과제에서는 신규 콘텐츠 도입 이후 이용자들의 보스 공략 성공률과 소요 시간을 프로필 숙련도별로 비교하고, 공략 실패 및 지연 현상을 진단합니다. 학습자는 profiles와 attempts 테이블을 조인하여 그룹별 성과 차이를 분석하고 운영 개선안을 도출해야 합니다.",
+      "limitations": [
+        "제공된 가상 합성 데이터 범위 내에서만 분석을 수행합니다.",
+        "비공개 내부 라벨이나 외부 데이터는 가정하지 않습니다."
+      ],
+      "business_case": {
+        "decision": "분석된 성공률과 소요 시간 편차를 바탕으로 보스 난이도 밸런스 조정 및 가이드 제공 여부를 결정합니다.",
+        "background": "라이브 게임 운영팀은 신규 콘텐츠 추가 이후 이용자들의 보스 공략 성공률과 소요 시간을 진단하여 난이도 적정성을 평가하고자 합니다.",
+        "provenance": "synthetic",
+        "requirements": [
+          {
+            "evidence": [
+              {
+                "table": "attempts",
+                "columns": [
+                  "success",
+                  "boss_type"
+                ]
+              },
+              {
+                "table": "profiles",
+                "columns": [
+                  "skill_band"
+                ]
+              }
+            ],
+            "question": "숙련도 구간(skill_band)과 보스 종류(boss_type)별 공략 성공률(success_rate)은 어떻게 비교되는가?",
+            "competency": "comparison",
+            "completion": "숙련도 및 보스별 성공률 차이를 비교하고 주요 격차 구간을 설명합니다.",
+            "metric_names": [
+              "success_rate"
+            ]
+          },
+          {
+            "evidence": [
+              {
+                "table": "attempts",
+                "columns": [
+                  "duration_seconds",
+                  "success"
+                ]
+              },
+              {
+                "table": "profiles",
+                "columns": [
+                  "skill_band"
+                ]
+              }
+            ],
+            "question": "평균 소요 시간(avg_duration)과 실패 건수 진단 지표에서 관측되는 변동성과 불확실성 요인은 무엇인가?",
+            "competency": "uncertainty",
+            "completion": "데이터 상의 변동성과 불확실성이 의사결정에 미치는 영향을 진단합니다.",
+            "metric_names": [
+              "avg_duration",
+              "failure_count_diagnostic"
+            ]
+          },
+          {
+            "evidence": [
+              {
+                "table": "attempts",
+                "columns": [
+                  "boss_type",
+                  "success",
+                  "duration_seconds"
+                ]
+              }
+            ],
+            "question": "분석된 성공률과 소요 시간을 바탕으로 어떠한 운영 개선 의사결정을 내려야 하는가?",
+            "competency": "decision",
+            "completion": "콘텐츠 밸런스 조정 및 가이드 개선에 대한 구체적인 액션 플랜을 도출합니다.",
+            "metric_names": [
+              "success_rate",
+              "avg_duration"
+            ]
+          }
+        ],
+        "observed_problem": "특정 숙련도 구간에서 공략 실패 건수와 전투 소요 시간이 비정상적으로 높게 나타나는 현상이 관측되어 원인 조사가 필요합니다.",
+        "agent_assumptions": [
+          "모든 도전 기록은 누락 없이 기록되었습니다.",
+          "숙련도 구간은 계정 프로필에 고정되어 있습니다."
+        ],
+        "observation_period": "2026-09-01부터 2026-09-07까지 1주일간"
+      },
+      "labels_public": false,
+      "difficulty_reason": "중급 난이도에 요구되는 비교(comparison), 불확실성(uncertainty), 의사결정(decision) 역량을 평가하며, 조인을 동반한 그룹별 지표 분석과 실패 현상 진단을 포함합니다.",
+      "completion_conditions": [
+        "숙련도 및 보스별 공략 성공률 비교 결과 도출",
+        "소요 시간 및 실패 현상에 대한 불확실성 요인 진단",
+        "분석된 현상을 바탕으로 한 콘텐츠 난이도 조정 및 운영 개선 의사결정 제시"
+      ]
+    },
+    "usage": [
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "4ca2591e-23ea-44d8-9c8b-ab3e57c0b344",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "345c9f93-da0e-4a46-a250-502aca4f5008",
+        "started_at": "2026-10-05T19:01:50.172027Z",
+        "duration_ms": 7714,
+        "finished_at": "2026-10-05T19:01:57.887009Z",
+        "occurred_at": "2026-10-05T19:01:50.172027Z",
+        "input_tokens": 6414,
+        "operation_id": "77e72fdf-32e8-4036-b1f0-e8c8fb4a843c",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 2183,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "0b4d54cd-36fb-4145-81ed-122ddaea9768",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "345c9f93-da0e-4a46-a250-502aca4f5008",
+        "started_at": "2026-10-05T19:01:57.940145Z",
+        "duration_ms": 12361,
+        "finished_at": "2026-10-05T19:02:10.301329Z",
+        "occurred_at": "2026-10-05T19:01:57.940145Z",
+        "input_tokens": 8878,
+        "operation_id": "b78bab2f-7c26-416d-8f09-270d803312e0",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 2330,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-repair-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "2bf0af0c-b63b-4125-830a-770fadef1e01",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "345c9f93-da0e-4a46-a250-502aca4f5008",
+        "started_at": "2026-10-05T19:02:10.351153Z",
+        "duration_ms": 11585,
+        "finished_at": "2026-10-05T19:02:21.936695Z",
+        "occurred_at": "2026-10-05T19:02:10.351153Z",
+        "input_tokens": 11506,
+        "operation_id": "65d3a55f-21f1-4879-aa00-1ce1b5dc18b7",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 2314,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-repair-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "cd31414d-9943-4366-a4df-2c3906ccdb62",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "345c9f93-da0e-4a46-a250-502aca4f5008",
+        "started_at": "2026-10-05T19:02:21.993116Z",
+        "duration_ms": 6228,
+        "finished_at": "2026-10-05T19:02:28.221929Z",
+        "occurred_at": "2026-10-05T19:02:21.993116Z",
+        "input_tokens": 5108,
+        "operation_id": "d517092e-2d1e-483f-857f-619a8cf7b043",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 67,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-alignment-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      }
+    ],
+    "attempt": {
+      "title": "신규 콘텐츠 보스 공략 성과 및 플레이 패턴 비교 분석",
+      "domain": "모바일 게임 신규 콘텐츠 보스 공략 성공률 및 플레이 시간 분석",
+      "ai_calls": 4,
+      "plan_hash": "a75c4e447281213853f6a261a9d13ed6ddd495292e4750d7977797a701b4aa36",
+      "task_kind": "investigation",
+      "attempt_id": "eedda9c9-bb79-4319-9278-f522e32fb265",
+      "dataset_id": "generated-c7405b96ae3549a4fabdbce1-data",
+      "difficulty": "intermediate",
+      "package_id": "generated-c7405b96ae3549a4fabdbce1",
+      "problem_id": "problem-001",
+      "request_id": "345c9f93-da0e-4a46-a250-502aca4f5008",
+      "started_at": "2026-10-05T19:02:28.413195Z",
+      "release_version": "v1",
+      "contract_version": "request-v2",
+      "explanation_viewed": false,
+      "intentional_repeat": false,
+      "semantic_signature": {
+        "goal": "신규 콘텐츠 업데이트 이후 보스 공략 성공률과 소요 시간을 숙련도별로 비교하고, 공략 실패 및 지연 현상을 진단하여 밸런스 조정 의사결정을 도출합니다.",
+        "domain": "모바일 게임 신규 콘텐츠 보스 공략 성공률 및 플레이 시간 분석",
+        "format": "investigation",
+        "ambiguity": "intermediate",
+        "situation": "c65665f97b90",
+        "structure": "avg:True:1|ratio:True:2",
+        "difficulty": "intermediate",
+        "evaluation": "adaptive",
+        "quality_version": "task-quality-v1",
+        "required_judgment": "investigation"
+      },
+      "evaluation_rules_version": "request-review-v3",
+      "draft": {
+        "revision": 2,
+        "sections": {
+          "hypothesis": "",
+          "limitations": "",
+          "report_text": "보스 B의 초급 숙련도 그룹은 33회 도전 중 성공률이 약 36.4%였습니다. 반복 도전이 같은 계정에서 발생할 수 있으므로 독립 표본으로 단정하지 않습니다.",
+          "next_actions": "",
+          "interpretation": "",
+          "report_evidence": "{\"0\":[\"66757006-17c9-48c4-bbf6-2dd0d8f05869\"]}",
+          "problem_definition": ""
+        }
+      },
+      "saved_executions": [
+        {
+          "sql": "SELECT p.skill_band, a.boss_type, COUNT(*) AS attempts, AVG(a.success::numeric) AS success_rate, AVG(a.duration_seconds) AS avg_duration FROM attempts a JOIN profiles p ON p.id = a.account_id GROUP BY p.skill_band, a.boss_type ORDER BY p.skill_band, a.boss_type;",
+          "result": {
+            "rows": [
+              [
+                "advanced",
+                "boss_a",
+                23,
+                "0.47826086956521739130",
+                "285.9130434782608696"
+              ],
+              [
+                "advanced",
+                "boss_b",
+                36,
+                "0.52777777777777777778",
+                "328.5555555555555556"
+              ],
+              [
+                "beginner",
+                "boss_a",
+                39,
+                "0.48717948717948717949",
+                "332.8717948717948718"
+              ],
+              [
+                "beginner",
+                "boss_b",
+                33,
+                "0.36363636363636363636",
+                "283.8484848484848485"
+              ],
+              [
+                "intermediate",
+                "boss_a",
+                31,
+                "0.54838709677419354839",
+                "360.2258064516129032"
+              ],
+              [
+                "intermediate",
+                "boss_b",
+                38,
+                "0.52631578947368421053",
+                "372.5789473684210526"
+              ]
+            ],
+            "error": null,
+            "status": "success",
+            "columns": [
+              {
+                "name": "skill_band",
+                "type": "text"
+              },
+              {
+                "name": "boss_type",
+                "type": "text"
+              },
+              {
+                "name": "attempts",
+                "type": "int8"
+              },
+              {
+                "name": "success_rate",
+                "type": "numeric"
+              },
+              {
+                "name": "avg_duration",
+                "type": "numeric"
+              }
+            ],
+            "truncated": false,
+            "duration_ms": 8,
+            "executed_at": "2026-10-05T19:02:45.590347Z",
+            "execution_id": "e17e0d0b-04d4-46eb-a24a-6e26729a2783",
+            "result_complete": true,
+            "total_row_count": 6,
+            "preview_row_count": 6,
+            "expires_in_seconds": 600
+          },
+          "attempt_id": "eedda9c9-bb79-4319-9278-f522e32fb265",
+          "created_at": "2026-10-05T19:02:50.654589Z",
+          "dataset_id": "generated-c7405b96ae3549a4fabdbce1-data",
+          "package_id": "generated-c7405b96ae3549a4fabdbce1",
+          "problem_id": "problem-001",
+          "release_version": "v1",
+          "saved_execution_id": "66757006-17c9-48c4-bbf6-2dd0d8f05869"
+        }
+      ],
+      "reports": [],
+      "reviews": [],
+      "hints": [],
+      "pilot_linked": false,
+      "problem": {
+        "goal": "신규 콘텐츠 업데이트 이후 보스 공략 성공률과 소요 시간을 숙련도별로 비교하고, 공략 실패 및 지연 현상을 진단하여 밸런스 조정 의사결정을 도출합니다.",
+        "title": "신규 콘텐츠 보스 공략 성과 및 플레이 패턴 비교 분석",
+        "plan_id": "97358a1b-34df-4823-adfd-716ebf00935c",
+        "weights": {
+          "next_actions": 10,
+          "sql_accuracy": 20,
+          "interpretation": 20,
+          "analysis_approach": 25,
+          "problem_definition": 25
+        },
+        "revision": 0,
+        "timezone": "Asia/Seoul",
+        "ambiguity": {
+          "goal": "public",
+          "cause": "learner"
+        },
+        "task_kind": "investigation",
+        "dataset_id": "generated-c7405b96ae3549a4fabdbce1-data",
+        "difficulty": "intermediate",
+        "package_id": "generated-c7405b96ae3549a4fabdbce1",
+        "problem_id": "problem-001",
+        "description": "본 과제에서는 신규 콘텐츠 도입 이후 이용자들의 보스 공략 성공률과 소요 시간을 프로필 숙련도별로 비교하고, 공략 실패 및 지연 현상을 진단합니다. 학습자는 profiles와 attempts 테이블을 조인하여 그룹별 성과 차이를 분석하고 운영 개선안을 도출해야 합니다.\n\n업무 배경: 라이브 게임 운영팀은 신규 콘텐츠 추가 이후 이용자들의 보스 공략 성공률과 소요 시간을 진단하여 난이도 적정성을 평가하고자 합니다.\n\n관측된 문제: 특정 숙련도 구간에서 공략 실패 건수와 전투 소요 시간이 비정상적으로 높게 나타나는 현상이 관측되어 원인 조사가 필요합니다.\n\n관측 기간: 2026-09-01부터 2026-09-07까지 1주일간\n\n판단할 업무 결정: 분석된 성공률과 소요 시간 편차를 바탕으로 보스 난이도 밸런스 조정 및 가이드 제공 여부를 결정합니다.\n\n분석 과제:\n- 숙련도 구간(skill_band)과 보스 종류(boss_type)별 공략 성공률(success_rate)은 어떻게 비교되는가?\n- 평균 소요 시간(avg_duration)과 실패 건수 진단 지표에서 관측되는 변동성과 불확실성 요인은 무엇인가?\n- 분석된 성공률과 소요 시간을 바탕으로 어떠한 운영 개선 의사결정을 내려야 하는가?\n\n에이전트가 설정한 연습 조건:\n- 모든 도전 기록은 누락 없이 기록되었습니다.\n- 숙련도 구간은 계정 프로필에 고정되어 있습니다.\n\n실제 회사 사례를 인용한 것이 아닌 가상 업무 상황이며, 데이터는 연습용 합성 데이터입니다.\n\n이 과제의 데이터는 요청에 맞춰 생성한 연습용 합성 데이터입니다.",
+        "plan_version": "adaptive-plan-v1",
+        "business_case": {
+          "decision": "분석된 성공률과 소요 시간 편차를 바탕으로 보스 난이도 밸런스 조정 및 가이드 제공 여부를 결정합니다.",
+          "background": "라이브 게임 운영팀은 신규 콘텐츠 추가 이후 이용자들의 보스 공략 성공률과 소요 시간을 진단하여 난이도 적정성을 평가하고자 합니다.",
+          "provenance": "synthetic",
+          "requirements": [
+            {
+              "evidence": [
+                {
+                  "table": "attempts",
+                  "columns": [
+                    "success",
+                    "boss_type"
+                  ]
+                },
+                {
+                  "table": "profiles",
+                  "columns": [
+                    "skill_band"
+                  ]
+                }
+              ],
+              "question": "숙련도 구간(skill_band)과 보스 종류(boss_type)별 공략 성공률(success_rate)은 어떻게 비교되는가?",
+              "competency": "comparison",
+              "completion": "숙련도 및 보스별 성공률 차이를 비교하고 주요 격차 구간을 설명합니다.",
+              "metric_names": [
+                "success_rate"
+              ]
+            },
+            {
+              "evidence": [
+                {
+                  "table": "attempts",
+                  "columns": [
+                    "duration_seconds",
+                    "success"
+                  ]
+                },
+                {
+                  "table": "profiles",
+                  "columns": [
+                    "skill_band"
+                  ]
+                }
+              ],
+              "question": "평균 소요 시간(avg_duration)과 실패 건수 진단 지표에서 관측되는 변동성과 불확실성 요인은 무엇인가?",
+              "competency": "uncertainty",
+              "completion": "데이터 상의 변동성과 불확실성이 의사결정에 미치는 영향을 진단합니다.",
+              "metric_names": [
+                "avg_duration",
+                "failure_count_diagnostic"
+              ]
+            },
+            {
+              "evidence": [
+                {
+                  "table": "attempts",
+                  "columns": [
+                    "boss_type",
+                    "success",
+                    "duration_seconds"
+                  ]
+                }
+              ],
+              "question": "분석된 성공률과 소요 시간을 바탕으로 어떠한 운영 개선 의사결정을 내려야 하는가?",
+              "competency": "decision",
+              "completion": "콘텐츠 밸런스 조정 및 가이드 개선에 대한 구체적인 액션 플랜을 도출합니다.",
+              "metric_names": [
+                "success_rate",
+                "avg_duration"
+              ]
+            }
+          ],
+          "observed_problem": "특정 숙련도 구간에서 공략 실패 건수와 전투 소요 시간이 비정상적으로 높게 나타나는 현상이 관측되어 원인 조사가 필요합니다.",
+          "agent_assumptions": [
+            "모든 도전 기록은 누락 없이 기록되었습니다.",
+            "숙련도 구간은 계정 프로필에 고정되어 있습니다."
+          ],
+          "observation_period": "2026-09-01부터 2026-09-07까지 1주일간"
+        },
+        "capability_id": "adaptive",
+        "allowed_limits": [
+          "제공된 가상 합성 데이터 범위 내에서만 분석을 수행합니다.",
+          "비공개 내부 라벨이나 외부 데이터는 가정하지 않습니다."
+        ],
+        "problem_type_id": "adaptive",
+        "problem_version": "v1",
+        "quality_version": "task-quality-v1",
+        "release_version": "v1",
+        "required_tables": [
+          "profiles",
+          "attempts"
+        ],
+        "contract_version": "request-v2",
+        "data_preparation": "요청별 합성 데이터 · 자동 검증",
+        "original_request": "실제 게임 업계 실무에서 발생하는 문제를 분석하고 싶어",
+        "selection_reason": "요청한 분석 대상과 난이도에 맞춰 공개 자료로 분석하는 연습 과제입니다.",
+        "difficulty_reason": "중급 난이도에 요구되는 비교(comparison), 불확실성(uncertainty), 의사결정(decision) 역량을 평가하며, 조인을 동반한 그룹별 지표 분석과 실패 현상 진단을 포함합니다.",
+        "evaluation_rubric": {
+          "version": "evaluation-rubric-v3",
+          "criteria": [
+            {
+              "key": "problem_definition",
+              "conditions": [
+                {
+                  "id": "content",
+                  "kind": "content",
+                  "description": "현재 제출 어디에든 이 항목에서 평가할 판단·계획·방법·해석이 존재"
+                },
+                {
+                  "id": "target",
+                  "kind": "required",
+                  "description": "대상 정의. 과제 범위: 숙련도 및 보스별 성공률 차이를 비교하고 주요 격차 구간을 설명합니다. / 데이터 상의 변동성과 불확실성이 의사결정에 미치는 영향을 진단합니다. / 콘텐츠 밸런스 조정 및 가이드 개선에 대한 구체적인 액션 플랜을 도출합니다."
+                },
+                {
+                  "id": "period",
+                  "kind": "required",
+                  "description": "기간·시간 기준 정의. 과제 범위: 숙련도 및 보스별 성공률 차이를 비교하고 주요 격차 구간을 설명합니다. / 데이터 상의 변동성과 불확실성이 의사결정에 미치는 영향을 진단합니다. / 콘텐츠 밸런스 조정 및 가이드 개선에 대한 구체적인 액션 플랜을 도출합니다."
+                },
+                {
+                  "id": "unit",
+                  "kind": "required",
+                  "description": "집계 단위 정의. 과제 범위: 숙련도 및 보스별 성공률 차이를 비교하고 주요 격차 구간을 설명합니다. / 데이터 상의 변동성과 불확실성이 의사결정에 미치는 영향을 진단합니다. / 콘텐츠 밸런스 조정 및 가이드 개선에 대한 구체적인 액션 플랜을 도출합니다."
+                },
+                {
+                  "id": "metric",
+                  "kind": "required",
+                  "description": "지표·분모 정의. 과제 범위: 숙련도 및 보스별 성공률 차이를 비교하고 주요 격차 구간을 설명합니다. / 데이터 상의 변동성과 불확실성이 의사결정에 미치는 영향을 진단합니다. / 콘텐츠 밸런스 조정 및 가이드 개선에 대한 구체적인 액션 플랜을 도출합니다."
+                },
+                {
+                  "id": "comparison",
+                  "kind": "required",
+                  "description": "비교 집단·기준 정의"
+                },
+                {
+                  "id": "critical",
+                  "kind": "error",
+                  "description": "공개 조건과 반대인 대상·기간·집계 단위·분모를 올바르다고 정의"
+                },
+                {
+                  "id": "advanced",
+                  "kind": "advanced",
+                  "description": "관련 경계·제외·중복 처리 설명"
+                }
+              ]
+            },
+            {
+              "key": "analysis_approach",
+              "conditions": [
+                {
+                  "id": "content",
+                  "kind": "content",
+                  "description": "현재 제출 어디에든 이 항목에서 평가할 판단·계획·방법·해석이 존재"
+                },
+                {
+                  "id": "method",
+                  "kind": "required",
+                  "description": "목표에 대응하는 자료·관계·집계 방법. 과제 범위: 숙련도 및 보스별 성공률 차이를 비교하고 주요 격차 구간을 설명합니다. / 데이터 상의 변동성과 불확실성이 의사결정에 미치는 영향을 진단합니다. / 콘텐츠 밸런스 조정 및 가이드 개선에 대한 구체적인 액션 플랜을 도출합니다."
+                },
+                {
+                  "id": "validation",
+                  "kind": "required",
+                  "description": "판단 가능한 검증 순서. 과제 범위: 숙련도 및 보스별 성공률 차이를 비교하고 주요 격차 구간을 설명합니다. / 데이터 상의 변동성과 불확실성이 의사결정에 미치는 영향을 진단합니다. / 콘텐츠 밸런스 조정 및 가이드 개선에 대한 구체적인 액션 플랜을 도출합니다."
+                },
+                {
+                  "id": "task_comparison",
+                  "kind": "required",
+                  "description": "숙련도 및 보스별 성공률 차이를 비교하고 주요 격차 구간을 설명합니다."
+                },
+                {
+                  "id": "critical",
+                  "kind": "error",
+                  "description": "계획 자체의 중복 단위·잘못된 비교·가설에 맞춘 자료 변경"
+                },
+                {
+                  "id": "advanced",
+                  "kind": "advanced",
+                  "description": "목표와 관련된 대안·반증·민감도 확인 방법"
+                }
+              ]
+            },
+            {
+              "key": "sql_accuracy",
+              "conditions": [
+                {
+                  "id": "content",
+                  "kind": "content",
+                  "description": "현재 제출 어디에든 이 항목에서 평가할 판단·계획·방법·해석이 존재"
+                },
+                {
+                  "id": "execution",
+                  "kind": "required",
+                  "description": "선택 저장한 실제 실행. 과제 범위: 숙련도 및 보스별 성공률 차이를 비교하고 주요 격차 구간을 설명합니다. / 데이터 상의 변동성과 불확실성이 의사결정에 미치는 영향을 진단합니다. / 콘텐츠 밸런스 조정 및 가이드 개선에 대한 구체적인 액션 플랜을 도출합니다."
+                },
+                {
+                  "id": "calculation",
+                  "kind": "required",
+                  "description": "공개 목표에 맞는 완전한 계산. 과제 범위: 숙련도 및 보스별 성공률 차이를 비교하고 주요 격차 구간을 설명합니다. / 데이터 상의 변동성과 불확실성이 의사결정에 미치는 영향을 진단합니다. / 콘텐츠 밸런스 조정 및 가이드 개선에 대한 구체적인 액션 플랜을 도출합니다."
+                },
+                {
+                  "id": "critical",
+                  "kind": "error",
+                  "description": "실제 실행에서 확인된 계산·집계 단위·분모·기간 오류"
+                },
+                {
+                  "id": "advanced",
+                  "kind": "advanced",
+                  "description": "실제 저장 근거로 중복·경계·독립 검산 확인"
+                }
+              ]
+            },
+            {
+              "key": "interpretation",
+              "conditions": [
+                {
+                  "id": "content",
+                  "kind": "content",
+                  "description": "현재 제출 어디에든 이 항목에서 평가할 판단·계획·방법·해석이 존재"
+                },
+                {
+                  "id": "meaning",
+                  "kind": "required",
+                  "description": "결론과 실제 근거 또는 설계의 의미 연결. 과제 범위: 숙련도 및 보스별 성공률 차이를 비교하고 주요 격차 구간을 설명합니다. / 데이터 상의 변동성과 불확실성이 의사결정에 미치는 영향을 진단합니다. / 콘텐츠 밸런스 조정 및 가이드 개선에 대한 구체적인 액션 플랜을 도출합니다."
+                },
+                {
+                  "id": "scope",
+                  "kind": "required",
+                  "description": "공개 자료로 판단 가능한 결론 범위. 과제 범위: 숙련도 및 보스별 성공률 차이를 비교하고 주요 격차 구간을 설명합니다. / 데이터 상의 변동성과 불확실성이 의사결정에 미치는 영향을 진단합니다. / 콘텐츠 밸런스 조정 및 가이드 개선에 대한 구체적인 액션 플랜을 도출합니다."
+                },
+                {
+                  "id": "task_uncertainty",
+                  "kind": "required",
+                  "description": "데이터 상의 변동성과 불확실성이 의사결정에 미치는 영향을 진단합니다."
+                },
+                {
+                  "id": "critical",
+                  "kind": "error",
+                  "description": "근거와 반대인 최종 결론·미실행 결과 확인 주장·관측만으로 원인 증명 단정·미해결 최종 모순"
+                },
+                {
+                  "id": "advanced",
+                  "kind": "advanced",
+                  "description": "대안·불확실성·관측 한계를 결론 적용 범위에 연결"
+                }
+              ]
+            },
+            {
+              "key": "next_actions",
+              "conditions": [
+                {
+                  "id": "content",
+                  "kind": "content",
+                  "description": "현재 제출 어디에든 이 항목에서 평가할 판단·계획·방법·해석이 존재"
+                },
+                {
+                  "id": "action",
+                  "kind": "required",
+                  "description": "남은 질문 또는 완료 판단에 대응하는 구체적 행동. 과제 범위: 숙련도 및 보스별 성공률 차이를 비교하고 주요 격차 구간을 설명합니다. / 데이터 상의 변동성과 불확실성이 의사결정에 미치는 영향을 진단합니다. / 콘텐츠 밸런스 조정 및 가이드 개선에 대한 구체적인 액션 플랜을 도출합니다."
+                },
+                {
+                  "id": "purpose",
+                  "kind": "required",
+                  "description": "확인 방법과 목적 또는 정리·제출 판단. 과제 범위: 숙련도 및 보스별 성공률 차이를 비교하고 주요 격차 구간을 설명합니다. / 데이터 상의 변동성과 불확실성이 의사결정에 미치는 영향을 진단합니다. / 콘텐츠 밸런스 조정 및 가이드 개선에 대한 구체적인 액션 플랜을 도출합니다."
+                },
+                {
+                  "id": "task_decision",
+                  "kind": "required",
+                  "description": "콘텐츠 밸런스 조정 및 가이드 개선에 대한 구체적인 액션 플랜을 도출합니다."
+                },
+                {
+                  "id": "critical",
+                  "kind": "error",
+                  "description": "잘못된 전제로 효과 보장·검증 없이 인과 개입 확정·자료를 가설에 맞춰 변경"
+                },
+                {
+                  "id": "advanced",
+                  "kind": "advanced",
+                  "description": "우선순위와 확인 결과별 다음 결정·종료 조건"
+                }
+              ]
+            }
+          ],
+          "excluded_criteria": []
+        },
+        "evaluation_status": "시험 과제 · 자동 검증 통과 · 사람 품질 검토 전",
+        "generator_version": "adaptive-recipe-v1",
+        "difficulty_version": "ambiguity-v2",
+        "evaluation_version": "request-review-v3",
+        "required_judgments": [
+          "숙련도 및 보스별 성공률 차이를 비교하고 주요 격차 구간을 설명합니다.",
+          "데이터 상의 변동성과 불확실성이 의사결정에 미치는 영향을 진단합니다.",
+          "콘텐츠 밸런스 조정 및 가이드 개선에 대한 구체적인 액션 플랜을 도출합니다."
+        ],
+        "semantic_signature": {
+          "goal": "신규 콘텐츠 업데이트 이후 보스 공략 성공률과 소요 시간을 숙련도별로 비교하고, 공략 실패 및 지연 현상을 진단하여 밸런스 조정 의사결정을 도출합니다.",
+          "domain": "모바일 게임 신규 콘텐츠 보스 공략 성공률 및 플레이 시간 분석",
+          "format": "investigation",
+          "ambiguity": "intermediate",
+          "situation": "c65665f97b90",
+          "structure": "avg:True:1|ratio:True:2",
+          "difficulty": "intermediate",
+          "evaluation": "adaptive",
+          "quality_version": "task-quality-v1",
+          "required_judgment": "investigation"
+        },
+        "validation_version": "adaptive-validation-v1",
+        "data_complete_before": "2026-09-07T14:35:34+00:00",
+        "completion_conditions": [
+          "숙련도 및 보스별 성공률 차이를 비교하고 주요 격차 구간을 설명합니다.",
+          "데이터 상의 변동성과 불확실성이 의사결정에 미치는 영향을 진단합니다.",
+          "콘텐츠 밸런스 조정 및 가이드 개선에 대한 구체적인 액션 플랜을 도출합니다."
+        ],
+        "disclosed_on_question": [],
+        "evaluation_rules_version": "request-review-v3",
+        "schema": {
+          "profiles": {
+            "grain": "계정별 1행",
+            "columns": [
+              {
+                "name": "id",
+                "type": "bigint",
+                "description": "계정 고유 식별자"
+              },
+              {
+                "name": "skill_band",
+                "type": "text",
+                "description": "이용자 숙련도 구간"
+              },
+              {
+                "name": "level",
+                "type": "bigint",
+                "description": "계정 레벨"
+              }
+            ]
+          },
+          "attempts": {
+            "grain": "보스 도전 시도별 1행",
+            "columns": [
+              {
+                "name": "id",
+                "type": "bigint",
+                "description": "도전 기록 고유 식별자"
+              },
+              {
+                "name": "account_id",
+                "type": "bigint",
+                "description": "도전한 계정 식별자"
+              },
+              {
+                "name": "boss_type",
+                "type": "text",
+                "description": "상대 보스 종류"
+              },
+              {
+                "name": "success",
+                "type": "bigint",
+                "description": "클리어 성공 여부 (1: 성공, 0: 실패)"
+              },
+              {
+                "name": "duration_seconds",
+                "type": "bigint",
+                "description": "전투 소요 시간(초)"
+              },
+              {
+                "name": "event_at",
+                "type": "timestamptz",
+                "description": "도전 시각"
+              }
+            ]
+          }
+        }
+      },
+      "messages": []
+    },
+    "private_reference": {
+      "package_id": "generated-c7405b96ae3549a4fabdbce1",
+      "release_version": "v1",
+      "dataset_id": "generated-c7405b96ae3549a4fabdbce1-data",
+      "problem_id": "problem-001",
+      "evaluation_version": "v1",
+      "sql": "SELECT (SELECT COUNT(*) AS \"total_attempts\" FROM \"attempts\") AS \"total_attempts\", (SELECT COUNT(*) AS \"failure_count_diagnostic\" FROM \"attempts\" WHERE \"attempts\".\"success\" = 0) AS \"failure_count_diagnostic\"",
+      "expected": {
+        "total_attempts": 200,
+        "failure_count_diagnostic": 102
+      },
+      "weights": {
+        "problem_definition": 25,
+        "analysis_approach": 25,
+        "sql_accuracy": 20,
+        "interpretation": 20,
+        "next_actions": 10
+      },
+      "rubric": "공개된 질문과 완료 조건에 따라 숙련도별 비교, 불확실성 진단, 의사결정의 타당성을 종합적으로 평가합니다. 검증하지 못한 타당한 대안을 틀렸다고 단정하지 말고, 비공개 생성 그룹을 맞히도록 요구하지 마세요.",
+      "question_facts": {},
+      "explanation": "공개된 질문과 완료 조건에 따라 숙련도별 비교, 불확실성 진단, 의사결정의 타당성을 종합적으로 평가합니다.",
+      "hints": {
+        "direction": "공개 목표와 데이터의 집계 단위를 확인하세요.",
+        "metric": "비교 기준과 정상 행동에서도 나타날 가능성을 정리하세요.",
+        "sql_structure": "공개 테이블의 컬럼으로 가설을 검증하세요."
+      },
+      "verification_contracts": {
+        "success_rate": {
+          "comparison_expected": {
+            "columns": [
+              "profiles__skill_band",
+              "attempts__boss_type",
+              "success_rate"
+            ],
+            "rows": [
+              [
+                "intermediate",
+                "boss_a",
+                0.5483870967741935
+              ],
+              [
+                "intermediate",
+                "boss_b",
+                0.5263157894736842
+              ],
+              [
+                "beginner",
+                "boss_b",
+                0.36363636363636365
+              ],
+              [
+                "beginner",
+                "boss_a",
+                0.48717948717948717
+              ],
+              [
+                "advanced",
+                "boss_a",
+                0.4782608695652174
+              ],
+              [
+                "advanced",
+                "boss_b",
+                0.5277777777777778
+              ]
+            ]
+          }
+        },
+        "avg_duration": {
+          "comparison_expected": {
+            "columns": [
+              "profiles__skill_band",
+              "avg_duration"
+            ],
+            "rows": [
+              [
+                "intermediate",
+                367.0289855072464
+              ],
+              [
+                "beginner",
+                310.40277777777777
+              ],
+              [
+                "advanced",
+                311.93220338983053
+              ]
+            ]
+          }
+        }
+      },
+      "analytical_checks": {
+        "success_rate": {
+          "comparison_expected": {
+            "columns": [
+              "profiles__skill_band",
+              "attempts__boss_type",
+              "success_rate"
+            ],
+            "rows": [
+              [
+                "intermediate",
+                "boss_a",
+                0.5483870967741935
+              ],
+              [
+                "intermediate",
+                "boss_b",
+                0.5263157894736842
+              ],
+              [
+                "beginner",
+                "boss_b",
+                0.36363636363636365
+              ],
+              [
+                "beginner",
+                "boss_a",
+                0.48717948717948717
+              ],
+              [
+                "advanced",
+                "boss_a",
+                0.4782608695652174
+              ],
+              [
+                "advanced",
+                "boss_b",
+                0.5277777777777778
+              ]
+            ]
+          },
+          "sql": "SELECT \"profiles\".\"skill_band\" AS \"profiles__skill_band\", \"attempts\".\"boss_type\" AS \"attempts__boss_type\", COUNT(*) FILTER (WHERE \"attempts\".\"success\" = 1)::double precision / NULLIF(COUNT(*),0) AS \"success_rate\" FROM \"attempts\" JOIN \"profiles\" ON \"attempts\".\"account_id\" = \"profiles\".\"id\" GROUP BY \"profiles\".\"skill_band\", \"attempts\".\"boss_type\""
+        },
+        "avg_duration": {
+          "comparison_expected": {
+            "columns": [
+              "profiles__skill_band",
+              "avg_duration"
+            ],
+            "rows": [
+              [
+                "intermediate",
+                367.0289855072464
+              ],
+              [
+                "beginner",
+                310.40277777777777
+              ],
+              [
+                "advanced",
+                311.93220338983053
+              ]
+            ]
+          },
+          "sql": "SELECT \"profiles\".\"skill_band\" AS \"profiles__skill_band\", AVG(\"attempts\".\"duration_seconds\") AS \"avg_duration\" FROM \"attempts\" JOIN \"profiles\" ON \"attempts\".\"account_id\" = \"profiles\".\"id\" GROUP BY \"profiles\".\"skill_band\""
+        }
+      },
+      "frozen_evaluation": {
+        "expected": {
+          "total_attempts": 200,
+          "failure_count_diagnostic": 102
+        },
+        "rubric": "공개된 질문과 완료 조건에 따라 숙련도별 비교, 불확실성 진단, 의사결정의 타당성을 종합적으로 평가합니다. 검증하지 못한 타당한 대안을 틀렸다고 단정하지 말고, 비공개 생성 그룹을 맞히도록 요구하지 마세요.",
+        "verification_contracts": {
+          "success_rate": {
+            "comparison_expected": {
+              "columns": [
+                "profiles__skill_band",
+                "attempts__boss_type",
+                "success_rate"
+              ],
+              "rows": [
+                [
+                  "intermediate",
+                  "boss_a",
+                  0.5483870967741935
+                ],
+                [
+                  "intermediate",
+                  "boss_b",
+                  0.5263157894736842
+                ],
+                [
+                  "beginner",
+                  "boss_b",
+                  0.36363636363636365
+                ],
+                [
+                  "beginner",
+                  "boss_a",
+                  0.48717948717948717
+                ],
+                [
+                  "advanced",
+                  "boss_a",
+                  0.4782608695652174
+                ],
+                [
+                  "advanced",
+                  "boss_b",
+                  0.5277777777777778
+                ]
+              ]
+            }
+          },
+          "avg_duration": {
+            "comparison_expected": {
+              "columns": [
+                "profiles__skill_band",
+                "avg_duration"
+              ],
+              "rows": [
+                [
+                  "intermediate",
+                  367.0289855072464
+                ],
+                [
+                  "beginner",
+                  310.40277777777777
+                ],
+                [
+                  "advanced",
+                  311.93220338983053
+                ]
+              ]
+            }
+          }
+        },
+        "weights": {
+          "problem_definition": 25,
+          "analysis_approach": 25,
+          "sql_accuracy": 20,
+          "interpretation": 20,
+          "next_actions": 10
+        },
+        "completion_conditions": [
+          "숙련도 및 보스별 성공률 차이를 비교하고 주요 격차 구간을 설명합니다.",
+          "데이터 상의 변동성과 불확실성이 의사결정에 미치는 영향을 진단합니다.",
+          "콘텐츠 밸런스 조정 및 가이드 개선에 대한 구체적인 액션 플랜을 도출합니다."
+        ],
+        "rules_version": "evaluation-rubric-v3",
+        "condition_rubric": {
+          "version": "evaluation-rubric-v3",
+          "criteria": [
+            {
+              "key": "problem_definition",
+              "conditions": [
+                {
+                  "id": "content",
+                  "kind": "content",
+                  "description": "현재 제출 어디에든 이 항목에서 평가할 판단·계획·방법·해석이 존재"
+                },
+                {
+                  "id": "target",
+                  "kind": "required",
+                  "description": "대상 정의. 과제 범위: 숙련도 및 보스별 성공률 차이를 비교하고 주요 격차 구간을 설명합니다. / 데이터 상의 변동성과 불확실성이 의사결정에 미치는 영향을 진단합니다. / 콘텐츠 밸런스 조정 및 가이드 개선에 대한 구체적인 액션 플랜을 도출합니다."
+                },
+                {
+                  "id": "period",
+                  "kind": "required",
+                  "description": "기간·시간 기준 정의. 과제 범위: 숙련도 및 보스별 성공률 차이를 비교하고 주요 격차 구간을 설명합니다. / 데이터 상의 변동성과 불확실성이 의사결정에 미치는 영향을 진단합니다. / 콘텐츠 밸런스 조정 및 가이드 개선에 대한 구체적인 액션 플랜을 도출합니다."
+                },
+                {
+                  "id": "unit",
+                  "kind": "required",
+                  "description": "집계 단위 정의. 과제 범위: 숙련도 및 보스별 성공률 차이를 비교하고 주요 격차 구간을 설명합니다. / 데이터 상의 변동성과 불확실성이 의사결정에 미치는 영향을 진단합니다. / 콘텐츠 밸런스 조정 및 가이드 개선에 대한 구체적인 액션 플랜을 도출합니다."
+                },
+                {
+                  "id": "metric",
+                  "kind": "required",
+                  "description": "지표·분모 정의. 과제 범위: 숙련도 및 보스별 성공률 차이를 비교하고 주요 격차 구간을 설명합니다. / 데이터 상의 변동성과 불확실성이 의사결정에 미치는 영향을 진단합니다. / 콘텐츠 밸런스 조정 및 가이드 개선에 대한 구체적인 액션 플랜을 도출합니다."
+                },
+                {
+                  "id": "comparison",
+                  "kind": "required",
+                  "description": "비교 집단·기준 정의"
+                },
+                {
+                  "id": "critical",
+                  "kind": "error",
+                  "description": "공개 조건과 반대인 대상·기간·집계 단위·분모를 올바르다고 정의"
+                },
+                {
+                  "id": "advanced",
+                  "kind": "advanced",
+                  "description": "관련 경계·제외·중복 처리 설명"
+                }
+              ]
+            },
+            {
+              "key": "analysis_approach",
+              "conditions": [
+                {
+                  "id": "content",
+                  "kind": "content",
+                  "description": "현재 제출 어디에든 이 항목에서 평가할 판단·계획·방법·해석이 존재"
+                },
+                {
+                  "id": "method",
+                  "kind": "required",
+                  "description": "목표에 대응하는 자료·관계·집계 방법. 과제 범위: 숙련도 및 보스별 성공률 차이를 비교하고 주요 격차 구간을 설명합니다. / 데이터 상의 변동성과 불확실성이 의사결정에 미치는 영향을 진단합니다. / 콘텐츠 밸런스 조정 및 가이드 개선에 대한 구체적인 액션 플랜을 도출합니다."
+                },
+                {
+                  "id": "validation",
+                  "kind": "required",
+                  "description": "판단 가능한 검증 순서. 과제 범위: 숙련도 및 보스별 성공률 차이를 비교하고 주요 격차 구간을 설명합니다. / 데이터 상의 변동성과 불확실성이 의사결정에 미치는 영향을 진단합니다. / 콘텐츠 밸런스 조정 및 가이드 개선에 대한 구체적인 액션 플랜을 도출합니다."
+                },
+                {
+                  "id": "task_comparison",
+                  "kind": "required",
+                  "description": "숙련도 및 보스별 성공률 차이를 비교하고 주요 격차 구간을 설명합니다."
+                },
+                {
+                  "id": "critical",
+                  "kind": "error",
+                  "description": "계획 자체의 중복 단위·잘못된 비교·가설에 맞춘 자료 변경"
+                },
+                {
+                  "id": "advanced",
+                  "kind": "advanced",
+                  "description": "목표와 관련된 대안·반증·민감도 확인 방법"
+                }
+              ]
+            },
+            {
+              "key": "sql_accuracy",
+              "conditions": [
+                {
+                  "id": "content",
+                  "kind": "content",
+                  "description": "현재 제출 어디에든 이 항목에서 평가할 판단·계획·방법·해석이 존재"
+                },
+                {
+                  "id": "execution",
+                  "kind": "required",
+                  "description": "선택 저장한 실제 실행. 과제 범위: 숙련도 및 보스별 성공률 차이를 비교하고 주요 격차 구간을 설명합니다. / 데이터 상의 변동성과 불확실성이 의사결정에 미치는 영향을 진단합니다. / 콘텐츠 밸런스 조정 및 가이드 개선에 대한 구체적인 액션 플랜을 도출합니다."
+                },
+                {
+                  "id": "calculation",
+                  "kind": "required",
+                  "description": "공개 목표에 맞는 완전한 계산. 과제 범위: 숙련도 및 보스별 성공률 차이를 비교하고 주요 격차 구간을 설명합니다. / 데이터 상의 변동성과 불확실성이 의사결정에 미치는 영향을 진단합니다. / 콘텐츠 밸런스 조정 및 가이드 개선에 대한 구체적인 액션 플랜을 도출합니다."
+                },
+                {
+                  "id": "critical",
+                  "kind": "error",
+                  "description": "실제 실행에서 확인된 계산·집계 단위·분모·기간 오류"
+                },
+                {
+                  "id": "advanced",
+                  "kind": "advanced",
+                  "description": "실제 저장 근거로 중복·경계·독립 검산 확인"
+                }
+              ]
+            },
+            {
+              "key": "interpretation",
+              "conditions": [
+                {
+                  "id": "content",
+                  "kind": "content",
+                  "description": "현재 제출 어디에든 이 항목에서 평가할 판단·계획·방법·해석이 존재"
+                },
+                {
+                  "id": "meaning",
+                  "kind": "required",
+                  "description": "결론과 실제 근거 또는 설계의 의미 연결. 과제 범위: 숙련도 및 보스별 성공률 차이를 비교하고 주요 격차 구간을 설명합니다. / 데이터 상의 변동성과 불확실성이 의사결정에 미치는 영향을 진단합니다. / 콘텐츠 밸런스 조정 및 가이드 개선에 대한 구체적인 액션 플랜을 도출합니다."
+                },
+                {
+                  "id": "scope",
+                  "kind": "required",
+                  "description": "공개 자료로 판단 가능한 결론 범위. 과제 범위: 숙련도 및 보스별 성공률 차이를 비교하고 주요 격차 구간을 설명합니다. / 데이터 상의 변동성과 불확실성이 의사결정에 미치는 영향을 진단합니다. / 콘텐츠 밸런스 조정 및 가이드 개선에 대한 구체적인 액션 플랜을 도출합니다."
+                },
+                {
+                  "id": "task_uncertainty",
+                  "kind": "required",
+                  "description": "데이터 상의 변동성과 불확실성이 의사결정에 미치는 영향을 진단합니다."
+                },
+                {
+                  "id": "critical",
+                  "kind": "error",
+                  "description": "근거와 반대인 최종 결론·미실행 결과 확인 주장·관측만으로 원인 증명 단정·미해결 최종 모순"
+                },
+                {
+                  "id": "advanced",
+                  "kind": "advanced",
+                  "description": "대안·불확실성·관측 한계를 결론 적용 범위에 연결"
+                }
+              ]
+            },
+            {
+              "key": "next_actions",
+              "conditions": [
+                {
+                  "id": "content",
+                  "kind": "content",
+                  "description": "현재 제출 어디에든 이 항목에서 평가할 판단·계획·방법·해석이 존재"
+                },
+                {
+                  "id": "action",
+                  "kind": "required",
+                  "description": "남은 질문 또는 완료 판단에 대응하는 구체적 행동. 과제 범위: 숙련도 및 보스별 성공률 차이를 비교하고 주요 격차 구간을 설명합니다. / 데이터 상의 변동성과 불확실성이 의사결정에 미치는 영향을 진단합니다. / 콘텐츠 밸런스 조정 및 가이드 개선에 대한 구체적인 액션 플랜을 도출합니다."
+                },
+                {
+                  "id": "purpose",
+                  "kind": "required",
+                  "description": "확인 방법과 목적 또는 정리·제출 판단. 과제 범위: 숙련도 및 보스별 성공률 차이를 비교하고 주요 격차 구간을 설명합니다. / 데이터 상의 변동성과 불확실성이 의사결정에 미치는 영향을 진단합니다. / 콘텐츠 밸런스 조정 및 가이드 개선에 대한 구체적인 액션 플랜을 도출합니다."
+                },
+                {
+                  "id": "task_decision",
+                  "kind": "required",
+                  "description": "콘텐츠 밸런스 조정 및 가이드 개선에 대한 구체적인 액션 플랜을 도출합니다."
+                },
+                {
+                  "id": "critical",
+                  "kind": "error",
+                  "description": "잘못된 전제로 효과 보장·검증 없이 인과 개입 확정·자료를 가설에 맞춰 변경"
+                },
+                {
+                  "id": "advanced",
+                  "kind": "advanced",
+                  "description": "우선순위와 확인 결과별 다음 결정·종료 조건"
+                }
+              ]
+            }
+          ],
+          "excluded_criteria": []
+        },
+        "contract_hash": "4b95567817664f4266845652089eaba2275a4eef349a7cb39ec74ac65e90fe79"
+      }
+    }
+  },
+  {
+    "request": {
+      "error": null,
+      "states": [
+        {
+          "at": "2026-10-05T19:05:04.743230Z",
+          "status": "accepted"
+        },
+        {
+          "at": "2026-10-05T19:05:04.818211Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T19:05:13.967333Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T19:05:20.124041Z",
+          "status": "preparing_data"
+        },
+        {
+          "at": "2026-10-05T19:05:20.220711Z",
+          "status": "validating"
+        },
+        {
+          "at": "2026-10-05T19:05:20.296663Z",
+          "status": "ready"
+        }
+      ],
+      "status": "ready",
+      "message": "실제 게임 업계 실무에서 발생하는 문제를 분석하고 싶어",
+      "revision": 0,
+      "questions": [],
+      "attempt_id": "d92b2fc3-49ca-43c6-b9aa-66d6e4d0f478",
+      "created_at": "2026-10-05T19:05:04.743219Z",
+      "error_code": null,
+      "request_id": "1e3d2f92-8653-4449-bf7c-fc811a87ddc9",
+      "duration_ms": 15545,
+      "finished_at": "2026-10-05T19:05:20.296642Z",
+      "operation_id": "9fc60c0b-f949-444e-b0a8-58e1e9ce90ba",
+      "retry_allowed": false,
+      "planning_calls": 2,
+      "contract_version": "request-v2",
+      "generation_attempts": 1,
+      "recommendation_change": null
+    },
+    "schema_reviews": [],
+    "alignment_reviews": [
+      {
+        "passed": true
+      }
+    ],
+    "recipe": {
+      "goal": "신규 콘텐츠 업데이트 이후 보스 공략 성공률과 소요 시간을 숙련도별로 비교하고, 공략 실패 및 지연 현상을 진단하여 밸런스 조정 의사결정을 도출합니다.",
+      "title": "신규 보스 레이드 콘텐츠 공략 성공률 및 소요 시간 고급 분석",
+      "topic": "모바일 게임 신규 콘텐츠 보스 공략 성공률 및 플레이 시간 분석",
+      "reason": "신규 콘텐츠 보스 공략 성공률 및 플레이 시간 분석을 위한 고급 분석 과제 설정 완료",
+      "rubric": "요구사항에 명시된 6가지 역량(측정, 비교, 교란, 대안, 불확실성, 의사결정)에 따라 분석이 논리적으로 수행되었는지를 평가합니다.",
+      "status": "ready",
+      "tables": [
+        {
+          "name": "profiles",
+          "grain": "계정별 1행",
+          "groups": [
+            {
+              "name": "sample",
+              "count": 200,
+              "overrides": {}
+            }
+          ],
+          "columns": [
+            {
+              "name": "id",
+              "generator": {
+                "end": null,
+                "kind": "id",
+                "group": null,
+                "start": null,
+                "table": null,
+                "bucket": null,
+                "values": [],
+                "maximum": null,
+                "minimum": null,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": null,
+                "entity_column": null,
+                "source_column": null,
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "계정 고유 식별자"
+            },
+            {
+              "name": "skill_tier",
+              "generator": {
+                "end": null,
+                "kind": "category",
+                "group": null,
+                "start": null,
+                "table": null,
+                "bucket": null,
+                "values": [
+                  "beginner",
+                  "intermediate",
+                  "advanced"
+                ],
+                "maximum": null,
+                "minimum": null,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": null,
+                "entity_column": null,
+                "source_column": null,
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "이용자 숙련도 등급"
+            },
+            {
+              "name": "gear_score",
+              "generator": {
+                "end": null,
+                "kind": "integer",
+                "group": null,
+                "start": null,
+                "table": null,
+                "bucket": null,
+                "values": [],
+                "maximum": 500.0,
+                "minimum": 100.0,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": null,
+                "entity_column": null,
+                "source_column": null,
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "장비 점수"
+            }
+          ],
+          "group_by": [],
+          "unique_keys": [
+            [
+              "id"
+            ]
+          ],
+          "derived_from": null
+        },
+        {
+          "name": "boss_attempts",
+          "grain": "전투 시도별 1행",
+          "groups": [
+            {
+              "name": "sample",
+              "count": 200,
+              "overrides": {}
+            }
+          ],
+          "columns": [
+            {
+              "name": "id",
+              "generator": {
+                "end": null,
+                "kind": "id",
+                "group": null,
+                "start": null,
+                "table": null,
+                "bucket": null,
+                "values": [],
+                "maximum": null,
+                "minimum": null,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": null,
+                "entity_column": null,
+                "source_column": null,
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "전투 시도 고유 식별자"
+            },
+            {
+              "name": "account_id",
+              "generator": {
+                "end": null,
+                "kind": "foreign_key",
+                "group": null,
+                "start": null,
+                "table": "profiles",
+                "bucket": null,
+                "values": [],
+                "maximum": null,
+                "minimum": null,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": null,
+                "entity_column": null,
+                "source_column": null,
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "계정 FK"
+            },
+            {
+              "name": "boss_name",
+              "generator": {
+                "end": null,
+                "kind": "category",
+                "group": null,
+                "start": null,
+                "table": null,
+                "bucket": null,
+                "values": [
+                  "dragon",
+                  "golem"
+                ],
+                "maximum": null,
+                "minimum": null,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": null,
+                "entity_column": null,
+                "source_column": null,
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "보스 이름"
+            },
+            {
+              "name": "success",
+              "generator": {
+                "end": null,
+                "kind": "integer",
+                "group": null,
+                "start": null,
+                "table": null,
+                "bucket": null,
+                "values": [],
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": null,
+                "entity_column": null,
+                "source_column": null,
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "공략 성공 여부 (1=성공, 0=실패)"
+            },
+            {
+              "name": "duration_seconds",
+              "generator": {
+                "end": null,
+                "kind": "integer",
+                "group": null,
+                "start": null,
+                "table": null,
+                "bucket": null,
+                "values": [],
+                "maximum": 600.0,
+                "minimum": 30.0,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": null,
+                "entity_column": null,
+                "source_column": null,
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "전투 소요 시간(초)"
+            },
+            {
+              "name": "event_at",
+              "generator": {
+                "end": "2026-09-07T23:59:59+09:00",
+                "kind": "timestamp",
+                "group": null,
+                "start": "2026-09-01T00:00:00+09:00",
+                "table": null,
+                "bucket": null,
+                "values": [],
+                "maximum": null,
+                "minimum": null,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": null,
+                "entity_column": null,
+                "source_column": null,
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "전투 시도 시각"
+            }
+          ],
+          "group_by": [],
+          "unique_keys": [
+            [
+              "id"
+            ]
+          ],
+          "derived_from": null
+        }
+      ],
+      "metrics": [
+        {
+          "name": "total_attempts",
+          "joins": [],
+          "table": "boss_attempts",
+          "column": null,
+          "maximum": null,
+          "minimum": null,
+          "purpose": "validation",
+          "group_by": [],
+          "operation": "count",
+          "conditions": [],
+          "denominator_conditions": []
+        },
+        {
+          "name": "success_rate",
+          "joins": [
+            {
+              "table": "profiles",
+              "source_column": "account_id"
+            }
+          ],
+          "table": "boss_attempts",
+          "column": null,
+          "maximum": null,
+          "minimum": null,
+          "purpose": "analysis",
+          "group_by": [
+            "boss_attempts.boss_name",
+            "profiles.skill_tier"
+          ],
+          "operation": "ratio",
+          "conditions": [
+            {
+              "value": 1,
+              "column": "success",
+              "operator": "eq"
+            }
+          ],
+          "denominator_conditions": []
+        },
+        {
+          "name": "avg_duration",
+          "joins": [
+            {
+              "table": "profiles",
+              "source_column": "account_id"
+            }
+          ],
+          "table": "boss_attempts",
+          "column": "duration_seconds",
+          "maximum": null,
+          "minimum": null,
+          "purpose": "analysis",
+          "group_by": [
+            "boss_attempts.boss_name",
+            "profiles.skill_tier"
+          ],
+          "operation": "avg",
+          "conditions": [],
+          "denominator_conditions": []
+        },
+        {
+          "name": "avg_gear_score",
+          "joins": [],
+          "table": "profiles",
+          "column": "gear_score",
+          "maximum": null,
+          "minimum": null,
+          "purpose": "analysis",
+          "group_by": [
+            "skill_tier"
+          ],
+          "operation": "avg",
+          "conditions": [],
+          "denominator_conditions": []
+        }
+      ],
+      "questions": [],
+      "task_kind": "investigation",
+      "difficulty": "advanced",
+      "description": "본 과제는 모바일 게임 라이브 서비스 환경에서 신규 업데이트된 보스 레이드 콘텐츠의 플레이 로그를 바탕으로, 숙련도별 공략 성공률과 소요 시간을 다각도로 분석하여 밸런스 조정 방향을 도출하는 고급 실무 과제입니다. 학습자는 프로필 정보와 개별 전투 시도 기록을 조인하여 단순 성공률 비교를 넘어 교란 요인과 대안 가설을 검증해야 합니다.",
+      "limitations": [
+        "제공된 가상 표와 지표만을 활용하여 분석을 수행해야 합니다.",
+        "비공개 내부 라벨이나 임의의 인과관계 추정은 허용되지 않습니다."
+      ],
+      "business_case": {
+        "decision": "분석 결과를 바탕으로 보스 레이드의 난이도 조정, 패턴 수정 및 장비 보상 밸런스 조정 여부를 결정합니다.",
+        "background": "라이브 서비스 중인 모바일 게임에서 신규 보스 레이드 콘텐츠 업데이트 직후, 특정 숙련도 구간 이용자들의 공략 실패 및 클리어 지연 현상에 대한 운영팀의 우려가 제기되었습니다.",
+        "provenance": "synthetic",
+        "requirements": [
+          {
+            "evidence": [
+              {
+                "table": "boss_attempts",
+                "columns": [
+                  "id",
+                  "success"
+                ]
+              }
+            ],
+            "question": "신규 보스 레이드 콘텐츠 전체 공략 시도 횟수와 전반적인 성공률은 어떻게 측정되는가?",
+            "competency": "measurement",
+            "completion": "전체 시도 횟수와 기본 성공률 지표를 정확히 산출합니다.",
+            "metric_names": [
+              "total_attempts",
+              "success_rate"
+            ]
+          },
+          {
+            "evidence": [
+              {
+                "table": "boss_attempts",
+                "columns": [
+                  "boss_name",
+                  "success",
+                  "duration_seconds"
+                ]
+              },
+              {
+                "table": "profiles",
+                "columns": [
+                  "skill_tier"
+                ]
+              }
+            ],
+            "question": "보스별, 숙련도별 공략 성공률과 평균 소요 시간에는 어떤 차이가 존재하는가?",
+            "competency": "comparison",
+            "completion": "숙련도와 보스 종류에 따른 성공률 및 소요 시간 비교 결과를 도출합니다.",
+            "metric_names": [
+              "success_rate",
+              "avg_duration"
+            ]
+          },
+          {
+            "evidence": [
+              {
+                "table": "profiles",
+                "columns": [
+                  "skill_tier",
+                  "gear_score"
+                ]
+              },
+              {
+                "table": "boss_attempts",
+                "columns": [
+                  "account_id",
+                  "success",
+                  "duration_seconds"
+                ]
+              }
+            ],
+            "question": "숙련도별 장비 점수의 차이가 공략 소요 시간과 성공률에 미치는 교란 효과는 무엇인가?",
+            "competency": "confounding",
+            "completion": "장비 점수가 결과에 미치는 교란 요인을 통제하여 해석합니다.",
+            "metric_names": [
+              "success_rate",
+              "avg_duration",
+              "avg_gear_score"
+            ]
+          },
+          {
+            "evidence": [
+              {
+                "table": "boss_attempts",
+                "columns": [
+                  "event_at",
+                  "duration_seconds",
+                  "success"
+                ]
+              }
+            ],
+            "question": "단순 난이도 상향 외에 이용자 숙련도나 패턴 적응 과정에서 발생한 지연이라는 대안 설명을 어떻게 검증할 수 있는가?",
+            "competency": "alternatives",
+            "completion": "시간 흐름에 따른 적응 여부 등 대안 가설을 검증합니다.",
+            "metric_names": [
+              "success_rate",
+              "avg_duration"
+            ]
+          },
+          {
+            "evidence": [
+              {
+                "table": "boss_attempts",
+                "columns": [
+                  "boss_name",
+                  "success"
+                ]
+              }
+            ],
+            "question": "표본 변동성과 일부 구간의 적은 시도 횟수가 분석 결과 해석에 주는 불확실성은 무엇인가?",
+            "competency": "uncertainty",
+            "completion": "표본 수 부족에 따른 불확실성 범위를 확인합니다.",
+            "metric_names": [
+              "total_attempts",
+              "success_rate"
+            ]
+          },
+          {
+            "evidence": [
+              {
+                "table": "boss_attempts",
+                "columns": [
+                  "boss_name",
+                  "success",
+                  "duration_seconds"
+                ]
+              },
+              {
+                "table": "profiles",
+                "columns": [
+                  "skill_tier"
+                ]
+              }
+            ],
+            "question": "분석된 성공률과 소요 시간, 교란 요인을 종합하여 어떤 밸런스 조정 의사결정을 내려야 하는가?",
+            "competency": "decision",
+            "completion": "최종 밸런스 조정 및 콘텐츠 개선 의사결정안을 제시합니다.",
+            "metric_names": [
+              "success_rate",
+              "avg_duration"
+            ]
+          }
+        ],
+        "observed_problem": "보스 공략 성공률과 소요 시간이 숙련도별로 큰 차이를 보이고 있으며, 일부 구간에서는 장비 점수와 무관하게 지연이 발생하고 있다는 가설이 접수되었습니다.",
+        "agent_assumptions": [
+          "모든 전투 시도 기록은 정상적으로 수집되었으며 결측치는 무시합니다.",
+          "숙련도 등급과 장비 점수는 관측 가능한 공개 컬럼을 기준으로 합니다."
+        ],
+        "observation_period": "2026-09-01부터 2026-09-07까지 1주일간의 전투 시도 로그"
+      },
+      "labels_public": false,
+      "difficulty_reason": "측정, 비교뿐만 아니라 교란 변수 통제, 대안 설명 검토, 불확실성 및 최종 의사결정 요구사항을 모두 포함하는 고급 난이도 설계입니다.",
+      "completion_conditions": [
+        "숙련도별 보스 공략 성공률과 평균 소요 시간을 정확히 측정하고 비교합니다.",
+        "장비 등 교란 요인을 고려한 공략 성공률의 차이를 진단합니다.",
+        "지연 및 실패 원인에 대한 대안 설명을 검토하고 최종 밸런스 조정 의사결정을 도출합니다."
+      ]
+    },
+    "usage": [
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "5f7f2a92-7e13-47ea-93a9-baa24b21dc0f",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "1e3d2f92-8653-4449-bf7c-fc811a87ddc9",
+        "started_at": "2026-10-05T19:05:04.833273Z",
+        "duration_ms": 9087,
+        "finished_at": "2026-10-05T19:05:13.920521Z",
+        "occurred_at": "2026-10-05T19:05:04.833273Z",
+        "input_tokens": 6570,
+        "operation_id": "ccc85ca6-4b24-4b0b-91d7-828ca06c53a7",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 2836,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "40300194-24bc-4562-9fc0-189438f93a44",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "1e3d2f92-8653-4449-bf7c-fc811a87ddc9",
+        "started_at": "2026-10-05T19:05:13.983235Z",
+        "duration_ms": 6119,
+        "finished_at": "2026-10-05T19:05:20.102944Z",
+        "occurred_at": "2026-10-05T19:05:13.983235Z",
+        "input_tokens": 6103,
+        "operation_id": "47e5575b-0f48-422a-b397-3b68be02c45d",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 67,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-alignment-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      }
+    ],
+    "attempt": {
+      "title": "신규 보스 레이드 콘텐츠 공략 성공률 및 소요 시간 고급 분석",
+      "domain": "모바일 게임 신규 콘텐츠 보스 공략 성공률 및 플레이 시간 분석",
+      "ai_calls": 2,
+      "plan_hash": "b531f292916173ebf2b872cf0d6a974c3f04bba90a343bf2f8070353739d1fc2",
+      "task_kind": "investigation",
+      "attempt_id": "d92b2fc3-49ca-43c6-b9aa-66d6e4d0f478",
+      "dataset_id": "generated-70c589dc0f57c7fd8e4cf7c3-data",
+      "difficulty": "advanced",
+      "package_id": "generated-70c589dc0f57c7fd8e4cf7c3",
+      "problem_id": "problem-001",
+      "request_id": "1e3d2f92-8653-4449-bf7c-fc811a87ddc9",
+      "started_at": "2026-10-05T19:05:20.293884Z",
+      "release_version": "v1",
+      "contract_version": "request-v2",
+      "explanation_viewed": false,
+      "intentional_repeat": false,
+      "semantic_signature": {
+        "goal": "신규 콘텐츠 업데이트 이후 보스 공략 성공률과 소요 시간을 숙련도별로 비교하고, 공략 실패 및 지연 현상을 진단하여 밸런스 조정 의사결정을 도출합니다.",
+        "domain": "모바일 게임 신규 콘텐츠 보스 공략 성공률 및 플레이 시간 분석",
+        "format": "investigation",
+        "ambiguity": "advanced",
+        "situation": "6e7270b279ee",
+        "structure": "avg:False:1|avg:True:2|ratio:True:2",
+        "difficulty": "advanced",
+        "evaluation": "adaptive",
+        "quality_version": "task-quality-v1",
+        "required_judgment": "investigation"
+      },
+      "evaluation_rules_version": "request-review-v3",
+      "draft": {
+        "revision": 0,
+        "sections": {}
+      },
+      "saved_executions": [],
+      "reports": [],
+      "reviews": [],
+      "hints": [],
+      "pilot_linked": false,
+      "problem": {
+        "goal": "신규 콘텐츠 업데이트 이후 보스 공략 성공률과 소요 시간을 숙련도별로 비교하고, 공략 실패 및 지연 현상을 진단하여 밸런스 조정 의사결정을 도출합니다.",
+        "title": "신규 보스 레이드 콘텐츠 공략 성공률 및 소요 시간 고급 분석",
+        "plan_id": "407d89aa-c93e-471a-be8d-ccda0d795911",
+        "weights": {
+          "next_actions": 10,
+          "sql_accuracy": 20,
+          "interpretation": 20,
+          "analysis_approach": 25,
+          "problem_definition": 25
+        },
+        "revision": 0,
+        "timezone": "Asia/Seoul",
+        "ambiguity": {
+          "goal": "public",
+          "cause": "learner"
+        },
+        "task_kind": "investigation",
+        "dataset_id": "generated-70c589dc0f57c7fd8e4cf7c3-data",
+        "difficulty": "advanced",
+        "package_id": "generated-70c589dc0f57c7fd8e4cf7c3",
+        "problem_id": "problem-001",
+        "description": "본 과제는 모바일 게임 라이브 서비스 환경에서 신규 업데이트된 보스 레이드 콘텐츠의 플레이 로그를 바탕으로, 숙련도별 공략 성공률과 소요 시간을 다각도로 분석하여 밸런스 조정 방향을 도출하는 고급 실무 과제입니다. 학습자는 프로필 정보와 개별 전투 시도 기록을 조인하여 단순 성공률 비교를 넘어 교란 요인과 대안 가설을 검증해야 합니다.\n\n업무 배경: 라이브 서비스 중인 모바일 게임에서 신규 보스 레이드 콘텐츠 업데이트 직후, 특정 숙련도 구간 이용자들의 공략 실패 및 클리어 지연 현상에 대한 운영팀의 우려가 제기되었습니다.\n\n관측된 문제: 보스 공략 성공률과 소요 시간이 숙련도별로 큰 차이를 보이고 있으며, 일부 구간에서는 장비 점수와 무관하게 지연이 발생하고 있다는 가설이 접수되었습니다.\n\n관측 기간: 2026-09-01부터 2026-09-07까지 1주일간의 전투 시도 로그\n\n판단할 업무 결정: 분석 결과를 바탕으로 보스 레이드의 난이도 조정, 패턴 수정 및 장비 보상 밸런스 조정 여부를 결정합니다.\n\n분석 과제:\n- 신규 보스 레이드 콘텐츠 전체 공략 시도 횟수와 전반적인 성공률은 어떻게 측정되는가?\n- 보스별, 숙련도별 공략 성공률과 평균 소요 시간에는 어떤 차이가 존재하는가?\n- 숙련도별 장비 점수의 차이가 공략 소요 시간과 성공률에 미치는 교란 효과는 무엇인가?\n- 단순 난이도 상향 외에 이용자 숙련도나 패턴 적응 과정에서 발생한 지연이라는 대안 설명을 어떻게 검증할 수 있는가?\n- 표본 변동성과 일부 구간의 적은 시도 횟수가 분석 결과 해석에 주는 불확실성은 무엇인가?\n- 분석된 성공률과 소요 시간, 교란 요인을 종합하여 어떤 밸런스 조정 의사결정을 내려야 하는가?\n\n에이전트가 설정한 연습 조건:\n- 모든 전투 시도 기록은 정상적으로 수집되었으며 결측치는 무시합니다.\n- 숙련도 등급과 장비 점수는 관측 가능한 공개 컬럼을 기준으로 합니다.\n\n실제 회사 사례를 인용한 것이 아닌 가상 업무 상황이며, 데이터는 연습용 합성 데이터입니다.\n\n이 과제의 데이터는 요청에 맞춰 생성한 연습용 합성 데이터입니다.",
+        "plan_version": "adaptive-plan-v1",
+        "business_case": {
+          "decision": "분석 결과를 바탕으로 보스 레이드의 난이도 조정, 패턴 수정 및 장비 보상 밸런스 조정 여부를 결정합니다.",
+          "background": "라이브 서비스 중인 모바일 게임에서 신규 보스 레이드 콘텐츠 업데이트 직후, 특정 숙련도 구간 이용자들의 공략 실패 및 클리어 지연 현상에 대한 운영팀의 우려가 제기되었습니다.",
+          "provenance": "synthetic",
+          "requirements": [
+            {
+              "evidence": [
+                {
+                  "table": "boss_attempts",
+                  "columns": [
+                    "id",
+                    "success"
+                  ]
+                }
+              ],
+              "question": "신규 보스 레이드 콘텐츠 전체 공략 시도 횟수와 전반적인 성공률은 어떻게 측정되는가?",
+              "competency": "measurement",
+              "completion": "전체 시도 횟수와 기본 성공률 지표를 정확히 산출합니다.",
+              "metric_names": [
+                "total_attempts",
+                "success_rate"
+              ]
+            },
+            {
+              "evidence": [
+                {
+                  "table": "boss_attempts",
+                  "columns": [
+                    "boss_name",
+                    "success",
+                    "duration_seconds"
+                  ]
+                },
+                {
+                  "table": "profiles",
+                  "columns": [
+                    "skill_tier"
+                  ]
+                }
+              ],
+              "question": "보스별, 숙련도별 공략 성공률과 평균 소요 시간에는 어떤 차이가 존재하는가?",
+              "competency": "comparison",
+              "completion": "숙련도와 보스 종류에 따른 성공률 및 소요 시간 비교 결과를 도출합니다.",
+              "metric_names": [
+                "success_rate",
+                "avg_duration"
+              ]
+            },
+            {
+              "evidence": [
+                {
+                  "table": "profiles",
+                  "columns": [
+                    "skill_tier",
+                    "gear_score"
+                  ]
+                },
+                {
+                  "table": "boss_attempts",
+                  "columns": [
+                    "account_id",
+                    "success",
+                    "duration_seconds"
+                  ]
+                }
+              ],
+              "question": "숙련도별 장비 점수의 차이가 공략 소요 시간과 성공률에 미치는 교란 효과는 무엇인가?",
+              "competency": "confounding",
+              "completion": "장비 점수가 결과에 미치는 교란 요인을 통제하여 해석합니다.",
+              "metric_names": [
+                "success_rate",
+                "avg_duration",
+                "avg_gear_score"
+              ]
+            },
+            {
+              "evidence": [
+                {
+                  "table": "boss_attempts",
+                  "columns": [
+                    "event_at",
+                    "duration_seconds",
+                    "success"
+                  ]
+                }
+              ],
+              "question": "단순 난이도 상향 외에 이용자 숙련도나 패턴 적응 과정에서 발생한 지연이라는 대안 설명을 어떻게 검증할 수 있는가?",
+              "competency": "alternatives",
+              "completion": "시간 흐름에 따른 적응 여부 등 대안 가설을 검증합니다.",
+              "metric_names": [
+                "success_rate",
+                "avg_duration"
+              ]
+            },
+            {
+              "evidence": [
+                {
+                  "table": "boss_attempts",
+                  "columns": [
+                    "boss_name",
+                    "success"
+                  ]
+                }
+              ],
+              "question": "표본 변동성과 일부 구간의 적은 시도 횟수가 분석 결과 해석에 주는 불확실성은 무엇인가?",
+              "competency": "uncertainty",
+              "completion": "표본 수 부족에 따른 불확실성 범위를 확인합니다.",
+              "metric_names": [
+                "total_attempts",
+                "success_rate"
+              ]
+            },
+            {
+              "evidence": [
+                {
+                  "table": "boss_attempts",
+                  "columns": [
+                    "boss_name",
+                    "success",
+                    "duration_seconds"
+                  ]
+                },
+                {
+                  "table": "profiles",
+                  "columns": [
+                    "skill_tier"
+                  ]
+                }
+              ],
+              "question": "분석된 성공률과 소요 시간, 교란 요인을 종합하여 어떤 밸런스 조정 의사결정을 내려야 하는가?",
+              "competency": "decision",
+              "completion": "최종 밸런스 조정 및 콘텐츠 개선 의사결정안을 제시합니다.",
+              "metric_names": [
+                "success_rate",
+                "avg_duration"
+              ]
+            }
+          ],
+          "observed_problem": "보스 공략 성공률과 소요 시간이 숙련도별로 큰 차이를 보이고 있으며, 일부 구간에서는 장비 점수와 무관하게 지연이 발생하고 있다는 가설이 접수되었습니다.",
+          "agent_assumptions": [
+            "모든 전투 시도 기록은 정상적으로 수집되었으며 결측치는 무시합니다.",
+            "숙련도 등급과 장비 점수는 관측 가능한 공개 컬럼을 기준으로 합니다."
+          ],
+          "observation_period": "2026-09-01부터 2026-09-07까지 1주일간의 전투 시도 로그"
+        },
+        "capability_id": "adaptive",
+        "allowed_limits": [
+          "제공된 가상 표와 지표만을 활용하여 분석을 수행해야 합니다.",
+          "비공개 내부 라벨이나 임의의 인과관계 추정은 허용되지 않습니다."
+        ],
+        "problem_type_id": "adaptive",
+        "problem_version": "v1",
+        "quality_version": "task-quality-v1",
+        "release_version": "v1",
+        "required_tables": [
+          "profiles",
+          "boss_attempts"
+        ],
+        "contract_version": "request-v2",
+        "data_preparation": "요청별 합성 데이터 · 자동 검증",
+        "original_request": "실제 게임 업계 실무에서 발생하는 문제를 분석하고 싶어",
+        "selection_reason": "요청한 분석 대상과 난이도에 맞춰 공개 자료로 분석하는 연습 과제입니다.",
+        "difficulty_reason": "측정, 비교뿐만 아니라 교란 변수 통제, 대안 설명 검토, 불확실성 및 최종 의사결정 요구사항을 모두 포함하는 고급 난이도 설계입니다.",
+        "evaluation_rubric": {
+          "version": "evaluation-rubric-v3",
+          "criteria": [
+            {
+              "key": "problem_definition",
+              "conditions": [
+                {
+                  "id": "content",
+                  "kind": "content",
+                  "description": "현재 제출 어디에든 이 항목에서 평가할 판단·계획·방법·해석이 존재"
+                },
+                {
+                  "id": "target",
+                  "kind": "required",
+                  "description": "대상 정의. 과제 범위: 전체 시도 횟수와 기본 성공률 지표를 정확히 산출합니다. / 숙련도와 보스 종류에 따른 성공률 및 소요 시간 비교 결과를 도출합니다. / 장비 점수가 결과에 미치는 교란 요인을 통제하여 해석합니다. / 시간 흐름에 따른 적응 여부 등 대안 가설을 검증합니다. / 표본 수 부족에 따른 불확실성 범위를 확인합니다. / 최종 밸런스 조정 및 콘텐츠 개선 의사결정안을 제시합니다."
+                },
+                {
+                  "id": "period",
+                  "kind": "required",
+                  "description": "기간·시간 기준 정의. 과제 범위: 전체 시도 횟수와 기본 성공률 지표를 정확히 산출합니다. / 숙련도와 보스 종류에 따른 성공률 및 소요 시간 비교 결과를 도출합니다. / 장비 점수가 결과에 미치는 교란 요인을 통제하여 해석합니다. / 시간 흐름에 따른 적응 여부 등 대안 가설을 검증합니다. / 표본 수 부족에 따른 불확실성 범위를 확인합니다. / 최종 밸런스 조정 및 콘텐츠 개선 의사결정안을 제시합니다."
+                },
+                {
+                  "id": "unit",
+                  "kind": "required",
+                  "description": "집계 단위 정의. 과제 범위: 전체 시도 횟수와 기본 성공률 지표를 정확히 산출합니다. / 숙련도와 보스 종류에 따른 성공률 및 소요 시간 비교 결과를 도출합니다. / 장비 점수가 결과에 미치는 교란 요인을 통제하여 해석합니다. / 시간 흐름에 따른 적응 여부 등 대안 가설을 검증합니다. / 표본 수 부족에 따른 불확실성 범위를 확인합니다. / 최종 밸런스 조정 및 콘텐츠 개선 의사결정안을 제시합니다."
+                },
+                {
+                  "id": "metric",
+                  "kind": "required",
+                  "description": "지표·분모 정의. 과제 범위: 전체 시도 횟수와 기본 성공률 지표를 정확히 산출합니다. / 숙련도와 보스 종류에 따른 성공률 및 소요 시간 비교 결과를 도출합니다. / 장비 점수가 결과에 미치는 교란 요인을 통제하여 해석합니다. / 시간 흐름에 따른 적응 여부 등 대안 가설을 검증합니다. / 표본 수 부족에 따른 불확실성 범위를 확인합니다. / 최종 밸런스 조정 및 콘텐츠 개선 의사결정안을 제시합니다."
+                },
+                {
+                  "id": "comparison",
+                  "kind": "required",
+                  "description": "비교 집단·기준 정의"
+                },
+                {
+                  "id": "critical",
+                  "kind": "error",
+                  "description": "공개 조건과 반대인 대상·기간·집계 단위·분모를 올바르다고 정의"
+                },
+                {
+                  "id": "advanced",
+                  "kind": "advanced",
+                  "description": "관련 경계·제외·중복 처리 설명"
+                }
+              ]
+            },
+            {
+              "key": "analysis_approach",
+              "conditions": [
+                {
+                  "id": "content",
+                  "kind": "content",
+                  "description": "현재 제출 어디에든 이 항목에서 평가할 판단·계획·방법·해석이 존재"
+                },
+                {
+                  "id": "method",
+                  "kind": "required",
+                  "description": "목표에 대응하는 자료·관계·집계 방법. 과제 범위: 전체 시도 횟수와 기본 성공률 지표를 정확히 산출합니다. / 숙련도와 보스 종류에 따른 성공률 및 소요 시간 비교 결과를 도출합니다. / 장비 점수가 결과에 미치는 교란 요인을 통제하여 해석합니다. / 시간 흐름에 따른 적응 여부 등 대안 가설을 검증합니다. / 표본 수 부족에 따른 불확실성 범위를 확인합니다. / 최종 밸런스 조정 및 콘텐츠 개선 의사결정안을 제시합니다."
+                },
+                {
+                  "id": "validation",
+                  "kind": "required",
+                  "description": "판단 가능한 검증 순서. 과제 범위: 전체 시도 횟수와 기본 성공률 지표를 정확히 산출합니다. / 숙련도와 보스 종류에 따른 성공률 및 소요 시간 비교 결과를 도출합니다. / 장비 점수가 결과에 미치는 교란 요인을 통제하여 해석합니다. / 시간 흐름에 따른 적응 여부 등 대안 가설을 검증합니다. / 표본 수 부족에 따른 불확실성 범위를 확인합니다. / 최종 밸런스 조정 및 콘텐츠 개선 의사결정안을 제시합니다."
+                },
+                {
+                  "id": "task_comparison",
+                  "kind": "required",
+                  "description": "숙련도와 보스 종류에 따른 성공률 및 소요 시간 비교 결과를 도출합니다."
+                },
+                {
+                  "id": "task_confounding",
+                  "kind": "required",
+                  "description": "장비 점수가 결과에 미치는 교란 요인을 통제하여 해석합니다."
+                },
+                {
+                  "id": "task_alternatives",
+                  "kind": "required",
+                  "description": "시간 흐름에 따른 적응 여부 등 대안 가설을 검증합니다."
+                },
+                {
+                  "id": "critical",
+                  "kind": "error",
+                  "description": "계획 자체의 중복 단위·잘못된 비교·가설에 맞춘 자료 변경"
+                },
+                {
+                  "id": "advanced",
+                  "kind": "advanced",
+                  "description": "목표와 관련된 대안·반증·민감도 확인 방법"
+                }
+              ]
+            },
+            {
+              "key": "sql_accuracy",
+              "conditions": [
+                {
+                  "id": "content",
+                  "kind": "content",
+                  "description": "현재 제출 어디에든 이 항목에서 평가할 판단·계획·방법·해석이 존재"
+                },
+                {
+                  "id": "execution",
+                  "kind": "required",
+                  "description": "선택 저장한 실제 실행. 과제 범위: 전체 시도 횟수와 기본 성공률 지표를 정확히 산출합니다. / 숙련도와 보스 종류에 따른 성공률 및 소요 시간 비교 결과를 도출합니다. / 장비 점수가 결과에 미치는 교란 요인을 통제하여 해석합니다. / 시간 흐름에 따른 적응 여부 등 대안 가설을 검증합니다. / 표본 수 부족에 따른 불확실성 범위를 확인합니다. / 최종 밸런스 조정 및 콘텐츠 개선 의사결정안을 제시합니다."
+                },
+                {
+                  "id": "calculation",
+                  "kind": "required",
+                  "description": "공개 목표에 맞는 완전한 계산. 과제 범위: 전체 시도 횟수와 기본 성공률 지표를 정확히 산출합니다. / 숙련도와 보스 종류에 따른 성공률 및 소요 시간 비교 결과를 도출합니다. / 장비 점수가 결과에 미치는 교란 요인을 통제하여 해석합니다. / 시간 흐름에 따른 적응 여부 등 대안 가설을 검증합니다. / 표본 수 부족에 따른 불확실성 범위를 확인합니다. / 최종 밸런스 조정 및 콘텐츠 개선 의사결정안을 제시합니다."
+                },
+                {
+                  "id": "critical",
+                  "kind": "error",
+                  "description": "실제 실행에서 확인된 계산·집계 단위·분모·기간 오류"
+                },
+                {
+                  "id": "advanced",
+                  "kind": "advanced",
+                  "description": "실제 저장 근거로 중복·경계·독립 검산 확인"
+                }
+              ]
+            },
+            {
+              "key": "interpretation",
+              "conditions": [
+                {
+                  "id": "content",
+                  "kind": "content",
+                  "description": "현재 제출 어디에든 이 항목에서 평가할 판단·계획·방법·해석이 존재"
+                },
+                {
+                  "id": "meaning",
+                  "kind": "required",
+                  "description": "결론과 실제 근거 또는 설계의 의미 연결. 과제 범위: 전체 시도 횟수와 기본 성공률 지표를 정확히 산출합니다. / 숙련도와 보스 종류에 따른 성공률 및 소요 시간 비교 결과를 도출합니다. / 장비 점수가 결과에 미치는 교란 요인을 통제하여 해석합니다. / 시간 흐름에 따른 적응 여부 등 대안 가설을 검증합니다. / 표본 수 부족에 따른 불확실성 범위를 확인합니다. / 최종 밸런스 조정 및 콘텐츠 개선 의사결정안을 제시합니다."
+                },
+                {
+                  "id": "scope",
+                  "kind": "required",
+                  "description": "공개 자료로 판단 가능한 결론 범위. 과제 범위: 전체 시도 횟수와 기본 성공률 지표를 정확히 산출합니다. / 숙련도와 보스 종류에 따른 성공률 및 소요 시간 비교 결과를 도출합니다. / 장비 점수가 결과에 미치는 교란 요인을 통제하여 해석합니다. / 시간 흐름에 따른 적응 여부 등 대안 가설을 검증합니다. / 표본 수 부족에 따른 불확실성 범위를 확인합니다. / 최종 밸런스 조정 및 콘텐츠 개선 의사결정안을 제시합니다."
+                },
+                {
+                  "id": "task_uncertainty",
+                  "kind": "required",
+                  "description": "표본 수 부족에 따른 불확실성 범위를 확인합니다."
+                },
+                {
+                  "id": "critical",
+                  "kind": "error",
+                  "description": "근거와 반대인 최종 결론·미실행 결과 확인 주장·관측만으로 원인 증명 단정·미해결 최종 모순"
+                },
+                {
+                  "id": "advanced",
+                  "kind": "advanced",
+                  "description": "대안·불확실성·관측 한계를 결론 적용 범위에 연결"
+                }
+              ]
+            },
+            {
+              "key": "next_actions",
+              "conditions": [
+                {
+                  "id": "content",
+                  "kind": "content",
+                  "description": "현재 제출 어디에든 이 항목에서 평가할 판단·계획·방법·해석이 존재"
+                },
+                {
+                  "id": "action",
+                  "kind": "required",
+                  "description": "남은 질문 또는 완료 판단에 대응하는 구체적 행동. 과제 범위: 전체 시도 횟수와 기본 성공률 지표를 정확히 산출합니다. / 숙련도와 보스 종류에 따른 성공률 및 소요 시간 비교 결과를 도출합니다. / 장비 점수가 결과에 미치는 교란 요인을 통제하여 해석합니다. / 시간 흐름에 따른 적응 여부 등 대안 가설을 검증합니다. / 표본 수 부족에 따른 불확실성 범위를 확인합니다. / 최종 밸런스 조정 및 콘텐츠 개선 의사결정안을 제시합니다."
+                },
+                {
+                  "id": "purpose",
+                  "kind": "required",
+                  "description": "확인 방법과 목적 또는 정리·제출 판단. 과제 범위: 전체 시도 횟수와 기본 성공률 지표를 정확히 산출합니다. / 숙련도와 보스 종류에 따른 성공률 및 소요 시간 비교 결과를 도출합니다. / 장비 점수가 결과에 미치는 교란 요인을 통제하여 해석합니다. / 시간 흐름에 따른 적응 여부 등 대안 가설을 검증합니다. / 표본 수 부족에 따른 불확실성 범위를 확인합니다. / 최종 밸런스 조정 및 콘텐츠 개선 의사결정안을 제시합니다."
+                },
+                {
+                  "id": "task_decision",
+                  "kind": "required",
+                  "description": "최종 밸런스 조정 및 콘텐츠 개선 의사결정안을 제시합니다."
+                },
+                {
+                  "id": "critical",
+                  "kind": "error",
+                  "description": "잘못된 전제로 효과 보장·검증 없이 인과 개입 확정·자료를 가설에 맞춰 변경"
+                },
+                {
+                  "id": "advanced",
+                  "kind": "advanced",
+                  "description": "우선순위와 확인 결과별 다음 결정·종료 조건"
+                }
+              ]
+            }
+          ],
+          "excluded_criteria": []
+        },
+        "evaluation_status": "시험 과제 · 자동 검증 통과 · 사람 품질 검토 전",
+        "generator_version": "adaptive-recipe-v1",
+        "difficulty_version": "ambiguity-v2",
+        "evaluation_version": "request-review-v3",
+        "required_judgments": [
+          "전체 시도 횟수와 기본 성공률 지표를 정확히 산출합니다.",
+          "숙련도와 보스 종류에 따른 성공률 및 소요 시간 비교 결과를 도출합니다.",
+          "장비 점수가 결과에 미치는 교란 요인을 통제하여 해석합니다.",
+          "시간 흐름에 따른 적응 여부 등 대안 가설을 검증합니다.",
+          "표본 수 부족에 따른 불확실성 범위를 확인합니다.",
+          "최종 밸런스 조정 및 콘텐츠 개선 의사결정안을 제시합니다."
+        ],
+        "semantic_signature": {
+          "goal": "신규 콘텐츠 업데이트 이후 보스 공략 성공률과 소요 시간을 숙련도별로 비교하고, 공략 실패 및 지연 현상을 진단하여 밸런스 조정 의사결정을 도출합니다.",
+          "domain": "모바일 게임 신규 콘텐츠 보스 공략 성공률 및 플레이 시간 분석",
+          "format": "investigation",
+          "ambiguity": "advanced",
+          "situation": "6e7270b279ee",
+          "structure": "avg:False:1|avg:True:2|ratio:True:2",
+          "difficulty": "advanced",
+          "evaluation": "adaptive",
+          "quality_version": "task-quality-v1",
+          "required_judgment": "investigation"
+        },
+        "validation_version": "adaptive-validation-v1",
+        "data_complete_before": "2026-09-07T14:02:19+00:00",
+        "completion_conditions": [
+          "전체 시도 횟수와 기본 성공률 지표를 정확히 산출합니다.",
+          "숙련도와 보스 종류에 따른 성공률 및 소요 시간 비교 결과를 도출합니다.",
+          "장비 점수가 결과에 미치는 교란 요인을 통제하여 해석합니다.",
+          "시간 흐름에 따른 적응 여부 등 대안 가설을 검증합니다.",
+          "표본 수 부족에 따른 불확실성 범위를 확인합니다.",
+          "최종 밸런스 조정 및 콘텐츠 개선 의사결정안을 제시합니다."
+        ],
+        "disclosed_on_question": [],
+        "evaluation_rules_version": "request-review-v3",
+        "schema": {
+          "profiles": {
+            "grain": "계정별 1행",
+            "columns": [
+              {
+                "name": "id",
+                "type": "bigint",
+                "description": "계정 고유 식별자"
+              },
+              {
+                "name": "skill_tier",
+                "type": "text",
+                "description": "이용자 숙련도 등급"
+              },
+              {
+                "name": "gear_score",
+                "type": "bigint",
+                "description": "장비 점수"
+              }
+            ]
+          },
+          "boss_attempts": {
+            "grain": "전투 시도별 1행",
+            "columns": [
+              {
+                "name": "id",
+                "type": "bigint",
+                "description": "전투 시도 고유 식별자"
+              },
+              {
+                "name": "account_id",
+                "type": "bigint",
+                "description": "계정 FK"
+              },
+              {
+                "name": "boss_name",
+                "type": "text",
+                "description": "보스 이름"
+              },
+              {
+                "name": "success",
+                "type": "bigint",
+                "description": "공략 성공 여부 (1=성공, 0=실패)"
+              },
+              {
+                "name": "duration_seconds",
+                "type": "bigint",
+                "description": "전투 소요 시간(초)"
+              },
+              {
+                "name": "event_at",
+                "type": "timestamptz",
+                "description": "전투 시도 시각"
+              }
+            ]
+          }
+        }
+      },
+      "messages": []
+    },
+    "private_reference": {
+      "package_id": "generated-70c589dc0f57c7fd8e4cf7c3",
+      "release_version": "v1",
+      "dataset_id": "generated-70c589dc0f57c7fd8e4cf7c3-data",
+      "problem_id": "problem-001",
+      "evaluation_version": "v1",
+      "sql": "SELECT (SELECT COUNT(*) AS \"total_attempts\" FROM \"boss_attempts\") AS \"total_attempts\"",
+      "expected": {
+        "total_attempts": 200
+      },
+      "weights": {
+        "problem_definition": 25,
+        "analysis_approach": 25,
+        "sql_accuracy": 20,
+        "interpretation": 20,
+        "next_actions": 10
+      },
+      "rubric": "요구사항에 명시된 6가지 역량(측정, 비교, 교란, 대안, 불확실성, 의사결정)에 따라 분석이 논리적으로 수행되었는지를 평가합니다. 검증하지 못한 타당한 대안을 틀렸다고 단정하지 말고, 비공개 생성 그룹을 맞히도록 요구하지 마세요.",
+      "question_facts": {},
+      "explanation": "요구사항에 명시된 6가지 역량(측정, 비교, 교란, 대안, 불확실성, 의사결정)에 따라 분석이 논리적으로 수행되었는지를 평가합니다.",
+      "hints": {
+        "direction": "공개 목표와 데이터의 집계 단위를 확인하세요.",
+        "metric": "비교 기준과 정상 행동에서도 나타날 가능성을 정리하세요.",
+        "sql_structure": "공개 테이블의 컬럼으로 가설을 검증하세요."
+      },
+      "verification_contracts": {
+        "success_rate": {
+          "comparison_expected": {
+            "columns": [
+              "boss_attempts__boss_name",
+              "profiles__skill_tier",
+              "success_rate"
+            ],
+            "rows": [
+              [
+                "golem",
+                "advanced",
+                0.6666666666666666
+              ],
+              [
+                "golem",
+                "beginner",
+                0.45161290322580644
+              ],
+              [
+                "dragon",
+                "advanced",
+                0.631578947368421
+              ],
+              [
+                "dragon",
+                "intermediate",
+                0.6
+              ],
+              [
+                "dragon",
+                "beginner",
+                0.5588235294117647
+              ],
+              [
+                "golem",
+                "intermediate",
+                0.5588235294117647
+              ]
+            ]
+          }
+        },
+        "avg_duration": {
+          "comparison_expected": {
+            "columns": [
+              "boss_attempts__boss_name",
+              "profiles__skill_tier",
+              "avg_duration"
+            ],
+            "rows": [
+              [
+                "golem",
+                "advanced",
+                343.3939393939394
+              ],
+              [
+                "golem",
+                "beginner",
+                305.9032258064516
+              ],
+              [
+                "dragon",
+                "advanced",
+                283.8157894736842
+              ],
+              [
+                "dragon",
+                "intermediate",
+                358.3333333333333
+              ],
+              [
+                "dragon",
+                "beginner",
+                293.9117647058824
+              ],
+              [
+                "golem",
+                "intermediate",
+                325.1470588235294
+              ]
+            ]
+          }
+        },
+        "avg_gear_score": {
+          "comparison_expected": {
+            "columns": [
+              "skill_tier",
+              "avg_gear_score"
+            ],
+            "rows": [
+              [
+                "beginner",
+                298.73015873015873
+              ],
+              [
+                "advanced",
+                300.08
+              ],
+              [
+                "intermediate",
+                318.53225806451616
+              ]
+            ]
+          }
+        }
+      },
+      "analytical_checks": {
+        "success_rate": {
+          "comparison_expected": {
+            "columns": [
+              "boss_attempts__boss_name",
+              "profiles__skill_tier",
+              "success_rate"
+            ],
+            "rows": [
+              [
+                "golem",
+                "advanced",
+                0.6666666666666666
+              ],
+              [
+                "golem",
+                "beginner",
+                0.45161290322580644
+              ],
+              [
+                "dragon",
+                "advanced",
+                0.631578947368421
+              ],
+              [
+                "dragon",
+                "intermediate",
+                0.6
+              ],
+              [
+                "dragon",
+                "beginner",
+                0.5588235294117647
+              ],
+              [
+                "golem",
+                "intermediate",
+                0.5588235294117647
+              ]
+            ]
+          },
+          "sql": "SELECT \"boss_attempts\".\"boss_name\" AS \"boss_attempts__boss_name\", \"profiles\".\"skill_tier\" AS \"profiles__skill_tier\", COUNT(*) FILTER (WHERE \"boss_attempts\".\"success\" = 1)::double precision / NULLIF(COUNT(*),0) AS \"success_rate\" FROM \"boss_attempts\" JOIN \"profiles\" ON \"boss_attempts\".\"account_id\" = \"profiles\".\"id\" GROUP BY \"boss_attempts\".\"boss_name\", \"profiles\".\"skill_tier\""
+        },
+        "avg_duration": {
+          "comparison_expected": {
+            "columns": [
+              "boss_attempts__boss_name",
+              "profiles__skill_tier",
+              "avg_duration"
+            ],
+            "rows": [
+              [
+                "golem",
+                "advanced",
+                343.3939393939394
+              ],
+              [
+                "golem",
+                "beginner",
+                305.9032258064516
+              ],
+              [
+                "dragon",
+                "advanced",
+                283.8157894736842
+              ],
+              [
+                "dragon",
+                "intermediate",
+                358.3333333333333
+              ],
+              [
+                "dragon",
+                "beginner",
+                293.9117647058824
+              ],
+              [
+                "golem",
+                "intermediate",
+                325.1470588235294
+              ]
+            ]
+          },
+          "sql": "SELECT \"boss_attempts\".\"boss_name\" AS \"boss_attempts__boss_name\", \"profiles\".\"skill_tier\" AS \"profiles__skill_tier\", AVG(\"boss_attempts\".\"duration_seconds\") AS \"avg_duration\" FROM \"boss_attempts\" JOIN \"profiles\" ON \"boss_attempts\".\"account_id\" = \"profiles\".\"id\" GROUP BY \"boss_attempts\".\"boss_name\", \"profiles\".\"skill_tier\""
+        },
+        "avg_gear_score": {
+          "comparison_expected": {
+            "columns": [
+              "skill_tier",
+              "avg_gear_score"
+            ],
+            "rows": [
+              [
+                "beginner",
+                298.73015873015873
+              ],
+              [
+                "advanced",
+                300.08
+              ],
+              [
+                "intermediate",
+                318.53225806451616
+              ]
+            ]
+          },
+          "sql": "SELECT \"profiles\".\"skill_tier\" AS \"skill_tier\", AVG(\"profiles\".\"gear_score\") AS \"avg_gear_score\" FROM \"profiles\" GROUP BY \"profiles\".\"skill_tier\""
+        }
+      },
+      "frozen_evaluation": {
+        "expected": {
+          "total_attempts": 200
+        },
+        "rubric": "요구사항에 명시된 6가지 역량(측정, 비교, 교란, 대안, 불확실성, 의사결정)에 따라 분석이 논리적으로 수행되었는지를 평가합니다. 검증하지 못한 타당한 대안을 틀렸다고 단정하지 말고, 비공개 생성 그룹을 맞히도록 요구하지 마세요.",
+        "verification_contracts": {
+          "success_rate": {
+            "comparison_expected": {
+              "columns": [
+                "boss_attempts__boss_name",
+                "profiles__skill_tier",
+                "success_rate"
+              ],
+              "rows": [
+                [
+                  "golem",
+                  "advanced",
+                  0.6666666666666666
+                ],
+                [
+                  "golem",
+                  "beginner",
+                  0.45161290322580644
+                ],
+                [
+                  "dragon",
+                  "advanced",
+                  0.631578947368421
+                ],
+                [
+                  "dragon",
+                  "intermediate",
+                  0.6
+                ],
+                [
+                  "dragon",
+                  "beginner",
+                  0.5588235294117647
+                ],
+                [
+                  "golem",
+                  "intermediate",
+                  0.5588235294117647
+                ]
+              ]
+            }
+          },
+          "avg_duration": {
+            "comparison_expected": {
+              "columns": [
+                "boss_attempts__boss_name",
+                "profiles__skill_tier",
+                "avg_duration"
+              ],
+              "rows": [
+                [
+                  "golem",
+                  "advanced",
+                  343.3939393939394
+                ],
+                [
+                  "golem",
+                  "beginner",
+                  305.9032258064516
+                ],
+                [
+                  "dragon",
+                  "advanced",
+                  283.8157894736842
+                ],
+                [
+                  "dragon",
+                  "intermediate",
+                  358.3333333333333
+                ],
+                [
+                  "dragon",
+                  "beginner",
+                  293.9117647058824
+                ],
+                [
+                  "golem",
+                  "intermediate",
+                  325.1470588235294
+                ]
+              ]
+            }
+          },
+          "avg_gear_score": {
+            "comparison_expected": {
+              "columns": [
+                "skill_tier",
+                "avg_gear_score"
+              ],
+              "rows": [
+                [
+                  "beginner",
+                  298.73015873015873
+                ],
+                [
+                  "advanced",
+                  300.08
+                ],
+                [
+                  "intermediate",
+                  318.53225806451616
+                ]
+              ]
+            }
+          }
+        },
+        "weights": {
+          "problem_definition": 25,
+          "analysis_approach": 25,
+          "sql_accuracy": 20,
+          "interpretation": 20,
+          "next_actions": 10
+        },
+        "completion_conditions": [
+          "전체 시도 횟수와 기본 성공률 지표를 정확히 산출합니다.",
+          "숙련도와 보스 종류에 따른 성공률 및 소요 시간 비교 결과를 도출합니다.",
+          "장비 점수가 결과에 미치는 교란 요인을 통제하여 해석합니다.",
+          "시간 흐름에 따른 적응 여부 등 대안 가설을 검증합니다.",
+          "표본 수 부족에 따른 불확실성 범위를 확인합니다.",
+          "최종 밸런스 조정 및 콘텐츠 개선 의사결정안을 제시합니다."
+        ],
+        "rules_version": "evaluation-rubric-v3",
+        "condition_rubric": {
+          "version": "evaluation-rubric-v3",
+          "criteria": [
+            {
+              "key": "problem_definition",
+              "conditions": [
+                {
+                  "id": "content",
+                  "kind": "content",
+                  "description": "현재 제출 어디에든 이 항목에서 평가할 판단·계획·방법·해석이 존재"
+                },
+                {
+                  "id": "target",
+                  "kind": "required",
+                  "description": "대상 정의. 과제 범위: 전체 시도 횟수와 기본 성공률 지표를 정확히 산출합니다. / 숙련도와 보스 종류에 따른 성공률 및 소요 시간 비교 결과를 도출합니다. / 장비 점수가 결과에 미치는 교란 요인을 통제하여 해석합니다. / 시간 흐름에 따른 적응 여부 등 대안 가설을 검증합니다. / 표본 수 부족에 따른 불확실성 범위를 확인합니다. / 최종 밸런스 조정 및 콘텐츠 개선 의사결정안을 제시합니다."
+                },
+                {
+                  "id": "period",
+                  "kind": "required",
+                  "description": "기간·시간 기준 정의. 과제 범위: 전체 시도 횟수와 기본 성공률 지표를 정확히 산출합니다. / 숙련도와 보스 종류에 따른 성공률 및 소요 시간 비교 결과를 도출합니다. / 장비 점수가 결과에 미치는 교란 요인을 통제하여 해석합니다. / 시간 흐름에 따른 적응 여부 등 대안 가설을 검증합니다. / 표본 수 부족에 따른 불확실성 범위를 확인합니다. / 최종 밸런스 조정 및 콘텐츠 개선 의사결정안을 제시합니다."
+                },
+                {
+                  "id": "unit",
+                  "kind": "required",
+                  "description": "집계 단위 정의. 과제 범위: 전체 시도 횟수와 기본 성공률 지표를 정확히 산출합니다. / 숙련도와 보스 종류에 따른 성공률 및 소요 시간 비교 결과를 도출합니다. / 장비 점수가 결과에 미치는 교란 요인을 통제하여 해석합니다. / 시간 흐름에 따른 적응 여부 등 대안 가설을 검증합니다. / 표본 수 부족에 따른 불확실성 범위를 확인합니다. / 최종 밸런스 조정 및 콘텐츠 개선 의사결정안을 제시합니다."
+                },
+                {
+                  "id": "metric",
+                  "kind": "required",
+                  "description": "지표·분모 정의. 과제 범위: 전체 시도 횟수와 기본 성공률 지표를 정확히 산출합니다. / 숙련도와 보스 종류에 따른 성공률 및 소요 시간 비교 결과를 도출합니다. / 장비 점수가 결과에 미치는 교란 요인을 통제하여 해석합니다. / 시간 흐름에 따른 적응 여부 등 대안 가설을 검증합니다. / 표본 수 부족에 따른 불확실성 범위를 확인합니다. / 최종 밸런스 조정 및 콘텐츠 개선 의사결정안을 제시합니다."
+                },
+                {
+                  "id": "comparison",
+                  "kind": "required",
+                  "description": "비교 집단·기준 정의"
+                },
+                {
+                  "id": "critical",
+                  "kind": "error",
+                  "description": "공개 조건과 반대인 대상·기간·집계 단위·분모를 올바르다고 정의"
+                },
+                {
+                  "id": "advanced",
+                  "kind": "advanced",
+                  "description": "관련 경계·제외·중복 처리 설명"
+                }
+              ]
+            },
+            {
+              "key": "analysis_approach",
+              "conditions": [
+                {
+                  "id": "content",
+                  "kind": "content",
+                  "description": "현재 제출 어디에든 이 항목에서 평가할 판단·계획·방법·해석이 존재"
+                },
+                {
+                  "id": "method",
+                  "kind": "required",
+                  "description": "목표에 대응하는 자료·관계·집계 방법. 과제 범위: 전체 시도 횟수와 기본 성공률 지표를 정확히 산출합니다. / 숙련도와 보스 종류에 따른 성공률 및 소요 시간 비교 결과를 도출합니다. / 장비 점수가 결과에 미치는 교란 요인을 통제하여 해석합니다. / 시간 흐름에 따른 적응 여부 등 대안 가설을 검증합니다. / 표본 수 부족에 따른 불확실성 범위를 확인합니다. / 최종 밸런스 조정 및 콘텐츠 개선 의사결정안을 제시합니다."
+                },
+                {
+                  "id": "validation",
+                  "kind": "required",
+                  "description": "판단 가능한 검증 순서. 과제 범위: 전체 시도 횟수와 기본 성공률 지표를 정확히 산출합니다. / 숙련도와 보스 종류에 따른 성공률 및 소요 시간 비교 결과를 도출합니다. / 장비 점수가 결과에 미치는 교란 요인을 통제하여 해석합니다. / 시간 흐름에 따른 적응 여부 등 대안 가설을 검증합니다. / 표본 수 부족에 따른 불확실성 범위를 확인합니다. / 최종 밸런스 조정 및 콘텐츠 개선 의사결정안을 제시합니다."
+                },
+                {
+                  "id": "task_comparison",
+                  "kind": "required",
+                  "description": "숙련도와 보스 종류에 따른 성공률 및 소요 시간 비교 결과를 도출합니다."
+                },
+                {
+                  "id": "task_confounding",
+                  "kind": "required",
+                  "description": "장비 점수가 결과에 미치는 교란 요인을 통제하여 해석합니다."
+                },
+                {
+                  "id": "task_alternatives",
+                  "kind": "required",
+                  "description": "시간 흐름에 따른 적응 여부 등 대안 가설을 검증합니다."
+                },
+                {
+                  "id": "critical",
+                  "kind": "error",
+                  "description": "계획 자체의 중복 단위·잘못된 비교·가설에 맞춘 자료 변경"
+                },
+                {
+                  "id": "advanced",
+                  "kind": "advanced",
+                  "description": "목표와 관련된 대안·반증·민감도 확인 방법"
+                }
+              ]
+            },
+            {
+              "key": "sql_accuracy",
+              "conditions": [
+                {
+                  "id": "content",
+                  "kind": "content",
+                  "description": "현재 제출 어디에든 이 항목에서 평가할 판단·계획·방법·해석이 존재"
+                },
+                {
+                  "id": "execution",
+                  "kind": "required",
+                  "description": "선택 저장한 실제 실행. 과제 범위: 전체 시도 횟수와 기본 성공률 지표를 정확히 산출합니다. / 숙련도와 보스 종류에 따른 성공률 및 소요 시간 비교 결과를 도출합니다. / 장비 점수가 결과에 미치는 교란 요인을 통제하여 해석합니다. / 시간 흐름에 따른 적응 여부 등 대안 가설을 검증합니다. / 표본 수 부족에 따른 불확실성 범위를 확인합니다. / 최종 밸런스 조정 및 콘텐츠 개선 의사결정안을 제시합니다."
+                },
+                {
+                  "id": "calculation",
+                  "kind": "required",
+                  "description": "공개 목표에 맞는 완전한 계산. 과제 범위: 전체 시도 횟수와 기본 성공률 지표를 정확히 산출합니다. / 숙련도와 보스 종류에 따른 성공률 및 소요 시간 비교 결과를 도출합니다. / 장비 점수가 결과에 미치는 교란 요인을 통제하여 해석합니다. / 시간 흐름에 따른 적응 여부 등 대안 가설을 검증합니다. / 표본 수 부족에 따른 불확실성 범위를 확인합니다. / 최종 밸런스 조정 및 콘텐츠 개선 의사결정안을 제시합니다."
+                },
+                {
+                  "id": "critical",
+                  "kind": "error",
+                  "description": "실제 실행에서 확인된 계산·집계 단위·분모·기간 오류"
+                },
+                {
+                  "id": "advanced",
+                  "kind": "advanced",
+                  "description": "실제 저장 근거로 중복·경계·독립 검산 확인"
+                }
+              ]
+            },
+            {
+              "key": "interpretation",
+              "conditions": [
+                {
+                  "id": "content",
+                  "kind": "content",
+                  "description": "현재 제출 어디에든 이 항목에서 평가할 판단·계획·방법·해석이 존재"
+                },
+                {
+                  "id": "meaning",
+                  "kind": "required",
+                  "description": "결론과 실제 근거 또는 설계의 의미 연결. 과제 범위: 전체 시도 횟수와 기본 성공률 지표를 정확히 산출합니다. / 숙련도와 보스 종류에 따른 성공률 및 소요 시간 비교 결과를 도출합니다. / 장비 점수가 결과에 미치는 교란 요인을 통제하여 해석합니다. / 시간 흐름에 따른 적응 여부 등 대안 가설을 검증합니다. / 표본 수 부족에 따른 불확실성 범위를 확인합니다. / 최종 밸런스 조정 및 콘텐츠 개선 의사결정안을 제시합니다."
+                },
+                {
+                  "id": "scope",
+                  "kind": "required",
+                  "description": "공개 자료로 판단 가능한 결론 범위. 과제 범위: 전체 시도 횟수와 기본 성공률 지표를 정확히 산출합니다. / 숙련도와 보스 종류에 따른 성공률 및 소요 시간 비교 결과를 도출합니다. / 장비 점수가 결과에 미치는 교란 요인을 통제하여 해석합니다. / 시간 흐름에 따른 적응 여부 등 대안 가설을 검증합니다. / 표본 수 부족에 따른 불확실성 범위를 확인합니다. / 최종 밸런스 조정 및 콘텐츠 개선 의사결정안을 제시합니다."
+                },
+                {
+                  "id": "task_uncertainty",
+                  "kind": "required",
+                  "description": "표본 수 부족에 따른 불확실성 범위를 확인합니다."
+                },
+                {
+                  "id": "critical",
+                  "kind": "error",
+                  "description": "근거와 반대인 최종 결론·미실행 결과 확인 주장·관측만으로 원인 증명 단정·미해결 최종 모순"
+                },
+                {
+                  "id": "advanced",
+                  "kind": "advanced",
+                  "description": "대안·불확실성·관측 한계를 결론 적용 범위에 연결"
+                }
+              ]
+            },
+            {
+              "key": "next_actions",
+              "conditions": [
+                {
+                  "id": "content",
+                  "kind": "content",
+                  "description": "현재 제출 어디에든 이 항목에서 평가할 판단·계획·방법·해석이 존재"
+                },
+                {
+                  "id": "action",
+                  "kind": "required",
+                  "description": "남은 질문 또는 완료 판단에 대응하는 구체적 행동. 과제 범위: 전체 시도 횟수와 기본 성공률 지표를 정확히 산출합니다. / 숙련도와 보스 종류에 따른 성공률 및 소요 시간 비교 결과를 도출합니다. / 장비 점수가 결과에 미치는 교란 요인을 통제하여 해석합니다. / 시간 흐름에 따른 적응 여부 등 대안 가설을 검증합니다. / 표본 수 부족에 따른 불확실성 범위를 확인합니다. / 최종 밸런스 조정 및 콘텐츠 개선 의사결정안을 제시합니다."
+                },
+                {
+                  "id": "purpose",
+                  "kind": "required",
+                  "description": "확인 방법과 목적 또는 정리·제출 판단. 과제 범위: 전체 시도 횟수와 기본 성공률 지표를 정확히 산출합니다. / 숙련도와 보스 종류에 따른 성공률 및 소요 시간 비교 결과를 도출합니다. / 장비 점수가 결과에 미치는 교란 요인을 통제하여 해석합니다. / 시간 흐름에 따른 적응 여부 등 대안 가설을 검증합니다. / 표본 수 부족에 따른 불확실성 범위를 확인합니다. / 최종 밸런스 조정 및 콘텐츠 개선 의사결정안을 제시합니다."
+                },
+                {
+                  "id": "task_decision",
+                  "kind": "required",
+                  "description": "최종 밸런스 조정 및 콘텐츠 개선 의사결정안을 제시합니다."
+                },
+                {
+                  "id": "critical",
+                  "kind": "error",
+                  "description": "잘못된 전제로 효과 보장·검증 없이 인과 개입 확정·자료를 가설에 맞춰 변경"
+                },
+                {
+                  "id": "advanced",
+                  "kind": "advanced",
+                  "description": "우선순위와 확인 결과별 다음 결정·종료 조건"
+                }
+              ]
+            }
+          ],
+          "excluded_criteria": []
+        },
+        "contract_hash": "b9b132c39a22076a97e188b7d64da631bbf3a84fb7352548a7d877a1633671ea"
+      }
+    }
+  }
+]

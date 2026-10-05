@@ -1,0 +1,4731 @@
+[
+  {
+    "request": {
+      "error": "요청별 데이터 설계가 생성·검증 규칙을 충족하지 않아 출제하지 않았습니다.",
+      "states": [
+        {
+          "at": "2026-10-05T18:42:15.348815Z",
+          "status": "accepted"
+        },
+        {
+          "at": "2026-10-05T18:42:15.441045Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T18:42:27.061783Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T18:42:41.063377Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T18:42:54.854930Z",
+          "status": "failed"
+        }
+      ],
+      "status": "failed",
+      "message": "실제 게임 업계 실무에서 발생하는 문제를 분석하고 싶어",
+      "revision": 0,
+      "questions": [],
+      "attempt_id": null,
+      "created_at": "2026-10-05T18:42:15.348804Z",
+      "error_code": "plan_invalid",
+      "request_id": "fbcc0130-6a12-4b45-a361-81b1ff0bee6c",
+      "operation_id": "72ffbd8f-ac28-4816-82e0-f68f8dcbfac8",
+      "retry_allowed": true,
+      "failure_detail": null,
+      "planning_calls": 3,
+      "failure_history": [
+        {
+          "at": "2026-10-05T18:42:54.854917Z",
+          "error": "요청별 데이터 설계가 생성·검증 규칙을 충족하지 않아 출제하지 않았습니다.",
+          "error_code": "plan_invalid",
+          "failure_detail": null,
+          "planning_calls": 3
+        }
+      ],
+      "contract_version": "request-v2",
+      "generation_attempts": 0,
+      "recommendation_change": null
+    },
+    "schema_reviews": [
+      {
+        "issues": [
+          {
+            "type": "value_error",
+            "message": "Value error, timezone required",
+            "location": []
+          }
+        ],
+        "planning_calls": 1
+      },
+      {
+        "issues": [
+          {
+            "type": "value_error",
+            "message": "Value error, timezone required",
+            "location": []
+          }
+        ],
+        "planning_calls": 2
+      },
+      {
+        "issues": [
+          {
+            "type": "value_error",
+            "message": "Value error, timezone required",
+            "location": []
+          }
+        ],
+        "planning_calls": 3
+      }
+    ],
+    "alignment_reviews": [],
+    "usage": [
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "8309692e-1fe0-4da0-b443-43f5ab419fbe",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "fbcc0130-6a12-4b45-a361-81b1ff0bee6c",
+        "started_at": "2026-10-05T18:42:15.457552Z",
+        "duration_ms": 11569,
+        "finished_at": "2026-10-05T18:42:27.027290Z",
+        "occurred_at": "2026-10-05T18:42:15.457552Z",
+        "input_tokens": 4993,
+        "operation_id": "e70b171b-90aa-4002-9128-156b7d0400ce",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 3855,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "3b0b65df-31af-4bea-94e8-2ff83100cdf9",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "fbcc0130-6a12-4b45-a361-81b1ff0bee6c",
+        "started_at": "2026-10-05T18:42:27.076436Z",
+        "duration_ms": 13954,
+        "finished_at": "2026-10-05T18:42:41.031123Z",
+        "occurred_at": "2026-10-05T18:42:27.076436Z",
+        "input_tokens": 9068,
+        "operation_id": "fd2c3bb1-e20d-4835-a8c3-8acc54bd1e3f",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 3855,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-repair-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "587c0d3d-6be1-4606-909e-5bda6946bc60",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "fbcc0130-6a12-4b45-a361-81b1ff0bee6c",
+        "started_at": "2026-10-05T18:42:41.078513Z",
+        "duration_ms": 13743,
+        "finished_at": "2026-10-05T18:42:54.822058Z",
+        "occurred_at": "2026-10-05T18:42:41.078513Z",
+        "input_tokens": 13143,
+        "operation_id": "a1d0a065-98d4-4bbc-b77d-0df64f74dc8c",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 3855,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-repair-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      }
+    ]
+  },
+  {
+    "request": {
+      "error": "요청별 데이터 설계가 생성·검증 규칙을 충족하지 않아 출제하지 않았습니다.",
+      "states": [
+        {
+          "at": "2026-10-05T18:44:04.579641Z",
+          "status": "accepted"
+        },
+        {
+          "at": "2026-10-05T18:44:04.674452Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T18:44:15.323412Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T18:44:28.969830Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T18:44:42.551247Z",
+          "status": "failed"
+        }
+      ],
+      "status": "failed",
+      "message": "실제 게임 업계 실무에서 발생하는 문제를 분석하고 싶어",
+      "revision": 0,
+      "questions": [],
+      "attempt_id": null,
+      "created_at": "2026-10-05T18:44:04.579628Z",
+      "error_code": "plan_invalid",
+      "request_id": "cba5c92b-5fed-4abd-b916-9a07e5c8cf18",
+      "operation_id": "c4eda9bb-c158-46bb-afba-c8aad35236c3",
+      "retry_allowed": true,
+      "failure_detail": null,
+      "planning_calls": 3,
+      "failure_history": [
+        {
+          "at": "2026-10-05T18:44:42.551234Z",
+          "error": "요청별 데이터 설계가 생성·검증 규칙을 충족하지 않아 출제하지 않았습니다.",
+          "error_code": "plan_invalid",
+          "failure_detail": null,
+          "planning_calls": 3
+        }
+      ],
+      "contract_version": "request-v2",
+      "generation_attempts": 0,
+      "recommendation_change": null
+    },
+    "schema_reviews": [
+      {
+        "issues": [
+          {
+            "type": "value_error",
+            "message": "Value error, random table requires groups and cannot contain derived columns",
+            "location": []
+          }
+        ],
+        "planning_calls": 1
+      },
+      {
+        "issues": [
+          {
+            "type": "value_error",
+            "message": "Value error, per-account summary needs unique_keys for account reference",
+            "location": []
+          }
+        ],
+        "planning_calls": 2
+      },
+      {
+        "issues": [
+          {
+            "type": "value_error",
+            "message": "Value error, random table requires groups and cannot contain derived columns",
+            "location": []
+          }
+        ],
+        "planning_calls": 3
+      }
+    ],
+    "alignment_reviews": [],
+    "usage": [
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "93454ab8-571a-44a2-bc8e-4512e2d333de",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "cba5c92b-5fed-4abd-b916-9a07e5c8cf18",
+        "started_at": "2026-10-05T18:44:04.690863Z",
+        "duration_ms": 10602,
+        "finished_at": "2026-10-05T18:44:15.293035Z",
+        "occurred_at": "2026-10-05T18:44:04.690863Z",
+        "input_tokens": 5034,
+        "operation_id": "c6027253-45c0-46fa-a637-a0d2a5a00ea1",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 3464,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "dedd5551-0408-41ee-a577-575d4c27690a",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "cba5c92b-5fed-4abd-b916-9a07e5c8cf18",
+        "started_at": "2026-10-05T18:44:15.338334Z",
+        "duration_ms": 13587,
+        "finished_at": "2026-10-05T18:44:28.925735Z",
+        "occurred_at": "2026-10-05T18:44:15.338334Z",
+        "input_tokens": 8782,
+        "operation_id": "6f182dbb-3580-469c-92c4-9c26ba103acf",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 3741,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-repair-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "137aa11a-57cc-4085-a82c-3622061e9c68",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "cba5c92b-5fed-4abd-b916-9a07e5c8cf18",
+        "started_at": "2026-10-05T18:44:28.984696Z",
+        "duration_ms": 13530,
+        "finished_at": "2026-10-05T18:44:42.514720Z",
+        "occurred_at": "2026-10-05T18:44:28.984696Z",
+        "input_tokens": 12809,
+        "operation_id": "494de730-9390-4f4c-bab0-e4afc4ff8cba",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 3685,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-repair-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      }
+    ]
+  },
+  {
+    "request": {
+      "error": "요청별 데이터 설계가 생성·검증 규칙을 충족하지 않아 출제하지 않았습니다.",
+      "states": [
+        {
+          "at": "2026-10-05T18:45:29.592289Z",
+          "status": "accepted"
+        },
+        {
+          "at": "2026-10-05T18:45:29.668390Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T18:45:39.347609Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T18:45:53.206839Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T18:46:06.580936Z",
+          "status": "failed"
+        }
+      ],
+      "status": "failed",
+      "message": "실제 게임 업계 실무에서 발생하는 문제를 분석하고 싶어",
+      "revision": 0,
+      "questions": [],
+      "attempt_id": null,
+      "created_at": "2026-10-05T18:45:29.592276Z",
+      "error_code": "plan_invalid",
+      "request_id": "29295f83-dfee-450b-b2b3-fd0c0e95a53d",
+      "operation_id": "97a5f8b8-a621-46f4-afae-f4776d657812",
+      "retry_allowed": true,
+      "failure_detail": null,
+      "planning_calls": 3,
+      "failure_history": [
+        {
+          "at": "2026-10-05T18:46:06.580922Z",
+          "error": "요청별 데이터 설계가 생성·검증 규칙을 충족하지 않아 출제하지 않았습니다.",
+          "error_code": "plan_invalid",
+          "failure_detail": null,
+          "planning_calls": 3
+        }
+      ],
+      "contract_version": "request-v2",
+      "generation_attempts": 0,
+      "recommendation_change": null
+    },
+    "schema_reviews": [
+      {
+        "issues": [
+          {
+            "type": "value_error",
+            "message": "Value error, quest_events: random Table needs groups with count, Table.group_by=[] and derived_from=null; received groups=0, Table.group_by=[], derived generators=[]",
+            "location": []
+          }
+        ],
+        "planning_calls": 1
+      },
+      {
+        "issues": [
+          {
+            "type": "value_error",
+            "message": "Value error, timestamp offset needs preceding timestamp and duration",
+            "location": []
+          }
+        ],
+        "planning_calls": 2
+      },
+      {
+        "issues": [
+          {
+            "type": "value_error",
+            "message": "Value error, timestamp offset needs preceding timestamp and duration",
+            "location": []
+          }
+        ],
+        "planning_calls": 3
+      }
+    ],
+    "alignment_reviews": [],
+    "usage": [
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "35b36467-98b3-4b2e-b23b-fe092470272c",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "29295f83-dfee-450b-b2b3-fd0c0e95a53d",
+        "started_at": "2026-10-05T18:45:29.683847Z",
+        "duration_ms": 9630,
+        "finished_at": "2026-10-05T18:45:39.314115Z",
+        "occurred_at": "2026-10-05T18:45:29.683847Z",
+        "input_tokens": 5151,
+        "operation_id": "df474517-a73e-4261-9381-79af94aba89f",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 3257,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "990b0377-3d9b-4176-809f-c6a63abf297c",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "29295f83-dfee-450b-b2b3-fd0c0e95a53d",
+        "started_at": "2026-10-05T18:45:39.362098Z",
+        "duration_ms": 13815,
+        "finished_at": "2026-10-05T18:45:53.177227Z",
+        "occurred_at": "2026-10-05T18:45:39.362098Z",
+        "input_tokens": 8721,
+        "operation_id": "487acddb-02b3-4f37-8238-5be7e0513316",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 3522,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-repair-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "c3d3273d-8c5d-4932-b63a-e05f2894d55d",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "29295f83-dfee-450b-b2b3-fd0c0e95a53d",
+        "started_at": "2026-10-05T18:45:53.221695Z",
+        "duration_ms": 13328,
+        "finished_at": "2026-10-05T18:46:06.549794Z",
+        "occurred_at": "2026-10-05T18:45:53.221695Z",
+        "input_tokens": 12525,
+        "operation_id": "e44697f1-130e-4451-9955-772d64543d94",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 3509,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-repair-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      }
+    ]
+  },
+  {
+    "request": {
+      "error": "요청별 데이터 설계가 생성·검증 규칙을 충족하지 않아 출제하지 않았습니다.",
+      "states": [
+        {
+          "at": "2026-10-05T18:47:18.309408Z",
+          "status": "accepted"
+        },
+        {
+          "at": "2026-10-05T18:47:18.390853Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T18:47:27.820812Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T18:47:40.500827Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T18:47:52.972891Z",
+          "status": "failed"
+        }
+      ],
+      "status": "failed",
+      "message": "실제 게임 업계 실무에서 발생하는 문제를 분석하고 싶어",
+      "revision": 0,
+      "questions": [],
+      "attempt_id": null,
+      "created_at": "2026-10-05T18:47:18.309391Z",
+      "error_code": "plan_invalid",
+      "request_id": "6d17b7da-2e22-4dba-9bad-858512c9988e",
+      "operation_id": "4d3b27d3-80cf-40a9-8ceb-b64f13f13487",
+      "retry_allowed": true,
+      "failure_detail": null,
+      "planning_calls": 3,
+      "failure_history": [
+        {
+          "at": "2026-10-05T18:47:52.972880Z",
+          "error": "요청별 데이터 설계가 생성·검증 규칙을 충족하지 않아 출제하지 않았습니다.",
+          "error_code": "plan_invalid",
+          "failure_detail": null,
+          "planning_calls": 3
+        }
+      ],
+      "contract_version": "request-v2",
+      "generation_attempts": 0,
+      "recommendation_change": null
+    },
+    "schema_reviews": [
+      {
+        "issues": [
+          {
+            "type": "json_invalid",
+            "message": "Invalid JSON: key must be a string at line 255 column 5",
+            "location": []
+          }
+        ],
+        "planning_calls": 1
+      },
+      {
+        "issues": [
+          {
+            "type": "value_error",
+            "message": "Value error, daily_summary: missing or cyclic time column dependencies; remaining=['day']",
+            "location": [
+              "tables",
+              2
+            ]
+          }
+        ],
+        "planning_calls": 2
+      },
+      {
+        "issues": [
+          {
+            "type": "value_error",
+            "message": "Value error, derived columns must be group_key or aggregate",
+            "location": []
+          }
+        ],
+        "planning_calls": 3
+      }
+    ],
+    "alignment_reviews": [],
+    "usage": [
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "be4709ac-dd35-4b37-a616-3c41a408581d",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "6d17b7da-2e22-4dba-9bad-858512c9988e",
+        "started_at": "2026-10-05T18:47:18.404781Z",
+        "duration_ms": 9386,
+        "finished_at": "2026-10-05T18:47:27.791312Z",
+        "occurred_at": "2026-10-05T18:47:18.404781Z",
+        "input_tokens": 5277,
+        "operation_id": "3b3a10a4-1443-4e53-a10a-8171dc00e8b7",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 2964,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "ddd98613-fda4-44ae-b26c-515e8218daeb",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "6d17b7da-2e22-4dba-9bad-858512c9988e",
+        "started_at": "2026-10-05T18:47:27.835207Z",
+        "duration_ms": 12629,
+        "finished_at": "2026-10-05T18:47:40.464497Z",
+        "occurred_at": "2026-10-05T18:47:27.835207Z",
+        "input_tokens": 8530,
+        "operation_id": "6c4ecf6f-8ff1-4677-883a-94519531e76f",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 3184,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-repair-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "e2579677-089c-4226-89c9-b9ff25e6c7c6",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "6d17b7da-2e22-4dba-9bad-858512c9988e",
+        "started_at": "2026-10-05T18:47:40.515556Z",
+        "duration_ms": 12425,
+        "finished_at": "2026-10-05T18:47:52.941325Z",
+        "occurred_at": "2026-10-05T18:47:40.515556Z",
+        "input_tokens": 12009,
+        "operation_id": "a0cb12f8-ad20-495d-861f-8a2ed4a1470b",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 3094,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-repair-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      }
+    ]
+  },
+  {
+    "request": {
+      "error": "요청별 데이터 설계 호출을 완료하지 못했습니다. 입력을 유지했습니다.",
+      "states": [
+        {
+          "at": "2026-10-05T18:48:45.258707Z",
+          "status": "accepted"
+        },
+        {
+          "at": "2026-10-05T18:48:45.344266Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T18:48:46.247558Z",
+          "status": "failed"
+        }
+      ],
+      "status": "failed",
+      "message": "실제 게임 업계 실무에서 발생하는 문제를 분석하고 싶어",
+      "revision": 0,
+      "questions": [],
+      "attempt_id": null,
+      "created_at": "2026-10-05T18:48:45.258695Z",
+      "error_code": "planning_failed",
+      "request_id": "47dd1864-768f-440f-8d7c-49f889294f2f",
+      "operation_id": "400dec8f-18a7-4489-a973-41905d06b272",
+      "retry_allowed": true,
+      "failure_detail": null,
+      "planning_calls": 1,
+      "failure_history": [
+        {
+          "at": "2026-10-05T18:48:46.247547Z",
+          "error": "요청별 데이터 설계 호출을 완료하지 못했습니다. 입력을 유지했습니다.",
+          "error_code": "planning_failed",
+          "failure_detail": null,
+          "planning_calls": 1
+        }
+      ],
+      "contract_version": "request-v2",
+      "generation_attempts": 0,
+      "recommendation_change": null
+    },
+    "schema_reviews": [
+      {
+        "issues": [],
+        "planning_calls": 1
+      }
+    ],
+    "alignment_reviews": [],
+    "usage": [
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "failed",
+        "event_id": "f4d8315f-3986-41f1-b4a1-9c0924dbbe10",
+        "error_code": "provider_failure",
+        "event_type": "ai_started",
+        "request_id": "47dd1864-768f-440f-8d7c-49f889294f2f",
+        "started_at": "2026-10-05T18:48:45.358784Z",
+        "duration_ms": 854,
+        "finished_at": "2026-10-05T18:48:46.213615Z",
+        "occurred_at": "2026-10-05T18:48:45.358784Z",
+        "input_tokens": null,
+        "operation_id": "f1264fd3-7255-4cfb-a8c2-a8c3c6e349b0",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": null,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": {
+          "stage": "http",
+          "timeout": false,
+          "request_id": "305e70e1-d674-4d72-b241-cd4cba1f0ad5",
+          "http_status": 400
+        },
+        "usage_missing_reason": "not_reported"
+      }
+    ]
+  },
+  {
+    "request": {
+      "error": "요청별 데이터 설계가 생성·검증 규칙을 충족하지 않아 출제하지 않았습니다.",
+      "states": [
+        {
+          "at": "2026-10-05T18:49:41.980652Z",
+          "status": "accepted"
+        },
+        {
+          "at": "2026-10-05T18:49:42.059761Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T18:49:49.073691Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T18:50:00.582750Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T18:50:11.933124Z",
+          "status": "failed"
+        }
+      ],
+      "status": "failed",
+      "message": "실제 게임 업계 실무에서 발생하는 문제를 분석하고 싶어",
+      "revision": 0,
+      "questions": [],
+      "attempt_id": null,
+      "created_at": "2026-10-05T18:49:41.980642Z",
+      "error_code": "plan_invalid",
+      "request_id": "a1a068f8-e61c-4c98-8f59-dce0dcf2c9e1",
+      "operation_id": "657a9710-8428-44bb-8c07-3a7ca020ce9d",
+      "retry_allowed": true,
+      "failure_detail": null,
+      "planning_calls": 3,
+      "failure_history": [
+        {
+          "at": "2026-10-05T18:50:11.933113Z",
+          "error": "요청별 데이터 설계가 생성·검증 규칙을 충족하지 않아 출제하지 않았습니다.",
+          "error_code": "plan_invalid",
+          "failure_detail": null,
+          "planning_calls": 3
+        }
+      ],
+      "contract_version": "request-v2",
+      "generation_attempts": 0,
+      "recommendation_change": null
+    },
+    "schema_reviews": [
+      {
+        "issues": [],
+        "planning_calls": 1
+      },
+      {
+        "issues": [],
+        "planning_calls": 2
+      },
+      {
+        "issues": [],
+        "planning_calls": 3
+      }
+    ],
+    "alignment_reviews": [],
+    "usage": [
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "4456ae4c-dfee-4d63-a731-69df869a6793",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "a1a068f8-e61c-4c98-8f59-dce0dcf2c9e1",
+        "started_at": "2026-10-05T18:49:42.074542Z",
+        "duration_ms": 6969,
+        "finished_at": "2026-10-05T18:49:49.043895Z",
+        "occurred_at": "2026-10-05T18:49:42.074542Z",
+        "input_tokens": 5277,
+        "operation_id": "1c667f7b-986e-4bc3-828d-e36356b818b0",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 2099,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "78cb1842-2c0a-43d5-a310-fc3d660bc46f",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "a1a068f8-e61c-4c98-8f59-dce0dcf2c9e1",
+        "started_at": "2026-10-05T18:49:49.088335Z",
+        "duration_ms": 11463,
+        "finished_at": "2026-10-05T18:50:00.551836Z",
+        "occurred_at": "2026-10-05T18:49:49.088335Z",
+        "input_tokens": 7632,
+        "operation_id": "07e1fb84-4cfb-44f1-889e-2c5b29ee588d",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 2338,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-repair-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "cd25468e-acc9-49d4-bb2c-b169d679fce2",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "a1a068f8-e61c-4c98-8f59-dce0dcf2c9e1",
+        "started_at": "2026-10-05T18:50:00.597403Z",
+        "duration_ms": 11304,
+        "finished_at": "2026-10-05T18:50:11.901566Z",
+        "occurred_at": "2026-10-05T18:50:00.597403Z",
+        "input_tokens": 10226,
+        "operation_id": "ded4d928-d42e-4c2a-9318-0438e32a35d5",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 2345,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-repair-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      }
+    ]
+  },
+  {
+    "request": {
+      "error": null,
+      "states": [
+        {
+          "at": "2026-10-05T18:51:55.282909Z",
+          "status": "accepted"
+        },
+        {
+          "at": "2026-10-05T18:51:55.359911Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T18:52:03.292840Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T18:52:15.639615Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T18:52:29.118482Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T18:52:35.156803Z",
+          "status": "preparing_data"
+        },
+        {
+          "at": "2026-10-05T18:52:35.268462Z",
+          "status": "validating"
+        },
+        {
+          "at": "2026-10-05T18:52:35.328955Z",
+          "status": "ready"
+        }
+      ],
+      "status": "ready",
+      "message": "실제 게임 업계 실무에서 발생하는 문제를 분석하고 싶어",
+      "revision": 0,
+      "questions": [],
+      "attempt_id": "13f928ad-71f2-424d-b38a-dd73c33ba6f4",
+      "created_at": "2026-10-05T18:51:55.282897Z",
+      "error_code": null,
+      "request_id": "578b4742-e970-49e4-9e5a-25080d6ab490",
+      "duration_ms": 40032,
+      "finished_at": "2026-10-05T18:52:35.328940Z",
+      "operation_id": "b45aa9b8-dfc5-42d2-a3b3-9078b1b9fdd4",
+      "retry_allowed": false,
+      "planning_calls": 4,
+      "contract_version": "request-v2",
+      "generation_attempts": 1,
+      "recommendation_change": null
+    },
+    "schema_reviews": [
+      {
+        "issues": [
+          {
+            "type": "value_error",
+            "message": "Value error, daily_summaries: daily summary must group by a day bucket or ISO date category from sessions",
+            "location": []
+          }
+        ],
+        "planning_calls": 1
+      },
+      {
+        "issues": [
+          {
+            "type": "data_dependency",
+            "message": "task quality: difficulty lacks required judgments: decision,uncertainty",
+            "location": []
+          }
+        ],
+        "planning_calls": 2
+      }
+    ],
+    "alignment_reviews": [
+      {
+        "passed": true
+      }
+    ],
+    "recipe": {
+      "goal": "신규 콘텐츠 업데이트 이후 이용자들의 플레이 기록과 잔류 기간을 분석하여 특정 구간에서의 이탈 요인을 진단하고 개선 의사결정을 도출합니다.",
+      "title": "신규 콘텐츠 도입에 따른 이용자 잔류 및 참여 패턴 비교 분석",
+      "topic": "모바일 게임 신규 콘텐츠 이용자 이탈 구간 및 참여 패턴 분석",
+      "reason": "중급 난이도에 요구되는 판단 역량(decision, uncertainty)을 business_case와 requirements에 반영하고 필수 메트릭 조건을 충족하도록 수정하였습니다.",
+      "rubric": "요청된 측정 지표의 정확성, 그룹 간 비교 논리, 불확실성 검토 및 최종 의사결정 제안의 타당성을 종합적으로 평가합니다.",
+      "status": "ready",
+      "tables": [
+        {
+          "name": "profiles",
+          "grain": "계정별 기본 프로필 및 그룹 정보",
+          "groups": [
+            {
+              "name": "sample",
+              "count": 200,
+              "overrides": {}
+            }
+          ],
+          "columns": [
+            {
+              "name": "id",
+              "generator": {
+                "end": null,
+                "kind": "id",
+                "group": null,
+                "start": null,
+                "table": null,
+                "bucket": null,
+                "values": [],
+                "maximum": null,
+                "minimum": null,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": null,
+                "entity_column": null,
+                "source_column": null,
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "계정 고유 번호"
+            },
+            {
+              "name": "segment",
+              "generator": {
+                "end": null,
+                "kind": "category",
+                "group": null,
+                "start": null,
+                "table": null,
+                "bucket": null,
+                "values": [
+                  "standard",
+                  "veteran"
+                ],
+                "maximum": null,
+                "minimum": null,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": null,
+                "entity_column": null,
+                "source_column": null,
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "이용자 숙련도 그룹"
+            },
+            {
+              "name": "joined_at",
+              "generator": {
+                "end": "2026-09-05T00:00:00+09:00",
+                "kind": "timestamp",
+                "group": null,
+                "start": "2026-09-01T00:00:00+09:00",
+                "table": null,
+                "bucket": null,
+                "values": [],
+                "maximum": null,
+                "minimum": null,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": null,
+                "entity_column": null,
+                "source_column": null,
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "계정 생성 일시"
+            }
+          ],
+          "group_by": [],
+          "unique_keys": [
+            [
+              "id"
+            ]
+          ],
+          "derived_from": null
+        },
+        {
+          "name": "sessions",
+          "grain": "계정별 콘텐츠 도전 세션 로그",
+          "groups": [
+            {
+              "name": "sample",
+              "count": 300,
+              "overrides": {}
+            }
+          ],
+          "columns": [
+            {
+              "name": "id",
+              "generator": {
+                "end": null,
+                "kind": "id",
+                "group": null,
+                "start": null,
+                "table": null,
+                "bucket": null,
+                "values": [],
+                "maximum": null,
+                "minimum": null,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": null,
+                "entity_column": null,
+                "source_column": null,
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "세션 고유 번호"
+            },
+            {
+              "name": "account_id",
+              "generator": {
+                "end": null,
+                "kind": "foreign_key",
+                "group": "sample",
+                "start": null,
+                "table": "profiles",
+                "bucket": null,
+                "values": [],
+                "maximum": null,
+                "minimum": null,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": null,
+                "entity_column": null,
+                "source_column": null,
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "계정 고유 번호"
+            },
+            {
+              "name": "wait_seconds",
+              "generator": {
+                "end": null,
+                "kind": "integer",
+                "group": null,
+                "start": null,
+                "table": null,
+                "bucket": null,
+                "values": [],
+                "maximum": 120.0,
+                "minimum": 10.0,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": null,
+                "entity_column": null,
+                "source_column": null,
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "콘텐츠 매칭 대기 시간"
+            },
+            {
+              "name": "duration_seconds",
+              "generator": {
+                "end": null,
+                "kind": "integer",
+                "group": null,
+                "start": null,
+                "table": null,
+                "bucket": null,
+                "values": [],
+                "maximum": 600.0,
+                "minimum": 60.0,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": null,
+                "entity_column": null,
+                "source_column": null,
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "콘텐츠 진행 소요 시간"
+            },
+            {
+              "name": "started_at",
+              "generator": {
+                "end": "2026-09-10T00:00:00+09:00",
+                "kind": "timestamp_sequence",
+                "group": null,
+                "start": "2026-09-01T00:00:00+09:00",
+                "table": null,
+                "bucket": null,
+                "values": [],
+                "maximum": null,
+                "minimum": null,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": null,
+                "entity_column": "account_id",
+                "source_column": null,
+                "duration_column": "duration_seconds",
+                "interval_column": "wait_seconds",
+                "partition_columns": []
+              },
+              "description": "콘텐츠 시작 시각"
+            },
+            {
+              "name": "ended_at",
+              "generator": {
+                "end": null,
+                "kind": "timestamp_offset",
+                "group": null,
+                "start": null,
+                "table": null,
+                "bucket": null,
+                "values": [],
+                "maximum": null,
+                "minimum": null,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": null,
+                "entity_column": null,
+                "source_column": "started_at",
+                "duration_column": null,
+                "interval_column": "duration_seconds",
+                "partition_columns": []
+              },
+              "description": "콘텐츠 종료 시각"
+            },
+            {
+              "name": "session_day",
+              "generator": {
+                "end": null,
+                "kind": "timestamp_bucket",
+                "group": null,
+                "start": null,
+                "table": null,
+                "bucket": "day",
+                "values": [],
+                "maximum": null,
+                "minimum": null,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": null,
+                "entity_column": null,
+                "source_column": "started_at",
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "세션 참여 일자 버킷"
+            },
+            {
+              "name": "success",
+              "generator": {
+                "end": null,
+                "kind": "integer",
+                "group": null,
+                "start": null,
+                "table": null,
+                "bucket": null,
+                "values": [],
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": null,
+                "entity_column": null,
+                "source_column": null,
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "클리어 성공 여부 (0: 실패, 1: 성공)"
+            }
+          ],
+          "group_by": [],
+          "unique_keys": [
+            [
+              "id"
+            ]
+          ],
+          "derived_from": null
+        },
+        {
+          "name": "daily_summaries",
+          "grain": "계정 및 일자별 세션 요약",
+          "groups": [],
+          "columns": [
+            {
+              "name": "id",
+              "generator": {
+                "end": null,
+                "kind": "id",
+                "group": null,
+                "start": null,
+                "table": null,
+                "bucket": null,
+                "values": [],
+                "maximum": null,
+                "minimum": null,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": null,
+                "entity_column": null,
+                "source_column": null,
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "요약 고유 번호"
+            },
+            {
+              "name": "account_id",
+              "generator": {
+                "end": null,
+                "kind": "group_key",
+                "group": null,
+                "start": null,
+                "table": null,
+                "bucket": null,
+                "values": [],
+                "maximum": null,
+                "minimum": null,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": "integer",
+                "entity_column": null,
+                "source_column": "account_id",
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "계정 고유 번호"
+            },
+            {
+              "name": "session_day",
+              "generator": {
+                "end": null,
+                "kind": "group_key",
+                "group": null,
+                "start": null,
+                "table": null,
+                "bucket": null,
+                "values": [],
+                "maximum": null,
+                "minimum": null,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": "timestamp",
+                "entity_column": null,
+                "source_column": "session_day",
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "세션 일자 버킷"
+            },
+            {
+              "name": "session_count",
+              "generator": {
+                "end": null,
+                "kind": "aggregate",
+                "group": null,
+                "start": null,
+                "table": null,
+                "bucket": null,
+                "values": [],
+                "maximum": null,
+                "minimum": null,
+                "timezone": "Asia/Seoul",
+                "operation": "count",
+                "conditions": [],
+                "value_type": "integer",
+                "entity_column": null,
+                "source_column": null,
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "총 세션 참여 횟수"
+            },
+            {
+              "name": "avg_duration",
+              "generator": {
+                "end": null,
+                "kind": "aggregate",
+                "group": null,
+                "start": null,
+                "table": null,
+                "bucket": null,
+                "values": [],
+                "maximum": null,
+                "minimum": null,
+                "timezone": "Asia/Seoul",
+                "operation": "avg",
+                "conditions": [],
+                "value_type": "number",
+                "entity_column": null,
+                "source_column": "duration_seconds",
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "평균 진행 시간"
+            }
+          ],
+          "group_by": [
+            "account_id",
+            "session_day"
+          ],
+          "unique_keys": [
+            [
+              "id"
+            ],
+            [
+              "account_id",
+              "session_day"
+            ]
+          ],
+          "derived_from": "sessions"
+        }
+      ],
+      "metrics": [
+        {
+          "name": "total_sessions",
+          "joins": [
+            {
+              "table": "profiles",
+              "source_column": "account_id"
+            }
+          ],
+          "table": "sessions",
+          "column": null,
+          "maximum": null,
+          "minimum": null,
+          "purpose": "validation",
+          "group_by": [],
+          "operation": "count",
+          "conditions": [],
+          "denominator_conditions": []
+        },
+        {
+          "name": "failure_investigation_count",
+          "joins": [
+            {
+              "table": "profiles",
+              "source_column": "account_id"
+            }
+          ],
+          "table": "sessions",
+          "column": null,
+          "maximum": null,
+          "minimum": 1.0,
+          "purpose": "validation",
+          "group_by": [],
+          "operation": "count",
+          "conditions": [
+            {
+              "value": 0,
+              "column": "success",
+              "operator": "eq"
+            }
+          ],
+          "denominator_conditions": []
+        },
+        {
+          "name": "success_rate",
+          "joins": [
+            {
+              "table": "profiles",
+              "source_column": "account_id"
+            }
+          ],
+          "table": "sessions",
+          "column": null,
+          "maximum": null,
+          "minimum": null,
+          "purpose": "analysis",
+          "group_by": [
+            "profiles.segment"
+          ],
+          "operation": "ratio",
+          "conditions": [
+            {
+              "value": 1,
+              "column": "success",
+              "operator": "eq"
+            }
+          ],
+          "denominator_conditions": []
+        }
+      ],
+      "questions": [],
+      "task_kind": "investigation",
+      "difficulty": "intermediate",
+      "description": "본 과제는 모바일 게임 라이브 서비스 팀에서 신규 레이드 콘텐츠 추가 후 이용자들의 체류 시간과 완료율 패턴을 분석하는 실무 상황을 다룹니다. 제공되는 계정 프로필 및 전투 로그 데이터를 바탕으로 그룹 간 비교를 수행하고 불확실성을 고려한 이탈 구간 진단 및 의사결정을 도출합니다.",
+      "limitations": [
+        "가상으로 합성된 데이터이므로 실제 서비스의 절대적 수치와 다를 수 있습니다.",
+        "제공된 테이블의 컬럼 및 관계 범위 내에서만 분석을 수행해야 합니다."
+      ],
+      "business_case": {
+        "decision": "숙련도별 완료율 차이에 근거하여 난이도 조정 및 가이드 제공 여부를 결정합니다.",
+        "background": "라이브 오퍼레이션 팀은 신규 레이드 콘텐츠 도입 이후 이용자들의 세션 완료 패턴을 관측하고 있습니다.",
+        "provenance": "synthetic",
+        "requirements": [
+          {
+            "evidence": [
+              {
+                "table": "sessions",
+                "columns": [
+                  "id",
+                  "success",
+                  "duration_seconds"
+                ]
+              },
+              {
+                "table": "profiles",
+                "columns": [
+                  "id",
+                  "segment"
+                ]
+              }
+            ],
+            "question": "전체 세션 데이터에서 각 숙련도 그룹별 총 참여 건수와 완료율을 측정하세요.",
+            "competency": "measurement",
+            "completion": "숙련도 그룹별 참여 건수와 완료율을 정확히 산출해야 합니다."
+          },
+          {
+            "evidence": [
+              {
+                "table": "sessions",
+                "columns": [
+                  "duration_seconds",
+                  "success"
+                ]
+              },
+              {
+                "table": "profiles",
+                "columns": [
+                  "segment"
+                ]
+              }
+            ],
+            "question": "standard 그룹과 veteran 그룹 간의 성공률 및 평균 소요 시간 차이를 비교하고 이탈 위험 구간을 진단하세요.",
+            "competency": "comparison",
+            "completion": "그룹 간 지표 비교 결과와 이탈 구간에 대한 타당한 해석을 제시해야 합니다."
+          },
+          {
+            "evidence": [
+              {
+                "table": "sessions",
+                "columns": [
+                  "success",
+                  "duration_seconds"
+                ]
+              },
+              {
+                "table": "profiles",
+                "columns": [
+                  "segment"
+                ]
+              }
+            ],
+            "question": "표본 규모의 차이와 변동성에 따른 통계적 불확실성이 그룹별 성공률 해석에 미치는 영향을 검토하세요.",
+            "competency": "uncertainty",
+            "completion": "표본 변동성에 따른 불확실성을 고려하여 그룹 간 성과 차이 해석의 한계를 설명해야 합니다."
+          },
+          {
+            "evidence": [
+              {
+                "table": "sessions",
+                "columns": [
+                  "success",
+                  "duration_seconds"
+                ]
+              },
+              {
+                "table": "profiles",
+                "columns": [
+                  "segment"
+                ]
+              }
+            ],
+            "question": "분석된 성공률과 불확실성 수준을 바탕으로 신규 콘텐츠 난이도 하향 조정 또는 가이드라인 배포 중 어떤 조치를 우선 시행할지 결정하세요.",
+            "competency": "decision",
+            "completion": "데이터 증거와 불확실성 진단을 기반으로 합리적인 우선순위 의사결정 방안을 도출해야 합니다."
+          }
+        ],
+        "observed_problem": "특정 숙련도 그룹에서 콘텐츠 실패율이 높게 나타나며 체류 시간이 길어지는 현상이 관측되었습니다.",
+        "agent_assumptions": [
+          "모든 세션 데이터는 누락 없이 기록되었습니다.",
+          "숙련도 그룹은 계정 프로필에 명시된 구분값에 따릅니다."
+        ],
+        "observation_period": "2026-09-01부터 2026-09-10까지"
+      },
+      "labels_public": false,
+      "difficulty_reason": "중급 난이도로서 단순 집계를 넘어 그룹 간 비교, 불확실성 고려 및 최적의 의사결정 판단을 요구합니다.",
+      "completion_conditions": [
+        "계정별 콘텐츠 참여 규모와 완료율을 정확히 측정합니다.",
+        "그룹별 주요 이탈 구간 및 지표 차이를 비교하고 불확실성을 고려하여 진단합니다.",
+        "분석 결과에 근거하여 난이도 조정 및 가이드 제공에 대한 최종 의사결정을 도출합니다."
+      ]
+    },
+    "usage": [
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "46289eb9-bb16-4028-ab3e-1ab577b81889",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "578b4742-e970-49e4-9e5a-25080d6ab490",
+        "started_at": "2026-10-05T18:51:55.374153Z",
+        "duration_ms": 7884,
+        "finished_at": "2026-10-05T18:52:03.258295Z",
+        "occurred_at": "2026-10-05T18:51:55.374153Z",
+        "input_tokens": 5643,
+        "operation_id": "9ff04832-7586-4655-92b9-0a4ad72c8f54",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 2382,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "94ee4de4-66f1-4516-95fc-6ee7e5d50f86",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "578b4742-e970-49e4-9e5a-25080d6ab490",
+        "started_at": "2026-10-05T18:52:03.306643Z",
+        "duration_ms": 12297,
+        "finished_at": "2026-10-05T18:52:15.604030Z",
+        "occurred_at": "2026-10-05T18:52:03.306643Z",
+        "input_tokens": 8319,
+        "operation_id": "8ac9454f-f409-4cbf-be54-542ffb37090c",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 2743,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-repair-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "196b9a7b-92f9-47cf-b174-c35dec7c686a",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "578b4742-e970-49e4-9e5a-25080d6ab490",
+        "started_at": "2026-10-05T18:52:15.656195Z",
+        "duration_ms": 13420,
+        "finished_at": "2026-10-05T18:52:29.076259Z",
+        "occurred_at": "2026-10-05T18:52:15.656195Z",
+        "input_tokens": 11346,
+        "operation_id": "c6b69f49-65a6-470f-a008-36aaed220c4c",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 3128,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-repair-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "7c3b17da-7a2a-4783-aadf-af68b3ff2968",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "578b4742-e970-49e4-9e5a-25080d6ab490",
+        "started_at": "2026-10-05T18:52:29.132588Z",
+        "duration_ms": 6002,
+        "finished_at": "2026-10-05T18:52:35.135376Z",
+        "occurred_at": "2026-10-05T18:52:29.132588Z",
+        "input_tokens": 5635,
+        "operation_id": "099258de-9fe0-4b18-8a81-c4158d636b8e",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 46,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-alignment-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      }
+    ],
+    "attempt": {
+      "title": "신규 콘텐츠 도입에 따른 이용자 잔류 및 참여 패턴 비교 분석",
+      "domain": "모바일 게임 신규 콘텐츠 이용자 이탈 구간 및 참여 패턴 분석",
+      "ai_calls": 4,
+      "plan_hash": "26e6d986835c18503c0883d187d649881e7f1e777df8d9dd00ae67ee7e06da41",
+      "task_kind": "investigation",
+      "attempt_id": "13f928ad-71f2-424d-b38a-dd73c33ba6f4",
+      "dataset_id": "generated-2245a29f1706bd8af6dae449-data",
+      "difficulty": "intermediate",
+      "package_id": "generated-2245a29f1706bd8af6dae449",
+      "problem_id": "problem-001",
+      "request_id": "578b4742-e970-49e4-9e5a-25080d6ab490",
+      "started_at": "2026-10-05T18:52:35.326770Z",
+      "release_version": "v1",
+      "contract_version": "request-v2",
+      "explanation_viewed": false,
+      "intentional_repeat": false,
+      "semantic_signature": {
+        "goal": "신규 콘텐츠 업데이트 이후 이용자들의 플레이 기록과 잔류 기간을 분석하여 특정 구간에서의 이탈 요인을 진단하고 개선 의사결정을 도출합니다.",
+        "domain": "모바일 게임 신규 콘텐츠 이용자 이탈 구간 및 참여 패턴 분석",
+        "format": "investigation",
+        "ambiguity": "intermediate",
+        "situation": "0d6632293ff2",
+        "structure": "ratio:True:1",
+        "difficulty": "intermediate",
+        "evaluation": "adaptive",
+        "quality_version": "task-quality-v1",
+        "required_judgment": "investigation"
+      },
+      "evaluation_rules_version": "request-review-v3",
+      "draft": {
+        "revision": 0,
+        "sections": {}
+      },
+      "saved_executions": [],
+      "reports": [],
+      "reviews": [],
+      "hints": [],
+      "pilot_linked": false,
+      "problem": {
+        "goal": "신규 콘텐츠 업데이트 이후 이용자들의 플레이 기록과 잔류 기간을 분석하여 특정 구간에서의 이탈 요인을 진단하고 개선 의사결정을 도출합니다.",
+        "title": "신규 콘텐츠 도입에 따른 이용자 잔류 및 참여 패턴 비교 분석",
+        "plan_id": "2bbe4702-3e8e-474c-9648-4e9e836df93e",
+        "weights": {
+          "next_actions": 10,
+          "sql_accuracy": 20,
+          "interpretation": 20,
+          "analysis_approach": 25,
+          "problem_definition": 25
+        },
+        "revision": 0,
+        "timezone": "Asia/Seoul",
+        "ambiguity": {
+          "goal": "public",
+          "cause": "learner"
+        },
+        "task_kind": "investigation",
+        "dataset_id": "generated-2245a29f1706bd8af6dae449-data",
+        "difficulty": "intermediate",
+        "package_id": "generated-2245a29f1706bd8af6dae449",
+        "problem_id": "problem-001",
+        "description": "본 과제는 모바일 게임 라이브 서비스 팀에서 신규 레이드 콘텐츠 추가 후 이용자들의 체류 시간과 완료율 패턴을 분석하는 실무 상황을 다룹니다. 제공되는 계정 프로필 및 전투 로그 데이터를 바탕으로 그룹 간 비교를 수행하고 불확실성을 고려한 이탈 구간 진단 및 의사결정을 도출합니다.\n\n업무 배경: 라이브 오퍼레이션 팀은 신규 레이드 콘텐츠 도입 이후 이용자들의 세션 완료 패턴을 관측하고 있습니다.\n\n관측된 문제: 특정 숙련도 그룹에서 콘텐츠 실패율이 높게 나타나며 체류 시간이 길어지는 현상이 관측되었습니다.\n\n관측 기간: 2026-09-01부터 2026-09-10까지\n\n판단할 업무 결정: 숙련도별 완료율 차이에 근거하여 난이도 조정 및 가이드 제공 여부를 결정합니다.\n\n분석 과제:\n- 전체 세션 데이터에서 각 숙련도 그룹별 총 참여 건수와 완료율을 측정하세요.\n- standard 그룹과 veteran 그룹 간의 성공률 및 평균 소요 시간 차이를 비교하고 이탈 위험 구간을 진단하세요.\n- 표본 규모의 차이와 변동성에 따른 통계적 불확실성이 그룹별 성공률 해석에 미치는 영향을 검토하세요.\n- 분석된 성공률과 불확실성 수준을 바탕으로 신규 콘텐츠 난이도 하향 조정 또는 가이드라인 배포 중 어떤 조치를 우선 시행할지 결정하세요.\n\n에이전트가 설정한 연습 조건:\n- 모든 세션 데이터는 누락 없이 기록되었습니다.\n- 숙련도 그룹은 계정 프로필에 명시된 구분값에 따릅니다.\n\n실제 회사 사례를 인용한 것이 아닌 가상 업무 상황이며, 데이터는 연습용 합성 데이터입니다.\n\n이 과제의 데이터는 요청에 맞춰 생성한 연습용 합성 데이터입니다.",
+        "plan_version": "adaptive-plan-v1",
+        "business_case": {
+          "decision": "숙련도별 완료율 차이에 근거하여 난이도 조정 및 가이드 제공 여부를 결정합니다.",
+          "background": "라이브 오퍼레이션 팀은 신규 레이드 콘텐츠 도입 이후 이용자들의 세션 완료 패턴을 관측하고 있습니다.",
+          "provenance": "synthetic",
+          "requirements": [
+            {
+              "evidence": [
+                {
+                  "table": "sessions",
+                  "columns": [
+                    "id",
+                    "success",
+                    "duration_seconds"
+                  ]
+                },
+                {
+                  "table": "profiles",
+                  "columns": [
+                    "id",
+                    "segment"
+                  ]
+                }
+              ],
+              "question": "전체 세션 데이터에서 각 숙련도 그룹별 총 참여 건수와 완료율을 측정하세요.",
+              "competency": "measurement",
+              "completion": "숙련도 그룹별 참여 건수와 완료율을 정확히 산출해야 합니다."
+            },
+            {
+              "evidence": [
+                {
+                  "table": "sessions",
+                  "columns": [
+                    "duration_seconds",
+                    "success"
+                  ]
+                },
+                {
+                  "table": "profiles",
+                  "columns": [
+                    "segment"
+                  ]
+                }
+              ],
+              "question": "standard 그룹과 veteran 그룹 간의 성공률 및 평균 소요 시간 차이를 비교하고 이탈 위험 구간을 진단하세요.",
+              "competency": "comparison",
+              "completion": "그룹 간 지표 비교 결과와 이탈 구간에 대한 타당한 해석을 제시해야 합니다."
+            },
+            {
+              "evidence": [
+                {
+                  "table": "sessions",
+                  "columns": [
+                    "success",
+                    "duration_seconds"
+                  ]
+                },
+                {
+                  "table": "profiles",
+                  "columns": [
+                    "segment"
+                  ]
+                }
+              ],
+              "question": "표본 규모의 차이와 변동성에 따른 통계적 불확실성이 그룹별 성공률 해석에 미치는 영향을 검토하세요.",
+              "competency": "uncertainty",
+              "completion": "표본 변동성에 따른 불확실성을 고려하여 그룹 간 성과 차이 해석의 한계를 설명해야 합니다."
+            },
+            {
+              "evidence": [
+                {
+                  "table": "sessions",
+                  "columns": [
+                    "success",
+                    "duration_seconds"
+                  ]
+                },
+                {
+                  "table": "profiles",
+                  "columns": [
+                    "segment"
+                  ]
+                }
+              ],
+              "question": "분석된 성공률과 불확실성 수준을 바탕으로 신규 콘텐츠 난이도 하향 조정 또는 가이드라인 배포 중 어떤 조치를 우선 시행할지 결정하세요.",
+              "competency": "decision",
+              "completion": "데이터 증거와 불확실성 진단을 기반으로 합리적인 우선순위 의사결정 방안을 도출해야 합니다."
+            }
+          ],
+          "observed_problem": "특정 숙련도 그룹에서 콘텐츠 실패율이 높게 나타나며 체류 시간이 길어지는 현상이 관측되었습니다.",
+          "agent_assumptions": [
+            "모든 세션 데이터는 누락 없이 기록되었습니다.",
+            "숙련도 그룹은 계정 프로필에 명시된 구분값에 따릅니다."
+          ],
+          "observation_period": "2026-09-01부터 2026-09-10까지"
+        },
+        "capability_id": "adaptive",
+        "allowed_limits": [
+          "가상으로 합성된 데이터이므로 실제 서비스의 절대적 수치와 다를 수 있습니다.",
+          "제공된 테이블의 컬럼 및 관계 범위 내에서만 분석을 수행해야 합니다."
+        ],
+        "problem_type_id": "adaptive",
+        "problem_version": "v1",
+        "quality_version": "task-quality-v1",
+        "release_version": "v1",
+        "required_tables": [
+          "profiles",
+          "sessions",
+          "daily_summaries"
+        ],
+        "contract_version": "request-v2",
+        "data_preparation": "요청별 합성 데이터 · 자동 검증",
+        "original_request": "실제 게임 업계 실무에서 발생하는 문제를 분석하고 싶어",
+        "selection_reason": "요청한 분석 대상과 난이도에 맞춰 공개 자료로 분석하는 연습 과제입니다.",
+        "difficulty_reason": "중급 난이도로서 단순 집계를 넘어 그룹 간 비교, 불확실성 고려 및 최적의 의사결정 판단을 요구합니다.",
+        "evaluation_rubric": {
+          "version": "evaluation-rubric-v3",
+          "criteria": [
+            {
+              "key": "problem_definition",
+              "conditions": [
+                {
+                  "id": "content",
+                  "kind": "content",
+                  "description": "현재 제출 어디에든 이 항목에서 평가할 판단·계획·방법·해석이 존재"
+                },
+                {
+                  "id": "target",
+                  "kind": "required",
+                  "description": "대상 정의. 과제 범위: 숙련도 그룹별 참여 건수와 완료율을 정확히 산출해야 합니다. / 그룹 간 지표 비교 결과와 이탈 구간에 대한 타당한 해석을 제시해야 합니다. / 표본 변동성에 따른 불확실성을 고려하여 그룹 간 성과 차이 해석의 한계를 설명해야 합니다. / 데이터 증거와 불확실성 진단을 기반으로 합리적인 우선순위 의사결정 방안을 도출해야 합니다."
+                },
+                {
+                  "id": "period",
+                  "kind": "required",
+                  "description": "기간·시간 기준 정의. 과제 범위: 숙련도 그룹별 참여 건수와 완료율을 정확히 산출해야 합니다. / 그룹 간 지표 비교 결과와 이탈 구간에 대한 타당한 해석을 제시해야 합니다. / 표본 변동성에 따른 불확실성을 고려하여 그룹 간 성과 차이 해석의 한계를 설명해야 합니다. / 데이터 증거와 불확실성 진단을 기반으로 합리적인 우선순위 의사결정 방안을 도출해야 합니다."
+                },
+                {
+                  "id": "unit",
+                  "kind": "required",
+                  "description": "집계 단위 정의. 과제 범위: 숙련도 그룹별 참여 건수와 완료율을 정확히 산출해야 합니다. / 그룹 간 지표 비교 결과와 이탈 구간에 대한 타당한 해석을 제시해야 합니다. / 표본 변동성에 따른 불확실성을 고려하여 그룹 간 성과 차이 해석의 한계를 설명해야 합니다. / 데이터 증거와 불확실성 진단을 기반으로 합리적인 우선순위 의사결정 방안을 도출해야 합니다."
+                },
+                {
+                  "id": "metric",
+                  "kind": "required",
+                  "description": "지표·분모 정의. 과제 범위: 숙련도 그룹별 참여 건수와 완료율을 정확히 산출해야 합니다. / 그룹 간 지표 비교 결과와 이탈 구간에 대한 타당한 해석을 제시해야 합니다. / 표본 변동성에 따른 불확실성을 고려하여 그룹 간 성과 차이 해석의 한계를 설명해야 합니다. / 데이터 증거와 불확실성 진단을 기반으로 합리적인 우선순위 의사결정 방안을 도출해야 합니다."
+                },
+                {
+                  "id": "comparison",
+                  "kind": "required",
+                  "description": "비교 집단·기준 정의"
+                },
+                {
+                  "id": "critical",
+                  "kind": "error",
+                  "description": "공개 조건과 반대인 대상·기간·집계 단위·분모를 올바르다고 정의"
+                },
+                {
+                  "id": "advanced",
+                  "kind": "advanced",
+                  "description": "관련 경계·제외·중복 처리 설명"
+                }
+              ]
+            },
+            {
+              "key": "analysis_approach",
+              "conditions": [
+                {
+                  "id": "content",
+                  "kind": "content",
+                  "description": "현재 제출 어디에든 이 항목에서 평가할 판단·계획·방법·해석이 존재"
+                },
+                {
+                  "id": "method",
+                  "kind": "required",
+                  "description": "목표에 대응하는 자료·관계·집계 방법. 과제 범위: 숙련도 그룹별 참여 건수와 완료율을 정확히 산출해야 합니다. / 그룹 간 지표 비교 결과와 이탈 구간에 대한 타당한 해석을 제시해야 합니다. / 표본 변동성에 따른 불확실성을 고려하여 그룹 간 성과 차이 해석의 한계를 설명해야 합니다. / 데이터 증거와 불확실성 진단을 기반으로 합리적인 우선순위 의사결정 방안을 도출해야 합니다."
+                },
+                {
+                  "id": "validation",
+                  "kind": "required",
+                  "description": "판단 가능한 검증 순서. 과제 범위: 숙련도 그룹별 참여 건수와 완료율을 정확히 산출해야 합니다. / 그룹 간 지표 비교 결과와 이탈 구간에 대한 타당한 해석을 제시해야 합니다. / 표본 변동성에 따른 불확실성을 고려하여 그룹 간 성과 차이 해석의 한계를 설명해야 합니다. / 데이터 증거와 불확실성 진단을 기반으로 합리적인 우선순위 의사결정 방안을 도출해야 합니다."
+                },
+                {
+                  "id": "task_comparison",
+                  "kind": "required",
+                  "description": "그룹 간 지표 비교 결과와 이탈 구간에 대한 타당한 해석을 제시해야 합니다."
+                },
+                {
+                  "id": "critical",
+                  "kind": "error",
+                  "description": "계획 자체의 중복 단위·잘못된 비교·가설에 맞춘 자료 변경"
+                },
+                {
+                  "id": "advanced",
+                  "kind": "advanced",
+                  "description": "목표와 관련된 대안·반증·민감도 확인 방법"
+                }
+              ]
+            },
+            {
+              "key": "sql_accuracy",
+              "conditions": [
+                {
+                  "id": "content",
+                  "kind": "content",
+                  "description": "현재 제출 어디에든 이 항목에서 평가할 판단·계획·방법·해석이 존재"
+                },
+                {
+                  "id": "execution",
+                  "kind": "required",
+                  "description": "선택 저장한 실제 실행. 과제 범위: 숙련도 그룹별 참여 건수와 완료율을 정확히 산출해야 합니다. / 그룹 간 지표 비교 결과와 이탈 구간에 대한 타당한 해석을 제시해야 합니다. / 표본 변동성에 따른 불확실성을 고려하여 그룹 간 성과 차이 해석의 한계를 설명해야 합니다. / 데이터 증거와 불확실성 진단을 기반으로 합리적인 우선순위 의사결정 방안을 도출해야 합니다."
+                },
+                {
+                  "id": "calculation",
+                  "kind": "required",
+                  "description": "공개 목표에 맞는 완전한 계산. 과제 범위: 숙련도 그룹별 참여 건수와 완료율을 정확히 산출해야 합니다. / 그룹 간 지표 비교 결과와 이탈 구간에 대한 타당한 해석을 제시해야 합니다. / 표본 변동성에 따른 불확실성을 고려하여 그룹 간 성과 차이 해석의 한계를 설명해야 합니다. / 데이터 증거와 불확실성 진단을 기반으로 합리적인 우선순위 의사결정 방안을 도출해야 합니다."
+                },
+                {
+                  "id": "critical",
+                  "kind": "error",
+                  "description": "실제 실행에서 확인된 계산·집계 단위·분모·기간 오류"
+                },
+                {
+                  "id": "advanced",
+                  "kind": "advanced",
+                  "description": "실제 저장 근거로 중복·경계·독립 검산 확인"
+                }
+              ]
+            },
+            {
+              "key": "interpretation",
+              "conditions": [
+                {
+                  "id": "content",
+                  "kind": "content",
+                  "description": "현재 제출 어디에든 이 항목에서 평가할 판단·계획·방법·해석이 존재"
+                },
+                {
+                  "id": "meaning",
+                  "kind": "required",
+                  "description": "결론과 실제 근거 또는 설계의 의미 연결. 과제 범위: 숙련도 그룹별 참여 건수와 완료율을 정확히 산출해야 합니다. / 그룹 간 지표 비교 결과와 이탈 구간에 대한 타당한 해석을 제시해야 합니다. / 표본 변동성에 따른 불확실성을 고려하여 그룹 간 성과 차이 해석의 한계를 설명해야 합니다. / 데이터 증거와 불확실성 진단을 기반으로 합리적인 우선순위 의사결정 방안을 도출해야 합니다."
+                },
+                {
+                  "id": "scope",
+                  "kind": "required",
+                  "description": "공개 자료로 판단 가능한 결론 범위. 과제 범위: 숙련도 그룹별 참여 건수와 완료율을 정확히 산출해야 합니다. / 그룹 간 지표 비교 결과와 이탈 구간에 대한 타당한 해석을 제시해야 합니다. / 표본 변동성에 따른 불확실성을 고려하여 그룹 간 성과 차이 해석의 한계를 설명해야 합니다. / 데이터 증거와 불확실성 진단을 기반으로 합리적인 우선순위 의사결정 방안을 도출해야 합니다."
+                },
+                {
+                  "id": "task_uncertainty",
+                  "kind": "required",
+                  "description": "표본 변동성에 따른 불확실성을 고려하여 그룹 간 성과 차이 해석의 한계를 설명해야 합니다."
+                },
+                {
+                  "id": "critical",
+                  "kind": "error",
+                  "description": "근거와 반대인 최종 결론·미실행 결과 확인 주장·관측만으로 원인 증명 단정·미해결 최종 모순"
+                },
+                {
+                  "id": "advanced",
+                  "kind": "advanced",
+                  "description": "대안·불확실성·관측 한계를 결론 적용 범위에 연결"
+                }
+              ]
+            },
+            {
+              "key": "next_actions",
+              "conditions": [
+                {
+                  "id": "content",
+                  "kind": "content",
+                  "description": "현재 제출 어디에든 이 항목에서 평가할 판단·계획·방법·해석이 존재"
+                },
+                {
+                  "id": "action",
+                  "kind": "required",
+                  "description": "남은 질문 또는 완료 판단에 대응하는 구체적 행동. 과제 범위: 숙련도 그룹별 참여 건수와 완료율을 정확히 산출해야 합니다. / 그룹 간 지표 비교 결과와 이탈 구간에 대한 타당한 해석을 제시해야 합니다. / 표본 변동성에 따른 불확실성을 고려하여 그룹 간 성과 차이 해석의 한계를 설명해야 합니다. / 데이터 증거와 불확실성 진단을 기반으로 합리적인 우선순위 의사결정 방안을 도출해야 합니다."
+                },
+                {
+                  "id": "purpose",
+                  "kind": "required",
+                  "description": "확인 방법과 목적 또는 정리·제출 판단. 과제 범위: 숙련도 그룹별 참여 건수와 완료율을 정확히 산출해야 합니다. / 그룹 간 지표 비교 결과와 이탈 구간에 대한 타당한 해석을 제시해야 합니다. / 표본 변동성에 따른 불확실성을 고려하여 그룹 간 성과 차이 해석의 한계를 설명해야 합니다. / 데이터 증거와 불확실성 진단을 기반으로 합리적인 우선순위 의사결정 방안을 도출해야 합니다."
+                },
+                {
+                  "id": "task_decision",
+                  "kind": "required",
+                  "description": "데이터 증거와 불확실성 진단을 기반으로 합리적인 우선순위 의사결정 방안을 도출해야 합니다."
+                },
+                {
+                  "id": "critical",
+                  "kind": "error",
+                  "description": "잘못된 전제로 효과 보장·검증 없이 인과 개입 확정·자료를 가설에 맞춰 변경"
+                },
+                {
+                  "id": "advanced",
+                  "kind": "advanced",
+                  "description": "우선순위와 확인 결과별 다음 결정·종료 조건"
+                }
+              ]
+            }
+          ],
+          "excluded_criteria": []
+        },
+        "evaluation_status": "시험 과제 · 자동 검증 통과 · 사람 품질 검토 전",
+        "generator_version": "adaptive-recipe-v1",
+        "difficulty_version": "ambiguity-v2",
+        "evaluation_version": "request-review-v3",
+        "required_judgments": [
+          "숙련도 그룹별 참여 건수와 완료율을 정확히 산출해야 합니다.",
+          "그룹 간 지표 비교 결과와 이탈 구간에 대한 타당한 해석을 제시해야 합니다.",
+          "표본 변동성에 따른 불확실성을 고려하여 그룹 간 성과 차이 해석의 한계를 설명해야 합니다.",
+          "데이터 증거와 불확실성 진단을 기반으로 합리적인 우선순위 의사결정 방안을 도출해야 합니다."
+        ],
+        "semantic_signature": {
+          "goal": "신규 콘텐츠 업데이트 이후 이용자들의 플레이 기록과 잔류 기간을 분석하여 특정 구간에서의 이탈 요인을 진단하고 개선 의사결정을 도출합니다.",
+          "domain": "모바일 게임 신규 콘텐츠 이용자 이탈 구간 및 참여 패턴 분석",
+          "format": "investigation",
+          "ambiguity": "intermediate",
+          "situation": "0d6632293ff2",
+          "structure": "ratio:True:1",
+          "difficulty": "intermediate",
+          "evaluation": "adaptive",
+          "quality_version": "task-quality-v1",
+          "required_judgment": "investigation"
+        },
+        "validation_version": "adaptive-validation-v1",
+        "data_complete_before": "2026-09-04T14:34:34+00:00",
+        "completion_conditions": [
+          "숙련도 그룹별 참여 건수와 완료율을 정확히 산출해야 합니다.",
+          "그룹 간 지표 비교 결과와 이탈 구간에 대한 타당한 해석을 제시해야 합니다.",
+          "표본 변동성에 따른 불확실성을 고려하여 그룹 간 성과 차이 해석의 한계를 설명해야 합니다.",
+          "데이터 증거와 불확실성 진단을 기반으로 합리적인 우선순위 의사결정 방안을 도출해야 합니다."
+        ],
+        "disclosed_on_question": [],
+        "evaluation_rules_version": "request-review-v3",
+        "schema": {
+          "profiles": {
+            "grain": "계정별 기본 프로필 및 그룹 정보",
+            "columns": [
+              {
+                "name": "id",
+                "type": "bigint",
+                "description": "계정 고유 번호"
+              },
+              {
+                "name": "segment",
+                "type": "text",
+                "description": "이용자 숙련도 그룹"
+              },
+              {
+                "name": "joined_at",
+                "type": "timestamptz",
+                "description": "계정 생성 일시"
+              }
+            ]
+          },
+          "sessions": {
+            "grain": "계정별 콘텐츠 도전 세션 로그",
+            "columns": [
+              {
+                "name": "id",
+                "type": "bigint",
+                "description": "세션 고유 번호"
+              },
+              {
+                "name": "account_id",
+                "type": "bigint",
+                "description": "계정 고유 번호"
+              },
+              {
+                "name": "wait_seconds",
+                "type": "bigint",
+                "description": "콘텐츠 매칭 대기 시간"
+              },
+              {
+                "name": "duration_seconds",
+                "type": "bigint",
+                "description": "콘텐츠 진행 소요 시간"
+              },
+              {
+                "name": "started_at",
+                "type": "timestamptz",
+                "description": "콘텐츠 시작 시각"
+              },
+              {
+                "name": "ended_at",
+                "type": "timestamptz",
+                "description": "콘텐츠 종료 시각"
+              },
+              {
+                "name": "session_day",
+                "type": "timestamptz",
+                "description": "세션 참여 일자 버킷"
+              },
+              {
+                "name": "success",
+                "type": "bigint",
+                "description": "클리어 성공 여부 (0: 실패, 1: 성공)"
+              }
+            ]
+          },
+          "daily_summaries": {
+            "grain": "계정 및 일자별 세션 요약",
+            "columns": [
+              {
+                "name": "id",
+                "type": "bigint",
+                "description": "요약 고유 번호"
+              },
+              {
+                "name": "account_id",
+                "type": "bigint",
+                "description": "계정 고유 번호"
+              },
+              {
+                "name": "session_day",
+                "type": "timestamptz",
+                "description": "세션 일자 버킷"
+              },
+              {
+                "name": "session_count",
+                "type": "bigint",
+                "description": "총 세션 참여 횟수"
+              },
+              {
+                "name": "avg_duration",
+                "type": "double precision",
+                "description": "평균 진행 시간"
+              }
+            ]
+          }
+        }
+      },
+      "messages": []
+    },
+    "private_reference": {
+      "package_id": "generated-2245a29f1706bd8af6dae449",
+      "release_version": "v1",
+      "dataset_id": "generated-2245a29f1706bd8af6dae449-data",
+      "problem_id": "problem-001",
+      "evaluation_version": "v1",
+      "sql": "SELECT (SELECT COUNT(*) AS \"total_sessions\" FROM \"sessions\" JOIN \"profiles\" ON \"sessions\".\"account_id\" = \"profiles\".\"id\") AS \"total_sessions\", (SELECT COUNT(*) AS \"failure_investigation_count\" FROM \"sessions\" JOIN \"profiles\" ON \"sessions\".\"account_id\" = \"profiles\".\"id\" WHERE \"sessions\".\"success\" = 0) AS \"failure_investigation_count\"",
+      "expected": {
+        "total_sessions": 300,
+        "failure_investigation_count": 152
+      },
+      "weights": {
+        "problem_definition": 25,
+        "analysis_approach": 25,
+        "sql_accuracy": 20,
+        "interpretation": 20,
+        "next_actions": 10
+      },
+      "rubric": "요청된 측정 지표의 정확성, 그룹 간 비교 논리, 불확실성 검토 및 최종 의사결정 제안의 타당성을 종합적으로 평가합니다. 검증하지 못한 타당한 대안을 틀렸다고 단정하지 말고, 비공개 생성 그룹을 맞히도록 요구하지 마세요.",
+      "question_facts": {},
+      "explanation": "요청된 측정 지표의 정확성, 그룹 간 비교 논리, 불확실성 검토 및 최종 의사결정 제안의 타당성을 종합적으로 평가합니다.",
+      "hints": {
+        "direction": "공개 목표와 데이터의 집계 단위를 확인하세요.",
+        "metric": "비교 기준과 정상 행동에서도 나타날 가능성을 정리하세요.",
+        "sql_structure": "공개 테이블의 컬럼으로 가설을 검증하세요."
+      },
+      "verification_contracts": {
+        "success_rate": {
+          "comparison_expected": {
+            "columns": [
+              "profiles__segment",
+              "success_rate"
+            ],
+            "rows": [
+              [
+                "veteran",
+                0.5
+              ],
+              [
+                "standard",
+                0.4846153846153846
+              ]
+            ]
+          }
+        }
+      },
+      "analytical_checks": {
+        "success_rate": {
+          "comparison_expected": {
+            "columns": [
+              "profiles__segment",
+              "success_rate"
+            ],
+            "rows": [
+              [
+                "veteran",
+                0.5
+              ],
+              [
+                "standard",
+                0.4846153846153846
+              ]
+            ]
+          },
+          "sql": "SELECT \"profiles\".\"segment\" AS \"profiles__segment\", COUNT(*) FILTER (WHERE \"sessions\".\"success\" = 1)::double precision / NULLIF(COUNT(*),0) AS \"success_rate\" FROM \"sessions\" JOIN \"profiles\" ON \"sessions\".\"account_id\" = \"profiles\".\"id\" GROUP BY \"profiles\".\"segment\""
+        }
+      },
+      "frozen_evaluation": {
+        "expected": {
+          "total_sessions": 300,
+          "failure_investigation_count": 152
+        },
+        "rubric": "요청된 측정 지표의 정확성, 그룹 간 비교 논리, 불확실성 검토 및 최종 의사결정 제안의 타당성을 종합적으로 평가합니다. 검증하지 못한 타당한 대안을 틀렸다고 단정하지 말고, 비공개 생성 그룹을 맞히도록 요구하지 마세요.",
+        "verification_contracts": {
+          "success_rate": {
+            "comparison_expected": {
+              "columns": [
+                "profiles__segment",
+                "success_rate"
+              ],
+              "rows": [
+                [
+                  "veteran",
+                  0.5
+                ],
+                [
+                  "standard",
+                  0.4846153846153846
+                ]
+              ]
+            }
+          }
+        },
+        "weights": {
+          "problem_definition": 25,
+          "analysis_approach": 25,
+          "sql_accuracy": 20,
+          "interpretation": 20,
+          "next_actions": 10
+        },
+        "completion_conditions": [
+          "숙련도 그룹별 참여 건수와 완료율을 정확히 산출해야 합니다.",
+          "그룹 간 지표 비교 결과와 이탈 구간에 대한 타당한 해석을 제시해야 합니다.",
+          "표본 변동성에 따른 불확실성을 고려하여 그룹 간 성과 차이 해석의 한계를 설명해야 합니다.",
+          "데이터 증거와 불확실성 진단을 기반으로 합리적인 우선순위 의사결정 방안을 도출해야 합니다."
+        ],
+        "rules_version": "evaluation-rubric-v3",
+        "condition_rubric": {
+          "version": "evaluation-rubric-v3",
+          "criteria": [
+            {
+              "key": "problem_definition",
+              "conditions": [
+                {
+                  "id": "content",
+                  "kind": "content",
+                  "description": "현재 제출 어디에든 이 항목에서 평가할 판단·계획·방법·해석이 존재"
+                },
+                {
+                  "id": "target",
+                  "kind": "required",
+                  "description": "대상 정의. 과제 범위: 숙련도 그룹별 참여 건수와 완료율을 정확히 산출해야 합니다. / 그룹 간 지표 비교 결과와 이탈 구간에 대한 타당한 해석을 제시해야 합니다. / 표본 변동성에 따른 불확실성을 고려하여 그룹 간 성과 차이 해석의 한계를 설명해야 합니다. / 데이터 증거와 불확실성 진단을 기반으로 합리적인 우선순위 의사결정 방안을 도출해야 합니다."
+                },
+                {
+                  "id": "period",
+                  "kind": "required",
+                  "description": "기간·시간 기준 정의. 과제 범위: 숙련도 그룹별 참여 건수와 완료율을 정확히 산출해야 합니다. / 그룹 간 지표 비교 결과와 이탈 구간에 대한 타당한 해석을 제시해야 합니다. / 표본 변동성에 따른 불확실성을 고려하여 그룹 간 성과 차이 해석의 한계를 설명해야 합니다. / 데이터 증거와 불확실성 진단을 기반으로 합리적인 우선순위 의사결정 방안을 도출해야 합니다."
+                },
+                {
+                  "id": "unit",
+                  "kind": "required",
+                  "description": "집계 단위 정의. 과제 범위: 숙련도 그룹별 참여 건수와 완료율을 정확히 산출해야 합니다. / 그룹 간 지표 비교 결과와 이탈 구간에 대한 타당한 해석을 제시해야 합니다. / 표본 변동성에 따른 불확실성을 고려하여 그룹 간 성과 차이 해석의 한계를 설명해야 합니다. / 데이터 증거와 불확실성 진단을 기반으로 합리적인 우선순위 의사결정 방안을 도출해야 합니다."
+                },
+                {
+                  "id": "metric",
+                  "kind": "required",
+                  "description": "지표·분모 정의. 과제 범위: 숙련도 그룹별 참여 건수와 완료율을 정확히 산출해야 합니다. / 그룹 간 지표 비교 결과와 이탈 구간에 대한 타당한 해석을 제시해야 합니다. / 표본 변동성에 따른 불확실성을 고려하여 그룹 간 성과 차이 해석의 한계를 설명해야 합니다. / 데이터 증거와 불확실성 진단을 기반으로 합리적인 우선순위 의사결정 방안을 도출해야 합니다."
+                },
+                {
+                  "id": "comparison",
+                  "kind": "required",
+                  "description": "비교 집단·기준 정의"
+                },
+                {
+                  "id": "critical",
+                  "kind": "error",
+                  "description": "공개 조건과 반대인 대상·기간·집계 단위·분모를 올바르다고 정의"
+                },
+                {
+                  "id": "advanced",
+                  "kind": "advanced",
+                  "description": "관련 경계·제외·중복 처리 설명"
+                }
+              ]
+            },
+            {
+              "key": "analysis_approach",
+              "conditions": [
+                {
+                  "id": "content",
+                  "kind": "content",
+                  "description": "현재 제출 어디에든 이 항목에서 평가할 판단·계획·방법·해석이 존재"
+                },
+                {
+                  "id": "method",
+                  "kind": "required",
+                  "description": "목표에 대응하는 자료·관계·집계 방법. 과제 범위: 숙련도 그룹별 참여 건수와 완료율을 정확히 산출해야 합니다. / 그룹 간 지표 비교 결과와 이탈 구간에 대한 타당한 해석을 제시해야 합니다. / 표본 변동성에 따른 불확실성을 고려하여 그룹 간 성과 차이 해석의 한계를 설명해야 합니다. / 데이터 증거와 불확실성 진단을 기반으로 합리적인 우선순위 의사결정 방안을 도출해야 합니다."
+                },
+                {
+                  "id": "validation",
+                  "kind": "required",
+                  "description": "판단 가능한 검증 순서. 과제 범위: 숙련도 그룹별 참여 건수와 완료율을 정확히 산출해야 합니다. / 그룹 간 지표 비교 결과와 이탈 구간에 대한 타당한 해석을 제시해야 합니다. / 표본 변동성에 따른 불확실성을 고려하여 그룹 간 성과 차이 해석의 한계를 설명해야 합니다. / 데이터 증거와 불확실성 진단을 기반으로 합리적인 우선순위 의사결정 방안을 도출해야 합니다."
+                },
+                {
+                  "id": "task_comparison",
+                  "kind": "required",
+                  "description": "그룹 간 지표 비교 결과와 이탈 구간에 대한 타당한 해석을 제시해야 합니다."
+                },
+                {
+                  "id": "critical",
+                  "kind": "error",
+                  "description": "계획 자체의 중복 단위·잘못된 비교·가설에 맞춘 자료 변경"
+                },
+                {
+                  "id": "advanced",
+                  "kind": "advanced",
+                  "description": "목표와 관련된 대안·반증·민감도 확인 방법"
+                }
+              ]
+            },
+            {
+              "key": "sql_accuracy",
+              "conditions": [
+                {
+                  "id": "content",
+                  "kind": "content",
+                  "description": "현재 제출 어디에든 이 항목에서 평가할 판단·계획·방법·해석이 존재"
+                },
+                {
+                  "id": "execution",
+                  "kind": "required",
+                  "description": "선택 저장한 실제 실행. 과제 범위: 숙련도 그룹별 참여 건수와 완료율을 정확히 산출해야 합니다. / 그룹 간 지표 비교 결과와 이탈 구간에 대한 타당한 해석을 제시해야 합니다. / 표본 변동성에 따른 불확실성을 고려하여 그룹 간 성과 차이 해석의 한계를 설명해야 합니다. / 데이터 증거와 불확실성 진단을 기반으로 합리적인 우선순위 의사결정 방안을 도출해야 합니다."
+                },
+                {
+                  "id": "calculation",
+                  "kind": "required",
+                  "description": "공개 목표에 맞는 완전한 계산. 과제 범위: 숙련도 그룹별 참여 건수와 완료율을 정확히 산출해야 합니다. / 그룹 간 지표 비교 결과와 이탈 구간에 대한 타당한 해석을 제시해야 합니다. / 표본 변동성에 따른 불확실성을 고려하여 그룹 간 성과 차이 해석의 한계를 설명해야 합니다. / 데이터 증거와 불확실성 진단을 기반으로 합리적인 우선순위 의사결정 방안을 도출해야 합니다."
+                },
+                {
+                  "id": "critical",
+                  "kind": "error",
+                  "description": "실제 실행에서 확인된 계산·집계 단위·분모·기간 오류"
+                },
+                {
+                  "id": "advanced",
+                  "kind": "advanced",
+                  "description": "실제 저장 근거로 중복·경계·독립 검산 확인"
+                }
+              ]
+            },
+            {
+              "key": "interpretation",
+              "conditions": [
+                {
+                  "id": "content",
+                  "kind": "content",
+                  "description": "현재 제출 어디에든 이 항목에서 평가할 판단·계획·방법·해석이 존재"
+                },
+                {
+                  "id": "meaning",
+                  "kind": "required",
+                  "description": "결론과 실제 근거 또는 설계의 의미 연결. 과제 범위: 숙련도 그룹별 참여 건수와 완료율을 정확히 산출해야 합니다. / 그룹 간 지표 비교 결과와 이탈 구간에 대한 타당한 해석을 제시해야 합니다. / 표본 변동성에 따른 불확실성을 고려하여 그룹 간 성과 차이 해석의 한계를 설명해야 합니다. / 데이터 증거와 불확실성 진단을 기반으로 합리적인 우선순위 의사결정 방안을 도출해야 합니다."
+                },
+                {
+                  "id": "scope",
+                  "kind": "required",
+                  "description": "공개 자료로 판단 가능한 결론 범위. 과제 범위: 숙련도 그룹별 참여 건수와 완료율을 정확히 산출해야 합니다. / 그룹 간 지표 비교 결과와 이탈 구간에 대한 타당한 해석을 제시해야 합니다. / 표본 변동성에 따른 불확실성을 고려하여 그룹 간 성과 차이 해석의 한계를 설명해야 합니다. / 데이터 증거와 불확실성 진단을 기반으로 합리적인 우선순위 의사결정 방안을 도출해야 합니다."
+                },
+                {
+                  "id": "task_uncertainty",
+                  "kind": "required",
+                  "description": "표본 변동성에 따른 불확실성을 고려하여 그룹 간 성과 차이 해석의 한계를 설명해야 합니다."
+                },
+                {
+                  "id": "critical",
+                  "kind": "error",
+                  "description": "근거와 반대인 최종 결론·미실행 결과 확인 주장·관측만으로 원인 증명 단정·미해결 최종 모순"
+                },
+                {
+                  "id": "advanced",
+                  "kind": "advanced",
+                  "description": "대안·불확실성·관측 한계를 결론 적용 범위에 연결"
+                }
+              ]
+            },
+            {
+              "key": "next_actions",
+              "conditions": [
+                {
+                  "id": "content",
+                  "kind": "content",
+                  "description": "현재 제출 어디에든 이 항목에서 평가할 판단·계획·방법·해석이 존재"
+                },
+                {
+                  "id": "action",
+                  "kind": "required",
+                  "description": "남은 질문 또는 완료 판단에 대응하는 구체적 행동. 과제 범위: 숙련도 그룹별 참여 건수와 완료율을 정확히 산출해야 합니다. / 그룹 간 지표 비교 결과와 이탈 구간에 대한 타당한 해석을 제시해야 합니다. / 표본 변동성에 따른 불확실성을 고려하여 그룹 간 성과 차이 해석의 한계를 설명해야 합니다. / 데이터 증거와 불확실성 진단을 기반으로 합리적인 우선순위 의사결정 방안을 도출해야 합니다."
+                },
+                {
+                  "id": "purpose",
+                  "kind": "required",
+                  "description": "확인 방법과 목적 또는 정리·제출 판단. 과제 범위: 숙련도 그룹별 참여 건수와 완료율을 정확히 산출해야 합니다. / 그룹 간 지표 비교 결과와 이탈 구간에 대한 타당한 해석을 제시해야 합니다. / 표본 변동성에 따른 불확실성을 고려하여 그룹 간 성과 차이 해석의 한계를 설명해야 합니다. / 데이터 증거와 불확실성 진단을 기반으로 합리적인 우선순위 의사결정 방안을 도출해야 합니다."
+                },
+                {
+                  "id": "task_decision",
+                  "kind": "required",
+                  "description": "데이터 증거와 불확실성 진단을 기반으로 합리적인 우선순위 의사결정 방안을 도출해야 합니다."
+                },
+                {
+                  "id": "critical",
+                  "kind": "error",
+                  "description": "잘못된 전제로 효과 보장·검증 없이 인과 개입 확정·자료를 가설에 맞춰 변경"
+                },
+                {
+                  "id": "advanced",
+                  "kind": "advanced",
+                  "description": "우선순위와 확인 결과별 다음 결정·종료 조건"
+                }
+              ]
+            }
+          ],
+          "excluded_criteria": []
+        },
+        "contract_hash": "2a28cb049847731c996adaca776b04703c68a02bbea6f4a9e48f6d552de242c2"
+      }
+    }
+  },
+  {
+    "request": {
+      "error": "문장과 선택한 난이도가 다릅니다. 원하는 난이도를 알려주세요.",
+      "states": [
+        {
+          "at": "2026-10-05T18:54:03.710218Z",
+          "status": "accepted"
+        },
+        {
+          "at": "2026-10-05T18:54:03.790534Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T18:54:12.261020Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T18:54:24.322727Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T18:54:37.447798Z",
+          "status": "needs_clarification"
+        }
+      ],
+      "status": "needs_clarification",
+      "message": "실제 게임 업계 실무에서 발생하는 문제를 분석하고 싶어",
+      "revision": 0,
+      "questions": [
+        "문장과 선택한 난이도가 다릅니다. 원하는 난이도를 알려주세요."
+      ],
+      "attempt_id": null,
+      "created_at": "2026-10-05T18:54:03.710206Z",
+      "error_code": "clarification_required",
+      "request_id": "849cab56-4ab8-4527-8821-19bea294a27d",
+      "operation_id": "8598dcec-d340-4aec-8762-c55eea17182c",
+      "retry_allowed": false,
+      "planning_calls": 3,
+      "contract_version": "request-v2",
+      "generation_attempts": 0,
+      "recommendation_change": null
+    },
+    "schema_reviews": [
+      {
+        "issues": [
+          {
+            "type": "value_error",
+            "message": "Value error, dungeon_daily_summary: missing or cyclic time column dependencies; remaining=['activity_date']",
+            "location": [
+              "tables",
+              2
+            ]
+          }
+        ],
+        "planning_calls": 1
+      },
+      {
+        "issues": [
+          {
+            "type": "data_dependency",
+            "message": "task quality: difficulty lacks required judgments: uncertainty",
+            "location": []
+          }
+        ],
+        "planning_calls": 2
+      }
+    ],
+    "alignment_reviews": [],
+    "usage": [
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "9b88d591-f587-40fd-ba0d-a62ae3985ddc",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "849cab56-4ab8-4527-8821-19bea294a27d",
+        "started_at": "2026-10-05T18:54:03.804856Z",
+        "duration_ms": 8426,
+        "finished_at": "2026-10-05T18:54:12.231696Z",
+        "occurred_at": "2026-10-05T18:54:03.804856Z",
+        "input_tokens": 5938,
+        "operation_id": "bc851c48-4d24-407f-abd0-60a6ab1f7893",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 2830,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "0f1b325f-7156-46a9-a803-d59bf6f41206",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "849cab56-4ab8-4527-8821-19bea294a27d",
+        "started_at": "2026-10-05T18:54:12.274608Z",
+        "duration_ms": 12015,
+        "finished_at": "2026-10-05T18:54:24.290508Z",
+        "occurred_at": "2026-10-05T18:54:12.274608Z",
+        "input_tokens": 9067,
+        "operation_id": "c5416a28-753d-48f0-a1d5-7b3036be7162",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 2561,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-repair-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "efbd282d-5398-43c4-9a07-a9d27fa2311d",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "849cab56-4ab8-4527-8821-19bea294a27d",
+        "started_at": "2026-10-05T18:54:24.338734Z",
+        "duration_ms": 13091,
+        "finished_at": "2026-10-05T18:54:37.430261Z",
+        "occurred_at": "2026-10-05T18:54:24.338734Z",
+        "input_tokens": 11909,
+        "operation_id": "2c6298ca-a633-4adc-b640-9d7eda85bfbf",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 3006,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-repair-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      }
+    ]
+  },
+  {
+    "request": {
+      "error": "요청별 데이터 설계 호출을 완료하지 못했습니다. 입력을 유지했습니다.",
+      "states": [
+        {
+          "at": "2026-10-05T18:58:00.235992Z",
+          "status": "accepted"
+        },
+        {
+          "at": "2026-10-05T18:58:00.333626Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T18:58:01.301709Z",
+          "status": "failed"
+        }
+      ],
+      "status": "failed",
+      "message": "실제 게임 업계 실무에서 발생하는 문제를 분석하고 싶어",
+      "revision": 0,
+      "questions": [],
+      "attempt_id": null,
+      "created_at": "2026-10-05T18:58:00.235980Z",
+      "error_code": "planning_failed",
+      "request_id": "bc72b3fa-2b27-4d18-bf63-7a1c38a9cfb4",
+      "operation_id": "31119166-ce41-44f4-b3e2-29aec80c03b5",
+      "retry_allowed": true,
+      "failure_detail": null,
+      "planning_calls": 1,
+      "failure_history": [
+        {
+          "at": "2026-10-05T18:58:01.301697Z",
+          "error": "요청별 데이터 설계 호출을 완료하지 못했습니다. 입력을 유지했습니다.",
+          "error_code": "planning_failed",
+          "failure_detail": null,
+          "planning_calls": 1
+        }
+      ],
+      "contract_version": "request-v2",
+      "generation_attempts": 0,
+      "recommendation_change": null
+    },
+    "schema_reviews": [
+      {
+        "issues": [],
+        "planning_calls": 1
+      }
+    ],
+    "alignment_reviews": [],
+    "usage": [
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "failed",
+        "event_id": "60393ec3-bb19-4fc8-b38f-9a6714113362",
+        "error_code": "provider_failure",
+        "event_type": "ai_started",
+        "request_id": "bc72b3fa-2b27-4d18-bf63-7a1c38a9cfb4",
+        "started_at": "2026-10-05T18:58:00.349462Z",
+        "duration_ms": 916,
+        "finished_at": "2026-10-05T18:58:01.266288Z",
+        "occurred_at": "2026-10-05T18:58:00.349462Z",
+        "input_tokens": null,
+        "operation_id": "dc31776c-8833-4465-a1ca-2c0dc5eccb68",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": null,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": {
+          "stage": "http",
+          "timeout": false,
+          "request_id": "bf082766-a8a4-4c70-bd7e-0ff502966d78",
+          "http_status": 400
+        },
+        "usage_missing_reason": "not_reported"
+      }
+    ]
+  },
+  {
+    "request": {
+      "error": null,
+      "states": [
+        {
+          "at": "2026-10-05T18:58:52.943874Z",
+          "status": "accepted"
+        },
+        {
+          "at": "2026-10-05T18:58:53.044859Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T18:59:00.584278Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T18:59:12.171440Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T18:59:24.044818Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T18:59:30.111613Z",
+          "status": "preparing_data"
+        },
+        {
+          "at": "2026-10-05T18:59:30.208954Z",
+          "status": "validating"
+        },
+        {
+          "at": "2026-10-05T18:59:30.275616Z",
+          "status": "ready"
+        }
+      ],
+      "status": "ready",
+      "message": "실제 게임 업계 실무에서 발생하는 문제를 분석하고 싶어",
+      "revision": 0,
+      "questions": [],
+      "attempt_id": "886424d1-b9c2-4655-96a0-fa61da67cc75",
+      "created_at": "2026-10-05T18:58:52.943864Z",
+      "error_code": null,
+      "request_id": "68669e3d-963d-4120-a566-ed701c843810",
+      "duration_ms": 37320,
+      "finished_at": "2026-10-05T18:59:30.275598Z",
+      "operation_id": "27add41c-52b9-45f5-914d-8a754b117d19",
+      "retry_allowed": false,
+      "planning_calls": 4,
+      "contract_version": "request-v2",
+      "generation_attempts": 1,
+      "recommendation_change": null
+    },
+    "schema_reviews": [
+      {
+        "issues": [
+          {
+            "type": "value_error",
+            "message": "Value error, investigation requires a nonempty diagnostic subset",
+            "location": []
+          }
+        ],
+        "planning_calls": 1
+      },
+      {
+        "issues": [
+          {
+            "type": "data_dependency",
+            "message": "task quality: difficulty lacks required judgments: uncertainty",
+            "location": []
+          }
+        ],
+        "planning_calls": 2
+      }
+    ],
+    "alignment_reviews": [
+      {
+        "passed": true
+      }
+    ],
+    "recipe": {
+      "goal": "신규 콘텐츠 업데이트 이후 이용자들의 플레이 기록과 잔류 기간을 분석하여 특정 구간에서의 이탈 요인을 진단하고 개선 의사결정을 도출합니다.",
+      "title": "모바일 게임 신규 콘텐츠 이용자 이탈 구간 및 참여 패턴 분석",
+      "topic": "모바일 게임 신규 콘텐츠 이용자 이탈 구간 및 참여 패턴 분석",
+      "reason": "신규 콘텐츠 업데이트 이후 이용자들의 플레이 기록과 잔류 기간을 분석하여 특정 구간에서의 이탈 요인을 진단하고 개선 의사결정을 도출하는 중급 난이도 실무 과제입니다.",
+      "rubric": "제공된 데이터에 기반하여 스테이지별 성공률과 플레이 시간을 정확히 측정하고, 그룹 간 비교 및 불확실성 검토를 거쳐 이탈 요인을 논리적으로 진단한 후 타당한 개선 의사결정을 도출했는지 평가합니다.",
+      "status": "ready",
+      "tables": [
+        {
+          "name": "accounts",
+          "grain": "계정별 1행",
+          "groups": [
+            {
+              "name": "sample",
+              "count": 200,
+              "overrides": {}
+            }
+          ],
+          "columns": [
+            {
+              "name": "id",
+              "generator": {
+                "end": null,
+                "kind": "id",
+                "group": null,
+                "start": null,
+                "table": null,
+                "bucket": null,
+                "values": [],
+                "maximum": null,
+                "minimum": null,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": null,
+                "entity_column": null,
+                "source_column": null,
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "계정 고유 식별자"
+            },
+            {
+              "name": "level_band",
+              "generator": {
+                "end": null,
+                "kind": "category",
+                "group": null,
+                "start": null,
+                "table": null,
+                "bucket": null,
+                "values": [
+                  "novice",
+                  "intermediate",
+                  "advanced"
+                ],
+                "maximum": null,
+                "minimum": null,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": null,
+                "entity_column": null,
+                "source_column": null,
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "이용자 레벨 구간"
+            },
+            {
+              "name": "signup_at",
+              "generator": {
+                "end": "2026-09-05T00:00:00+09:00",
+                "kind": "timestamp",
+                "group": null,
+                "start": "2026-09-01T00:00:00+09:00",
+                "table": null,
+                "bucket": null,
+                "values": [],
+                "maximum": null,
+                "minimum": null,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": null,
+                "entity_column": null,
+                "source_column": null,
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "가입 시각"
+            }
+          ],
+          "group_by": [],
+          "unique_keys": [
+            [
+              "id"
+            ]
+          ],
+          "derived_from": null
+        },
+        {
+          "name": "content_sessions",
+          "grain": "계정별 신규 콘텐츠 참여 세션 로그",
+          "groups": [
+            {
+              "name": "sample",
+              "count": 300,
+              "overrides": {}
+            }
+          ],
+          "columns": [
+            {
+              "name": "id",
+              "generator": {
+                "end": null,
+                "kind": "id",
+                "group": null,
+                "start": null,
+                "table": null,
+                "bucket": null,
+                "values": [],
+                "maximum": null,
+                "minimum": null,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": null,
+                "entity_column": null,
+                "source_column": null,
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "세션 로그 고유 식별자"
+            },
+            {
+              "name": "account_id",
+              "generator": {
+                "end": null,
+                "kind": "foreign_key",
+                "group": "sample",
+                "start": null,
+                "table": "accounts",
+                "bucket": null,
+                "values": [],
+                "maximum": null,
+                "minimum": null,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": null,
+                "entity_column": null,
+                "source_column": null,
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "계정 식별자"
+            },
+            {
+              "name": "stage_id",
+              "generator": {
+                "end": null,
+                "kind": "integer",
+                "group": null,
+                "start": null,
+                "table": null,
+                "bucket": null,
+                "values": [],
+                "maximum": 5.0,
+                "minimum": 1.0,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": null,
+                "entity_column": null,
+                "source_column": null,
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "콘텐츠 스테이지 번호"
+            },
+            {
+              "name": "success",
+              "generator": {
+                "end": null,
+                "kind": "integer",
+                "group": null,
+                "start": null,
+                "table": null,
+                "bucket": null,
+                "values": [],
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": null,
+                "entity_column": null,
+                "source_column": null,
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "클리어 성공 여부 (1: 성공, 0: 실패)"
+            },
+            {
+              "name": "play_seconds",
+              "generator": {
+                "end": null,
+                "kind": "integer",
+                "group": null,
+                "start": null,
+                "table": null,
+                "bucket": null,
+                "values": [],
+                "maximum": 600.0,
+                "minimum": 30.0,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": null,
+                "entity_column": null,
+                "source_column": null,
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "플레이 소요 시간(초)"
+            },
+            {
+              "name": "session_at",
+              "generator": {
+                "end": "2026-09-10T00:00:00+09:00",
+                "kind": "timestamp",
+                "group": null,
+                "start": "2026-09-01T00:00:00+09:00",
+                "table": null,
+                "bucket": null,
+                "values": [],
+                "maximum": null,
+                "minimum": null,
+                "timezone": "Asia/Seoul",
+                "operation": null,
+                "conditions": [],
+                "value_type": null,
+                "entity_column": null,
+                "source_column": null,
+                "duration_column": null,
+                "interval_column": null,
+                "partition_columns": []
+              },
+              "description": "세션 진행 시각"
+            }
+          ],
+          "group_by": [],
+          "unique_keys": [
+            [
+              "id"
+            ]
+          ],
+          "derived_from": null
+        }
+      ],
+      "metrics": [
+        {
+          "name": "total_sessions",
+          "joins": [],
+          "table": "content_sessions",
+          "column": null,
+          "maximum": null,
+          "minimum": null,
+          "purpose": "validation",
+          "group_by": [],
+          "operation": "count",
+          "conditions": [],
+          "denominator_conditions": []
+        },
+        {
+          "name": "failure_sessions",
+          "joins": [],
+          "table": "content_sessions",
+          "column": null,
+          "maximum": null,
+          "minimum": 1.0,
+          "purpose": "validation",
+          "group_by": [],
+          "operation": "count",
+          "conditions": [
+            {
+              "value": 0,
+              "column": "success",
+              "operator": "eq"
+            }
+          ],
+          "denominator_conditions": []
+        },
+        {
+          "name": "success_ratio",
+          "joins": [],
+          "table": "content_sessions",
+          "column": null,
+          "maximum": null,
+          "minimum": null,
+          "purpose": "analysis",
+          "group_by": [
+            "stage_id"
+          ],
+          "operation": "ratio",
+          "conditions": [
+            {
+              "value": 1,
+              "column": "success",
+              "operator": "eq"
+            }
+          ],
+          "denominator_conditions": []
+        },
+        {
+          "name": "avg_play_time",
+          "joins": [],
+          "table": "content_sessions",
+          "column": "play_seconds",
+          "maximum": null,
+          "minimum": null,
+          "purpose": "analysis",
+          "group_by": [
+            "stage_id"
+          ],
+          "operation": "avg",
+          "conditions": [],
+          "denominator_conditions": []
+        }
+      ],
+      "questions": [],
+      "task_kind": "investigation",
+      "difficulty": "intermediate",
+      "description": "라이브 게임 운영팀은 신규 콘텐츠 업데이트 이후 특정 플레이 구간에서 이용자 이탈이 증가하는 현상을 관측했습니다. 이에 따라 계정 프로필과 전투 및 참여 로그를 결합하여 구간별 참여율과 잔류 기간의 상관관계를 진단하고, 콘텐츠 난이도 및 보상 구조 조정을 위한 개선 의사결정을 도출해야 합니다.",
+      "limitations": [
+        "비공개 내부 라벨이나 인과 관계를 임의로 확정하지 않고 제공된 관측 데이터에만 의존해야 합니다.",
+        "제외된 변인이나 교란 요인이 있을 수 있음을 인지하고 신중하게 해석해야 합니다."
+      ],
+      "business_case": {
+        "decision": "이탈이 집중되는 특정 구간의 난이도와 보상 구조를 재조정하여 전체 잔류율을 개선합니다.",
+        "background": "라이브 게임 운영팀은 신규 콘텐츠 업데이트 이후 특정 플레이 구간에서 이용자 이탈이 증가하는 현상을 관측했습니다.",
+        "provenance": "synthetic",
+        "requirements": [
+          {
+            "evidence": [
+              {
+                "table": "content_sessions",
+                "columns": [
+                  "stage_id",
+                  "success"
+                ]
+              }
+            ],
+            "question": "신규 콘텐츠의 각 스테이지별 총 세션 수와 클리어 성공률은 어떻게 나타납니까?",
+            "competency": "measurement",
+            "completion": "스테이지별 성공률을 정확히 측정하고 가장 난이도가 높은 구간을 식별합니다.",
+            "metric_names": [
+              "success_ratio"
+            ]
+          },
+          {
+            "evidence": [
+              {
+                "table": "content_sessions",
+                "columns": [
+                  "stage_id",
+                  "success",
+                  "play_seconds"
+                ]
+              }
+            ],
+            "question": "스테이지별 플레이 소요 시간과 성공률에는 어떠한 차이가 있습니까?",
+            "competency": "comparison",
+            "completion": "그룹 간 비교를 통해 특정 스테이지가 겪는 병목 구간을 구체적으로 비교합니다.",
+            "metric_names": [
+              "success_ratio",
+              "avg_play_time"
+            ]
+          },
+          {
+            "evidence": [
+              {
+                "table": "content_sessions",
+                "columns": [
+                  "stage_id",
+                  "play_seconds",
+                  "success"
+                ]
+              }
+            ],
+            "question": "관측된 성공률과 플레이 시간 변동성 내에 표본 오차나 교란 변인이 존재할 불확실성은 어떻게 평가해야 합니까?",
+            "competency": "uncertainty",
+            "completion": "데이터 변동성에 따른 불확실성 요소를 식별하고 해석의 한계를 검토합니다.",
+            "metric_names": [
+              "avg_play_time",
+              "success_ratio"
+            ]
+          },
+          {
+            "evidence": [
+              {
+                "table": "content_sessions",
+                "columns": [
+                  "stage_id",
+                  "success",
+                  "play_seconds"
+                ]
+              }
+            ],
+            "question": "관측된 이탈 구간과 성공률 분석 결과를 바탕으로 어떠한 운영 및 밸런스 조정 의사결정을 내려야 합니까?",
+            "competency": "decision",
+            "completion": "이탈 요인에 대응하기 위한 구체적인 난이도 하향 또는 보상 상향 등의 개선안을 도출합니다.",
+            "metric_names": []
+          }
+        ],
+        "observed_problem": "특정 스테이지 구간에서 클리어 성공률 급감과 함께 플레이 세션 중단 비율이 높아지는 양상이 관측되었습니다.",
+        "agent_assumptions": [
+          "모든 세션 로그와 계정 프로필 데이터는 정상적으로 수집되었습니다.",
+          "플레이 시간과 성공 여부는 이용자의 숙련도 및 콘텐츠 설계 구조에 영향을 받습니다."
+        ],
+        "observation_period": "2026-09-01 ~ 2026-09-10"
+      },
+      "labels_public": false,
+      "difficulty_reason": "측정, 비교, 불확실성 및 의사결정 역량을 종합적으로 검토하는 중급 난이도 분석 과제입니다.",
+      "completion_conditions": [
+        "계정별 플레이 로그를 활용해 콘텐츠 구간별 참여율과 이탈률을 정확히 측정해야 합니다.",
+        "그룹별 플레이 패턴 및 잔류 기간의 차이를 비교하고 불확실성을 고려하여 유의미한 차이를 도출해야 합니다.",
+        "관측된 이탈 요인에 근거하여 콘텐츠 난이도 또는 보상 체계 개선을 위한 의사결정 안을 제시해야 합니다."
+      ]
+    },
+    "usage": [
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "09336105-ee23-4160-a172-3192b031ff98",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "68669e3d-963d-4120-a566-ed701c843810",
+        "started_at": "2026-10-05T18:58:53.059844Z",
+        "duration_ms": 7489,
+        "finished_at": "2026-10-05T18:59:00.549810Z",
+        "occurred_at": "2026-10-05T18:58:53.059844Z",
+        "input_tokens": 5932,
+        "operation_id": "5d392653-564e-4ce7-b7d4-9e0035ceaff0",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 2197,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "5495385d-ec07-4de5-a380-4b410222ab08",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "68669e3d-963d-4120-a566-ed701c843810",
+        "started_at": "2026-10-05T18:59:00.598292Z",
+        "duration_ms": 11541,
+        "finished_at": "2026-10-05T18:59:12.140257Z",
+        "occurred_at": "2026-10-05T18:59:00.598292Z",
+        "input_tokens": 8410,
+        "operation_id": "cf91dfca-3188-4069-9119-7fc509bf6766",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 2297,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-repair-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "e3aa1cea-01a4-48eb-a22a-c67f354d0fb2",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "68669e3d-963d-4120-a566-ed701c843810",
+        "started_at": "2026-10-05T18:59:12.186644Z",
+        "duration_ms": 11812,
+        "finished_at": "2026-10-05T18:59:23.998869Z",
+        "occurred_at": "2026-10-05T18:59:12.186644Z",
+        "input_tokens": 10988,
+        "operation_id": "7cb88234-9136-4daa-80c4-46611c883cc5",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 2497,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-repair-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "4807ce54-e581-4140-bcb1-15cb19189089",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "68669e3d-963d-4120-a566-ed701c843810",
+        "started_at": "2026-10-05T18:59:24.058824Z",
+        "duration_ms": 6027,
+        "finished_at": "2026-10-05T18:59:30.086689Z",
+        "occurred_at": "2026-10-05T18:59:24.058824Z",
+        "input_tokens": 5408,
+        "operation_id": "30980ccf-ffb5-4d45-a9d5-f1dd3502960e",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 46,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-alignment-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      }
+    ],
+    "attempt": {
+      "title": "모바일 게임 신규 콘텐츠 이용자 이탈 구간 및 참여 패턴 분석",
+      "domain": "모바일 게임 신규 콘텐츠 이용자 이탈 구간 및 참여 패턴 분석",
+      "ai_calls": 4,
+      "plan_hash": "adedc0e372da4565bb585df835b675aee26b268cef1b949e81e528358cbb1c0f",
+      "task_kind": "investigation",
+      "attempt_id": "886424d1-b9c2-4655-96a0-fa61da67cc75",
+      "dataset_id": "generated-5ae5eecc3eddca04210c6fcd-data",
+      "difficulty": "intermediate",
+      "package_id": "generated-5ae5eecc3eddca04210c6fcd",
+      "problem_id": "problem-001",
+      "request_id": "68669e3d-963d-4120-a566-ed701c843810",
+      "started_at": "2026-10-05T18:59:30.273343Z",
+      "release_version": "v1",
+      "contract_version": "request-v2",
+      "explanation_viewed": false,
+      "intentional_repeat": false,
+      "semantic_signature": {
+        "goal": "신규 콘텐츠 업데이트 이후 이용자들의 플레이 기록과 잔류 기간을 분석하여 특정 구간에서의 이탈 요인을 진단하고 개선 의사결정을 도출합니다.",
+        "domain": "모바일 게임 신규 콘텐츠 이용자 이탈 구간 및 참여 패턴 분석",
+        "format": "investigation",
+        "ambiguity": "intermediate",
+        "situation": "d1382d514a46",
+        "structure": "avg:False:1|ratio:False:1",
+        "difficulty": "intermediate",
+        "evaluation": "adaptive",
+        "quality_version": "task-quality-v1",
+        "required_judgment": "investigation"
+      },
+      "evaluation_rules_version": "request-review-v3",
+      "draft": {
+        "revision": 0,
+        "sections": {}
+      },
+      "saved_executions": [],
+      "reports": [],
+      "reviews": [],
+      "hints": [],
+      "pilot_linked": false,
+      "problem": {
+        "goal": "신규 콘텐츠 업데이트 이후 이용자들의 플레이 기록과 잔류 기간을 분석하여 특정 구간에서의 이탈 요인을 진단하고 개선 의사결정을 도출합니다.",
+        "title": "모바일 게임 신규 콘텐츠 이용자 이탈 구간 및 참여 패턴 분석",
+        "plan_id": "b7bac71c-9199-4806-9c1a-8bb7b30a8c37",
+        "weights": {
+          "next_actions": 10,
+          "sql_accuracy": 20,
+          "interpretation": 20,
+          "analysis_approach": 25,
+          "problem_definition": 25
+        },
+        "revision": 0,
+        "timezone": "Asia/Seoul",
+        "ambiguity": {
+          "goal": "public",
+          "cause": "learner"
+        },
+        "task_kind": "investigation",
+        "dataset_id": "generated-5ae5eecc3eddca04210c6fcd-data",
+        "difficulty": "intermediate",
+        "package_id": "generated-5ae5eecc3eddca04210c6fcd",
+        "problem_id": "problem-001",
+        "description": "라이브 게임 운영팀은 신규 콘텐츠 업데이트 이후 특정 플레이 구간에서 이용자 이탈이 증가하는 현상을 관측했습니다. 이에 따라 계정 프로필과 전투 및 참여 로그를 결합하여 구간별 참여율과 잔류 기간의 상관관계를 진단하고, 콘텐츠 난이도 및 보상 구조 조정을 위한 개선 의사결정을 도출해야 합니다.\n\n업무 배경: 라이브 게임 운영팀은 신규 콘텐츠 업데이트 이후 특정 플레이 구간에서 이용자 이탈이 증가하는 현상을 관측했습니다.\n\n관측된 문제: 특정 스테이지 구간에서 클리어 성공률 급감과 함께 플레이 세션 중단 비율이 높아지는 양상이 관측되었습니다.\n\n관측 기간: 2026-09-01 ~ 2026-09-10\n\n판단할 업무 결정: 이탈이 집중되는 특정 구간의 난이도와 보상 구조를 재조정하여 전체 잔류율을 개선합니다.\n\n분석 과제:\n- 신규 콘텐츠의 각 스테이지별 총 세션 수와 클리어 성공률은 어떻게 나타납니까?\n- 스테이지별 플레이 소요 시간과 성공률에는 어떠한 차이가 있습니까?\n- 관측된 성공률과 플레이 시간 변동성 내에 표본 오차나 교란 변인이 존재할 불확실성은 어떻게 평가해야 합니까?\n- 관측된 이탈 구간과 성공률 분석 결과를 바탕으로 어떠한 운영 및 밸런스 조정 의사결정을 내려야 합니까?\n\n에이전트가 설정한 연습 조건:\n- 모든 세션 로그와 계정 프로필 데이터는 정상적으로 수집되었습니다.\n- 플레이 시간과 성공 여부는 이용자의 숙련도 및 콘텐츠 설계 구조에 영향을 받습니다.\n\n실제 회사 사례를 인용한 것이 아닌 가상 업무 상황이며, 데이터는 연습용 합성 데이터입니다.\n\n이 과제의 데이터는 요청에 맞춰 생성한 연습용 합성 데이터입니다.",
+        "plan_version": "adaptive-plan-v1",
+        "business_case": {
+          "decision": "이탈이 집중되는 특정 구간의 난이도와 보상 구조를 재조정하여 전체 잔류율을 개선합니다.",
+          "background": "라이브 게임 운영팀은 신규 콘텐츠 업데이트 이후 특정 플레이 구간에서 이용자 이탈이 증가하는 현상을 관측했습니다.",
+          "provenance": "synthetic",
+          "requirements": [
+            {
+              "evidence": [
+                {
+                  "table": "content_sessions",
+                  "columns": [
+                    "stage_id",
+                    "success"
+                  ]
+                }
+              ],
+              "question": "신규 콘텐츠의 각 스테이지별 총 세션 수와 클리어 성공률은 어떻게 나타납니까?",
+              "competency": "measurement",
+              "completion": "스테이지별 성공률을 정확히 측정하고 가장 난이도가 높은 구간을 식별합니다.",
+              "metric_names": [
+                "success_ratio"
+              ]
+            },
+            {
+              "evidence": [
+                {
+                  "table": "content_sessions",
+                  "columns": [
+                    "stage_id",
+                    "success",
+                    "play_seconds"
+                  ]
+                }
+              ],
+              "question": "스테이지별 플레이 소요 시간과 성공률에는 어떠한 차이가 있습니까?",
+              "competency": "comparison",
+              "completion": "그룹 간 비교를 통해 특정 스테이지가 겪는 병목 구간을 구체적으로 비교합니다.",
+              "metric_names": [
+                "success_ratio",
+                "avg_play_time"
+              ]
+            },
+            {
+              "evidence": [
+                {
+                  "table": "content_sessions",
+                  "columns": [
+                    "stage_id",
+                    "play_seconds",
+                    "success"
+                  ]
+                }
+              ],
+              "question": "관측된 성공률과 플레이 시간 변동성 내에 표본 오차나 교란 변인이 존재할 불확실성은 어떻게 평가해야 합니까?",
+              "competency": "uncertainty",
+              "completion": "데이터 변동성에 따른 불확실성 요소를 식별하고 해석의 한계를 검토합니다.",
+              "metric_names": [
+                "avg_play_time",
+                "success_ratio"
+              ]
+            },
+            {
+              "evidence": [
+                {
+                  "table": "content_sessions",
+                  "columns": [
+                    "stage_id",
+                    "success",
+                    "play_seconds"
+                  ]
+                }
+              ],
+              "question": "관측된 이탈 구간과 성공률 분석 결과를 바탕으로 어떠한 운영 및 밸런스 조정 의사결정을 내려야 합니까?",
+              "competency": "decision",
+              "completion": "이탈 요인에 대응하기 위한 구체적인 난이도 하향 또는 보상 상향 등의 개선안을 도출합니다.",
+              "metric_names": []
+            }
+          ],
+          "observed_problem": "특정 스테이지 구간에서 클리어 성공률 급감과 함께 플레이 세션 중단 비율이 높아지는 양상이 관측되었습니다.",
+          "agent_assumptions": [
+            "모든 세션 로그와 계정 프로필 데이터는 정상적으로 수집되었습니다.",
+            "플레이 시간과 성공 여부는 이용자의 숙련도 및 콘텐츠 설계 구조에 영향을 받습니다."
+          ],
+          "observation_period": "2026-09-01 ~ 2026-09-10"
+        },
+        "capability_id": "adaptive",
+        "allowed_limits": [
+          "비공개 내부 라벨이나 인과 관계를 임의로 확정하지 않고 제공된 관측 데이터에만 의존해야 합니다.",
+          "제외된 변인이나 교란 요인이 있을 수 있음을 인지하고 신중하게 해석해야 합니다."
+        ],
+        "problem_type_id": "adaptive",
+        "problem_version": "v1",
+        "quality_version": "task-quality-v1",
+        "release_version": "v1",
+        "required_tables": [
+          "accounts",
+          "content_sessions"
+        ],
+        "contract_version": "request-v2",
+        "data_preparation": "요청별 합성 데이터 · 자동 검증",
+        "original_request": "실제 게임 업계 실무에서 발생하는 문제를 분석하고 싶어",
+        "selection_reason": "요청한 분석 대상과 난이도에 맞춰 공개 자료로 분석하는 연습 과제입니다.",
+        "difficulty_reason": "측정, 비교, 불확실성 및 의사결정 역량을 종합적으로 검토하는 중급 난이도 분석 과제입니다.",
+        "evaluation_rubric": {
+          "version": "evaluation-rubric-v3",
+          "criteria": [
+            {
+              "key": "problem_definition",
+              "conditions": [
+                {
+                  "id": "content",
+                  "kind": "content",
+                  "description": "현재 제출 어디에든 이 항목에서 평가할 판단·계획·방법·해석이 존재"
+                },
+                {
+                  "id": "target",
+                  "kind": "required",
+                  "description": "대상 정의. 과제 범위: 스테이지별 성공률을 정확히 측정하고 가장 난이도가 높은 구간을 식별합니다. / 그룹 간 비교를 통해 특정 스테이지가 겪는 병목 구간을 구체적으로 비교합니다. / 데이터 변동성에 따른 불확실성 요소를 식별하고 해석의 한계를 검토합니다. / 이탈 요인에 대응하기 위한 구체적인 난이도 하향 또는 보상 상향 등의 개선안을 도출합니다."
+                },
+                {
+                  "id": "period",
+                  "kind": "required",
+                  "description": "기간·시간 기준 정의. 과제 범위: 스테이지별 성공률을 정확히 측정하고 가장 난이도가 높은 구간을 식별합니다. / 그룹 간 비교를 통해 특정 스테이지가 겪는 병목 구간을 구체적으로 비교합니다. / 데이터 변동성에 따른 불확실성 요소를 식별하고 해석의 한계를 검토합니다. / 이탈 요인에 대응하기 위한 구체적인 난이도 하향 또는 보상 상향 등의 개선안을 도출합니다."
+                },
+                {
+                  "id": "unit",
+                  "kind": "required",
+                  "description": "집계 단위 정의. 과제 범위: 스테이지별 성공률을 정확히 측정하고 가장 난이도가 높은 구간을 식별합니다. / 그룹 간 비교를 통해 특정 스테이지가 겪는 병목 구간을 구체적으로 비교합니다. / 데이터 변동성에 따른 불확실성 요소를 식별하고 해석의 한계를 검토합니다. / 이탈 요인에 대응하기 위한 구체적인 난이도 하향 또는 보상 상향 등의 개선안을 도출합니다."
+                },
+                {
+                  "id": "metric",
+                  "kind": "required",
+                  "description": "지표·분모 정의. 과제 범위: 스테이지별 성공률을 정확히 측정하고 가장 난이도가 높은 구간을 식별합니다. / 그룹 간 비교를 통해 특정 스테이지가 겪는 병목 구간을 구체적으로 비교합니다. / 데이터 변동성에 따른 불확실성 요소를 식별하고 해석의 한계를 검토합니다. / 이탈 요인에 대응하기 위한 구체적인 난이도 하향 또는 보상 상향 등의 개선안을 도출합니다."
+                },
+                {
+                  "id": "comparison",
+                  "kind": "required",
+                  "description": "비교 집단·기준 정의"
+                },
+                {
+                  "id": "critical",
+                  "kind": "error",
+                  "description": "공개 조건과 반대인 대상·기간·집계 단위·분모를 올바르다고 정의"
+                },
+                {
+                  "id": "advanced",
+                  "kind": "advanced",
+                  "description": "관련 경계·제외·중복 처리 설명"
+                }
+              ]
+            },
+            {
+              "key": "analysis_approach",
+              "conditions": [
+                {
+                  "id": "content",
+                  "kind": "content",
+                  "description": "현재 제출 어디에든 이 항목에서 평가할 판단·계획·방법·해석이 존재"
+                },
+                {
+                  "id": "method",
+                  "kind": "required",
+                  "description": "목표에 대응하는 자료·관계·집계 방법. 과제 범위: 스테이지별 성공률을 정확히 측정하고 가장 난이도가 높은 구간을 식별합니다. / 그룹 간 비교를 통해 특정 스테이지가 겪는 병목 구간을 구체적으로 비교합니다. / 데이터 변동성에 따른 불확실성 요소를 식별하고 해석의 한계를 검토합니다. / 이탈 요인에 대응하기 위한 구체적인 난이도 하향 또는 보상 상향 등의 개선안을 도출합니다."
+                },
+                {
+                  "id": "validation",
+                  "kind": "required",
+                  "description": "판단 가능한 검증 순서. 과제 범위: 스테이지별 성공률을 정확히 측정하고 가장 난이도가 높은 구간을 식별합니다. / 그룹 간 비교를 통해 특정 스테이지가 겪는 병목 구간을 구체적으로 비교합니다. / 데이터 변동성에 따른 불확실성 요소를 식별하고 해석의 한계를 검토합니다. / 이탈 요인에 대응하기 위한 구체적인 난이도 하향 또는 보상 상향 등의 개선안을 도출합니다."
+                },
+                {
+                  "id": "task_comparison",
+                  "kind": "required",
+                  "description": "그룹 간 비교를 통해 특정 스테이지가 겪는 병목 구간을 구체적으로 비교합니다."
+                },
+                {
+                  "id": "critical",
+                  "kind": "error",
+                  "description": "계획 자체의 중복 단위·잘못된 비교·가설에 맞춘 자료 변경"
+                },
+                {
+                  "id": "advanced",
+                  "kind": "advanced",
+                  "description": "목표와 관련된 대안·반증·민감도 확인 방법"
+                }
+              ]
+            },
+            {
+              "key": "sql_accuracy",
+              "conditions": [
+                {
+                  "id": "content",
+                  "kind": "content",
+                  "description": "현재 제출 어디에든 이 항목에서 평가할 판단·계획·방법·해석이 존재"
+                },
+                {
+                  "id": "execution",
+                  "kind": "required",
+                  "description": "선택 저장한 실제 실행. 과제 범위: 스테이지별 성공률을 정확히 측정하고 가장 난이도가 높은 구간을 식별합니다. / 그룹 간 비교를 통해 특정 스테이지가 겪는 병목 구간을 구체적으로 비교합니다. / 데이터 변동성에 따른 불확실성 요소를 식별하고 해석의 한계를 검토합니다. / 이탈 요인에 대응하기 위한 구체적인 난이도 하향 또는 보상 상향 등의 개선안을 도출합니다."
+                },
+                {
+                  "id": "calculation",
+                  "kind": "required",
+                  "description": "공개 목표에 맞는 완전한 계산. 과제 범위: 스테이지별 성공률을 정확히 측정하고 가장 난이도가 높은 구간을 식별합니다. / 그룹 간 비교를 통해 특정 스테이지가 겪는 병목 구간을 구체적으로 비교합니다. / 데이터 변동성에 따른 불확실성 요소를 식별하고 해석의 한계를 검토합니다. / 이탈 요인에 대응하기 위한 구체적인 난이도 하향 또는 보상 상향 등의 개선안을 도출합니다."
+                },
+                {
+                  "id": "critical",
+                  "kind": "error",
+                  "description": "실제 실행에서 확인된 계산·집계 단위·분모·기간 오류"
+                },
+                {
+                  "id": "advanced",
+                  "kind": "advanced",
+                  "description": "실제 저장 근거로 중복·경계·독립 검산 확인"
+                }
+              ]
+            },
+            {
+              "key": "interpretation",
+              "conditions": [
+                {
+                  "id": "content",
+                  "kind": "content",
+                  "description": "현재 제출 어디에든 이 항목에서 평가할 판단·계획·방법·해석이 존재"
+                },
+                {
+                  "id": "meaning",
+                  "kind": "required",
+                  "description": "결론과 실제 근거 또는 설계의 의미 연결. 과제 범위: 스테이지별 성공률을 정확히 측정하고 가장 난이도가 높은 구간을 식별합니다. / 그룹 간 비교를 통해 특정 스테이지가 겪는 병목 구간을 구체적으로 비교합니다. / 데이터 변동성에 따른 불확실성 요소를 식별하고 해석의 한계를 검토합니다. / 이탈 요인에 대응하기 위한 구체적인 난이도 하향 또는 보상 상향 등의 개선안을 도출합니다."
+                },
+                {
+                  "id": "scope",
+                  "kind": "required",
+                  "description": "공개 자료로 판단 가능한 결론 범위. 과제 범위: 스테이지별 성공률을 정확히 측정하고 가장 난이도가 높은 구간을 식별합니다. / 그룹 간 비교를 통해 특정 스테이지가 겪는 병목 구간을 구체적으로 비교합니다. / 데이터 변동성에 따른 불확실성 요소를 식별하고 해석의 한계를 검토합니다. / 이탈 요인에 대응하기 위한 구체적인 난이도 하향 또는 보상 상향 등의 개선안을 도출합니다."
+                },
+                {
+                  "id": "task_uncertainty",
+                  "kind": "required",
+                  "description": "데이터 변동성에 따른 불확실성 요소를 식별하고 해석의 한계를 검토합니다."
+                },
+                {
+                  "id": "critical",
+                  "kind": "error",
+                  "description": "근거와 반대인 최종 결론·미실행 결과 확인 주장·관측만으로 원인 증명 단정·미해결 최종 모순"
+                },
+                {
+                  "id": "advanced",
+                  "kind": "advanced",
+                  "description": "대안·불확실성·관측 한계를 결론 적용 범위에 연결"
+                }
+              ]
+            },
+            {
+              "key": "next_actions",
+              "conditions": [
+                {
+                  "id": "content",
+                  "kind": "content",
+                  "description": "현재 제출 어디에든 이 항목에서 평가할 판단·계획·방법·해석이 존재"
+                },
+                {
+                  "id": "action",
+                  "kind": "required",
+                  "description": "남은 질문 또는 완료 판단에 대응하는 구체적 행동. 과제 범위: 스테이지별 성공률을 정확히 측정하고 가장 난이도가 높은 구간을 식별합니다. / 그룹 간 비교를 통해 특정 스테이지가 겪는 병목 구간을 구체적으로 비교합니다. / 데이터 변동성에 따른 불확실성 요소를 식별하고 해석의 한계를 검토합니다. / 이탈 요인에 대응하기 위한 구체적인 난이도 하향 또는 보상 상향 등의 개선안을 도출합니다."
+                },
+                {
+                  "id": "purpose",
+                  "kind": "required",
+                  "description": "확인 방법과 목적 또는 정리·제출 판단. 과제 범위: 스테이지별 성공률을 정확히 측정하고 가장 난이도가 높은 구간을 식별합니다. / 그룹 간 비교를 통해 특정 스테이지가 겪는 병목 구간을 구체적으로 비교합니다. / 데이터 변동성에 따른 불확실성 요소를 식별하고 해석의 한계를 검토합니다. / 이탈 요인에 대응하기 위한 구체적인 난이도 하향 또는 보상 상향 등의 개선안을 도출합니다."
+                },
+                {
+                  "id": "task_decision",
+                  "kind": "required",
+                  "description": "이탈 요인에 대응하기 위한 구체적인 난이도 하향 또는 보상 상향 등의 개선안을 도출합니다."
+                },
+                {
+                  "id": "critical",
+                  "kind": "error",
+                  "description": "잘못된 전제로 효과 보장·검증 없이 인과 개입 확정·자료를 가설에 맞춰 변경"
+                },
+                {
+                  "id": "advanced",
+                  "kind": "advanced",
+                  "description": "우선순위와 확인 결과별 다음 결정·종료 조건"
+                }
+              ]
+            }
+          ],
+          "excluded_criteria": []
+        },
+        "evaluation_status": "시험 과제 · 자동 검증 통과 · 사람 품질 검토 전",
+        "generator_version": "adaptive-recipe-v1",
+        "difficulty_version": "ambiguity-v2",
+        "evaluation_version": "request-review-v3",
+        "required_judgments": [
+          "스테이지별 성공률을 정확히 측정하고 가장 난이도가 높은 구간을 식별합니다.",
+          "그룹 간 비교를 통해 특정 스테이지가 겪는 병목 구간을 구체적으로 비교합니다.",
+          "데이터 변동성에 따른 불확실성 요소를 식별하고 해석의 한계를 검토합니다.",
+          "이탈 요인에 대응하기 위한 구체적인 난이도 하향 또는 보상 상향 등의 개선안을 도출합니다."
+        ],
+        "semantic_signature": {
+          "goal": "신규 콘텐츠 업데이트 이후 이용자들의 플레이 기록과 잔류 기간을 분석하여 특정 구간에서의 이탈 요인을 진단하고 개선 의사결정을 도출합니다.",
+          "domain": "모바일 게임 신규 콘텐츠 이용자 이탈 구간 및 참여 패턴 분석",
+          "format": "investigation",
+          "ambiguity": "intermediate",
+          "situation": "d1382d514a46",
+          "structure": "avg:False:1|ratio:False:1",
+          "difficulty": "intermediate",
+          "evaluation": "adaptive",
+          "quality_version": "task-quality-v1",
+          "required_judgment": "investigation"
+        },
+        "validation_version": "adaptive-validation-v1",
+        "data_complete_before": "2026-09-09T14:13:06+00:00",
+        "completion_conditions": [
+          "스테이지별 성공률을 정확히 측정하고 가장 난이도가 높은 구간을 식별합니다.",
+          "그룹 간 비교를 통해 특정 스테이지가 겪는 병목 구간을 구체적으로 비교합니다.",
+          "데이터 변동성에 따른 불확실성 요소를 식별하고 해석의 한계를 검토합니다.",
+          "이탈 요인에 대응하기 위한 구체적인 난이도 하향 또는 보상 상향 등의 개선안을 도출합니다."
+        ],
+        "disclosed_on_question": [],
+        "evaluation_rules_version": "request-review-v3",
+        "schema": {
+          "accounts": {
+            "grain": "계정별 1행",
+            "columns": [
+              {
+                "name": "id",
+                "type": "bigint",
+                "description": "계정 고유 식별자"
+              },
+              {
+                "name": "level_band",
+                "type": "text",
+                "description": "이용자 레벨 구간"
+              },
+              {
+                "name": "signup_at",
+                "type": "timestamptz",
+                "description": "가입 시각"
+              }
+            ]
+          },
+          "content_sessions": {
+            "grain": "계정별 신규 콘텐츠 참여 세션 로그",
+            "columns": [
+              {
+                "name": "id",
+                "type": "bigint",
+                "description": "세션 로그 고유 식별자"
+              },
+              {
+                "name": "account_id",
+                "type": "bigint",
+                "description": "계정 식별자"
+              },
+              {
+                "name": "stage_id",
+                "type": "bigint",
+                "description": "콘텐츠 스테이지 번호"
+              },
+              {
+                "name": "success",
+                "type": "bigint",
+                "description": "클리어 성공 여부 (1: 성공, 0: 실패)"
+              },
+              {
+                "name": "play_seconds",
+                "type": "bigint",
+                "description": "플레이 소요 시간(초)"
+              },
+              {
+                "name": "session_at",
+                "type": "timestamptz",
+                "description": "세션 진행 시각"
+              }
+            ]
+          }
+        }
+      },
+      "messages": []
+    },
+    "private_reference": {
+      "package_id": "generated-5ae5eecc3eddca04210c6fcd",
+      "release_version": "v1",
+      "dataset_id": "generated-5ae5eecc3eddca04210c6fcd-data",
+      "problem_id": "problem-001",
+      "evaluation_version": "v1",
+      "sql": "SELECT (SELECT COUNT(*) AS \"total_sessions\" FROM \"content_sessions\") AS \"total_sessions\", (SELECT COUNT(*) AS \"failure_sessions\" FROM \"content_sessions\" WHERE \"content_sessions\".\"success\" = 0) AS \"failure_sessions\"",
+      "expected": {
+        "total_sessions": 300,
+        "failure_sessions": 154
+      },
+      "weights": {
+        "problem_definition": 25,
+        "analysis_approach": 25,
+        "sql_accuracy": 20,
+        "interpretation": 20,
+        "next_actions": 10
+      },
+      "rubric": "제공된 데이터에 기반하여 스테이지별 성공률과 플레이 시간을 정확히 측정하고, 그룹 간 비교 및 불확실성 검토를 거쳐 이탈 요인을 논리적으로 진단한 후 타당한 개선 의사결정을 도출했는지 평가합니다. 검증하지 못한 타당한 대안을 틀렸다고 단정하지 말고, 비공개 생성 그룹을 맞히도록 요구하지 마세요.",
+      "question_facts": {},
+      "explanation": "제공된 데이터에 기반하여 스테이지별 성공률과 플레이 시간을 정확히 측정하고, 그룹 간 비교 및 불확실성 검토를 거쳐 이탈 요인을 논리적으로 진단한 후 타당한 개선 의사결정을 도출했는지 평가합니다.",
+      "hints": {
+        "direction": "공개 목표와 데이터의 집계 단위를 확인하세요.",
+        "metric": "비교 기준과 정상 행동에서도 나타날 가능성을 정리하세요.",
+        "sql_structure": "공개 테이블의 컬럼으로 가설을 검증하세요."
+      },
+      "verification_contracts": {
+        "success_ratio": {
+          "comparison_expected": {
+            "columns": [
+              "stage_id",
+              "success_ratio"
+            ],
+            "rows": [
+              [
+                2,
+                0.5285714285714286
+              ],
+              [
+                4,
+                0.4461538461538462
+              ],
+              [
+                3,
+                0.42592592592592593
+              ],
+              [
+                1,
+                0.6181818181818182
+              ],
+              [
+                5,
+                0.4107142857142857
+              ]
+            ]
+          }
+        },
+        "avg_play_time": {
+          "comparison_expected": {
+            "columns": [
+              "stage_id",
+              "avg_play_time"
+            ],
+            "rows": [
+              [
+                2,
+                316.45714285714286
+              ],
+              [
+                4,
+                304.3076923076923
+              ],
+              [
+                3,
+                326.4259259259259
+              ],
+              [
+                1,
+                304.1636363636364
+              ],
+              [
+                5,
+                297.01785714285717
+              ]
+            ]
+          }
+        }
+      },
+      "analytical_checks": {
+        "success_ratio": {
+          "comparison_expected": {
+            "columns": [
+              "stage_id",
+              "success_ratio"
+            ],
+            "rows": [
+              [
+                2,
+                0.5285714285714286
+              ],
+              [
+                4,
+                0.4461538461538462
+              ],
+              [
+                3,
+                0.42592592592592593
+              ],
+              [
+                1,
+                0.6181818181818182
+              ],
+              [
+                5,
+                0.4107142857142857
+              ]
+            ]
+          },
+          "sql": "SELECT \"content_sessions\".\"stage_id\" AS \"stage_id\", COUNT(*) FILTER (WHERE \"content_sessions\".\"success\" = 1)::double precision / NULLIF(COUNT(*),0) AS \"success_ratio\" FROM \"content_sessions\" GROUP BY \"content_sessions\".\"stage_id\""
+        },
+        "avg_play_time": {
+          "comparison_expected": {
+            "columns": [
+              "stage_id",
+              "avg_play_time"
+            ],
+            "rows": [
+              [
+                2,
+                316.45714285714286
+              ],
+              [
+                4,
+                304.3076923076923
+              ],
+              [
+                3,
+                326.4259259259259
+              ],
+              [
+                1,
+                304.1636363636364
+              ],
+              [
+                5,
+                297.01785714285717
+              ]
+            ]
+          },
+          "sql": "SELECT \"content_sessions\".\"stage_id\" AS \"stage_id\", AVG(\"content_sessions\".\"play_seconds\") AS \"avg_play_time\" FROM \"content_sessions\" GROUP BY \"content_sessions\".\"stage_id\""
+        }
+      },
+      "frozen_evaluation": {
+        "expected": {
+          "total_sessions": 300,
+          "failure_sessions": 154
+        },
+        "rubric": "제공된 데이터에 기반하여 스테이지별 성공률과 플레이 시간을 정확히 측정하고, 그룹 간 비교 및 불확실성 검토를 거쳐 이탈 요인을 논리적으로 진단한 후 타당한 개선 의사결정을 도출했는지 평가합니다. 검증하지 못한 타당한 대안을 틀렸다고 단정하지 말고, 비공개 생성 그룹을 맞히도록 요구하지 마세요.",
+        "verification_contracts": {
+          "success_ratio": {
+            "comparison_expected": {
+              "columns": [
+                "stage_id",
+                "success_ratio"
+              ],
+              "rows": [
+                [
+                  2,
+                  0.5285714285714286
+                ],
+                [
+                  4,
+                  0.4461538461538462
+                ],
+                [
+                  3,
+                  0.42592592592592593
+                ],
+                [
+                  1,
+                  0.6181818181818182
+                ],
+                [
+                  5,
+                  0.4107142857142857
+                ]
+              ]
+            }
+          },
+          "avg_play_time": {
+            "comparison_expected": {
+              "columns": [
+                "stage_id",
+                "avg_play_time"
+              ],
+              "rows": [
+                [
+                  2,
+                  316.45714285714286
+                ],
+                [
+                  4,
+                  304.3076923076923
+                ],
+                [
+                  3,
+                  326.4259259259259
+                ],
+                [
+                  1,
+                  304.1636363636364
+                ],
+                [
+                  5,
+                  297.01785714285717
+                ]
+              ]
+            }
+          }
+        },
+        "weights": {
+          "problem_definition": 25,
+          "analysis_approach": 25,
+          "sql_accuracy": 20,
+          "interpretation": 20,
+          "next_actions": 10
+        },
+        "completion_conditions": [
+          "스테이지별 성공률을 정확히 측정하고 가장 난이도가 높은 구간을 식별합니다.",
+          "그룹 간 비교를 통해 특정 스테이지가 겪는 병목 구간을 구체적으로 비교합니다.",
+          "데이터 변동성에 따른 불확실성 요소를 식별하고 해석의 한계를 검토합니다.",
+          "이탈 요인에 대응하기 위한 구체적인 난이도 하향 또는 보상 상향 등의 개선안을 도출합니다."
+        ],
+        "rules_version": "evaluation-rubric-v3",
+        "condition_rubric": {
+          "version": "evaluation-rubric-v3",
+          "criteria": [
+            {
+              "key": "problem_definition",
+              "conditions": [
+                {
+                  "id": "content",
+                  "kind": "content",
+                  "description": "현재 제출 어디에든 이 항목에서 평가할 판단·계획·방법·해석이 존재"
+                },
+                {
+                  "id": "target",
+                  "kind": "required",
+                  "description": "대상 정의. 과제 범위: 스테이지별 성공률을 정확히 측정하고 가장 난이도가 높은 구간을 식별합니다. / 그룹 간 비교를 통해 특정 스테이지가 겪는 병목 구간을 구체적으로 비교합니다. / 데이터 변동성에 따른 불확실성 요소를 식별하고 해석의 한계를 검토합니다. / 이탈 요인에 대응하기 위한 구체적인 난이도 하향 또는 보상 상향 등의 개선안을 도출합니다."
+                },
+                {
+                  "id": "period",
+                  "kind": "required",
+                  "description": "기간·시간 기준 정의. 과제 범위: 스테이지별 성공률을 정확히 측정하고 가장 난이도가 높은 구간을 식별합니다. / 그룹 간 비교를 통해 특정 스테이지가 겪는 병목 구간을 구체적으로 비교합니다. / 데이터 변동성에 따른 불확실성 요소를 식별하고 해석의 한계를 검토합니다. / 이탈 요인에 대응하기 위한 구체적인 난이도 하향 또는 보상 상향 등의 개선안을 도출합니다."
+                },
+                {
+                  "id": "unit",
+                  "kind": "required",
+                  "description": "집계 단위 정의. 과제 범위: 스테이지별 성공률을 정확히 측정하고 가장 난이도가 높은 구간을 식별합니다. / 그룹 간 비교를 통해 특정 스테이지가 겪는 병목 구간을 구체적으로 비교합니다. / 데이터 변동성에 따른 불확실성 요소를 식별하고 해석의 한계를 검토합니다. / 이탈 요인에 대응하기 위한 구체적인 난이도 하향 또는 보상 상향 등의 개선안을 도출합니다."
+                },
+                {
+                  "id": "metric",
+                  "kind": "required",
+                  "description": "지표·분모 정의. 과제 범위: 스테이지별 성공률을 정확히 측정하고 가장 난이도가 높은 구간을 식별합니다. / 그룹 간 비교를 통해 특정 스테이지가 겪는 병목 구간을 구체적으로 비교합니다. / 데이터 변동성에 따른 불확실성 요소를 식별하고 해석의 한계를 검토합니다. / 이탈 요인에 대응하기 위한 구체적인 난이도 하향 또는 보상 상향 등의 개선안을 도출합니다."
+                },
+                {
+                  "id": "comparison",
+                  "kind": "required",
+                  "description": "비교 집단·기준 정의"
+                },
+                {
+                  "id": "critical",
+                  "kind": "error",
+                  "description": "공개 조건과 반대인 대상·기간·집계 단위·분모를 올바르다고 정의"
+                },
+                {
+                  "id": "advanced",
+                  "kind": "advanced",
+                  "description": "관련 경계·제외·중복 처리 설명"
+                }
+              ]
+            },
+            {
+              "key": "analysis_approach",
+              "conditions": [
+                {
+                  "id": "content",
+                  "kind": "content",
+                  "description": "현재 제출 어디에든 이 항목에서 평가할 판단·계획·방법·해석이 존재"
+                },
+                {
+                  "id": "method",
+                  "kind": "required",
+                  "description": "목표에 대응하는 자료·관계·집계 방법. 과제 범위: 스테이지별 성공률을 정확히 측정하고 가장 난이도가 높은 구간을 식별합니다. / 그룹 간 비교를 통해 특정 스테이지가 겪는 병목 구간을 구체적으로 비교합니다. / 데이터 변동성에 따른 불확실성 요소를 식별하고 해석의 한계를 검토합니다. / 이탈 요인에 대응하기 위한 구체적인 난이도 하향 또는 보상 상향 등의 개선안을 도출합니다."
+                },
+                {
+                  "id": "validation",
+                  "kind": "required",
+                  "description": "판단 가능한 검증 순서. 과제 범위: 스테이지별 성공률을 정확히 측정하고 가장 난이도가 높은 구간을 식별합니다. / 그룹 간 비교를 통해 특정 스테이지가 겪는 병목 구간을 구체적으로 비교합니다. / 데이터 변동성에 따른 불확실성 요소를 식별하고 해석의 한계를 검토합니다. / 이탈 요인에 대응하기 위한 구체적인 난이도 하향 또는 보상 상향 등의 개선안을 도출합니다."
+                },
+                {
+                  "id": "task_comparison",
+                  "kind": "required",
+                  "description": "그룹 간 비교를 통해 특정 스테이지가 겪는 병목 구간을 구체적으로 비교합니다."
+                },
+                {
+                  "id": "critical",
+                  "kind": "error",
+                  "description": "계획 자체의 중복 단위·잘못된 비교·가설에 맞춘 자료 변경"
+                },
+                {
+                  "id": "advanced",
+                  "kind": "advanced",
+                  "description": "목표와 관련된 대안·반증·민감도 확인 방법"
+                }
+              ]
+            },
+            {
+              "key": "sql_accuracy",
+              "conditions": [
+                {
+                  "id": "content",
+                  "kind": "content",
+                  "description": "현재 제출 어디에든 이 항목에서 평가할 판단·계획·방법·해석이 존재"
+                },
+                {
+                  "id": "execution",
+                  "kind": "required",
+                  "description": "선택 저장한 실제 실행. 과제 범위: 스테이지별 성공률을 정확히 측정하고 가장 난이도가 높은 구간을 식별합니다. / 그룹 간 비교를 통해 특정 스테이지가 겪는 병목 구간을 구체적으로 비교합니다. / 데이터 변동성에 따른 불확실성 요소를 식별하고 해석의 한계를 검토합니다. / 이탈 요인에 대응하기 위한 구체적인 난이도 하향 또는 보상 상향 등의 개선안을 도출합니다."
+                },
+                {
+                  "id": "calculation",
+                  "kind": "required",
+                  "description": "공개 목표에 맞는 완전한 계산. 과제 범위: 스테이지별 성공률을 정확히 측정하고 가장 난이도가 높은 구간을 식별합니다. / 그룹 간 비교를 통해 특정 스테이지가 겪는 병목 구간을 구체적으로 비교합니다. / 데이터 변동성에 따른 불확실성 요소를 식별하고 해석의 한계를 검토합니다. / 이탈 요인에 대응하기 위한 구체적인 난이도 하향 또는 보상 상향 등의 개선안을 도출합니다."
+                },
+                {
+                  "id": "critical",
+                  "kind": "error",
+                  "description": "실제 실행에서 확인된 계산·집계 단위·분모·기간 오류"
+                },
+                {
+                  "id": "advanced",
+                  "kind": "advanced",
+                  "description": "실제 저장 근거로 중복·경계·독립 검산 확인"
+                }
+              ]
+            },
+            {
+              "key": "interpretation",
+              "conditions": [
+                {
+                  "id": "content",
+                  "kind": "content",
+                  "description": "현재 제출 어디에든 이 항목에서 평가할 판단·계획·방법·해석이 존재"
+                },
+                {
+                  "id": "meaning",
+                  "kind": "required",
+                  "description": "결론과 실제 근거 또는 설계의 의미 연결. 과제 범위: 스테이지별 성공률을 정확히 측정하고 가장 난이도가 높은 구간을 식별합니다. / 그룹 간 비교를 통해 특정 스테이지가 겪는 병목 구간을 구체적으로 비교합니다. / 데이터 변동성에 따른 불확실성 요소를 식별하고 해석의 한계를 검토합니다. / 이탈 요인에 대응하기 위한 구체적인 난이도 하향 또는 보상 상향 등의 개선안을 도출합니다."
+                },
+                {
+                  "id": "scope",
+                  "kind": "required",
+                  "description": "공개 자료로 판단 가능한 결론 범위. 과제 범위: 스테이지별 성공률을 정확히 측정하고 가장 난이도가 높은 구간을 식별합니다. / 그룹 간 비교를 통해 특정 스테이지가 겪는 병목 구간을 구체적으로 비교합니다. / 데이터 변동성에 따른 불확실성 요소를 식별하고 해석의 한계를 검토합니다. / 이탈 요인에 대응하기 위한 구체적인 난이도 하향 또는 보상 상향 등의 개선안을 도출합니다."
+                },
+                {
+                  "id": "task_uncertainty",
+                  "kind": "required",
+                  "description": "데이터 변동성에 따른 불확실성 요소를 식별하고 해석의 한계를 검토합니다."
+                },
+                {
+                  "id": "critical",
+                  "kind": "error",
+                  "description": "근거와 반대인 최종 결론·미실행 결과 확인 주장·관측만으로 원인 증명 단정·미해결 최종 모순"
+                },
+                {
+                  "id": "advanced",
+                  "kind": "advanced",
+                  "description": "대안·불확실성·관측 한계를 결론 적용 범위에 연결"
+                }
+              ]
+            },
+            {
+              "key": "next_actions",
+              "conditions": [
+                {
+                  "id": "content",
+                  "kind": "content",
+                  "description": "현재 제출 어디에든 이 항목에서 평가할 판단·계획·방법·해석이 존재"
+                },
+                {
+                  "id": "action",
+                  "kind": "required",
+                  "description": "남은 질문 또는 완료 판단에 대응하는 구체적 행동. 과제 범위: 스테이지별 성공률을 정확히 측정하고 가장 난이도가 높은 구간을 식별합니다. / 그룹 간 비교를 통해 특정 스테이지가 겪는 병목 구간을 구체적으로 비교합니다. / 데이터 변동성에 따른 불확실성 요소를 식별하고 해석의 한계를 검토합니다. / 이탈 요인에 대응하기 위한 구체적인 난이도 하향 또는 보상 상향 등의 개선안을 도출합니다."
+                },
+                {
+                  "id": "purpose",
+                  "kind": "required",
+                  "description": "확인 방법과 목적 또는 정리·제출 판단. 과제 범위: 스테이지별 성공률을 정확히 측정하고 가장 난이도가 높은 구간을 식별합니다. / 그룹 간 비교를 통해 특정 스테이지가 겪는 병목 구간을 구체적으로 비교합니다. / 데이터 변동성에 따른 불확실성 요소를 식별하고 해석의 한계를 검토합니다. / 이탈 요인에 대응하기 위한 구체적인 난이도 하향 또는 보상 상향 등의 개선안을 도출합니다."
+                },
+                {
+                  "id": "task_decision",
+                  "kind": "required",
+                  "description": "이탈 요인에 대응하기 위한 구체적인 난이도 하향 또는 보상 상향 등의 개선안을 도출합니다."
+                },
+                {
+                  "id": "critical",
+                  "kind": "error",
+                  "description": "잘못된 전제로 효과 보장·검증 없이 인과 개입 확정·자료를 가설에 맞춰 변경"
+                },
+                {
+                  "id": "advanced",
+                  "kind": "advanced",
+                  "description": "우선순위와 확인 결과별 다음 결정·종료 조건"
+                }
+              ]
+            }
+          ],
+          "excluded_criteria": []
+        },
+        "contract_hash": "b887ca4320c1c78ad6c820a6c45a39c6ca5221859b50ac288491222dfd41bf47"
+      }
+    }
+  },
+  {
+    "request": {
+      "error": "요청별 데이터 설계가 생성·검증 규칙을 충족하지 않아 출제하지 않았습니다.",
+      "states": [
+        {
+          "at": "2026-10-05T18:59:34.901742Z",
+          "status": "accepted"
+        },
+        {
+          "at": "2026-10-05T18:59:34.956326Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T18:59:45.875607Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T18:59:59.508720Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T19:00:13.543084Z",
+          "status": "failed"
+        }
+      ],
+      "status": "failed",
+      "message": "실제 게임 업계 실무에서 발생하는 문제를 분석하고 싶어",
+      "revision": 0,
+      "questions": [],
+      "attempt_id": null,
+      "created_at": "2026-10-05T18:59:34.901728Z",
+      "error_code": "plan_invalid",
+      "request_id": "a19b79f5-ae17-4989-9eb0-c69cb7b549e4",
+      "operation_id": "292b08ee-7dec-40aa-8bbc-1ab02a37f8fc",
+      "retry_allowed": true,
+      "failure_detail": null,
+      "planning_calls": 3,
+      "failure_history": [
+        {
+          "at": "2026-10-05T19:00:13.543072Z",
+          "error": "요청별 데이터 설계가 생성·검증 규칙을 충족하지 않아 출제하지 않았습니다.",
+          "error_code": "plan_invalid",
+          "failure_detail": null,
+          "planning_calls": 3
+        }
+      ],
+      "contract_version": "request-v2",
+      "generation_attempts": 0,
+      "recommendation_change": null
+    },
+    "schema_reviews": [
+      {
+        "issues": [
+          {
+            "type": "value_error",
+            "message": "Value error, daily_summaries: missing or cyclic time column dependencies; remaining=['battle_day']",
+            "location": [
+              "tables",
+              2
+            ]
+          }
+        ],
+        "planning_calls": 1
+      },
+      {
+        "issues": [
+          {
+            "type": "value_error",
+            "message": "Value error, derived columns must be group_key or aggregate",
+            "location": []
+          }
+        ],
+        "planning_calls": 2
+      },
+      {
+        "issues": [
+          {
+            "type": "value_error",
+            "message": "Value error, daily_summaries: daily summary must group by a day bucket or ISO date category from battles",
+            "location": []
+          }
+        ],
+        "planning_calls": 3
+      }
+    ],
+    "alignment_reviews": [],
+    "usage": [
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "ed48e0a3-d86e-47b9-ac39-9ef55f10f033",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "a19b79f5-ae17-4989-9eb0-c69cb7b549e4",
+        "started_at": "2026-10-05T18:59:34.969925Z",
+        "duration_ms": 10872,
+        "finished_at": "2026-10-05T18:59:45.842815Z",
+        "occurred_at": "2026-10-05T18:59:34.969925Z",
+        "input_tokens": 6073,
+        "operation_id": "bdd95013-9797-452c-8d78-53edf764af28",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 3377,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "5747de56-336c-452b-83a3-133b1ca49520",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "a19b79f5-ae17-4989-9eb0-c69cb7b549e4",
+        "started_at": "2026-10-05T18:59:45.890945Z",
+        "duration_ms": 13585,
+        "finished_at": "2026-10-05T18:59:59.476620Z",
+        "occurred_at": "2026-10-05T18:59:45.890945Z",
+        "input_tokens": 9748,
+        "operation_id": "81a250c3-9fc1-45c1-8d08-3d3d2feafe78",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 3426,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-repair-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "3870f904-9c82-4033-a72e-7e31d63db6a3",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "a19b79f5-ae17-4989-9eb0-c69cb7b549e4",
+        "started_at": "2026-10-05T18:59:59.523625Z",
+        "duration_ms": 13988,
+        "finished_at": "2026-10-05T19:00:13.511871Z",
+        "occurred_at": "2026-10-05T18:59:59.523625Z",
+        "input_tokens": 13457,
+        "operation_id": "6939bdcc-6d9c-4931-b9f6-cdca997b54ed",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 3432,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-repair-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      }
+    ]
+  },
+  {
+    "request": {
+      "error": "고정 데이터 설계의 표본·시간·집계 조건을 충족하지 못했습니다.",
+      "states": [
+        {
+          "at": "2026-10-05T19:00:48.305084Z",
+          "status": "accepted"
+        },
+        {
+          "at": "2026-10-05T19:00:48.396484Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T19:00:57.469497Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T19:01:09.970173Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T19:01:21.993476Z",
+          "status": "failed"
+        }
+      ],
+      "status": "failed",
+      "message": "실제 게임 업계 실무에서 발생하는 문제를 분석하고 싶어",
+      "revision": 0,
+      "questions": [],
+      "attempt_id": null,
+      "created_at": "2026-10-05T19:00:48.305070Z",
+      "error_code": "plan_invalid",
+      "request_id": "3eeddf03-9c3c-4799-a688-9958bc4e3d4b",
+      "operation_id": "285e1e2d-7285-44d0-9b18-66cd275fea7b",
+      "retry_allowed": true,
+      "failure_detail": null,
+      "planning_calls": 3,
+      "failure_history": [
+        {
+          "at": "2026-10-05T19:01:21.993463Z",
+          "error": "고정 데이터 설계의 표본·시간·집계 조건을 충족하지 못했습니다.",
+          "error_code": "plan_invalid",
+          "failure_detail": null,
+          "planning_calls": 3
+        }
+      ],
+      "contract_version": "request-v2",
+      "generation_attempts": 0,
+      "recommendation_change": null
+    },
+    "schema_reviews": [
+      {
+        "issues": [
+          {
+            "type": "value_error",
+            "message": "Value error, investigation requires a nonempty diagnostic subset",
+            "location": []
+          }
+        ],
+        "planning_calls": 1
+      },
+      {
+        "issues": [
+          {
+            "type": "data_dependency",
+            "message": "task quality: each quantitative question must name its analysis metrics in metric_names",
+            "location": []
+          }
+        ],
+        "planning_calls": 2
+      },
+      {
+        "issues": [
+          {
+            "type": "data_dependency",
+            "message": "task quality: each quantitative question must name its analysis metrics in metric_names",
+            "location": []
+          }
+        ],
+        "planning_calls": 3
+      }
+    ],
+    "alignment_reviews": [],
+    "usage": [
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "78d63149-540c-44a8-8dd6-574a3e9000dc",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "3eeddf03-9c3c-4799-a688-9958bc4e3d4b",
+        "started_at": "2026-10-05T19:00:48.412229Z",
+        "duration_ms": 9026,
+        "finished_at": "2026-10-05T19:00:57.439119Z",
+        "occurred_at": "2026-10-05T19:00:48.412229Z",
+        "input_tokens": 6409,
+        "operation_id": "691241e0-0a51-4416-b56d-6b0a9f999ff4",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 2523,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "fb6fdfc3-fccd-4ea3-aeff-91a693be1bf1",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "3eeddf03-9c3c-4799-a688-9958bc4e3d4b",
+        "started_at": "2026-10-05T19:00:57.482786Z",
+        "duration_ms": 12456,
+        "finished_at": "2026-10-05T19:01:09.939546Z",
+        "occurred_at": "2026-10-05T19:00:57.482786Z",
+        "input_tokens": 9213,
+        "operation_id": "fe25aa03-3b67-49cc-8c27-80a0618df943",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 2650,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-repair-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "f3e75ca0-3aff-479b-a5ac-887a677fadaa",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "3eeddf03-9c3c-4799-a688-9958bc4e3d4b",
+        "started_at": "2026-10-05T19:01:09.984184Z",
+        "duration_ms": 11975,
+        "finished_at": "2026-10-05T19:01:21.959237Z",
+        "occurred_at": "2026-10-05T19:01:09.984184Z",
+        "input_tokens": 12150,
+        "operation_id": "38f74aec-222e-44e4-94ed-01636946142b",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 2666,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-repair-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      }
+    ]
+  },
+  {
+    "request": {
+      "error": "고정 데이터 설계의 표본·시간·집계 조건을 충족하지 못했습니다.",
+      "states": [
+        {
+          "at": "2026-10-05T19:02:38.124553Z",
+          "status": "accepted"
+        },
+        {
+          "at": "2026-10-05T19:02:38.181069Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T19:02:48.425574Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T19:03:02.443981Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T19:03:16.164032Z",
+          "status": "failed"
+        }
+      ],
+      "status": "failed",
+      "message": "실제 게임 업계 실무에서 발생하는 문제를 분석하고 싶어",
+      "revision": 0,
+      "questions": [],
+      "attempt_id": null,
+      "created_at": "2026-10-05T19:02:38.124540Z",
+      "error_code": "plan_invalid",
+      "request_id": "40821e26-0e82-40ac-aa38-af03e978cabe",
+      "operation_id": "524999b7-63ca-49fa-93a8-1e8c4f9ae42a",
+      "retry_allowed": true,
+      "failure_detail": null,
+      "planning_calls": 3,
+      "failure_history": [
+        {
+          "at": "2026-10-05T19:03:16.164020Z",
+          "error": "고정 데이터 설계의 표본·시간·집계 조건을 충족하지 못했습니다.",
+          "error_code": "plan_invalid",
+          "failure_detail": null,
+          "planning_calls": 3
+        }
+      ],
+      "contract_version": "request-v2",
+      "generation_attempts": 0,
+      "recommendation_change": null
+    },
+    "schema_reviews": [
+      {
+        "issues": [
+          {
+            "type": "value_error",
+            "message": "Value error, investigation requires a nonempty diagnostic subset",
+            "location": []
+          }
+        ],
+        "planning_calls": 1
+      },
+      {
+        "issues": [
+          {
+            "type": "value_error",
+            "message": "Value error, ratio requires explicit numerator conditions",
+            "location": []
+          }
+        ],
+        "planning_calls": 2
+      },
+      {
+        "issues": [
+          {
+            "type": "data_dependency",
+            "message": "task quality: each quantitative question must name its analysis metrics in metric_names",
+            "location": []
+          }
+        ],
+        "planning_calls": 3
+      }
+    ],
+    "alignment_reviews": [],
+    "usage": [
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "933af0c4-0049-43d4-b03b-96b73bcbdc8c",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "40821e26-0e82-40ac-aa38-af03e978cabe",
+        "started_at": "2026-10-05T19:02:38.197963Z",
+        "duration_ms": 10196,
+        "finished_at": "2026-10-05T19:02:48.394263Z",
+        "occurred_at": "2026-10-05T19:02:38.197963Z",
+        "input_tokens": 6567,
+        "operation_id": "2dc5cf0d-e3a3-4ff9-a12c-61ce7decd5e1",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 3158,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "e7a6722e-2c2e-4cc1-9440-dafcf37e4027",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "40821e26-0e82-40ac-aa38-af03e978cabe",
+        "started_at": "2026-10-05T19:02:48.439697Z",
+        "duration_ms": 13970,
+        "finished_at": "2026-10-05T19:03:02.410375Z",
+        "occurred_at": "2026-10-05T19:02:48.439697Z",
+        "input_tokens": 10003,
+        "operation_id": "6a538f51-8551-4e98-aaec-3d27d44b3027",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 3280,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-repair-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "8ed88a21-af84-4d23-9bff-fe16a6d0368e",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "40821e26-0e82-40ac-aa38-af03e978cabe",
+        "started_at": "2026-10-05T19:03:02.458817Z",
+        "duration_ms": 13675,
+        "finished_at": "2026-10-05T19:03:16.133935Z",
+        "occurred_at": "2026-10-05T19:03:02.458817Z",
+        "input_tokens": 13563,
+        "operation_id": "9e34b9b5-a3f9-42af-9640-ca96b29d92b3",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 3446,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-repair-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      }
+    ]
+  },
+  {
+    "request": {
+      "error": "고정 데이터 설계의 표본·시간·집계 조건을 충족하지 못했습니다.",
+      "states": [
+        {
+          "at": "2026-10-05T19:04:03.676707Z",
+          "status": "accepted"
+        },
+        {
+          "at": "2026-10-05T19:04:03.766203Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T19:04:14.530993Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T19:04:28.808417Z",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-05T19:04:42.608085Z",
+          "status": "failed"
+        }
+      ],
+      "status": "failed",
+      "message": "실제 게임 업계 실무에서 발생하는 문제를 분석하고 싶어",
+      "revision": 0,
+      "questions": [],
+      "attempt_id": null,
+      "created_at": "2026-10-05T19:04:03.676693Z",
+      "error_code": "plan_invalid",
+      "request_id": "2d0364ff-aa10-46e4-b783-2f8a09c3bb21",
+      "operation_id": "340eb831-9890-45be-8f1a-a4b54944d7ff",
+      "retry_allowed": true,
+      "failure_detail": null,
+      "planning_calls": 3,
+      "failure_history": [
+        {
+          "at": "2026-10-05T19:04:42.608073Z",
+          "error": "고정 데이터 설계의 표본·시간·집계 조건을 충족하지 못했습니다.",
+          "error_code": "plan_invalid",
+          "failure_detail": null,
+          "planning_calls": 3
+        }
+      ],
+      "contract_version": "request-v2",
+      "generation_attempts": 0,
+      "recommendation_change": null
+    },
+    "schema_reviews": [
+      {
+        "issues": [
+          {
+            "type": "data_dependency",
+            "message": "task quality: quantitative measurement metric_names=['total_attempts', 'overall_success_rate'] must reference analysis metrics; available=['overall_success_rate', 'avg_duration_by_skill', 'success_rate_by_gear']",
+            "location": []
+          }
+        ],
+        "planning_calls": 1
+      },
+      {
+        "issues": [
+          {
+            "type": "data_dependency",
+            "message": "at least one scalar validation metric is required",
+            "location": []
+          }
+        ],
+        "planning_calls": 2
+      },
+      {
+        "issues": [
+          {
+            "type": "data_dependency",
+            "message": "task quality: quantitative measurement metric_names=['total_attempts', 'overall_success_rate'] must reference analysis metrics; available=['overall_success_rate', 'avg_duration_by_skill', 'success_rate_by_gear']",
+            "location": []
+          }
+        ],
+        "planning_calls": 3
+      }
+    ],
+    "alignment_reviews": [],
+    "usage": [
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "31911665-7956-4a3f-8577-cfa0e5aacfa4",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "2d0364ff-aa10-46e4-b783-2f8a09c3bb21",
+        "started_at": "2026-10-05T19:04:03.781363Z",
+        "duration_ms": 10719,
+        "finished_at": "2026-10-05T19:04:14.500678Z",
+        "occurred_at": "2026-10-05T19:04:03.781363Z",
+        "input_tokens": 6570,
+        "operation_id": "c9bf7bc4-2e04-4898-a5ac-835c4581b5b8",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 3222,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "6010ecda-cf0a-4704-9497-2132b25b03c7",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "2d0364ff-aa10-46e4-b783-2f8a09c3bb21",
+        "started_at": "2026-10-05T19:04:14.544570Z",
+        "duration_ms": 14226,
+        "finished_at": "2026-10-05T19:04:28.770918Z",
+        "occurred_at": "2026-10-05T19:04:14.544570Z",
+        "input_tokens": 10115,
+        "operation_id": "090d73cf-9c43-4f91-ad77-d2ad3c7c923b",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 3374,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-repair-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "0be07335-7c03-48f5-be02-9aea09e733a0",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "2d0364ff-aa10-46e4-b783-2f8a09c3bb21",
+        "started_at": "2026-10-05T19:04:28.825474Z",
+        "duration_ms": 13748,
+        "finished_at": "2026-10-05T19:04:42.574270Z",
+        "occurred_at": "2026-10-05T19:04:28.825474Z",
+        "input_tokens": 13769,
+        "operation_id": "e497d21a-1947-4c35-9a0c-a72c524bc010",
+        "model_version": "gemini-3.5-flash-lite",
+        "output_tokens": 3371,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-repair-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      }
+    ]
+  }
+]

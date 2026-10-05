@@ -140,6 +140,7 @@ def verify_comparison(evidence, comparison_expected):
         projected.append([mapping[c] for c in columns])
     def equal(left, right):
         for a, b in zip(left, right):
+            if isinstance(a,str) and type(b) in (int,float,Decimal) and re.fullmatch(r'-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?',a): a=Decimal(a)
             if type(a) in (int, float, Decimal) and type(b) in (int, float, Decimal):
                 if not math.isfinite(float(a)) or not math.isfinite(float(b)) or abs(float(a)-float(b)) > 1e-8:
                     return False
@@ -166,7 +167,9 @@ def verify_for_contract(evidence, frozen):
         if not contract:
             return {'saved_execution_id': evidence.get('saved_execution_id'), 'status': 'unverified', 'checks': [], 'reason': '대안 정의를 검증할 고정 계약이 없습니다. 필요한 관측 조건을 확인하세요.'}
     else:
-        contract = frozen
+        candidates = [frozen] + list((frozen.get('verification_contracts') or {}).values())
+        checks = [verify_comparison(evidence,c['comparison_expected']) if c.get('comparison_expected') is not None else verify_evidence(evidence,c.get('expected')) for c in candidates]
+        return next((c for c in checks if c['status']=='verified'), next((c for c in checks if c['status']=='mismatch'), checks[0]))
     if contract.get('comparison_expected') is not None:
         return verify_comparison(evidence, contract['comparison_expected'])
     return verify_evidence(evidence, contract.get('expected'), definition)
