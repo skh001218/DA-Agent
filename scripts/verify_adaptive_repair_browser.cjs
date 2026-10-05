@@ -21,9 +21,7 @@ async function main() {
       await page.goto(base);
       await page.locator('#request-training').waitFor();
       await page.waitForFunction(()=>typeof document.querySelector('#request-training')?.onclick === 'function');
-      assert.equal(await page.locator('#request-data').inputValue(), 'adaptive');
       await page.locator('#training-request').fill(item.message);
-      await page.locator('#request-kind').selectOption('auto');
       if(item.level) await page.locator('#request-level').selectOption(item.level);
       let accepted;
       if(resumes[item.name]) {
@@ -56,14 +54,17 @@ async function main() {
       if(item.name==='currency-advanced') assert.match(attempt.problem.goal+attempt.problem.description,/재화|획득|소비/);
       if(item.name==='boss-advanced') assert.match(attempt.problem.goal+attempt.problem.description,/보스/);
       if(item.name==='purchase-advanced') assert.match(attempt.problem.goal+attempt.problem.description,/구매/);
-      assert.ok((await page.locator('#schema').innerText()).includes(record.tables[0]));
-      await page.locator('#sql').fill(`SELECT count(*) AS row_count FROM "${record.tables[0]}"`);
+      assert.ok((await page.locator('#schema').textContent()).includes(record.tables[0]));
+      await page.locator('[data-tab="sql-workspace"]').click();
+      await page.locator('.CodeMirror').click();
+      await page.keyboard.insertText(`SELECT count(*) AS row_count FROM "${record.tables[0]}"`);
       const sqlResponse = page.waitForResponse(r=>r.url().endsWith('/execute')&&r.request().method()==='POST');
       await page.locator('#execute').click();
       const execution = await (await sqlResponse).json();
       assert.equal(execution.status,'success');record.sql_rows=execution.rows;
       await page.getByRole('button',{name:'기록에 저장',exact:true}).last().click();
       await page.getByRole('button',{name:'저장 완료',exact:true}).last().waitFor();
+      await page.locator('[data-tab="analysis"]').click();
       await page.locator('[data-section="problem_definition"]').fill('요청한 분석 대상과 공개 자료의 집계 단위를 확인한다.');
       await page.locator('[data-section="hypothesis"]').fill('관측 패턴과 정상 반례를 비교하고 원인을 확정하지 않는다.');
       await page.waitForFunction(()=>document.querySelector('#save-status')?.textContent.includes('저장됨'));

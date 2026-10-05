@@ -1,0 +1,31 @@
+{
+  "actual_browser": true,
+  "live_api_reads": true,
+  "preparation_responses": "simulated",
+  "passed": [
+    "removed controls",
+    "empty request",
+    "difficulty and SQL payload",
+    "natural-language conditions",
+    "clarification",
+    "refresh resume",
+    "failure and retry",
+    "cancel",
+    "input preservation",
+    "SQL unspecified omitted",
+    "desktop and mobile",
+    "no page errors",
+    "obsolete APIs not called",
+    "default new tab",
+    "resume tab visibility",
+    "tab input preservation",
+    "keyboard tabs",
+    "tab refresh persistence",
+    "resume desktop and mobile",
+    "open existing training",
+    "workspace tabs isolated",
+    "return to resume tab",
+    "empty training list"
+  ],
+  "errors": []
+}

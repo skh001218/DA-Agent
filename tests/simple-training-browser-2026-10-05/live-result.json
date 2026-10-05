@@ -1,0 +1,19 @@
+{
+  "actual_browser": true,
+  "actual_deployed_app": true,
+  "base": "http://127.0.0.1:8087",
+  "status": "passed",
+  "page_errors": [],
+  "mutation_requests": [],
+  "checked": [
+    "default new tab",
+    "removed controls",
+    "tab switch",
+    "input preservation",
+    "refresh",
+    "existing training resume",
+    "workspace tabs",
+    "return to list",
+    "1280px and 390px layouts"
+  ]
+}
