@@ -47,7 +47,7 @@ def public_rubric(public):
     criteria = []
     for key in public['weights']:
         ids, labels, error, advanced = rules[key]
-        if key == 'problem_definition' and not (public.get('capability_id', '').startswith('access-') or re.search(r'기간|시간|시점|날짜|관측|D[0-9]', goal)):
+        if key == 'problem_definition' and not (public.get('capability_id', '').startswith('access-') or public.get('business_case') or re.search(r'기간|시간|시점|날짜|관측|D[0-9]', goal)):
             pairs = [(i, label) for i, label in zip(ids, labels) if i != 'period']
             ids, labels = zip(*pairs)
         conditions = [dict(id='content', kind='content', description='현재 제출 어디에든 이 항목에서 평가할 판단·계획·방법·해석이 존재')]
@@ -56,6 +56,11 @@ def public_rubric(public):
             conditions.append(dict(id='observation', kind='required', description='공개된 관측 완료·제외 조건 정의'))
         if key == 'problem_definition' and public.get('task_kind') == 'investigation':
             conditions.append(dict(id='comparison', kind='required', description='비교 집단·기준 정의'))
+        if public.get('business_case'):
+            mapping={'analysis_approach':{'comparison','alternatives','confounding'},'interpretation':{'uncertainty'},'next_actions':{'decision'}}
+            for requirement in public['business_case']['requirements']:
+                if requirement['competency'] in mapping.get(key,set()):
+                    conditions.append(dict(id='task_'+requirement['competency'],kind='required',description=requirement['completion']))
         conditions += [dict(id='critical', kind='error', description=error), dict(id='advanced', kind='advanced', description=advanced)]
         criteria.append(dict(key=key, conditions=conditions))
     return dict(version=VERSION, criteria=criteria,

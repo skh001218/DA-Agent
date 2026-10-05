@@ -44,6 +44,12 @@ def event_recipe(topic='구매'):
     value['metrics']=[{'name':'event_rows','table':'events','operation':'count','minimum':120},
                       {'name':'success_rows','table':'events','operation':'count','conditions':[{'column':'success','operator':'eq','value':1}],'minimum':1},
                       {'name':'mean_duration','table':'event_summary','operation':'avg','column':'mean_duration'}]
+    for competency in ('alternatives','confounding'):
+        req=copy.deepcopy(value['business_case']['requirements'][0]);req['competency']=competency;value['business_case']['requirements'].append(req)
+    for req in value['business_case']['requirements']:
+        req['evidence']=[{'table':'events','columns':['duration_sec','success']}]
+        if req['competency']=='comparison':req['metric_names']=['target_duration']
+    value['metrics'].append({'name':'target_duration','table':'events','operation':'avg','column':'duration_sec','purpose':'analysis','joins':[{'table':'accounts','source_column':'account_id'}],'group_by':['target']})
     return value
 
 
@@ -112,9 +118,9 @@ def test_db_infeasible_fixed_data_is_repaired_before_pinning(v2_db_client):
             value=bot_recipe()
             if len(calls)==1:value['metrics'][1]['minimum']=999
             return {'state':'completed','text':json.dumps(value)}
-        return {'state':'completed','text':'{"aligned":true,"issues":[]}'}
+        return {'state':'completed','text':'{"aligned":true,"issues":[],"quality_dimensions":{"business_context":"pass","evidence_sufficiency":"pass","difficulty_fit":"pass","evaluation_alignment":"pass"}}'}
     provider.review=review;rid=str(uuid.uuid4())
-    client.post('/api/training/requests',json={'contract_version':'request-v2','request_id':rid,'message':'비정상 이용자 분석','data_mode':'adaptive'})
+    client.post('/api/training/requests',json={'contract_version':'request-v2','request_id':rid,'message':'비정상 이용자 분석','data_mode':'adaptive','intentional_repeat':True})
     result=client.get('/api/training/requests/'+rid).json()
     assert result['status']=='ready' and len(calls)==3
     assert 'data_dependency' in calls[1][-1]['content']
@@ -122,9 +128,9 @@ def test_db_infeasible_fixed_data_is_repaired_before_pinning(v2_db_client):
 
 def test_db_dependencies_independent_source_sql_and_null(v2_db_client):
     client,provider=v2_db_client
-    provider.review=lambda messages: {'state':'completed','text':json.dumps(event_recipe()) if 'schema' in json.loads(messages[1]['content']) else '{"aligned":true,"issues":[]}'}
+    provider.review=lambda messages: {'state':'completed','text':json.dumps(event_recipe()) if 'schema' in json.loads(messages[1]['content']) else '{"aligned":true,"issues":[],"quality_dimensions":{"business_context":"pass","evidence_sufficiency":"pass","difficulty_fit":"pass","evaluation_alignment":"pass"}}'}
     rid=str(uuid.uuid4())
-    client.post('/api/training/requests',json={'contract_version':'request-v2','request_id':rid,'message':'구매까지 시간 분석','data_mode':'adaptive'})
+    client.post('/api/training/requests',json={'contract_version':'request-v2','request_id':rid,'message':'구매까지 시간 분석','data_mode':'adaptive','intentional_repeat':True})
     result=client.get('/api/training/requests/'+rid).json()
     assert result['status']=='ready',result
     aid=result['attempt_id']
@@ -139,10 +145,10 @@ def test_db_alignment_repair_and_preserved_failure(v2_db_client,repaired):
     def review(messages):
         calls.append(messages)
         if 'schema' in json.loads(messages[1]['content']):return {'state':'completed','text':json.dumps(bot_recipe())}
-        if len(calls)==4 and repaired:return {'state':'completed','text':'{"aligned":true,"issues":[]}'}
+        if len(calls)==4 and repaired:return {'state':'completed','text':'{"aligned":true,"issues":[],"quality_dimensions":{"business_context":"pass","evidence_sufficiency":"pass","difficulty_fit":"pass","evaluation_alignment":"pass"}}'}
         return {'state':'completed','text':'{"aligned":false,"issues":["원본과 요약의 관측값 불일치"]}'}
     provider.review=review;rid=str(uuid.uuid4())
-    client.post('/api/training/requests',json={'contract_version':'request-v2','request_id':rid,'message':'비정상 이용자 분석','data_mode':'adaptive'})
+    client.post('/api/training/requests',json={'contract_version':'request-v2','request_id':rid,'message':'비정상 이용자 분석','data_mode':'adaptive','intentional_repeat':True})
     result=client.get('/api/training/requests/'+rid).json()
     assert len(calls)==4 and '원본과 요약의 관측값 불일치' in calls[2][-1]['content']
     with client.app.state.training.store.connect() as conn:
@@ -165,7 +171,7 @@ def test_db_exhausted_legacy_retry_preserves_original_failure(v2_db_client):
     client,provider=v2_db_client
     provider.review=lambda messages: {'state':'completed','text':json.dumps(bot_recipe()) if 'schema' in json.loads(messages[1]['content']) else '{"aligned":false,"issues":["필수 자료 부족"]}'}
     rid=str(uuid.uuid4())
-    client.post('/api/training/requests',json={'contract_version':'request-v2','request_id':rid,'message':'비정상 이용자 분석','data_mode':'adaptive'})
+    client.post('/api/training/requests',json={'contract_version':'request-v2','request_id':rid,'message':'비정상 이용자 분석','data_mode':'adaptive','intentional_repeat':True})
     store=client.app.state.training.store
     with store.connect() as conn:
         payload=conn.execute('SELECT payload FROM training_requests WHERE request_id=%s',(rid,)).fetchone()['payload']
@@ -186,9 +192,9 @@ def test_db_invalid_alignment_correction_uses_remaining_schema_repair(v2_db_clie
             value=bot_recipe()
             if len(calls)==3:value['tables'][0]['name']='unsafe;table'
             return {'state':'completed','text':json.dumps(value)}
-        return {'state':'completed','text':json.dumps({'aligned':len(calls)>2,'issues':[] if len(calls)>2 else ['필수 자료 부족']})}
+        return {'state':'completed','text':json.dumps({'aligned':len(calls)>2,'issues':[] if len(calls)>2 else ['필수 자료 부족'],'quality_dimensions':{k:'pass' for k in ('business_context','evidence_sufficiency','difficulty_fit','evaluation_alignment')}})}
     provider.review=review;rid=str(uuid.uuid4())
-    client.post('/api/training/requests',json={'contract_version':'request-v2','request_id':rid,'message':'비정상 이용자 분석','data_mode':'adaptive'})
+    client.post('/api/training/requests',json={'contract_version':'request-v2','request_id':rid,'message':'비정상 이용자 분석','data_mode':'adaptive','intentional_repeat':True})
     result=client.get('/api/training/requests/'+rid).json()
     assert result['status']=='ready' and len(calls)==5
     with client.app.state.training.store.connect() as conn:

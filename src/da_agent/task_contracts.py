@@ -3,6 +3,7 @@ from typing import Literal
 from pydantic import ConfigDict, Field, model_validator
 from .contracts import Contract
 from .training_contracts import PublicTask
+from .task_quality import BusinessCase
 
 class RequestV2(Contract):
     contract_version: Literal['request-v2']
@@ -38,6 +39,8 @@ class Interpretation(Contract):
     reason: str = Field(min_length=1,max_length=1000)
 
 class PublicTaskV2(PublicTask):
+    business_case: BusinessCase | None = None
+    quality_version: str | None = None
     original_request: str | None = Field(default=None,max_length=4000)
     required_tables: list[str] = Field(min_length=1, max_length=4)
     task_kind: Literal['calculation','review','design','investigation']

@@ -130,7 +130,15 @@ class TaskGeneration:
             return result
         if not fixed.get('adaptive_recipe') or not fixed.get('alignment'):
             def parse(result):
-                try: return adaptive.preflight(adaptive.parse_recipe(result),fixed['seed'],data)
+                try:
+                    recipe=adaptive.preflight(adaptive.parse_recipe(result),fixed['seed'],data)
+                    from .task_quality import check_quality
+                    if recipe.status=='ready': check_quality(recipe,self.recent(),data.intentional_repeat)
+                    return recipe
+                except ValueError as exc:
+                    error=DomainError('plan_invalid','업무 과제의 난이도·다양성 조건을 충족하지 못했습니다.',422)
+                    error.validation_issues=[{'location':[],'type':'task_quality','message':str(exc)}]
+                    raise error from None
                 except DomainError as exc:
                     fixed['schema_issues']=getattr(exc,'validation_issues',[])
                     fixed.setdefault('schema_reviews',[]).append({'planning_calls':self.training.request(rid)['planning_calls'],'issues':fixed['schema_issues']})
@@ -147,7 +155,7 @@ class TaskGeneration:
                     if exc.code!='plan_invalid' or repair_number==2 or adaptive.PLANNING_LIMIT-self.training.request(rid)['planning_calls']<2: raise
                     messages=messages+[
                         {'role':'assistant','content':result.get('text','')},
-                        {'role':'user','content':'이 설계는 서버 schema/고정 데이터 검증에 실패했습니다. 전체 JSON을 수정하세요. 검증 오류: '+json.dumps(getattr(exc,'validation_issues',[]),ensure_ascii=False)+'. investigation metrics에는 conditions가 있고 minimum>0인 현상 표본 집계가 최소 하나 필요합니다. 정수 조건 value는 숫자, category 조건 value는 문자열. 첫 컬럼만 id. foreign_key의 table은 앞선 표이고 group은 그 표의 실제 그룹. 오류에서 요구한 그룹 참조는 해당 Table.groups.overrides의 foreign_key.group에서 명시하세요. timestamp_sequence는 앞선 entity_column/interval_column과 timezone 포함 start/end. 그룹 override는 컬럼의 generator.kind/table을 바꾸면 안 됩니다. JSON schema 밖 필드와 SQL·코드 금지.'}]
+                        {'role':'user','content':'이 설계는 서버 schema/고정 데이터 검증에 실패했습니다. 업무 구체성·난이도·공개 근거·분석 비교를 유지하여 전체 JSON을 수정하세요. business_case와 analysis 목적 그룹 검산을 빠뜨리지 마세요. 검증 오류: '+json.dumps(getattr(exc,'validation_issues',[]),ensure_ascii=False)+'. investigation metrics에는 conditions가 있고 minimum>0인 현상 표본 집계가 최소 하나 필요합니다. 정수 조건 value는 숫자, category 조건 value는 문자열. 첫 컬럼만 id. foreign_key의 table은 앞선 표이고 group은 그 표의 실제 그룹. 오류에서 요구한 그룹 참조는 해당 Table.groups.overrides의 foreign_key.group에서 명시하세요. timestamp와 timestamp_sequence의 start/end는 반드시 2026-09-01T00:00:00+09:00 같은 ISO 시각이어야 합니다. 날짜만 쓰거나 시간대 생략 금지. timestamp_sequence는 앞선 entity_column/interval_column과 timezone 포함 start/end. 그룹 override는 컬럼의 generator.kind/table을 바꾸면 안 됩니다. JSON schema 밖 필드와 SQL·코드 금지.'}]
                     result=call(messages,'adaptive-design-repair-v1')
             if recipe.status=='clarify':
                 questions=recipe.questions or ['원하는 분석 목표와 필요한 판단을 구체적으로 알려주세요.']
@@ -168,9 +176,9 @@ class TaskGeneration:
         recipe=adaptive.Recipe.model_validate(fixed['adaptive_recipe'])
         if not fixed.get('alignment'):
             for review_number in range(2):
-                result = call(adaptive.alignment_messages(data,recipe),'adaptive-alignment-v1')
+                result = call(adaptive.alignment_messages(data,recipe,fixed['seed']),'adaptive-alignment-v1')
                 try:
-                    fixed['alignment']=adaptive.validate_alignment(result)
+                    fixed['alignment']=adaptive.validate_alignment(result,quality_required=bool(recipe.business_case))
                     fixed.setdefault('alignment_reviews', []).append({'passed':True})
                     break
                 except DomainError as exc:
@@ -224,6 +232,12 @@ class TaskGeneration:
             if verify_evidence({'saved_execution_id':'validation','result':actual},private['expected'])['status']!='verified':
                 revoke(package)
                 raise DomainError('validation_failed','학습자 읽기 전용 권한으로 요청별 기준 집계를 검증하지 못했습니다.',422)
+            from .evaluation import verify_comparison
+            for name,check in private.get('analytical_checks',{}).items():
+                comparison=self.training.runner.execute(rid,package.schema_name,check['sql'],allowed_tables=public['required_tables'])
+                with self.training.runner.lock: self.training.runner.pending.pop(comparison['execution_id'],None)
+                if verify_comparison({'saved_execution_id':name,'result':comparison},check['comparison_expected'])['status']!='verified':
+                    raise DomainError('validation_failed','읽기 전용 실행에서 관계·비교·비율을 검산하지 못했습니다.',422)
             telemetry.finish(self.store,validation_op,'completed')
             return package,public,private
         except Exception:

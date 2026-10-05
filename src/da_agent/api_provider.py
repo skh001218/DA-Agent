@@ -83,6 +83,13 @@ class GeminiProvider:
                     or {'task','dictionary','private_generation_recipe'}.issubset(envelope)):
                     body['generationConfig']['responseMimeType']='application/json'
                     body['generationConfig']['maxOutputTokens']=8192
+                    if isinstance(envelope.get('schema'),dict) and envelope['schema'].get('properties'):
+                        def provider_schema(value):
+                            if isinstance(value,dict):
+                                return {k:({name:provider_schema(child) for name,child in v.items()} if k in ('properties','$defs') else provider_schema(v)) for k,v in value.items() if k not in ('minItems','maxItems','minLength','maxLength','pattern','title','default','description')}
+                            if isinstance(value,list): return [provider_schema(v) for v in value]
+                            return value
+                        body['generationConfig']['responseJsonSchema']=provider_schema(envelope['schema'])
                 if isinstance(envelope, dict) and envelope.get('contract_version') == 'coaching-v2' and isinstance(envelope.get('sources'), list):
                     from .coaching import coaching_schema
                     body['generationConfig']['responseMimeType'] = 'application/json'

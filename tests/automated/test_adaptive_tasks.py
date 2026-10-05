@@ -35,10 +35,12 @@ def bot_recipe():
                 {'name':'regular','count':10,'overrides':{'account_id':{'kind':'foreign_key','table':'accounts','group':'regular'},'actions':{'kind':'integer','minimum':1000,'maximum':2000},'interval_cv':{'kind':'number','minimum':0.01,'maximum':0.04}}},
                 {'name':'heavy','count':10,'overrides':{'account_id':{'kind':'foreign_key','table':'accounts','group':'heavy'},'actions':{'kind':'integer','minimum':1000,'maximum':2000}}}]}
         ],
+        'business_case':{'background':'게임 운영팀은 하루 활동 집계에서 반복 행동 계정을 조사하려 합니다.', 'observed_problem':'동일한 하루 관측에서 활동량과 간격 변동성이 다른 계정이 나타납니다.', 'observation_period':'2026-09-01 하루', 'decision':'추가 조사의 우선순위와 필요한 증거를 판단합니다.', 'agent_assumptions':['하루 계정 활동 집계와 플랫폼을 제공하는 가상 업무입니다.'], 'requirements':[{'competency':k,'question':q,'metric_names':['platform_actions'] if k=='comparison' else [],'completion':q,'evidence':[{'table':'activity_daily','columns':['actions','interval_cv']}]} for k,q in [('comparison','활동량과 간격 변동성으로 계정을 비교하세요.'),('uncertainty','정상 고빈도 이용자와 오탐 가능성을 설명하세요.'),('decision','추가 확인할 근거와 조사 우선순위를 제안하세요.')]]},
         'metrics':[
             {'name':'activity_rows','table':'activity_daily','operation':'count','minimum':60},
             {'name':'regular_activity_rows','table':'activity_daily','operation':'count','conditions':[{'column':'actions','operator':'gte','value':1000},{'column':'interval_cv','operator':'lt','value':0.05}],'minimum':10},
-            {'name':'mean_actions','table':'activity_daily','operation':'avg','column':'actions'}]
+            {'name':'mean_actions','table':'activity_daily','operation':'avg','column':'actions'},
+            {'name':'platform_actions','table':'activity_daily','operation':'avg','column':'actions','purpose':'analysis','joins':[{'table':'accounts','source_column':'account_id'}],'group_by':['accounts.platform']}]
     }
 
 
@@ -108,11 +110,11 @@ def test_db_adaptive_request_actual_tables_save_resume_and_fixed_retry(v2_db_cli
             return {'state':'completed','text':json.dumps(bot_recipe(),ensure_ascii=False),'model':'fixture'}
         if 'task' in payload and 'request' in payload:
             provider.calls+=1
-            return {'state':'completed','text':'{"aligned":true,"issues":[]}','model':'fixture'}
+            return {'state':'completed','text':'{"aligned":true,"issues":[],"quality_dimensions":{"business_context":"pass","evidence_sufficiency":"pass","difficulty_fit":"pass","evaluation_alignment":"pass"}}','model':'fixture'}
         return original_review(messages)
     provider.review=review
     rid=str(uuid.uuid4())
-    body={'contract_version':'request-v2','request_id':rid,'message':'게임 비정상 이용자 조사 문제','data_mode':'adaptive','domain':'auto'}
+    body={'contract_version':'request-v2','request_id':rid,'message':'게임 비정상 이용자 조사 문제','data_mode':'adaptive','intentional_repeat':True,'domain':'auto'}
     assert client.post('/api/training/requests',json=body).status_code==200
     value=client.get('/api/training/requests/'+rid).json()
     assert value['status']=='ready', value
@@ -161,7 +163,7 @@ def test_db_adaptive_invalid_goal_or_label_plan_never_publishes(v2_db_client,fai
             return {'state':'completed','text':json.dumps(value,ensure_ascii=False)}
         return {'state':'completed','text':'{"aligned":false,"issues":["필수 비교 자료 부족"]}'}
     provider.review=review
-    body={'contract_version':'request-v2','request_id':str(uuid.uuid4()),'message':'비정상 이용자 조사 문제','data_mode':'adaptive'}
+    body={'contract_version':'request-v2','request_id':str(uuid.uuid4()),'message':'비정상 이용자 조사 문제','data_mode':'adaptive','intentional_repeat':True}
     assert client.post('/api/training/requests',json=body).status_code==200
     value=client.get('/api/training/requests/'+body['request_id']).json()
     assert value['status']=='failed' and value['attempt_id'] is None
@@ -176,7 +178,7 @@ def test_db_adaptive_cancel_during_model_never_generates_data(v2_db_client):
         assert client.post('/api/training/requests/'+rid+'/cancel',json={}).status_code==200
         return {'state':'completed','text':json.dumps(bot_recipe(),ensure_ascii=False)}
     provider.review=review
-    assert client.post('/api/training/requests',json={'contract_version':'request-v2','request_id':rid,'message':'비정상 이용자 조사','data_mode':'adaptive'}).status_code==200
+    assert client.post('/api/training/requests',json={'contract_version':'request-v2','request_id':rid,'message':'비정상 이용자 조사','data_mode':'adaptive','intentional_repeat':True}).status_code==200
     value=client.get('/api/training/requests/'+rid).json()
     assert value['status']=='cancelled' and value['attempt_id'] is None and value['generation_attempts']==0
 
