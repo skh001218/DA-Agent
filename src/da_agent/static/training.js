@@ -1,11 +1,8 @@
 'use strict';
 let preparingRequest = null;
 let requestPolling = false;
-const taskNames = {calculation: '지표 계산', review: '분석 오류 수정', design: '업무 요청 구체화', investigation: '현상 조사'};
-const levelNames = {beginner: '초급', intermediate: '중급', advanced: '고급'};
 
 let currentRequest = null;
-let currentRecommendation = null;
 let currentLearningState = null;
 async function loadLearningState() {
   const data = await api('/api/learning-state'); currentLearningState = data;
@@ -21,34 +18,21 @@ async function loadLearningState() {
   }
   if (!(data.observations || []).length) $('#learning-overrides').append(el('p','미관측 · 아직 확인된 학습 근거가 없습니다.','muted'));
 }
-async function startTraining(recommended = false) {
+async function startTraining() {
   const message = $('#training-request').value.trim();
-  if (!message && !recommended) throw new Error('연습하고 싶은 내용을 입력해주세요.');
+  if (!message) throw new Error('연습하고 싶은 내용을 입력해주세요.');
   notice(); preparingRequest = uid(); $('#request-status').textContent = '요청 접수 중…';
   const body = {contract_version:'request-v2', request_id:preparingRequest,
-    message: recommended ? `접속 데이터로 ${levelNames[currentRecommendation.difficulty]} ${taskNames[currentRecommendation.task_kind]} 연습` : message,
-    difficulty:recommended ? currentRecommendation.difficulty : $('#request-level').value,
-    task_kind:recommended ? currentRecommendation.task_kind : $('#request-kind').value, domain:$('#request-domain').value,
-    data_mode:$('#request-data').value, user_count:200, intentional_repeat:$('#intentional-repeat').checked};
-  for (const [key, id] of [['goal','request-goal'],['sql_level','request-sql-level'],['time_condition','request-time']]) if ($('#'+id).value.trim()) body[key] = $('#'+id).value.trim();
-  if (recommended && currentRecommendation.recommendation_id) body.recommendation_id = currentRecommendation.recommendation_id;
+    message, difficulty:$('#request-level').value, task_kind:'auto', domain:'auto',
+    data_mode:'adaptive', user_count:200, intentional_repeat:false};
+  const sqlLevel = $('#request-sql-level').value;
+  if (sqlLevel) body.sql_level = sqlLevel;
   try { await post('/api/training/requests', body); await pollTraining(preparingRequest); }
   catch (error) { $('#request-status').textContent = `요청 실패 · 입력 유지: ${error.message}`; throw error; }
 }
 async function trainingHome() {
-  const recommendation = await api('/api/training/recommendation'); currentRecommendation = recommendation;
-  $('#recommendation').textContent = `다음 훈련 제안: ${levelNames[recommendation.difficulty]} ${taskNames[recommendation.task_kind]} · ${recommendation.reason || recommendation.selection_reason}\n근거: ${recommendation.evidence_ids?.length ? '저장된 관측 '+recommendation.evidence_ids.length+'건 (학습 상태에서 출처 확인)' : '관측 근거 없음'} · ${recommendation.provisional ? '잠정 추천' : '이력 기반 추천'}\n다른 후보: ${(recommendation.candidates || []).filter(x=>x.task_kind!==recommendation.task_kind).slice(0,3).map(x=>`${levelNames[x.difficulty]} ${taskNames[x.task_kind]} · 최근 반복 ${x.duplicate_count || 0}회`).join(' / ') || '다른 지원 후보 없음'}`;
-  try {
-    const capabilities = await api('/api/training/capabilities');
-    $('#capability-status').textContent = `${capabilities.adaptive_status || ''}\n기존 접속 규칙 상태: ${(capabilities.capabilities || []).map(x => `${x.title}: ${x.status}`).join(' · ')}\n한도: ${pretty(capabilities.limits || {})}`;
-    const generated = $('#request-data').querySelector('[value="generated"]');
-    generated.disabled = !capabilities.generated_data_enabled;
-    generated.textContent = generated.disabled ? '생성 데이터 · 승인 또는 지원 확인 필요' : '생성 데이터';
-  } catch (error) { $('#capability-status').textContent = `지원 상태 확인 실패: ${error.message} · 기존 데이터로 요청할 수 있습니다.`; }
   try { await loadLearningState(); } catch (error) { $('#learning-state').textContent = `학습 상태 조회 실패: ${error.message}`; }
   $('#request-training').onclick = () => busy($('#request-training'), () => startTraining());
-  $('#start-recommendation').onclick = () => busy($('#start-recommendation'), () => startTraining(true));
-  $('#change-recommendation').onclick = () => { $('#request-level').value = recommendation.difficulty; $('#request-kind').value = recommendation.task_kind; $('#request-kind').focus(); notice('추천 수준과 주제를 불러왔습니다. 원하는 값으로 바꾸고 훈련 준비를 선택하세요.'); };
   $('#refresh-learning').onclick = () => busy($('#refresh-learning'), loadLearningState);
   $('#save-learning').onclick = () => busy($('#save-learning'), async () => {
     if (!currentLearningState) throw new Error('먼저 최신 학습 상태를 확인하세요.');
@@ -74,7 +58,7 @@ async function trainingHome() {
   if (id && !requestPolling) { preparingRequest = id; await pollTraining(id); }
 }
 async function pollTraining(id) {
-  requestPolling = true; $('#request-training').disabled = true; $('#start-recommendation').disabled = true;
+  requestPolling = true; $('#request-training').disabled = true;
   $('#clarification').hidden = true; $('#retry-training').hidden = true;
   history.replaceState(null, '', `/?request=${encodeURIComponent(id)}`);
   const labels = {accepted:'요청 접수',planning:'과제 설계',preparing_data:'데이터 준비',validating:'데이터와 실제 계산 검증',ready:'출제 완료',failed:'출제 실패',cancelled:'취소',interrupted:'작업 중단',needs_clarification:'요청 확인 필요'};
@@ -95,7 +79,7 @@ async function pollTraining(id) {
     }
     $('#request-status').textContent += '\n준비 시간이 길어지고 있습니다. 요청 상태를 유지했습니다. 새로고침하면 다시 확인합니다.';
   } catch(error) { $('#request-status').textContent += `\n상태 조회 실패 · 요청과 입력 유지: ${error.message}`; throw error; }
-  finally { requestPolling=false; $('#request-training').disabled=false; $('#start-recommendation').disabled=false; }
+  finally { requestPolling=false; $('#request-training').disabled=false; }
 }
 
 function trainingOpen(attempt) {
