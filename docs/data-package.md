@@ -8,4 +8,4 @@
 
 `PackageCatalog(root).load(id, version)`은 출제 가능한 패키지만 읽는다. 검증 도구의 `allow_unvalidated=True`만 미검증 자료를 허용한다. `.list_public()`은 검증 실패/미검증 패키지를 제외한다. 반환 Package의 `.public`과 `.problem(id)`만 일반 코칭에 전달한다. `.schema_name`은 ID/버전별 DB 스키마이며 v2를 추가해도 v1 시도는 기존 스키마를 고정한다.
 
-경계 fixture에는 D0만 접속, D1 00:00, D7 마지막 초, D8 00:00, D3만 접속, 반복 로그인, D0 시작~D1 종료, 코호트 종료 가입, 수집 경계와 D8이 같은 경우 및 미완료 경우가 포함된다. `tests/test_churn.py`는 빈 분모와 가입 경계도 별도로 검사한다. `tests/test_packages.py`는 변조, 혼합 ID/버전, 누락 기준자료, 경로 이탈 및 버전 고정을 검사한다. PostgreSQL 실행은 별도 검증 명령이 실제 수행한 경우에만 완료로 기록한다.
+경계 fixture에는 D0만 접속, D1 00:00, D7 마지막 초, D8 00:00, D3만 접속, 반복 로그인, D0 시작~D1 종료, 코호트 종료 가입, 수집 경계와 D8이 같은 경우 및 미완료 경우가 포함된다. `tests/automated/test_churn.py`는 빈 분모와 가입 경계도 별도로 검사한다. `tests/automated/test_packages.py`는 변조, 혼합 ID/버전, 누락 기준자료, 경로 이탈 및 버전 고정을 검사한다. PostgreSQL 실행은 별도 검증 명령이 실제 수행한 경우에만 완료로 기록한다.

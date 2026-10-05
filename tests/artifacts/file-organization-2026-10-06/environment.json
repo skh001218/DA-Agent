@@ -1,0 +1,135 @@
+{
+  "executed_at_utc": "2026-10-05T17:49:59.870825+00:00",
+  "display_timezone": "Asia/Seoul",
+  "code_revision": "52b3875be7d8ad77aba3e087657851f24dd767ef",
+  "working_tree_dirty": true,
+  "environment": {
+    "os": "Windows",
+    "os_release": "11",
+    "cpu_architecture": "AMD64",
+    "python": "3.12.10",
+    "docker": {
+      "client": {
+        "Version": "29.3.1",
+        "Os": "windows",
+        "Arch": "amd64"
+      },
+      "server": {
+        "Version": "29.3.1",
+        "Os": "linux",
+        "Arch": "amd64"
+      }
+    },
+    "database": {
+      "availability": "not_configured",
+      "scope": "host snapshot; Docker test environment is separate"
+    }
+  },
+  "source_versions": {
+    "adaptive_tasks.py": {
+      "VERSION": "adaptive-recipe-v1"
+    },
+    "capabilities.py": {
+      "RULES_VERSION": "access-rules-v2"
+    },
+    "coaching.py": {
+      "CONTRACT_VERSION": "coaching-v2",
+      "PROMPT_VERSION": "cumulative-coach-v4-conflict-guard"
+    },
+    "evaluation.py": {
+      "RULES_VERSION": "evaluation-v2"
+    },
+    "evaluation_v3.py": {
+      "VERSION": "evaluation-rubric-v3",
+      "REVIEW_VERSION": "request-review-v3",
+      "PROMPT_VERSION": "condition-review-v3-scoped-inputs"
+    },
+    "metrics.py": {
+      "VERSION": "quality-metrics-v2"
+    },
+    "quality.py": {
+      "FIXTURE_VERSION": "churn-quality-v2"
+    },
+    "quality_fixtures.py": {
+      "FIXTURE_VERSION": "cumulative-quality-v2"
+    },
+    "quality_v2.py": {
+      "FIXTURE_VERSION": "fixed-plan-quality-v2"
+    },
+    "recommendations.py": {
+      "VERSION": "history-recommendation-v2"
+    },
+    "reviews.py": {
+      "RULES_VERSION": "review-v1"
+    },
+    "task_planner.py": {
+      "PROMPT_VERSION": "bounded-planner-v3",
+      "INTERPRETATION_VERSION": "interpretation-v3"
+    }
+  },
+  "source_file_sha256": {
+    "__init__.py": "b49748f66fe15c2342e509d05f6d5100602e5d550e189b58e9b0e6bdb1e27186",
+    "adaptive_tasks.py": "ec71033c3af07246997a3bcf50e3ec0ac736983978772ba09e1cddd2948d2903",
+    "api_provider.py": "33db060579e48e0b51dc851c28ac4938bd6472dba27eed9a2c1922a5e62e9d09",
+    "app.py": "e3ecc3052543e69b5e5f63411053fde746e3fa1e72e63f4e499cc368390fba6b",
+    "assessments.py": "353ca8dea9f85b11a69d19801c7e2cd04cf3c703bf137183ddd225371b10c4b7",
+    "auth.py": "b005c33bdce31c557e11d105a28ccb3a93460af0430104ffdd84daeb608df458",
+    "capabilities.py": "f24692515cc51d924dc6aa1e3104b520c2db9be26fd0859beea440d0fed31b92",
+    "coaching.py": "bb3ea9b6ce429761be257ba9bd50cf1eee405728028cc896c7d1e7a369268edf",
+    "config.py": "2a5e37c8afaab3a6f1d99f7ad0e8330e78348acdcb06953cce92a8bc88359956",
+    "contracts.py": "6584f3f0d71df986cc4c2bfb9d51fbf942845f8129303345a61abdc0be6c3b1e",
+    "data.py": "24794a073078f2fdc5b46b02b31a098ba7f8a15c2874ac714f512f85c96a2e80",
+    "errors.py": "e7ffb0be1693cb2161c17df21b51058de921626af53923ce83cfd2edb6dc737c",
+    "evaluation.py": "20ff5779bb6d4e03e1e17a5880e77757b7cc3d35bcd9de3b6be87278d03fab42",
+    "evaluation_v3.py": "2dfe439f62ec0b9d21610d52a167077d09b020d09efe4b48e390e43425bf6f6d",
+    "generation_cleanup.py": "edddcf776a9f8c6084da46f9496fd6910cdf2a5e89efa94b40bab6858158d55d",
+    "learning_state.py": "6a6226c9df5d76cf0e6d8c7bb8381387fc4294accf672d9aae17ec8c4f9791c2",
+    "metrics.py": "e22cc40069e99d43379b21344be867a4191d93e0c3003706028a630821a10666",
+    "package_validation.py": "ab73dc79e17dd6b33897f2db83757af2cfa97e278d01334ed059f1f079cae53f",
+    "packages.py": "ca6c7be65ad603ec077c8cb6114cb17fc73871f3b8ee51e98152ebadacd13723",
+    "planning_diagnostics.py": "264134897fc9f02ffec8a247757a66bc249d508f8e4a486b7692fcb3950bd7ea",
+    "quality.py": "76594945df3b235349c541aa59aa16a74a8e7f765b28a68b0ba99bf7f469c628",
+    "quality_fixtures.py": "03866d77620f0b3f7ddf0a38e02a2d82340d6057fbcc023d85228e58c5f16abf",
+    "quality_v2.py": "0cae3470ff2e7437ce307da0ff1ea386148365a523beff2125bf635d3268018d",
+    "recommendations.py": "688b5082c11ba966010a8eeb8f0f0b367f6e4225f17daad793c192c2ed6f12bd",
+    "reviews.py": "fb6a59f6f960fc21654b0adb10c6d2615f7f642e260becc84db985ef0c66230c",
+    "sql_runner.py": "e7b3c6e4cd53b418cd8bdf8f03bbe057d4c9d6b46f624a1bc0ebe86098f5a0a8",
+    "static/app.js": "a6502a31ce2e855e6a67f7b5aa40ca578372dfe0be493b2e9a580b0ef5fc07ad",
+    "static/codemirror-sql.js": "1fb4c07068a994d6c6bfac2df09e362bca2ab64ee1336b09ccddfbc74fc508b4",
+    "static/codemirror.css": "0ed49af6b074f931562be7b46d7cfae25c6d7df391089512a3da783f2aaa5707",
+    "static/codemirror.js": "74000b2605333e50c53dafd62f7a354c085816d6f72f13a1aa3c4c552d36cf2a",
+    "static/index.html": "ada9407e55c7f0bcba2d66f556ef19c0938456878db7eeeb0ed0ada1e5853e93",
+    "static/quality.css": "130e36ac5d6b9fcf662d1b7739dff90b93ff96ba77d4f7a9c775f86d44830093",
+    "static/quality.html": "490f87a5b345432e6cab1df9addadad4e3eedc78d9e1a6c3b88239d49ae317ae",
+    "static/quality.js": "316b39aeb90a33e46b96d13685b0cfdf56038bba3716fa80297be94b744ee34d",
+    "static/sql-editor.js": "2202ad97e60c222548b2895dfb1575137c56557a3313a8aeaf0b63a54fe15c26",
+    "static/styles.css": "3422f891bc4428236b263022d307d80817b3e1601b577a699c9175f81afeeb5b",
+    "static/training.js": "f9d381c4f4b87b94d371006c1bfb849c5313815c1f416579bd7fae02966fa9bd",
+    "store.py": "558d808c9f441c36c24cbfa6df766dce2786c5366fee3bf251c640f98aa723f5",
+    "task_contracts.py": "b8ccf002a119ae82f0c32620498bfe1037dd63d17792b829bca9f797b5eba3f4",
+    "task_generation.py": "7c2886ea53b71fa509ac8f1c09721c15157951e215db436c1e8ecc817cf8da2b",
+    "task_planner.py": "460e94eb7a66139ab1d882428cae89efd3b30e5a57ff7164004646393ae932c8",
+    "telemetry.py": "2bd30423022e25c794c4c37e26f5dba6173ca6287096cae712fd9ff5c51c89a4",
+    "training.py": "9b5d3091ec1810c58611168ae60913e1f29bd25273edb971713ff994ab755ec3",
+    "training_contracts.py": "0d7e848a387341b6be9b00e04ccfffe9871e3e3e9750e2156ade22fc0ddb0e12"
+  },
+  "model_observation": "not_called; configured model is not proof of actual model execution",
+  "material_policy": "No environment dump, DSN, key, SQL, rows, conversation or provider-response output",
+  "release_approval": "pending",
+  "external_validation": {
+    "human_semantic_review": "pending: named reviewer, sample IDs, version, verdict and time required",
+    "current_model_repetitions": "pending: actual model, each fixed sample 3 times, human review and score range <=10",
+    "other_pc": "pending: second machine request, actual SQL, review and resume evidence",
+    "arm": "pending: separate ARM environment and result; absence is not support verification",
+    "five_learner_pilot": "pending: 5 actual learners; independent completion >=4 and core-condition improvement >=3",
+    "actual_browser": "pending: browser evidence is recorded separately, never inferred from pytest"
+  },
+  "test_material": {
+    "database": "actual PostgreSQL only in --db/--docker mode",
+    "provider": "fixture/mocked where tests configure it; pytest does not approve current-model quality",
+    "learners": "test fixtures, never pilot participants"
+  },
+  "automatic_checks": {
+    "status": "not_run"
+  }
+}

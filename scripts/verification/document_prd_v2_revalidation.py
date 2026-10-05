@@ -1,0 +1,73 @@
+"""Summarize preserved verification artifacts; never infer human approval."""
+import hashlib
+import json
+import subprocess
+from pathlib import Path
+
+root = Path(__file__).resolve().parents[2]
+test = root / 'tests' / 'reports'
+matrix = json.loads((test / '../artifacts/prd-v2-revalidation-2026-10-05/matrix.json').read_text())
+paths = ['index.html', 'app.js', 'training.js', 'styles.css']
+live_code = "import hashlib,json,pathlib; p=pathlib.Path('/app/src/da_agent/static'); print(json.dumps({n:hashlib.sha256((p/n).read_bytes()).hexdigest() for n in " + repr(paths) + "}))"
+live = json.loads(subprocess.check_output(['docker', 'exec', 'da-agent-app-1', 'python', '-c', live_code], text=True))
+host = {n: hashlib.sha256((root / 'src/da_agent/static' / n).read_bytes()).hexdigest() for n in paths}
+(test / '../artifacts/prd-v2-revalidation-2026-10-05/static-version-conflict.json').write_text(json.dumps({'host': host, 'live': live, 'matches': host == live, 'scope': 'end of browser run; initial DB snapshot matched host'}, indent=2), encoding='utf-8')
+rows = []
+for f in matrix['flows']:
+    status = '통과' if f.get('passed') else ('평가 차단' if f.get('review', {}).get('error', {}).get('code') == 'answer_exposure' else '환경 불일치·미검증')
+    rows.append(f"| {f['kind']} | {f['level']} | {status} | {f.get('attempt_id', '출제 전 중단')} |")
+body = '''# PRD-v2 최신 수정 후 재검증
+
+- 검증일: 2026-10-05 (Asia/Seoul)
+- 대상: 코칭 템플릿·저장 대화 표시·요청 해석 템플릿·진단 로그 적용 후 검증 대기 항목.
+- 환경: Windows AMD64, Docker Linux AMD64/PostgreSQL, 실제 Chrome 및 Gemini gemini-3.5-flash-lite.
+- 버전: bounded-planner-v3 / interpretation-v3 / cumulative-coach-v3. 평가는 request-review-v2이며 평가 기준 v3는 문서만 작성된 상태.
+- 프로젝트 표준 폴더 모두 존재. 폴더 이동·테이블 생성 한도·사람 승인 변경 없음.
+
+## 결과
+
+| 항목 | 결과 | 원본 근거 |
+| --- | --- | --- |
+| 실제 DB 전체 회귀 | 255개 통과, 경고 2개. 검증 시점 컨테이너 소스 일치 | [DB 결과](../artifacts/verification-prd-v2-revalidation-db-2026-10-05.json) |
+| 대표 계산 코칭 6종×3회 | 18회 중 완료 16회·api_unavailable 2회. 완료 응답 형식 오류 0개, 기대 행동 통과 14/18. 가설 충돌 2개 행동 불일치 | [코칭 결과](../artifacts/verification-prd-v2-revalidation-coaching-2026-10-05.json) |
+| 대표 계산 평가 6종×3회 | 18회 중 완료 17회·review_format 실패 1회. core_error 범위 13.8점 > 기준10점, correct 5점·private_request 2.5점·나머지0점 | [평가 결과](../artifacts/verification-prd-v2-revalidation-review-2026-10-05.json) |
+| 네 유형×세 난이도 화면 | 출제까지 진행한 10개 중 전체 흐름 8개 통과·평가 answer_exposure 차단 2개. 마지막 조사 중급/고급은 화면 버전 불일치로 출제 전 중단 | [화면 원본](../artifacts/prd-v2-revalidation-2026-10-05/matrix.json) |
+
+코칭·평가 운영 검증은 각각 별도 18회 예산으로 실행했고 실패 회차를 제외하거나 성공으로 대체하지 않았다. 두 모드를 같은 훈련에 동시에 시작하려던 요청은 409 직렬화 보호로 거절되어 평가 호출 전에 순차 실행으로 변경했다. 완료된 응답과 의미적 품질 통과는 다르며 두 반복 실행 모두 verdict=fail·semantic_approval=false다.
+
+## 실제 화면 범위
+
+기존 검증 데이터 경로에서 요청·유형/난이도 일치·업무 사실 질문·SQL 오류 입력 보존·SQL 선택 저장·직접 코칭·보고서 제출·현재 모델 평가·수정 제출 v1→v2·새로고침 후 저장 자료/원 패키지 재개·390px 가로 넘침 없음을 확인했다. 설계 세 수준은 SQL 없이 제출했고 완료 평가에서 SQL 정확도 항목이 제외됐다. 자동 코칭 기본 꺼짐을 확인했다. 페이지 JavaScript 오류는 수집된 10개 흐름에서 0개다.
+
+| 유형 | 난이도 | 결과 | 검증 훈련 ID |
+| --- | --- | --- | --- |
+''' + '\n'.join(rows) + '''
+
+검토 초급과 조사 초급의 평가는 answer_exposure로 차단됐지만 보고서·근거는 보존됐고 수정 제출·재개·좁은 화면은 통과했다. 방어 로직 작동을 평가 품질 통과로 간주하지 않는다. 실제 노출과 과도한 차단 여부는 별도 원문 검토가 필요하다.
+
+마지막 두 흐름의 추천 요소 대기 실패 후 별도 실행에서 필수 유형 선택 요소 대기도 실패했다. HTTP로 확인한 실행 중 HTML에는 request-kind가 없고 호스트에는 존재한다. 컨테이너 생성 시각은 동일하지만 네 정적 파일 해시가 달라졌으므로 단순 테스트 선택자 오류로 결론 내리지 않는다. 재실행 기록은 [remaining/matrix.json](../artifacts/prd-v2-revalidation-2026-10-05/remaining/matrix.json), 차이는 [정적 파일 해시](../artifacts/prd-v2-revalidation-2026-10-05/static-version-conflict.json)에 보존했다. 다른 작업의 코드를 덮어쓰지 않았으며 12/12 화면 통과를 주장하지 않는다. 초기 소스 일치 DB 결과와 종료 시점 화면 불일치를 구분한다.
+
+요청 해석의 형식/출처/추가 질문·실패 진단·사용량·재시도 이력 보존은 전체 DB 회귀와 [별도 실제 검증](verification-planner-diagnostics-2026-10-05.md)을 함께 근거로 삼는다. 이번 정상 출제 10개는 요청 해석이 ready에 도달했다. 실제 정상 호출만으로 모든 malformed 응답이나 adaptive 분야 품질을 검증했다고 하지 않는다.
+
+## PRD 상태와 남은 검증
+
+PRD 5/11개 완료(45.5%), Spec008 4/6·010 2/5·011 2/5·012 3/4·013 2/6을 유지한다. 검증 대기 행의 여러 완료 조건 중 일부는 확인됐으나 모든 조건이 충족되지 않았다.
+
+- 다양성·난이도: 네 유형과 세 수준의 기술 흐름을 보강했으나 과제 쌍 사고 차이·모호함·자료 충분성의 사람 판정은 대기.
+- 진행 판단: 코칭 형식은 개선 확인. 가설 충돌 행동 불일치 및 API 실패, 전 유형 반복 의미 판정은 대기.
+- 힌트·평가: 형식 실패·점수 편차·노출 차단 보완과 기준 v3 실제 구현이 필요하다. 사람 승인으로 기술 실패를 해소하지 않는다.
+- 화면: 조사 중급/고급은 버전을 확정해 재검증해야 한다. 임시 근거 실제 만료·초안 충돌·로그 장애·키보드 전체 흐름은 이번에 새로 확인하지 않았다. 기존 검증 기록을 보존한다.
+- 추천: 템플릿 적용 후 기존 데이터 ready는 앞선 실제 검증 완료. 승인 신규 생성 경로는 규칙 승인 후 별도 검증 필요.
+- 다른 PC/ARM·실제 학습자5명 파일럿은 장비·참가자 준비가 필요하며 미수행.
+
+## 사용자가 직접 확인할 내용
+
+1. 같은 접속 주제의 계산·검토·설계·조사 과제를 읽고 판단해야 하는 일이 실제로 다른지 확인한다. 위 훈련은 앱의 이어하기에서 ID로 찾거나 `http://127.0.0.1:8087/?attempt=훈련ID`로 연다.
+2. 초급→고급의 차이가 자료 누락이 아닌 판단할 조건의 모호함인지, 공개 자료만으로 과제 수행이 가능한지 이유와 함께 기록한다. 조사 중급/고급은 이번 환경 불일치 해소 후 확인한다.
+3. 운영 화면의 기존 접속 생성 규칙 4개×3수준 검토 표본을 읽고 승인 여부를 판단한다. 이번 작업은 승인하지 않았다. adaptive 시험 과제 제공과 구분한다. [이전 표본/판정 안내](verification-prd-v2-pending-2026-10-05.md#사용자-또는-별도-사람이-직접-확인할-내용)를 따른다.
+4. 기술 실패를 보완한 뒤 코칭·평가의 오진·대안 인정·비공개 정보 판단을 검토한다. 지금 실패한 결과를 승인하도록 요청하지 않는다.
+
+사용자는 다른 작업에서 화면을 수정 중이며 새 브랜치로 Git에 반영할 예정이라고 확인했다. 조사 중급/고급은 화면 변경 반영 및 실행 버전 일치 후 재검증한다. 흐름별 정적 파일 해시는 수집하지 않았으므로 확인한 10개도 당시 실행 화면의 결과이며 모든 화면이 단일 호스트 버전이었다고 보장하지 않는다. 코칭·평가 오류 개선, 남은 자동·화면 검사와 검증 문서화는 에이전트 담당이다. 다른 PC/ARM 접근과 실제 참가자 조율에는 사용자 협조가 필요하다.
+'''
+(test / 'verification-prd-v2-revalidation-2026-10-05.md').write_text(body, encoding='utf-8')
+print('Verification report and end-of-run static hashes saved.')

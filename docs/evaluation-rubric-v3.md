@@ -2,7 +2,7 @@
 
 - 작성일·마지막 갱신일: 2026-10-05 (Asia/Seoul)
 - 기준 버전: evaluation-rubric-v3 / 새 평가 계약 request-review-v3
-- 적용 상태: 새 요청 과제의 공개 조건 고정·AI 조건 판별·서버 등급/총점·보류·화면을 구현했다. 실제 DB와 모델 검증 결과는 [v3 검증 기록](../tests/verification-evaluation-v3-2026-10-05.md)을 따른다. 기존 과제/저장 리뷰는 원래 버전을 유지한다. 사람 의미 판정은 대기.
+- 적용 상태: 새 요청 과제의 공개 조건 고정·AI 조건 판별·서버 등급/총점·보류·화면을 구현했다. 실제 DB와 모델 검증 결과는 [v3 검증 기록](../tests/reports/verification-evaluation-v3-2026-10-05.md)을 따른다. 기존 과제/저장 리뷰는 원래 버전을 유지한다. 사람 의미 판정은 대기.
 - 연결: [PRD-v2](PRD-v2.md), [Spec 010](../specs/010-adaptive-coaching-and-evaluation.md).
 
 ## 평가 범위와 고정 조건
@@ -117,7 +117,7 @@ AI는 각 조건의 충족/누락/오류/확인 불가와 이유를 판별하고
 
 ## 항목별 입력과 조건 일관성 보완
 
-최신 구현은 condition-review-v3-scoped-inputs이며 [후속 검증](../tests/verification-v3-failure-fixes-2026-10-05.md)을 따른다. 항목별 우선 입력과 다른 칸의 보조 내용, 자유 서술을 함께 인정한다. 정의·계획·다음 행동의 판단에 SQL 원문/실행 검산을 감점 출처로 사용할 수 없다. 해석에는 최종 주장과 실제 결과를 연결한다.
+최신 구현은 condition-review-v3-scoped-inputs이며 [후속 검증](../tests/reports/verification-v3-failure-fixes-2026-10-05.md)을 따른다. 항목별 우선 입력과 다른 칸의 보조 내용, 자유 서술을 함께 인정한다. 정의·계획·다음 행동의 판단에 SQL 원문/실행 검산을 감점 출처로 사용할 수 없다. 해석에는 최종 주장과 실제 결과를 연결한다.
 
 정의의 공개 필수 요소가 모두missing이면 내용 존재 여부와 무관하게 실제 정의가 없으므로 content도missing으로 맞춘다. 일부 필수 정의를 제시한 경우에는2등급을 유지한다. 이 정규화는 의미적 오답을 정답으로 바꾸거나 기존 저장 리뷰를 수정하는 규칙이 아니다. 같은 서술에서 내용 존재met/missing만 변한 점수 편차를 막는다.
 

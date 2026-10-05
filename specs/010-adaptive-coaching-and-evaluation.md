@@ -2,7 +2,7 @@
 
 ## 구현 진행도
 
-최신 근거: [실패 원인 보완·검증](../tests/verification-v3-failure-fixes-2026-10-05.md). 이전 [v3 구현·검증](../tests/verification-evaluation-v3-2026-10-05.md)은 역사적 근거로 보존한다. 새 출제는request-review-v3로 고정하고 기존 과제는 원래 계약을 보존한다. 아래 상위 작업의 완료 수는2/5를 유지하되, 이번 요청의 세부 구현/검증 완료를 별도 표에 표시한다. 이전 재검증은 역사적 근거다.
+최신 근거: [실패 원인 보완·검증](../tests/reports/verification-v3-failure-fixes-2026-10-05.md). 이전 [v3 구현·검증](../tests/reports/verification-evaluation-v3-2026-10-05.md)은 역사적 근거로 보존한다. 새 출제는request-review-v3로 고정하고 기존 과제는 원래 계약을 보존한다. 아래 상위 작업의 완료 수는2/5를 유지하되, 이번 요청의 세부 구현/검증 완료를 별도 표에 표시한다. 이전 재검증은 역사적 근거다.
 
 - 진행도: 2/5개 완료 (40.0%)
 - 마지막 갱신일: 2026-10-06
@@ -17,9 +17,9 @@
 | 평가·노출 방지 | 검증 대기 | 고정 기준·배점·참조·해설 전 노출·오진 검증 | v3 조건/서버 계산/보류·출처 원문 연결·설명과점수 노출 검사 분리 구현. DB289개 및 실제 확정/보류/미적용/실패 재개 확인. 오진/미탐 사람 판정 대기 |
 | 반복 품질 검증 | 검증 대기 | 실제 모델 반복 표본과 사람 판정, 회귀 개선 결과 기록 | 후속18회 정상 형식 및 최신 서버 재계산 후 확정5표본 범위0·핵심 오류 등급/조건 고정. 보완 경계6회·계획/철회6회 기대 판정. 원본 실패 보존·전 유형/사람 승인 대기 |
 
-구현 코드와 자동 검증이 준비되어 있어도 위 완료 조건에 실제 화면·사람 판정이 포함된 행은 검증 대기 또는 차단으로 남긴다. 검증 근거는 [백엔드 기록](../tests/verification-v2-backend-2026-10-04.md), [화면 기록](../tests/verification-v2-ui-2026-10-04.md)을 따른다.
+구현 코드와 자동 검증이 준비되어 있어도 위 완료 조건에 실제 화면·사람 판정이 포함된 행은 검증 대기 또는 차단으로 남긴다. 검증 근거는 [백엔드 기록](../tests/reports/verification-v2-backend-2026-10-04.md), [화면 기록](../tests/reports/verification-v2-ui-2026-10-04.md)을 따른다.
 
-이전 [실제 반복·화면 검증](../tests/verification-prd-v2-pending-2026-10-05.md)을 추가했다. 대표 초급 계산 표본의 두 모드 각18회이며 전 유형 통과로 확대하지 않는다. 네 유형의 보고서 리뷰 완료와 의미적 품질 승인은 구분하며 진행도2/5를 유지한다.
+이전 [실제 반복·화면 검증](../tests/reports/verification-prd-v2-pending-2026-10-05.md)을 추가했다. 대표 초급 계산 표본의 두 모드 각18회이며 전 유형 통과로 확대하지 않는다. 네 유형의 보고서 리뷰 완료와 의미적 품질 승인은 구분하며 진행도2/5를 유지한다.
 
 ## 목적과 연결
 
@@ -46,7 +46,7 @@
 
 입력은 고정 공개 과제·질문으로 공개된 업무 사실·저장 대화·사용자의 정의/가설·초안·선택 저장 근거·도움 이력·현재 임시 근거다. 일반 코칭에는 비공개 원인·seed·기준 SQL·정답·평가 기대 발견사항을 전달하지 않는다. 요약은 원문 출처를 유지하며 임시 근거가 섞이면 요약도 임시 처리한다.
 
-AI 출력은 `action_type`, `reason`, `next_action`, `evidence_ids`, `uncertainty` 다섯 필드로 고정한다. 서버는 출처 ID를 검증한 뒤 `evidence_state`를 public/saved/temporary/mixed/unverified 중 하나로 계산한다. 프롬프트는 cumulative-coach-v4-conflict-guard이며 화면용 coaching-v2 계약은 유지한다. Gemini JSON 스키마 및 서버 검증을 함께 적용하며 JSON·필드·출처·행동·맥락·노출 실패를 구분한다. [템플릿](../template/coaching-response.json)과 [검증 기록](../tests/verification-coaching-template-2026-10-05.md)을 따른다. action_type은 clarify/check/suggest_analysis/submit/hint/none이다.
+AI 출력은 `action_type`, `reason`, `next_action`, `evidence_ids`, `uncertainty` 다섯 필드로 고정한다. 서버는 출처 ID를 검증한 뒤 `evidence_state`를 public/saved/temporary/mixed/unverified 중 하나로 계산한다. 프롬프트는 cumulative-coach-v4-conflict-guard이며 화면용 coaching-v2 계약은 유지한다. Gemini JSON 스키마 및 서버 검증을 함께 적용하며 JSON·필드·출처·행동·맥락·노출 실패를 구분한다. [템플릿](../template/coaching-response.json)과 [검증 기록](../tests/reports/verification-coaching-template-2026-10-05.md)을 따른다. action_type은 clarify/check/suggest_analysis/submit/hint/none이다.
 
 | 상황 | 기대 행동과 금지 사항 |
 | --- | --- |
@@ -94,6 +94,6 @@ AI 출력은 `action_type`, `reason`, `next_action`, `evidence_ids`, `uncertaint
 
 ## 2026-10-05 실패 원인 보완
 
-[최신 기록](../tests/verification-v3-failure-fixes-2026-10-05.md)의 항목별 입력·정의 부재 정규화·최종 주장/철회·명시 가설 충돌 규칙·API 안전 진단을 적용했다. 실행 오류를 계획 감점 출처로 쓰지 않으며 다른 칸/자유 서술의 타당한 내용은 인정한다. 원본 실패와 사람 승인 대기를 보존하고 상위2/5·v3 세부4/5 진행도는 유지한다.
+[최신 기록](../tests/reports/verification-v3-failure-fixes-2026-10-05.md)의 항목별 입력·정의 부재 정규화·최종 주장/철회·명시 가설 충돌 규칙·API 안전 진단을 적용했다. 실행 오류를 계획 감점 출처로 쓰지 않으며 다른 칸/자유 서술의 타당한 내용은 인정한다. 원본 실패와 사람 승인 대기를 보존하고 상위2/5·v3 세부4/5 진행도는 유지한다.
 
-2026-10-06 [PR 브랜치 통합 검증](../tests/verification-pr-integration-2026-10-06.md): 최신main 화면 코드와 병합 후 DB289·단위68·Chrome SQL12항목 및v3 표시/재개를 확인했다. 소스 통합은 완료, 일반 앱 실행 갱신과 사람/전 유형 품질은 대기다. 마지막 갱신일은2026-10-06이며 상위2/5·v3 세부4/5를 유지한다.
+2026-10-06 [PR 브랜치 통합 검증](../tests/reports/verification-pr-integration-2026-10-06.md): 최신main 화면 코드와 병합 후 DB289·단위68·Chrome SQL12항목 및v3 표시/재개를 확인했다. 소스 통합은 완료, 일반 앱 실행 갱신과 사람/전 유형 품질은 대기다. 마지막 갱신일은2026-10-06이며 상위2/5·v3 세부4/5를 유지한다.

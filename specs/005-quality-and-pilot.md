@@ -13,8 +13,8 @@
 | 평가 표본·반복 실행 | 완료 | 공개 DB에서 5종 SQL 실제 실행, 기준 결과 대조, 3회 반복·버전·실패 이력 저장 | src/da_agent/quality.py, v1/v2 실제 DB·실제 모델 15회 요청 확인 |
 | 비교·사람 검토 화면 | 완료 | 점수 범위·실패·항목별 이유 비교, 필수 체크별 사람 판정 저장·재개 | static/quality.html·quality.js, 저장·새로고침·최신 메모 내보내기 확인 |
 | 파일럿 기록·보고서 비교 | 완료 | 참가자·도움·중단·다음 행동 기록, 최초·수정 보고서와 리뷰 비교·내보내기 | pilot_records, UI_TEST 연결·저장·v1/v2 비교·다운로드 확인 후 정리 |
-| 자동 검증 | 완료 | 실제 PostgreSQL에서 재개·오류·동시 실행·미저장 SQL 비수집 검증 | tests/test_quality.py, 전체 97개 테스트 통과 |
-| 화면 검증 | 완료 | 화면에서 시작·입력·저장·새로고침·오류·결과 비교·내보내기 확인 | tests/verification-quality-2026-10-03.md·quality-screen.jpg |
+| 자동 검증 | 완료 | 실제 PostgreSQL에서 재개·오류·동시 실행·미저장 SQL 비수집 검증 | tests/automated/test_quality.py, 전체 97개 테스트 통과 |
+| 화면 검증 | 완료 | 화면에서 시작·입력·저장·새로고침·오류·결과 비교·내보내기 확인 | tests/reports/verification-quality-2026-10-03.md·quality-screen.jpg |
 
 ## 범위와 사용자 결정
 
