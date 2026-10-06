@@ -1,0 +1,38 @@
+{
+  "session_id": "6b080992-1441-4157-a5df-e181dc3fb287",
+  "thread_id": "1556915496966946823",
+  "state": "reporting",
+  "query_count": 2,
+  "execution_count": 1,
+  "model_calls": 2,
+  "questions": [
+    {
+      "kind": "query_conditions",
+      "state": "answered",
+      "discord_message_ids": [
+        "1556915626541588501"
+      ]
+    },
+    {
+      "kind": "analysis_reason",
+      "state": "answered",
+      "discord_message_ids": [
+        "1556915794951282750"
+      ]
+    },
+    {
+      "kind": "followup",
+      "state": "answered",
+      "discord_message_ids": [
+        "1556916092390080573"
+      ]
+    }
+  ],
+  "analysis_answer_count": 1,
+  "followup_answer_count": 1,
+  "query_answer_link": {
+    "original_text": "기능 검증: 가입자 수를 보여줘",
+    "user_answer": "기능 검증 답변: 과제 기간을 사용하고 UTC 기준으로 신규 가입한 고유 사용자 수를 전체 집계해주세요."
+  },
+  "pending_question": null
+}
