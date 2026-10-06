@@ -35,10 +35,10 @@ def stage(root, package_id, seed, user_count, scenario):
         package=validate_package(conn,root,package_id,'v1',grant_learner=False,publish=False)
     return package
 
-def grant(package):
-    with psycopg.connect(generator_dsn(),connect_timeout=5) as conn:
-        conn.execute(sql.SQL('GRANT USAGE ON SCHEMA {} TO learner').format(sql.Identifier(package.schema_name)))
-        conn.execute(sql.SQL('GRANT SELECT ON ALL TABLES IN SCHEMA {} TO learner').format(sql.Identifier(package.schema_name)))
+def grant(package, *, admin_dsn=None, learner_role='learner'):
+    with psycopg.connect(admin_dsn or generator_dsn(),connect_timeout=5) as conn:
+        conn.execute(sql.SQL('GRANT USAGE ON SCHEMA {} TO {}').format(sql.Identifier(package.schema_name),sql.Identifier(learner_role)))
+        conn.execute(sql.SQL('GRANT SELECT ON ALL TABLES IN SCHEMA {} TO {}').format(sql.Identifier(package.schema_name),sql.Identifier(learner_role)))
 
 def validate_plan(package, public, private):
     """Validate operator approval material before granting any learner access."""
@@ -57,10 +57,10 @@ def validate_plan(package, public, private):
             raise DomainError('validation_failed','표본 검토 SQL의 완전한 결과가 필요합니다.',422)
     return 'validated'
 
-def revoke(package):
-    with psycopg.connect(generator_dsn(),connect_timeout=5) as conn:
-        conn.execute(sql.SQL('REVOKE ALL ON SCHEMA {} FROM learner').format(sql.Identifier(package.schema_name)))
-        conn.execute(sql.SQL('REVOKE ALL ON ALL TABLES IN SCHEMA {} FROM learner').format(sql.Identifier(package.schema_name)))
+def revoke(package, *, admin_dsn=None, learner_role='learner'):
+    with psycopg.connect(admin_dsn or generator_dsn(),connect_timeout=5) as conn:
+        conn.execute(sql.SQL('REVOKE ALL ON SCHEMA {} FROM {}').format(sql.Identifier(package.schema_name),sql.Identifier(learner_role)))
+        conn.execute(sql.SQL('REVOKE ALL ON ALL TABLES IN SCHEMA {} FROM {}').format(sql.Identifier(package.schema_name),sql.Identifier(learner_role)))
     receipt=read_json(package.path/'private/validation.json')
     receipt['status']='validated'
     write_json(package.path/'private/validation.json',receipt)

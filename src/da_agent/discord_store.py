@@ -34,6 +34,13 @@ class DiscordStore:
                 event_id text PRIMARY KEY, owner_id text NOT NULL, session_id text,
                 status text NOT NULL, response jsonb, request jsonb, created_at timestamptz NOT NULL DEFAULT now())''')
             conn.execute('ALTER TABLE discord_records.events ADD COLUMN IF NOT EXISTS request jsonb')
+            conn.execute('''CREATE TABLE IF NOT EXISTS discord_records.generation_jobs (
+                session_id text PRIMARY KEY REFERENCES discord_records.sessions ON DELETE CASCADE,
+                private jsonb NOT NULL)''')
+            conn.execute("""UPDATE discord_records.sessions SET document=jsonb_set(
+                jsonb_set(document, '{state}', '"interrupted"'),
+                '{generation,status}', '"interrupted"') #- '{generation,run_token}'
+                WHERE document->'generation'->>'status' IN ('planning','preparing_data','validating')""")
             conn.execute('''CREATE TABLE IF NOT EXISTS discord_records.usage (
                 owner_id text NOT NULL, day date NOT NULL, calls integer NOT NULL,
                 PRIMARY KEY(owner_id, day))''')
@@ -67,6 +74,18 @@ class DiscordStore:
             conn.execute('''INSERT INTO discord_records.sessions(session_id,owner_id,guild_id,document)
                 VALUES (%s,%s,%s,%s)''', (document['session_id'], document['owner_user_id'], document['guild_id'], Jsonb(document)))
             self.finish_event(event_id, response, conn)
+
+    def generation_job(self, user_id, session_id):
+        self.get(user_id, session_id)
+        with self.connect() as conn:
+            row = conn.execute('SELECT private FROM discord_records.generation_jobs WHERE session_id=%s', (session_id,)).fetchone()
+        return copy.deepcopy(row[0]) if row else {}
+
+    def save_generation_job(self, user_id, session_id, private):
+        self.get(user_id, session_id)
+        with self.connect() as conn:
+            conn.execute('''INSERT INTO discord_records.generation_jobs VALUES (%s,%s)
+                ON CONFLICT(session_id) DO UPDATE SET private=EXCLUDED.private''', (session_id, Jsonb(private)))
 
     def get(self, user_id, session_id):
         with self.connect() as conn:

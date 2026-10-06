@@ -183,7 +183,11 @@ class Recipe(Model):
             if table.name in seen or len(names) != len(set(names)) or len({g.name for g in table.groups}) != len(table.groups):
                 raise ValueError('duplicate identity')
             if table.columns[0].generator.kind != 'id' or any(c.generator.kind == 'id' for c in table.columns[1:]):
-                raise ValueError('first column must be the only primary id')
+                first = table.columns[0]
+                extra = [c.name for c in table.columns[1:] if c.generator.kind == 'id']
+                raise ValueError(f'{table.name}: first column must be the only primary id; '
+                    f'columns[0]={first.name!r} uses {first.generator.kind!r}, later id columns={extra}. '
+                    'Derived summaries also need a separate first id column before group_key columns.')
             if table.derived_from:
                 if table.derived_from not in seen or table.groups or not table.group_by or len(set(table.group_by)) != len(table.group_by):
                     raise ValueError('derived table needs earlier source, group_by and no random groups')
@@ -553,23 +557,30 @@ def preflight(recipe, seed, data=None):
             tables={t.name:t for t in recipe.tables}
             candidates=[m for m in recipe.metrics if m.conditions]
             observed=False
+            diagnostics=[]
             for metric in candidates:
                 subset=metric.model_copy(update={'operation':'count','column':None,'group_by':[],
                     'conditions':metric.conditions+metric.denominator_conditions,'denominator_conditions':[],
                     'minimum':None,'maximum':None})
                 measured,_=analytical_reference(subset,tables,rows)
                 observed |= measured['rows'][0][-1]>0
-            if not observed: raise ValueError('investigation diagnostic conditions have no observed rows in fixed data')
+                diagnostics.append({'metric':metric.name,'table':metric.table,
+                    'sample_rows':len(rows[metric.table]),'matching_rows':measured['rows'][0][-1],
+                    'conditions':[c.model_dump() for c in subset.conditions]})
+            if not observed:
+                raise ValueError('investigation diagnostic conditions have no observed rows in fixed data; '
+                    +json.dumps(diagnostics,ensure_ascii=False)
+                    +'. Revise the sample counts and generator ranges/overrides to provide observed cases and normal counterexamples; preserve the analysis goal.')
         metric_reference(recipe,rows)
         comparison_references(recipe,rows)
     except (ValueError,DomainError) as exc:
         error=DomainError('plan_invalid','고정 데이터 설계의 표본·시간·집계 조건을 충족하지 못했습니다.',422)
-        error.validation_issues=[{'location':[], 'type':'data_dependency', 'message':str(exc)[:500]}]
+        error.validation_issues=[{'location':[], 'type':'data_dependency', 'message':str(exc)[:2000]}]
         raise error from None
     return recipe
 
 
-def stage_adaptive(root, package_id, recipe, seed, plan_id, revision):
+def stage_adaptive(root, package_id, recipe, seed, plan_id, revision, *, admin_dsn=None, learner_role='learner'):
     path = Path(root)/package_id/'v1'
     canonical = recipe.model_dump()
     if not canonical['business_case']: canonical.pop('business_case')
@@ -638,18 +649,20 @@ def stage_adaptive(root, package_id, recipe, seed, plan_id, revision):
         write_json(path/'public/manifest.json', public_manifest); write_json(path/'private/manifest.json', private_manifest)
         package = Package(path, public_manifest, private_manifest)
     # DDL identifiers and all row values are composed/parameterized by application code.
-    with psycopg.connect(generator_dsn(), options='-c statement_timeout=60000', connect_timeout=5) as conn:
+    with psycopg.connect(admin_dsn or generator_dsn(), options='-c statement_timeout=60000', connect_timeout=5) as conn:
         conn.execute(sql.SQL('CREATE SCHEMA IF NOT EXISTS {}').format(sql.Identifier(package.schema_name)))
-        conn.execute(sql.SQL('REVOKE ALL ON SCHEMA {} FROM PUBLIC, learner').format(sql.Identifier(package.schema_name)))
+        conn.execute(sql.SQL('REVOKE ALL ON SCHEMA {} FROM PUBLIC, {}').format(sql.Identifier(package.schema_name), sql.Identifier(learner_role)))
         conn.execute(sql.SQL('SET LOCAL search_path TO {}').format(sql.Identifier(package.schema_name)))
         for table in recipe.tables:
             definitions = []
             for column in table.columns:
                 gen = column.generator
                 definition = sql.SQL('{} {}{}{}').format(sql.Identifier(column.name), sql.SQL(TYPES[generator_type(gen)]),sql.SQL('') if gen.kind=='aggregate' else sql.SQL(' NOT NULL'), sql.SQL(' PRIMARY KEY') if gen.kind=='id' else sql.SQL(''))
-                if gen.kind == 'foreign_key':
-                    target = next(t for t in recipe.tables if t.name == gen.table)
-                    definition += sql.SQL(' REFERENCES {}({})').format(sql.Identifier(gen.table),sql.Identifier(target.columns[0].name))
+                from .analytical_metrics import foreign_key_target
+                target_name = foreign_key_target(table.name,column.name,{t.name:t for t in recipe.tables})
+                if target_name:
+                    target = next(t for t in recipe.tables if t.name == target_name)
+                    definition += sql.SQL(' REFERENCES {}({})').format(sql.Identifier(target_name),sql.Identifier(target.columns[0].name))
                 definitions.append(definition)
             definitions.extend(sql.SQL('UNIQUE ({})').format(sql.SQL(', ').join(sql.Identifier(c) for c in key)) for key in table.unique_keys)
             conn.execute(sql.SQL('CREATE TABLE IF NOT EXISTS {} ({})').format(sql.Identifier(table.name),sql.SQL(', ').join(definitions)))

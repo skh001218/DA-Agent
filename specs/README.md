@@ -1,5 +1,9 @@
 # PRD-v2 구현 Spec 안내
 
+## Discord 텍스트 요청 기반 출제 계획 (2026-10-06)
+
+[Spec036](036-discord-text-task-generation.md)은 `/training`의 고정 topic을 필수 text로 바꾸고 기존 adaptive 출제를 연결한다. 코드·임시 DB·고정 모델 응답의 검증용 화면 흐름을 확인해 5/7개 완료(71.43%)다. 실제 Gemma 출제가 429·HTTP500으로 실패했으며 운영 반영·명령 동기화·실제 Discord 전달은 남아 있다. 실행 봇은 기존 topic 형식을 유지한다. [검증 보고](../tests/reports/verification-spec036-2026-10-06.md)를 따른다.
+
 ## Discord 연습 유형과 SQL 직접 풀이 (2026-10-06)
 
 [Spec035](035-discord-sql-practice-mode.md)은 `/training`의 필수 SQL/분석 선택, 제공된 `sql` 코드 블록을 채운 답장 제출, 실제 SQL 실행·오류 수정·재제출, SQL 전용 평가와 완료 분석 연결을 다룬다. 코드·격리 DB 검증을 마쳤으며 4/8개 완료(50%)다. 실제 Discord 선택·입력·결과 화면은 검증 대기이며 실행 봇에는 아직 반영하지 않았다. [검증 기록](../tests/reports/verification-spec035-2026-10-06.md).

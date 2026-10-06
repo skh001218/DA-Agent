@@ -1,0 +1,52 @@
+{
+  "owner": "spec035-94ae387f9d634108933053df94556ede",
+  "session_id": "f899961f-21ee-4a69-baa7-f0a0d0178299",
+  "state": "failed",
+  "generation": {
+    "error": "모델 호출에 실패해 출제를 보류했습니다. 호출 제한·모델 연결을 확인하고 수동 재시도하세요.",
+    "phase": "adaptive-design",
+    "states": [
+      {
+        "at": "2026-10-06T13:41:03.932296+00:00",
+        "status": "planning"
+      },
+      {
+        "at": "2026-10-06T13:42:12.541089+00:00",
+        "status": "planning"
+      },
+      {
+        "at": "2026-10-06T13:43:21.597191+00:00",
+        "status": "planning"
+      },
+      {
+        "at": "2026-10-06T13:44:30.497701+00:00",
+        "status": "failed"
+      },
+      {
+        "at": "2026-10-06T13:44:58.779298+00:00",
+        "status": "planning"
+      },
+      {
+        "status": "failed",
+        "at": "2026-10-06T13:46:28.971546+00:00"
+      }
+    ],
+    "status": "failed",
+    "message": "반복 행동 계정의 활동량과 정상 반례를 비교하고 싶어",
+    "version": "discord-generation-v1",
+    "revision": 0,
+    "questions": [],
+    "run_token": "ce928d3d-3f0b-4c93-be86-11a9773473e1",
+    "error_code": "api_timeout",
+    "request_id": "f899961f-21ee-4a69-baa7-f0a0d0178299",
+    "planning_calls": 4,
+    "original_message": "반복 행동 계정의 활동량과 정상 반례를 비교하고 싶어",
+    "requested_difficulty": "intermediate",
+    "requested_help_level": null
+  },
+  "task": {
+    "title": "문제 생성 요청",
+    "difficulty": "intermediate"
+  },
+  "live_model": true
+}

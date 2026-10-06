@@ -9,6 +9,26 @@ def resolve(reference, base):
     parts = reference.split('.')
     return (base, parts[0]) if len(parts) == 1 else tuple(parts)
 
+
+def foreign_key_target(table_name, column_name, tables, seen=None):
+    """Preserve a declared FK only through exact derived grouping keys."""
+    seen = set() if seen is None else seen
+    identity = (table_name, column_name)
+    if identity in seen or table_name not in tables:
+        return None
+    seen.add(identity)
+    table = tables[table_name]
+    column = next((c for c in table.columns if c.name == column_name), None)
+    if column is None:
+        return None
+    gen = column.generator
+    if gen.kind == 'foreign_key':
+        return gen.table
+    source = getattr(table, 'derived_from', None)
+    if gen.kind == 'group_key' and source:
+        return foreign_key_target(source, gen.source_column, tables, seen)
+    return None
+
 def validate_metric(metric, tables):
     if metric.table not in tables:
         raise ValueError('unknown metric table')
@@ -18,8 +38,11 @@ def validate_metric(metric, tables):
         if source not in accessible or join.table not in tables or join.table in accessible:
             raise ValueError('metric join must reference a new table from an accessible source')
         column = next((c for c in tables[source].columns if c.name == name), None)
-        if not column or column.generator.kind != 'foreign_key' or column.generator.table != join.table:
-            raise ValueError('metric joins must follow declared foreign keys to primary ids (no fanout)')
+        if foreign_key_target(source, name, tables) != join.table:
+            kind = column.generator.kind if column else 'missing'
+            raise ValueError(f'{metric.name}: metric joins must follow declared foreign keys to primary ids (no fanout); '
+                f'{source}.{name} uses {kind}, so it cannot join {join.table}. '
+                'A derived group_key must inherit an actual source foreign_key; ordinary integers and aggregates cannot join.')
         accessible.add(join.table)
     def column(ref):
         table, name = resolve(ref, metric.table)
@@ -90,6 +113,14 @@ def reference(metric, tables, rows):
         result.append([*normalized_key,value])
     if metric.group_by and len(result) < 2:
         raise ValueError('comparison needs at least two observable groups/periods')
+    columns = [ref.replace('.','__') for ref in metric.group_by] + [metric.name]
+    return {'columns':columns,'rows':result}, compile_metric(metric,tables)
+
+
+def compile_metric(metric, tables):
+    """Compile the same validated metric without requiring private fixture rows."""
+    validate_metric(metric,tables)
+    base_conditions = metric.denominator_conditions if metric.operation == 'ratio' else metric.conditions
     def identifier(ref): return sql.Identifier(*resolve(ref,metric.table))
     def where(conditions):
         return sql.SQL(' AND ').join(sql.SQL('{} {} {}').format(identifier(c.column),sql.SQL(OPS[c.operator]),sql.Literal(c.value)) for c in conditions)
@@ -103,4 +134,4 @@ def reference(metric, tables, rows):
     query = sql.SQL('SELECT {} FROM {}').format(sql.SQL(', ').join(selections),from_clause)
     if base_conditions: query += sql.SQL(' WHERE {}').format(where(base_conditions))
     if metric.group_by: query += sql.SQL(' GROUP BY {}').format(sql.SQL(', ').join(identifier(ref) for ref in metric.group_by))
-    return {'columns':columns,'rows':result}, query.as_string()
+    return query.as_string()

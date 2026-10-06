@@ -12,6 +12,19 @@ def task_intro(document):
             '원본 SQL 노출: ' + document.get('sql_exposure', '미상'),
             '제공된 sql 코드 블록을 복사해 작성하고 해당 메시지에 답장하세요. 최대 1,900자.',
             '/help로 데이터 사전·평가 기준·개념 도움, /submit로 최종 평가를 요청하세요.'])
+    if task.get('generation_version'):
+        lines=['📌 '+task['title'],'',task['objective'],'',
+            '관측 기간: '+task['period']['description'], '시간 기준: '+task['timezone'],
+            '공개 표: '+', '.join(task['schema']),task['quality_information']['collection'],
+            '검산 범위: '+task['quality_information']['verification_scope'],
+            '/query로 자연어 조회, /help로 데이터 사전·평가 기준을 확인하세요.',
+            '/report로 보고를 작성하고 후속 질문에 답한 뒤 /submit로 제출하세요.']
+        source=task.get('source_case') or {}
+        if source.get('version') == 'discord-synthetic-v1':
+            lines.append('Gemma가 요청에 맞춰 만든 가상 분석 문제입니다. 실제 사례 검색은 수행하지 않았습니다.')
+        for item in source.get('sources',[]):
+            lines.append('사례 출처: '+item.get('title','')+' '+item.get('url',''))
+        return '\n'.join(lines)
     period = task['period']
     start = date.fromisoformat(period['start'])
     end = date.fromisoformat(period['end'])
@@ -80,7 +93,8 @@ def reference_info(task, kind):
 
 COMMAND_TIPS = {
     'question': ('본인의 과제 스레드에서 모르는 게임 분석 용어를 물어봅니다. 용어당 최대 3줄로 답하며 분석 상태를 유지합니다.', 'text: 질문 (필수). 최대 5개 용어·500자. 기본 용어는 API 없이 설명하고 그 밖의 질문은 일일 한도 내 모델 호출.', '/question text:ads와 organic이 뭐야?'),
-    'training': ('새 비공개 과제 스레드에서 훈련을 시작합니다. 부모 텍스트 채널에서 사용하세요.', 'practice: SQL 연습/분석 연습 (필수), topic: 주제, difficulty: 난이도, help_level: 도움 수준, source_session_id: 완료 분석 연결 (선택)', '/training practice:분석 연습 difficulty:중급'),
+    'training': ('요청한 내용으로 문제·연습 자료를 생성합니다. 부모 텍스트 채널에서 사용하세요.', 'practice: SQL/분석 연습 (필수), text: 연습할 내용 (필수, 1~4000자; SQL은 튜토리얼 완료율 지원), difficulty: 난이도 (기본 중급), help_level: 도움 수준 (선택)', '/training practice:analysis text:튜토리얼 완료율 하락을 분석하고 싶어 difficulty:intermediate'),
+    'retry': ('실패·중단된 출제를 저장된 계획으로 수동 재시도합니다. 재개만으로 모델을 호출하지 않습니다.', '과제 스레드에서 사용, 추가 입력 없음', '/retry'),
     'sqlrun': ('SQL 연습에서 코드 블록 답장 대신 풀이를 실행합니다.', 'text: sql 코드 블록 (필수, 설명 포함 최대 1,900자)', '/sqlrun text:```sql\nSELECT ...\n```'),
     'query': ('새 조회를 요청합니다. 기존 확인 질문에 답할 때는 답장·멘션 또는 /answer를 사용하세요.', 'text: 조회 요청 (필수)', '/query text:두 주의 채널별 튜토리얼 3단계 완료율을 비교해줘'),
     'answer': ('현재 봇 질문에 이어서 답합니다. 조회 조건·분석 이유·보고 후속 질문에 사용할 수 있습니다.', 'text: 답변 (필수)', '/answer text:과제 기간의 신규 가입 고유 사용자를 분모로 사용해주세요'),

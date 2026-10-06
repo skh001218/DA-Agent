@@ -1,0 +1,9 @@
+{
+  "status": "passed",
+  "derived_fk_constraints": 1,
+  "checks": [
+    "actual_rows",
+    "SQL/Python derived aggregation",
+    "SQL/Python grouped FK metric"
+  ]
+}

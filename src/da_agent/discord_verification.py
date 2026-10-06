@@ -100,6 +100,9 @@ def _ledger(task, report, executions, notes):
 
 
 def verify_report(task, report, executions):
+    if task.get('generation_version'):
+        return {'version':'generated-evidence-v1','status':'unverified','scope':'생성 과제의 임의 자연어 수치 주장은 자동 검산하지 않습니다.',
+            'checks':[],'errors':[],'notes':[{'reason':'공개 조회의 실제 저장 결과를 평가 근거로 제공하며 미검산을 학습자 오류로 만들지 않습니다.'}]}
     result = {'version': VERSION, 'status': 'not_checked', 'checks': [], 'errors': [], 'notes': [],
               'scope': '선택한 완전한 신규 가입자 완료율 근거의 명확한 두 주 수치·증감·구성 확정 주장. 다른 지표·모호한 표현은 미검산.'}
     ledger = _ledger(task, report, executions, result['notes'])
