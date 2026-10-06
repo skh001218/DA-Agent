@@ -91,7 +91,9 @@ class ResultForumPublisher:
             if message.author.id == self.client.user.id:
                 present.update(e.footer.text for e in message.embeds)
                 for index in range(len(submission['cards'])):
-                    if any(e.footer.text == legacy_card_marker(submission, index) for e in message.embeds):
+                    if any(e.footer.text == legacy_card_marker(submission, index) or
+                           (e.footer.text == card_marker(submission, index) and index == 0)
+                           for e in message.embeds):
                         await message.edit(embed=self.embed(submission, index, user), allowed_mentions=discord.AllowedMentions.none())
                         present.add(card_marker(submission, index))
         for index in range(len(submission['cards'])):

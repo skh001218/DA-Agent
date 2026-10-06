@@ -83,7 +83,10 @@ class DiscordTransport:
             raise DomainError("discord_session_forbidden", "자신의 과제 스레드에서 명령을 사용하세요.", 403)
         if str(session.get("thread_id")) != str(event.channel.id):
             raise DomainError("discord_wrong_thread", "이 과제의 전용 스레드에서 명령을 사용하세요.", 403)
-        await self.gateway.validate_thread(event.channel, event.user)
+        if session.get('state') == 'completed':
+            await self.gateway.validate_thread(event.channel, event.user, reopen=False)
+        else:
+            await self.gateway.validate_thread(event.channel, event.user)
         return session
 
     async def command(self, event, action, *, session_id=None, text="", payload=None,
@@ -97,6 +100,11 @@ class DiscordTransport:
                 from .discord_presentation import command_tip
                 for chunk in safe_chunks(command_tip(text)):
                     await self.gateway.reply(event, chunk)
+                return
+            if action == 'history':
+                messages = await self._call('history', owner, guild, (payload or {}).get('page', 1))
+                for message in messages:
+                    await self.gateway.reply(event, message)
                 return
             if action == "training":
                 await self.gateway.validate_parent(event.channel, event.user)
@@ -120,6 +128,19 @@ class DiscordTransport:
                             await self.gateway.reply(event, chunk)
                     return
                 session = response["session"]
+                submission = response.get('submission')
+                if submission and submission.get('completed'):
+                    publication = await self._call('result_publication', owner, session['session_id'], submission['evaluation_id'])
+                    if publication.get('status') == 'published':
+                        channel = await self.gateway.fetch_channel(int(session['thread_id'])) if session.get('thread_id') else None
+                        if channel is not None:
+                            await self.gateway.validate_thread(channel, event.user, reopen=False)
+                            parent = channel.parent
+                        else:
+                            parent = await self.gateway.fetch_channel(int(session['channel_id']))
+                            await self.gateway.validate_parent(parent, event.user)
+                        await self._publish_result(event, channel, submission, parent=parent)
+                        return
                 channel = await self._thread(event, session)
                 if session.get("state") in {"stopped", "interrupted"}:
                     await self._call("handle", owner, session["session_id"], event_id, "continue")
@@ -127,16 +148,20 @@ class DiscordTransport:
                 await self._emit(channel, response.get("messages", []), response.get('session'), response.get('tables', []))
                 if response.get('submission'):
                     await self._publish_result(event, channel, response['submission'])
+                    return
                 await self.gateway.reply(event, f"재개 공간: <#{channel.id}>")
                 return
             if action not in self.ACTIONS:
                 raise DomainError("discord_unknown_action", "지원하지 않는 명령입니다.")
             session = await self._session(event, session_id)
+            if session.get('state') == 'completed' and action != 'submit':
+                await self.gateway.reply(event, '완료된 과제입니다. /resume으로 결과·대화를 열람하거나 /history로 연습 기록을 확인하세요. 결과에 대한 의견은 포럼 댓글에서 이어가세요.')
+                return
             response = await self._call("handle", owner, session["session_id"], event_id, action, text=text, payload=payload)
-            await self._emit(event.channel, response.get("messages", []), response.get('session'), response.get('tables', []))
+            if not (response.get('submission') or {}).get('completed'):
+                await self._emit(event.channel, response.get("messages", []), response.get('session'), response.get('tables', []))
             if response.get('submission'):
                 await self._publish_result(event, event.channel, response['submission'])
-                await self.gateway.reply(event, '제출 결과 안내를 과제 스레드에 남겼습니다.')
                 return
             acknowledgement = {'clarification': '조회에 필요한 조건을 확인 중입니다. 스레드의 질문에 답해주세요.',
                                'error': '조회하지 못했습니다. 스레드의 오류 안내를 확인하세요.',
@@ -154,7 +179,7 @@ class DiscordTransport:
             if hasattr(self.gateway, 'finish'):
                 self.gateway.finish(event)
 
-    async def _publish_result(self, event, channel, submission):
+    async def _publish_result(self, event, channel, submission, *, parent=None):
         owner, sid, eid = str(event.user.id), submission['session_id'], submission['evaluation_id']
         if submission['owner_user_id'] != owner or submission['guild_id'] != str(event.guild.id):
             raise DomainError('result_owner', '자신의 서버·제출 결과만 게시할 수 있습니다.', 403)
@@ -164,7 +189,7 @@ class DiscordTransport:
             async def save(**changes):
                 return await self._call('save_result_publication', owner, sid, eid, **changes)
             try:
-                url = await self.gateway.publish_result(channel.parent, event.user, submission, publication, save)
+                url = await self.gateway.publish_result(parent or channel.parent, event.user, submission, publication, save)
             except Exception as exc:
                 code = exc.code if isinstance(exc, DomainError) else 'result_publish_failed'
                 try:
@@ -172,6 +197,9 @@ class DiscordTransport:
                 except Exception:
                     pass  # display failure cannot roll back the already saved evaluation
                 detail = exc.message if isinstance(exc, DomainError) else '포럼 연결·봇 권한을 확인한 뒤 /submit 또는 /resume로 게시를 다시 시도하세요.'
+                if channel is None:
+                    await self.gateway.reply(event, '제출·평가 기록은 보존했습니다. DA-Result 게시를 확인하지 못했습니다. ' + detail)
+                    return
                 await self._emit(channel, ['제출·평가 기록은 저장했지만 DA-Result 게시를 완료하지 못했습니다. ' + detail])
                 for index in range(len(submission['cards'])):
                     try:
@@ -179,9 +207,32 @@ class DiscordTransport:
                     except Exception:
                         card = submission['cards'][index]
                         await self._emit(channel, [card['title'] + '\n' + card['description']])
+                await self.gateway.reply(event, '제출 기록을 보존했습니다. 과제 스레드의 게시 오류 안내를 확인하세요.')
                 return
             # Trusted guild/post IDs produce this URL; preserve it as an actual link.
-            await self.gateway.send(channel, '정리된 제출 결과: [DA-Result 게시글 열기](' + url + ')\n게시글의 댓글로 결과에 대한 의견을 이어갈 수 있습니다.')
+            notice = '정리된 제출 결과: [DA-Result 게시글 열기](' + url + ')\n게시글의 댓글로 결과에 대한 의견을 이어갈 수 있습니다.'
+            if not submission.get('completed'):
+                await self.gateway.send(channel, notice)
+                await self.gateway.reply(event, notice + '\n평가 보류 상태이므로 과제 스레드를 보존합니다.')
+                return
+            if channel is None:
+                await self.gateway.reply(event, notice + '\n완료된 과제입니다. 과제 스레드를 다시 만들지 않습니다.')
+                return
+            conversation = f'https://discord.com/channels/{event.guild.id}/{channel.id}'
+            notice += '\n과거 대화: [과제 스레드 열람](' + conversation + ')'
+            # A completed thread is read-only, including on /resume and /submit replay.
+            try:
+                latest = await self._call('get_session', owner, sid)
+                if (str(channel.id) != str(latest.get('thread_id')) or latest.get('state') != 'completed'
+                        or latest['evaluations'][-1]['id'] != eid):
+                    raise DomainError('result_cleanup_thread', '과제 스레드 연결을 확인해주세요.')
+                if not getattr(channel, 'archived', False):
+                    await self.gateway.send(channel, notice + '\n완료된 과제의 대화를 보관합니다. 의견은 결과 포럼에서 이어가세요.')
+                    await self.gateway.send(parent or channel.parent, notice + '\n과제 ID: ' + sid)
+                await self.gateway.archive_task_thread(channel, event.user)
+                await self.gateway.reply(event, notice + '\n완료된 과제 스레드는 보관·잠금 상태로 유지합니다.')
+            except Exception:
+                await self.gateway.reply(event, notice + '\n결과는 게시했지만 과제 스레드 보관 안내를 완료하지 못했습니다. 기록은 보존됩니다. 봇의 스레드 관리·발언 권한과 연결 상태를 확인한 뒤 /resume으로 재시도하세요.')
 
     async def _thread(self, event, session):
         sid = session['session_id']
@@ -202,7 +253,8 @@ class DiscordTransport:
                 return channel
         # Missing/deleted thread: recover only into a validated private parent.
         await self.gateway.validate_parent(event.channel, event.user)
-        channel = await self.gateway.create_private_thread(event.channel, event.user, session["session_id"])
+        session = await self._call('reserve_thread_name', str(event.user.id), session['session_id'])
+        channel = await self.gateway.create_private_thread(event.channel, event.user, session["session_id"], name=session['thread_name'])
         await self._call("bind_thread", str(event.user.id), session["session_id"], str(channel.id))
         return channel
 
@@ -218,6 +270,8 @@ class DiscordTransport:
             session = await self._session(event)
         except Exception:
             return  # unrelated/other-owner messages must never trigger a model call
+        if session.get('state') == 'completed':
+            return  # Archived training remains read-only; discussion belongs in the result forum.
         text = self.gateway.message_text(message) if hasattr(self.gateway, 'message_text') else message.content
         reference = getattr(message, 'reference', None)
         reply_id = getattr(reference, 'message_id', None)

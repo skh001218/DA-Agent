@@ -104,6 +104,24 @@ class DiscordStore:
             raise DomainError('usage_limit', '오늘의 API 호출 한도에 도달했습니다. 기존 기록은 계속 열람할 수 있습니다.', 429)
         return row[0]
 
+    def reserve_thread_name(self, user_id, session_id):
+        from .discord_thread_titles import reserve_title
+        snapshot = self.get(user_id, session_id)
+        scope = f"thread-name:{user_id}:{snapshot['guild_id']}:{snapshot['channel_id']}"
+        with self.connect() as conn:
+            # Lock the whole naming scope before locking the individual session.
+            conn.execute('SELECT pg_advisory_xact_lock(hashtextextended(%s, 0))', (scope,))
+            row = conn.execute('SELECT owner_id,document FROM discord_records.sessions WHERE session_id=%s FOR UPDATE', (session_id,)).fetchone()
+            if not row or row[0] != str(user_id):
+                raise DomainError('forbidden', '자신의 훈련 기록만 사용할 수 있습니다.', 403)
+            document = copy.deepcopy(row[1])
+            previous = [r[0] for r in conn.execute('''SELECT document FROM discord_records.sessions
+                WHERE owner_id=%s AND guild_id=%s AND document->>'channel_id'=%s''',
+                (str(user_id), document['guild_id'], document['channel_id']))]
+            reserve_title(document, previous)
+            conn.execute('UPDATE discord_records.sessions SET document=%s WHERE session_id=%s', (Jsonb(document), session_id))
+        return document
+
 
 def record_id():
     return str(uuid.uuid4())
