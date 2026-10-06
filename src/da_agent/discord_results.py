@@ -13,7 +13,9 @@ def submission_summary(entry):
     result = entry['result']
     if result.get('held'):
         return '제출·평가 기록을 저장했습니다. 평가 보류: ' + str(result.get('reason') or '판정 가능한 근거를 확인해야 합니다.')
-    return f"제출·평가 기록을 저장했습니다. 평가 점수: {result.get('total', '미정')}/100 · 사람 검토 대기."
+    errors = result.get('arithmetic_verification', {}).get('errors', [])
+    warning = f' 계산 불일치 {len(errors)}건 · 수정 필요.' if errors else ''
+    return f"제출·평가 기록을 저장했습니다. 평가 점수: {result.get('total', '미정')}/100 · 사람 검토 대기.{warning} /report로 수정 보고를 시작하고 새 후속 답변 뒤 재제출할 수 있습니다."
 
 
 def build_submission(document, evaluation_id=None):
@@ -53,12 +55,91 @@ def build_submission(document, evaluation_id=None):
     answers = report.get('followup_answers', [])
     if answers:
         add('업무 담당자 후속 질문에 대한 답변', '\n\n'.join(f"답변 {i}\n{a.get('text', '')}" for i, a in enumerate(answers, 1)))
+    profile=result.get('quality_profile')
+    if profile:
+        lines=['문제 유형 반복 검증: '+('통과' if profile['status']=='eligible' else '미통과 · 점수 보류'),
+               '공개 문제 정의·난이도·모델·평가 코드가 일치하는 검증을 요구합니다.',
+               '분석 피드백은 모델의 관측이며 사람 검토 완료를 뜻하지 않습니다.']
+        lines.extend(profile.get('reasons',[]))
+        if result.get('individual_held_reason'): lines.append('개별 평가 보류 이유: '+result['individual_held_reason'])
+        if profile['status']!='eligible': lines.append('검증이 통과할 때까지 같은 보고의 /submit 재시도는 추가 모델 호출 없이 저장된 피드백을 보여줍니다.')
+        add('문제 유형 품질 상태','\n'.join(lines))
+    quality = result.get('quality_validation')
+    if quality:
+        lines = ['감점 근거 검증: ' + ('통과' if quality['status'] == 'passed' else '미통과 · 점수 보류'),
+                 '검증 정책: ' + quality['version'], '검증 범위: 공개 기준·인용·중복·확인된 산술 오류 연결',
+                 '모든 의미적 판단의 정답이나 사람 검토 완료를 뜻하지 않습니다.']
+        repair = result.get('response_repair', {})
+        repair_status={'failed':'재검증 실패','revalidated':'재검증 통과','not_attempted':'미시도'}
+        lines.append('자동 수정: ' + str(repair.get('attempts', 0)) + '/1회 · ' + repair_status.get(repair.get('status'),str(repair.get('status','불필요'))))
+        failure=result.get('provider_failure',{})
+        if failure:
+            reasons={'api_rate_limited':'호출 한도 또는 요청 빈도 제한','api_unavailable':'공급자 응답 불가',
+                     'api_key_invalid':'공급자 인증 실패','api_permission_denied':'공급자 접근 권한 부족'}
+            lines.append('공급자 실패: '+reasons.get(failure.get('reason'),'평가 호출 실패'))
+            lines.append('공급자 상태를 확인한 뒤 재시도하세요. 문제 유형의 검증 보류가 함께 있으면 검증 통과 후 새 평가가 가능합니다.')
+        for issue in quality.get('issues', []):
+            lines.append(issue['criterion_id'] + ': ' + issue['detail'])
+        if result.get('held') and quality['status']!='passed':
+            lines.append('평가 응답을 확인하지 못한 시스템 보류입니다. 학습자0점이 아닙니다. 근거를 확인한 뒤 /submit로 재시도하세요.')
+        elif result.get('profile_score_hold'):
+            lines.append('개별 감점 근거 검사는 통과했지만 문제 유형의 반복 품질 검증이 미통과하여 점수를 보류합니다.')
+        add('평가 신뢰성 확인', '\n'.join(lines))
+    verification = result.get('arithmetic_verification')
+    if verification:
+        status = {'errors_found': '계산 불일치 확인', 'checked_supported_claims': '지원하는 명확한 주장 검산', 'not_checked': '검산할 근거 또는 지원 형식 부족'}
+        lines = [status.get(verification['status'], verification['status']), verification['scope'],
+                 '검산 정책: ' + verification['version'],
+                 '확인한 주장: ' + str(len(verification['checks'])) + '개 · 확인된 오류: ' + str(len(verification['errors'])) + '개',
+                 '미검산 표현은 정답 확인을 의미하지 않습니다.']
+        for error in verification['errors']:
+            lines.extend(['', '보고 주장: ' + error['claim'], '검산 근거: ' + error['reason'],
+                          '다음 수정: ' + error['improvement'], '저장 조회 근거: ' + ', '.join(error['evidence_refs'])])
+        for note in verification['notes']:
+            lines.append('확인 한계: ' + note['reason'])
+        add('실행 근거 검산', '\n'.join(lines))
+    comparison = entry.get('revision_comparison')
+    if comparison:
+        lines = [f"보고 v{comparison['previous_report_version']} → v{comparison['report_version']}",
+                 '이전 평가 ID: ' + comparison['previous_evaluation_id'], comparison['note']]
+        lines.append(f"점수: {comparison.get('previous_total') if comparison.get('previous_total') is not None else '보류'} → {comparison.get('total') if comparison.get('total') is not None else '보류'}")
+        for change in comparison['criteria']:
+            label = criteria.get(change['id'], {}).get('name', change['id'])
+            before = '보류' if change['before'] is None else str(change['before'])
+            after = '보류' if change['after'] is None else str(change['after'])
+            lines.append(f'{label}: {before} → {after}')
+        lines.append(f"확인된 검산 오류: {comparison['errors_before'] if comparison['errors_before'] is not None else '이전 미기록'} → {comparison['errors_after']}")
+        lines.append('검산 기준이 다른 경우 점수·오류 수를 같은 기준의 개선으로 단정하지 않습니다.')
+        add('이전 제출과 수정 비교', '\n'.join(lines))
+    feedback = entry.get('revision_feedback')
+    if feedback:
+        lines = [feedback['note'], '같은 정책·근거로 재검산한 주장만 해결로 표시합니다.']
+        lines.append('같은 계산 결함을 반복한 여러 문장은 하나의 오류로 묶어 비교합니다.')
+        for key, label in (('resolved','해결한 오류'),('remaining','남은 오류'),('new','새로 확인한 오류')):
+            values = feedback[key]
+            lines.append(label + ': ' + str(len(values)) + '건')
+            for error in values:
+                lines.extend(['- ' + error['claim'], '  검산: ' + error['reason']])
+        lines.append('추가 확인: ' + (' / '.join(feedback['unverified']) if feedback['unverified'] else '지원하는 검산 범위 안에서 별도 미확인 항목 없음'))
+        if feedback['remaining'] or feedback['new']:
+            action = '확인된 오류의 주장·계산·결론을 수정하세요.'
+        elif feedback['unverified']:
+            action = '미확인 주장의 분자·분모·기간과 실행 근거를 보완하세요.'
+        elif result.get('profile_score_hold'):
+            action = '지원하는 검산 범위의 오류 수정은 확인했습니다. 유형의 반복 품질 검증 통과 후 /submit로 다시 평가하세요.'
+        else:
+            action = '지원하는 검산 범위의 오류 수정은 확인했습니다. 분석의 적용 한계와 다음 확인 계획을 검토하세요.'
+        lines.append('다음 행동: ' + action)
+        add('수정 내용 피드백', '\n'.join(lines))
     for row in result.get('criteria', []):
         criterion = criteria.get(row['id'], {'name': row['id'], 'weight': 0})
         grade = row.get('grade')
-        status = '판정 보류' if grade is None else f'등급 {grade}/4'
+        status = '판정 보류' if grade is None else f"{'모델 관측 등급' if result.get('profile_score_hold') else '등급'} {grade}/4"
+        improvement=str(row.get('improvement') or '보류 이유를 확인하고 해결된 뒤 다시 평가하세요.')
+        if grade is None and result.get('provider_failure'):
+            improvement='공급자 상태를 확인한 뒤 다시 평가하세요. 공급자 실패를 학습자 근거 부족으로 감점하지 않습니다.'
         body = ['평가 근거', str(row.get('reason') or row.get('held_reason') or result.get('reason') or '근거 확인 필요'),
-                '', '다음 개선 행동', str(row.get('improvement') or '판정 가능한 근거를 보완한 뒤 다시 평가하세요.')]
+                '', '다음 개선 행동', improvement]
         if row.get('evidence_refs'):
             body.extend(['', '인용한 근거'])
             for ref in row['evidence_refs']:
@@ -68,7 +149,9 @@ def build_submission(document, evaluation_id=None):
     weak = (result.get('recommendation') or {})
     if isinstance(weak, dict):
         names = [criteria[k]['name'] for k in weak.get('practice_criteria', []) if k in criteria]
-        add('다음 연습 제안', '우선 연습: ' + (' · '.join(names) if names else ('평가에 필요한 근거 보완' if result.get('held') else '현재 기준을 다른 과제에서도 적용하기')))
+        fallback = ('유형의 반복 품질 검증 대기 · 현재 분석 근거와 적용 한계 검토' if result.get('profile_score_hold') else
+                    '평가에 필요한 근거 보완' if result.get('held') else '현재 기준을 다른 과제에서도 적용하기')
+        add('다음 연습 제안', '우선 연습: ' + (' · '.join(names) if names else fallback))
     elif isinstance(weak, str):
         add('다음 연습 제안', weak)
     growth = entry.get('growth') or growth_observation(document.get('learning', []))

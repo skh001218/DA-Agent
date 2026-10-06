@@ -4,12 +4,14 @@ import os
 from types import SimpleNamespace
 from unittest.mock import Mock
 import uuid
+from copy import deepcopy
 
 import pytest
 
 from da_agent.discord_store import DiscordStore
 from da_agent.discord_service import DiscordTrainingService, format_result
 from da_agent.errors import DomainError
+from discord_test_quality import ScriptedQualityRegistry
 
 
 @pytest.fixture
@@ -26,7 +28,8 @@ def store():
 def service(store):
     settings = SimpleNamespace(daily_call_limit=2, max_rows=1000, max_bytes=1048576, query_timeout_ms=5000)
     return DiscordTrainingService(store, SimpleNamespace(runner=Mock()), Mock(), settings,
-        dataset_factory=lambda settings, task: {'schema_name': 'discord_test_fixture', 'data_version': task['data_version']})
+        dataset_factory=lambda settings, task: {'schema_name': 'discord_test_fixture', 'data_version': task['data_version']},
+        quality_registry=ScriptedQualityRegistry())
 
 
 def start(service, owner=None):
@@ -79,6 +82,42 @@ def test_duplicate_and_restart_restore_report_followup_and_stop(service):
     assert restarted.get_session(owner, sid)['state'] == 'reporting'
 
 
+def test_completed_report_revision_preserves_previous_review_and_requires_new_followup(service, monkeypatch):
+    reviewed_messages = []
+    def evaluate(provider, task, report, *args):
+        reviewed_messages.append(deepcopy(args[0]))
+        return {'held': False, 'total': 75, 'rubric_version':'v1',
+                'criteria':[{'id':c['id'],'grade':3,'reason':'근거','improvement':'다음 비교','evidence_refs':[f"report:{report['version']}"]} for c in task['rubric']['criteria']]}
+    monkeypatch.setattr('da_agent.discord_education.evaluate_report', evaluate)
+    owner, session = start(service)
+    sid = session['session_id']
+    service.handle(owner, sid, uuid.uuid4().hex, 'report', '최초 보고')
+    service.handle(owner, sid, uuid.uuid4().hex, 'followup', '최초 검증 계획')
+    first = service.handle(owner, sid, uuid.uuid4().hex, 'submit')['session']
+    old_reports, old_reviews = deepcopy(first['reports']), deepcopy(first['evaluations'])
+    assert first['state'] == 'completed'
+    blank = service.handle(owner, sid, uuid.uuid4().hex, 'report', ' ')['session']
+    assert blank['state'] == 'completed' and len(blank['reports']) == 1
+    revised = service.handle(owner, sid, uuid.uuid4().hex, 'report', '수정 보고')['session']
+    assert revised['state'] == 'followup' and revised['reports'][1]['version'] == 2
+    assert revised['reports'][:1] == old_reports and revised['evaluations'] == old_reviews
+    blocked = service.handle(owner, sid, uuid.uuid4().hex, 'submit')
+    assert '후속 질문' in blocked['messages'][0]
+    service.handle(owner, sid, uuid.uuid4().hex, 'followup', '새 검증 계획')
+    final = service.handle(owner, sid, uuid.uuid4().hex, 'submit')['session']
+    assert len(final['evaluations']) == 2 and final['state'] == 'completed'
+    assert final['evaluations'][:1] == old_reviews
+    assert not any(m.get('action') == 'report' for m in reviewed_messages[-1])
+    assert not any(m.get('text') == '최초 검증 계획' for m in reviewed_messages[-1])
+    assert any(m.get('text') == '새 검증 계획' for m in reviewed_messages[-1])
+    assert final['evaluations'][1]['revision_comparison']['previous_evaluation_id'] == old_reviews[0]['id']
+    again = service.handle(owner, sid, uuid.uuid4().hex, 'submit')['session']
+    assert len(again['evaluations']) == 2
+    assert len(reviewed_messages) == 2
+    restored = service.resume(owner, 'guild', sid)['session']
+    assert restored['reports'] == final['reports'] and restored['evaluations'] == final['evaluations']
+
+
 def test_event_claim_atomic_across_workers_and_uncertain_after_crash(store):
     owner, event = uuid.uuid4().hex, uuid.uuid4().hex
     def claim(_):
@@ -91,6 +130,28 @@ def test_event_claim_atomic_across_workers_and_uncertain_after_crash(store):
     assert restarted.claim_event(event, owner)['event_state'] == 'uncertain'
     with pytest.raises(DomainError):
         restarted.claim_event(event, 'other')
+
+
+def test_unapproved_profile_holds_score_caches_feedback_and_preserves_history(service,monkeypatch):
+    from da_agent.evaluation_registry import QualityRegistry
+    service.quality_registry=QualityRegistry('/tmp/nonexistent-spec033-profile')
+    reviews=[]
+    def evaluate(provider,task,report,*args):
+        reviews.append(report['version'])
+        return dict(held=False,total=100,criteria=[dict(id=c['id'],grade=4,reason='공개 근거 피드백',improvement='다음 확인',evidence_refs=[f"report:{report['version']}"]) for c in task['rubric']['criteria']])
+    monkeypatch.setattr('da_agent.discord_education.evaluate_report',evaluate)
+    owner,doc=start(service); sid=doc['session_id']
+    service.handle(owner,sid,uuid.uuid4().hex,'report','보고')
+    service.handle(owner,sid,uuid.uuid4().hex,'followup','추가 검증')
+    first=service.handle(owner,sid,uuid.uuid4().hex,'submit')['session']
+    old=deepcopy(first['evaluations'][0])
+    assert first['state']=='reporting' and old['result']['total'] is None
+    assert old['result']['criteria'][0]['grade']==4
+    again=service.handle(owner,sid,uuid.uuid4().hex,'submit')['session']
+    assert len(reviews)==1 and len(again['evaluations'])==1
+    service.quality_registry=ScriptedQualityRegistry()
+    final=service.handle(owner,sid,uuid.uuid4().hex,'submit')['session']
+    assert final['state']=='completed' and len(reviews)==2 and final['evaluations'][0]==old
 
 
 def test_atomic_user_daily_limit_does_not_block_record_read(service):

@@ -1,0 +1,58 @@
+{
+  "identical_task": true,
+  "identical_data": true,
+  "checks": [
+    {
+      "level": "beginner",
+      "query": 1,
+      "canonical_matches_saved": true,
+      "status": "success",
+      "complete": true,
+      "truncated": false
+    },
+    {
+      "level": "beginner",
+      "query": 2,
+      "canonical_matches_saved": true,
+      "status": "success",
+      "complete": true,
+      "truncated": false
+    },
+    {
+      "level": "intermediate",
+      "query": 1,
+      "canonical_matches_saved": true,
+      "status": "success",
+      "complete": true,
+      "truncated": false
+    },
+    {
+      "level": "intermediate",
+      "query": 2,
+      "canonical_matches_saved": true,
+      "status": "success",
+      "complete": true,
+      "truncated": false
+    },
+    {
+      "level": "advanced",
+      "query": 1,
+      "canonical_matches_saved": true,
+      "status": "success",
+      "complete": true,
+      "truncated": false
+    },
+    {
+      "level": "advanced",
+      "query": 2,
+      "canonical_matches_saved": true,
+      "status": "success",
+      "complete": true,
+      "truncated": false
+    }
+  ],
+  "automated_tests": {
+    "passed": 66,
+    "skipped": 15
+  }
+}

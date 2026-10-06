@@ -1,0 +1,2422 @@
+{
+  "model": "gemma-4-26b-a4b-it",
+  "calls": [
+    {
+      "state": "completed",
+      "usage": {
+        "input_tokens": 1537,
+        "output_tokens": 187,
+        "total_tokens": 1724
+      },
+      "model": "gemma-4-26b-a4b-it",
+      "text": "{\"state\": \"ready\", \"conditions\": {\"metric\": \"tutorial_rate\", \"start\": \"2026-09-01\", \"end\": \"2026-09-08\", \"event_start\": \"2026-09-01\", \"event_end\": \"2026-10-01\", \"timezone\": \"UTC\", \"period_basis\": \"explicit_dates\", \"unit\": \"user\", \"group_by\": \"channel\", \"filters\": {}, \"step\": 3, \"numerator\": \"completed_users\", \"denominator\": \"signup_users\"}, \"reuse_previous\": false}"
+    },
+    {
+      "state": "completed",
+      "usage": {
+        "input_tokens": 1663,
+        "output_tokens": 123,
+        "total_tokens": 1786
+      },
+      "model": "gemma-4-26b-a4b-it",
+      "text": "{\"state\": \"ready\", \"conditions\": {\"metric\": \"tutorial_rate\", \"start\": \"2026-09-08\", \"end\": \"2026-09-15\", \"timezone\": \"UTC\", \"period_basis\": \"explicit_dates\", \"unit\": \"user\", \"group_by\": \"channel\", \"filters\": {}, \"step\": 3, \"event_start\": \"2026-09-01\", \"event_end\": \"2026-10-01\", \"numerator\": \"completed_users\", \"denominator\": \"signup_users\"}, \"reuse_previous\": false}"
+    },
+    {
+      "state": "completed",
+      "usage": {
+        "input_tokens": 9197,
+        "output_tokens": 841,
+        "total_tokens": 10038
+      },
+      "model": "gemma-4-26b-a4b-it",
+      "text": "{\"criteria\": [{\"id\": \"problem_definition\", \"name\": \"문제 정의\", \"grade\": 4, \"evidence_refs\": [\"report:1\"], \"reason\": \"업무 목표, 대상(신규 가입자), 기간(9/1~7, 9/8~14), 지표 정의(분모/분자)를 명확히 연결하여 기술하였습니다.\", \"improvement\": \"\"}, {\"id\": \"metric_design\", \"name\": \"지표·비교 설계\", \"grade\": 4, \"evidence_refs\": [\"report:1\", \"execution:401bae9f-232b-4880-b527-88db07d67901\", \"execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6\"], \"reason\": \"분모를 신규 가입 고유 사용자, 분자를 3단계 완료 고유 사용자로 정의하였으며, 재도전 중복 제거 및 관측 종료일 기준을 적절히 반영하였습니다.\", \"improvement\": \"\"}, {\"id\": \"hypothesis_review\", \"name\": \"가설·대안 검토\", \"grade\": 2, \"evidence_refs\": [\"report:1\", \"arithmetic_verification\"], \"reason\": \"유입 구성 변화가 전체 하락을 설명한다는 가설을 제시했으나, 검산 결과 1주차 채널 비율을 유지한 채 2주차 구성만 적용했을 때의 기대값은 80%이므로, 실제 2주차 수치인 70%를 구성 변화만으로 완전히 설명할 수 없다는 점에서 논리적 결함이 있습니다.\", \"improvement\": \"구성 변화(Mix effect)가 전체 지표 변화에 미치는 영향을 다시 계산하여, 구성 변화로 설명 가능한 부분과 채널별 자체 완료율 변화(Rate effect)로 인한 부분을 분리하여 검토하십시오.\"}, {\"id\": \"evidence_interpretation\", \"name\": \"근거 해석\", \"grade\": 1, \"evidence_refs\": [\"report:1\", \"arithmetic_verification\"], \"reason\": \"구성 변화만으로 하락을 완전히 설명한다는 결론을 내렸으나, 이는 산술적 검증 결과와 일치하지 않는 잘못된 해석입니다. (구성 변화 시 기대치는 80%이나 실제는 70%임)\", \"improvement\": \"제시된 데이터와 계산된 수치 사이의 모순을 확인하고, 구성 효과와 채널별 효과를 구분하여 정확하게 해석하십시오.\"}, {\"id\": \"decision_limits\", \"name\": \"한계·의사결정\", \"grade\": 4, \"evidence_refs\": [\"report:1\", \"message:7646ea17-6b0d-4418-a080-2166e8e6b51b\"], \"reason\": \"관측 데이터가 인과를 증명할 수 없음을 명시하였고, 표본 크기의 한계와 수집 상태(기기/버전 로그) 확인을 우선순위로 제안하여 불확실성에 대응하였습니다.\", \"improvement\": \"\"}]}"
+    },
+    {
+      "state": "completed",
+      "usage": {
+        "input_tokens": 7166,
+        "output_tokens": 909,
+        "total_tokens": 8075
+      },
+      "model": "gemma-4-26b-a4b-it",
+      "text": "{\"criteria\": [{\"id\": \"problem_definition\", \"name\": \"문제 정의\", \"grade\": 4, \"evidence_refs\": [\"report:1\"], \"reason\": \"업무 목표, 대상(신규 가입자), 기간(9/1~7, 9/8~14), 지표 정의(분모/분자)를 명확히 연결하여 기술하였습니다.\", \"improvement\": \"공개 상위 조건 충족으로 판정됐습니다. 다음 과제에서 추가 근거와 적용 한계를 다시 확인하세요.\"}, {\"id\": \"metric_design\", \"name\": \"지표·비교 설계\", \"grade\": 4, \"evidence_refs\": [\"report:1\", \"execution:401bae9f-232b-4880-b527-88db07d67901\", \"execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6\"], \"reason\": \"분모를 신규 가입 고유 사용자, 분자를 3단계 완료 고유 사용자로 정의하였으며, 재도전 중복 제거 및 관측 종료일 기준을 적절히 반영하였습니다.\", \"improvement\": \"공개 상위 조건 충족으로 판정됐습니다. 다음 과제에서 추가 근거와 적용 한계를 다시 확인하세요.\"}, {\"id\": \"hypothesis_review\", \"name\": \"가설·대안 검토\", \"grade\": 2, \"evidence_refs\": [\"report:1\"], \"reason\": \"유입 구성 변화가 전체 하락을 설명한다는 가설을 제시했으나, 검산 결과 1주차 채널 비율을 유지한 채 2주차 구성만 적용했을 때의 기대값은 80%이므로, 실제 2주차 수치인 70%를 구성 변화만으로 완전히 설명할 수 없다는 점에서 논리적 결함이 있습니다.\", \"improvement\": \"구성 변화(Mix effect)가 전체 지표 변화에 미치는 영향을 다시 계산하여, 구성 변화로 설명 가능한 부분과 채널별 자체 완료율 변화(Rate effect)로 인한 부분을 분리하여 검토하십시오.\"}, {\"id\": \"evidence_interpretation\", \"name\": \"근거 해석\", \"grade\": 1, \"evidence_refs\": [\"report:1\"], \"reason\": \"구성 변화만으로 하락을 완전히 설명한다는 결론을 내렸으나, 이는 산술적 검증 결과와 일치하지 않는 잘못된 해석입니다. (구성 변화 시 기대치는 80%이나 실제는 70%임)\", \"improvement\": \"제시된 데이터와 계산된 수치 사이의 모순을 확인하고, 구성 효과와 채널별 효과를 구분하여 정확하게 해석하십시오.\"}, {\"id\": \"decision_limits\", \"name\": \"한계·의사결정\", \"grade\": 4, \"evidence_refs\": [\"report:1\", \"message:7646ea17-6b0d-4418-a080-2166e8e6b51b\"], \"reason\": \"관측 데이터가 인과를 증명할 수 없음을 명시하였고, 표본 크기의 한계와 수집 상태(기기/버전 로그) 확인을 우선순위로 제안하여 불확실성에 대응하였습니다.\", \"improvement\": \"공개 상위 조건 충족으로 판정됐습니다. 다음 과제에서 추가 근거와 적용 한계를 다시 확인하세요.\"}]}"
+    },
+    {
+      "state": "completed",
+      "usage": {
+        "input_tokens": 9769,
+        "output_tokens": 659,
+        "total_tokens": 10428
+      },
+      "model": "gemma-4-26b-a4b-it",
+      "text": "{\"criteria\": [{\"id\": \"problem_definition\", \"grade\": 4, \"evidence_refs\": [\"report:2\"], \"reason\": \"업무 목표, 분석 대상(두 주 신규 가입자), 기간(9월 1~14일 및 관측 종료일), 질문(완료율 변화 및 대응)을 모두 정확히 정의하였습니다.\", \"improvement\": \"\"}, {\"id\": \"metric_design\", \"grade\": 4, \"evidence_refs\": [\"report:2\", \"execution:401bae9f-232b-4880-b527-88db07d67901\", \"execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6\"], \"reason\": \"분모(신규 가입 고유 사용자)와 분자(3단계 완료 고유 사용자)를 명확히 구분하였으며, 재도전 중복을 제거하는 등 지표 설계 요구사항을 완벽히 충족하였습니다.\", \"improvement\": \"\"}, {\"id\": \"hypothesis_review\", \"grade\": 4, \"evidence_refs\": [\"report:2\", \"arithmetic_verification\"], \"reason\": \"구성 효과(Composition effect)를 계산하여 전체 하락이 유입 채널 비중 변화만으로는 설명되지 않음을 논리적으로 검증하였고, 이를 통해 기존 가설(구성 변화)을 기각하였습니다.\", \"improvement\": \"\"}, {\"id\": \"evidence_interpretation\", \"grade\": 4, \"evidence_refs\": [\"report:2\"], \"reason\": \"관측 결과가 인과를 증명하지 않는다는 점을 명시하였고, 데이터의 한계(로그 누락 가능성, 표본 크기)와 사실(수치적 변화)을 명확히 구분하여 해석하였습니다.\", \"improvement\": \"\"}, {\"id\": \"decision_limits\", \"grade\": 4, \"evidence_refs\": [\"report:2\", \"message:50e571ff-63f7-4ed7-a5bd-6dd106c4278d\"], \"reason\": \"불확실성을 인정하고, 단순한 추측 대신 추가 로그 확인과 표본 검증, 그리고 무작위 실험(RCT)을 통한 검증이라는 구체적이고 타당한 후속 조치를 제안하였습니다.\", \"improvement\": \"\"}]}"
+    },
+    {
+      "state": "completed",
+      "usage": {
+        "input_tokens": 8269,
+        "output_tokens": 896,
+        "total_tokens": 9165
+      },
+      "model": "gemma-4-26b-a4b-it",
+      "text": "{\"criteria\": [{\"id\": \"problem_definition\", \"name\": \"문제 정의\", \"weight\": 20, \"grade\": 4, \"reason\": \"업무 목표, 분석 대상(두 주 신규 가입자), 기간(9월 1~14일 및 관측 종료일), 질문(완료율 변화 및 대응)을 모두 정확히 정의하였습니다.\", \"improvement\": \"공개 상위 조건 충족으로 판정됐습니다. 다음 과제에서 추가 근거와 적용 한계를 다시 확인하세요.\", \"evidence_refs\": [\"report:2\"]}, {\"id\": \"metric_design\", \"name\": \"지표·비교 설계\", \"weight\": 25, \"grade\": 4, \"reason\": \"분모(신규 가입 고유 사용자)와 분자(3단계 완료 고유 사용자)를 명확히 구분하였으며, 재도전 중복을 제거하는 등 지표 설계 요구사항을 완벽히 충족하였습니다.\", \"improvement\": \"공개 상위 조건 충족으로 판정됐습니다. 다음 과제에서 추가 근거와 적용 한계를 다시 확인하세요.\", \"evidence_refs\": [\"report:2\", \"execution:401bae9f-232b-4880-b527-88db07d67901\", \"execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6\"]}, {\"id\": \"hypothesis_review\", \"name\": \"가설·대안 검토\", \"weight\": 20, \"grade\": 4, \"reason\": \"구성 효과(Composition effect)를 계산하여 전체 하락이 유입 채널 비중 변화만으로는 설명되지 않음을 논리적으로 검증하였고, 이를 통해 기존 가설(구성 변화)을 기각하였습니다.\", \"improvement\": \"공개 상위 조건 충족으로 판정됐습니다. 다음 과제에서 추가 근거와 적용 한계를 다시 확인하세요.\", \"evidence_refs\": [\"report:2\"]}, {\"id\": \"evidence_interpretation\", \"name\": \"근거 해석\", \"weight\": 20, \"grade\": 4, \"reason\": \"관측 결과가 인과를 증명하지 않는다는 점을 명시하였고, 데이터의 한계(로그 누락 가능성, 표본 크기)와 사실(수치적 변화)을 명확히 구분하여 해석하였습니다.\", \"improvement\": \"공개 상위 조건 충족으로 판정됐습니다. 다음 과제에서 추가 근거와 적용 한계를 다시 확인하세요.\", \"evidence_refs\": [\"report:2\"]}, {\"id\": \"decision_limits\", \"name\": \"한계·의사결정\", \"weight\": 15, \"grade\": 4, \"reason\": \"불확실성을 인정하고, 단순한 추측 대신 추가 로그 확인과 표본 검증, 그리고 무작위 실험(RCT)을 통한 검증이라는 구체적이고 타당한 후속 조치를 제안하였습니다.\", \"improvement\": \"공개 상위 조건 충족으로 판정됐습니다. 다음 과제에서 추가 근거와 적용 한계를 다시 확인하세요.\", \"evidence_refs\": [\"report:2\", \"message:50e571ff-63f7-4ed7-a5bd-6dd106c4278d\"]}]}"
+    }
+  ],
+  "transcript": [
+    {
+      "action": "query",
+      "messages": [
+        "실행 성공 · ID 401bae9f-232b-4880-b527-88db07d67901\n확정 계산 기준\n• 지표: 튜토리얼 완료율\n• 시작일: 2026-09-01\n• 종료일: 2026-09-08\n• 이벤트 시작일: 2026-09-01\n• 이벤트 종료일 (제외): 2026-10-01\n• 시간 기준: UTC\n• 기간 기준: 명시한 날짜\n• 단위: 고유 사용자\n• 그룹: 유입 채널\n• 필터: \n• 단계: 3\n• 분자: 완료한 고유 사용자\n• 분모: 가입한 고유 사용자\n조회 결과는 첨부 표에서 확인하세요. 표를 누르면 확대할 수 있습니다.\n읽기 전용 · 실행 제한 5초 · 데이터 버전 tutorial-baseline-v1 · /sql로 SQL 확인, /evidence로 보고 연결",
+        "멘토: 이 비교를 선택한 이유와 검토할 가설을 설명해주세요. 어떤 결과가 나오면 가설을 수정하거나 기각하겠습니까? 이미 설명한 내용은 보고에도 연결할 수 있습니다.\n이 메시지에 답장하거나 @DA-Agent로 답해주세요. 메시지를 읽을 수 없으면 /answer를 사용하세요. 새 조회는 /query로 시작하세요."
+      ]
+    },
+    {
+      "action": "query",
+      "messages": [
+        "실행 성공 · ID 1b95a95a-6327-47fb-bcfb-70323b4c2fd6\n확정 계산 기준\n• 지표: 튜토리얼 완료율\n• 시작일: 2026-09-08\n• 종료일: 2026-09-15\n• 시간 기준: UTC\n• 기간 기준: 명시한 날짜\n• 단위: 고유 사용자\n• 그룹: 유입 채널\n• 필터: \n• 단계: 3\n• 이벤트 시작일: 2026-09-01\n• 이벤트 종료일 (제외): 2026-10-01\n• 분자: 완료한 고유 사용자\n• 분모: 가입한 고유 사용자\n조회 결과는 첨부 표에서 확인하세요. 표를 누르면 확대할 수 있습니다.\n읽기 전용 · 실행 제한 5초 · 데이터 버전 tutorial-baseline-v1 · /sql로 SQL 확인, /evidence로 보고 연결"
+      ]
+    },
+    {
+      "action": "evidence",
+      "messages": [
+        "보고 근거로 선택했습니다: 401bae9f-232b-4880-b527-88db07d67901"
+      ]
+    },
+    {
+      "action": "evidence",
+      "messages": [
+        "보고 근거로 선택했습니다: 1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+      ]
+    },
+    {
+      "action": "report",
+      "messages": [
+        "보고 버전 1을 저장했습니다.",
+        "업무 담당자: 공개 업무 목표를 기준으로 제안한 대응의 우선순위와 실행 뒤 확인할 지표를 설명해주세요. 불확실한 설명은 어떻게 추가 확인하겠습니까?\n이 메시지에 답장하거나 @DA-Agent로 답해주세요. 메시지를 읽을 수 없으면 /answer를 사용하세요. 새 조회는 /query로 시작하세요."
+      ]
+    },
+    {
+      "action": "followup",
+      "messages": [
+        "후속 답변을 저장했습니다. 보고를 수정하거나 /submit로 평가를 요청하세요."
+      ]
+    },
+    {
+      "action": "submit",
+      "messages": [
+        "제출·평가 기록을 저장했습니다. 평가 점수: 75.0/100 · 사람 검토 대기. /report로 수정 보고를 시작하고 새 후속 답변 뒤 재제출할 수 있습니다."
+      ]
+    },
+    {
+      "action": "report",
+      "messages": [
+        "보고 버전 2을 저장했습니다. 이전 보고·평가는 보존됩니다. 새 후속 질문에 답한 뒤 /submit로 재평가하세요.",
+        "업무 담당자: 공개 업무 목표를 기준으로 제안한 대응의 우선순위와 실행 뒤 확인할 지표를 설명해주세요. 불확실한 설명은 어떻게 추가 확인하겠습니까?\n이 메시지에 답장하거나 @DA-Agent로 답해주세요. 메시지를 읽을 수 없으면 /answer를 사용하세요. 새 조회는 /query로 시작하세요."
+      ]
+    },
+    {
+      "action": "submit",
+      "messages": [
+        "업무 담당자의 후속 질문에 답한 뒤 최종 제출하세요."
+      ]
+    },
+    {
+      "action": "followup",
+      "messages": [
+        "후속 답변을 저장했습니다. 보고를 수정하거나 /submit로 평가를 요청하세요."
+      ]
+    },
+    {
+      "action": "submit",
+      "messages": [
+        "제출·평가 기록을 저장했습니다. 평가 점수: 100.0/100 · 사람 검토 대기. /report로 수정 보고를 시작하고 새 후속 답변 뒤 재제출할 수 있습니다."
+      ]
+    },
+    {
+      "action": "submit",
+      "messages": [
+        "제출·평가 기록을 저장했습니다. 평가 점수: 100.0/100 · 사람 검토 대기. /report로 수정 보고를 시작하고 새 후속 답변 뒤 재제출할 수 있습니다."
+      ]
+    }
+  ],
+  "session": {
+    "task": {
+      "title": "튜토리얼 완료율 변화와 우선 대응",
+      "topic": "tutorial",
+      "period": {
+        "end": "2026-09-15",
+        "start": "2026-09-01",
+        "end_exclusive": true,
+        "observation_end": "2026-10-01"
+      },
+      "rubric": {
+        "grades": {
+          "0": "평가할 내용 없음",
+          "1": "확인된 핵심 오류",
+          "2": "타당한 내용이나 필수 조건 누락",
+          "3": "필수 조건 충족",
+          "4": "공개 추가 검증·한계 조건 충족"
+        },
+        "version": "discord-analysis-v1",
+        "criteria": [
+          {
+            "id": "problem_definition",
+            "name": "문제 정의",
+            "weight": 20,
+            "advanced": "추가 검증·대안 설명·관측 한계를 근거로 설명",
+            "required": "업무 목표, 대상, 기간과 질문 연결",
+            "core_error": "주간 재방문율을 D7으로 해석"
+          },
+          {
+            "id": "metric_design",
+            "name": "지표·비교 설계",
+            "weight": 25,
+            "advanced": "추가 검증·대안 설명·관측 한계를 근거로 설명",
+            "required": "분모·고유 사용자·기간·관측 완료와 중복 점검",
+            "core_error": "세션/도전 수를 고유 사용자로 정의"
+          },
+          {
+            "id": "hypothesis_review",
+            "name": "가설·대안 검토",
+            "weight": 20,
+            "advanced": "추가 검증·대안 설명·관측 한계를 근거로 설명",
+            "required": "반박 가능한 비교와 유입 구성 대안, 가설 수정",
+            "core_error": "충돌하는 결과에도 근거 없이 가설 확정"
+          },
+          {
+            "id": "evidence_interpretation",
+            "name": "근거 해석",
+            "weight": 20,
+            "advanced": "추가 검증·대안 설명·관측 한계를 근거로 설명",
+            "required": "실행 근거 인용, 수집 한계와 사실/설명 구분",
+            "core_error": "집단 차이만으로 인과 단정"
+          },
+          {
+            "id": "decision_limits",
+            "name": "한계·의사결정",
+            "weight": 15,
+            "advanced": "추가 검증·대안 설명·관측 한계를 근거로 설명",
+            "required": "불확실성, 대응 우선순위와 후속 검증",
+            "core_error": "확인되지 않은 설명으로 대응 확정"
+          }
+        ],
+        "non_scoring": [
+          "SQL 작성 역량",
+          "문장 길이",
+          "전문 용어 수",
+          "조회 횟수"
+        ],
+        "passing_grade": 3,
+        "weights_total": 100,
+        "no_duplicate_penalty": true
+      },
+      "schema": {
+        "users": {
+          "channel": "text",
+          "user_id": "integer",
+          "signup_date": "date"
+        },
+        "sessions": {
+          "user_id": "integer",
+          "session_at": "timestamptz"
+        },
+        "tutorial_attempts": {
+          "step": "integer",
+          "user_id": "integer",
+          "completed": "boolean",
+          "attempt_at": "timestamptz"
+        }
+      },
+      "metrics": {
+        "d7_retention": {
+          "numerator": "가입 UTC 날짜+7일 접속한 고유 사용자",
+          "denominator": "D7 관측 완료 신규 가입 고유 사용자",
+          "observation_end": "2026-10-01"
+        },
+        "tutorial_rate": {
+          "step": 3,
+          "event_end": "2026-10-01",
+          "numerator": "고유 3단계 완료 사용자",
+          "denominator": "기간 내 신규 가입 고유 사용자",
+          "event_start": "2026-09-01"
+        }
+      },
+      "task_id": "discord-tutorial-baseline",
+      "variant": "baseline",
+      "version": "discord-tutorial-v1",
+      "timezone": "UTC",
+      "objective": "신규 가입자의 튜토리얼 3단계 완료율을 두 주와 유입 채널별로 비교하고, 신뢰성과 대안 설명을 점검해 우선 대응을 제안하세요.",
+      "dictionary": {
+        "users": {
+          "unit": "가입 사용자 1명",
+          "columns": {
+            "channel": "text",
+            "user_id": "integer",
+            "signup_date": "date"
+          },
+          "description": "user_id는 고유 키. signup_date는 UTC 가입일. channel은 organic/ads."
+        },
+        "sessions": {
+          "unit": "접속 이벤트",
+          "columns": {
+            "user_id": "integer",
+            "session_at": "timestamptz"
+          },
+          "description": "한 사용자가 하루에 여러 번 접속 가능. 가입일+7일의 UTC 접속을 D7로 정의."
+        },
+        "tutorial_attempts": {
+          "unit": "사용자별 단계 도전 이벤트",
+          "columns": {
+            "step": "integer",
+            "user_id": "integer",
+            "completed": "boolean",
+            "attempt_at": "timestamptz"
+          },
+          "description": "step은 1~3, completed=true는 해당 단계 완료. 재도전으로 중복 가능. 이벤트 수와 사용자 수를 구분하세요."
+        }
+      },
+      "difficulty": "advanced",
+      "help_policy": {
+        "types": [
+          "clarification",
+          "concept",
+          "direction",
+          "feedback"
+        ],
+        "default_level": "independent",
+        "record_before_after": true
+      },
+      "valid_paths": [
+        "주별 고유 사용자 완료율 → 채널별 비교 → 유입 구성 대안 검토",
+        "재도전 중복 점검 → 채널별 완료율 → 전체 변화와 대응/추가 확인"
+      ],
+      "data_version": "tutorial-baseline-v1",
+      "human_review": {
+        "status": "pending",
+        "samples": [
+          "다른 타당한 결론",
+          "가설 기각",
+          "합리적 보류",
+          "문체 차이",
+          "인과 단정",
+          "시스템 실패"
+        ]
+      },
+      "accepted_limits": [
+        "관측 차이는 인과 증거가 아님",
+        "원인 식별 불가이면 판단 보류와 추가 로그/실험 제안 인정"
+      ],
+      "quality_information": {
+        "collection": "정해진 관측 기간의 합성 이벤트. 실제 게임 수집 누락 여부는 이 표만으로 판단 불가.",
+        "required_check": "튜토리얼 완료 재도전 중복과 고유 사용자 분모를 점검",
+        "observation_end": "2026-10-01"
+      }
+    },
+    "state": "completed",
+    "queries": [
+      {
+        "at": "2026-10-06T08:09:00.081551+00:00",
+        "id": "0cd56a24-4a82-4b6f-8440-595a9141eea2",
+        "plan": {
+          "sql": "SELECT u.channel AS group_value, COUNT(DISTINCT u.user_id) AS denominator, COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM tutorial_attempts a WHERE a.user_id=u.user_id AND a.step=3 AND a.completed IS TRUE AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-01' AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-10-01') THEN u.user_id END) AS numerator, 100.0 * COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM tutorial_attempts a WHERE a.user_id=u.user_id AND a.step=3 AND a.completed IS TRUE AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-01' AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-10-01') THEN u.user_id END) / NULLIF(COUNT(DISTINCT u.user_id),0) AS rate_percent FROM users u WHERE u.signup_date >= DATE '2026-09-01' AND u.signup_date < DATE '2026-09-08' GROUP BY u.channel ORDER BY u.channel",
+          "model": "gemma-4-26b-a4b-it",
+          "state": "ready",
+          "usage": {
+            "input_tokens": 1537,
+            "total_tokens": 1724,
+            "output_tokens": 187
+          },
+          "original": {
+            "text": "UTC 2026-09-01 포함부터 2026-09-08 제외까지 가입한 신규 고유 사용자 전체를 분모로, 이들 중 UTC 2026-09-01 포함부터 2026-10-01 제외까지 튜토리얼 3단계를 완료한 고유 사용자를 분자로 완료율을 유입 채널별로 조회해줘. 사용자 단위이고 재도전 중복은 제거하며 다른 필터는 없어.",
+            "clarification": null,
+            "previous_conditions": null
+          },
+          "help_type": "request_confirmation",
+          "conditions": {
+            "end": "2026-09-08",
+            "step": 3,
+            "unit": "user",
+            "start": "2026-09-01",
+            "metric": "tutorial_rate",
+            "filters": {},
+            "group_by": "channel",
+            "timezone": "UTC",
+            "event_end": "2026-10-01",
+            "numerator": "completed_users",
+            "denominator": "signup_users",
+            "event_start": "2026-09-01",
+            "period_basis": "explicit_dates"
+          },
+          "replaces_pending": false
+        },
+        "outcome": {
+          "sql": "SELECT u.channel AS group_value, COUNT(DISTINCT u.user_id) AS denominator, COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM tutorial_attempts a WHERE a.user_id=u.user_id AND a.step=3 AND a.completed IS TRUE AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-01' AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-10-01') THEN u.user_id END) AS numerator, 100.0 * COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM tutorial_attempts a WHERE a.user_id=u.user_id AND a.step=3 AND a.completed IS TRUE AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-01' AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-10-01') THEN u.user_id END) / NULLIF(COUNT(DISTINCT u.user_id),0) AS rate_percent FROM users u WHERE u.signup_date >= DATE '2026-09-01' AND u.signup_date < DATE '2026-09-08' GROUP BY u.channel ORDER BY u.channel",
+          "state": "success",
+          "limits": {
+            "max_rows": 1000,
+            "max_bytes": 1048576,
+            "preview_rows": 10,
+            "query_timeout_ms": 5000
+          },
+          "result": {
+            "rows": [
+              [
+                "ads",
+                5,
+                4,
+                "80.0000000000000000"
+              ],
+              [
+                "organic",
+                15,
+                12,
+                "80.0000000000000000"
+              ]
+            ],
+            "error": null,
+            "status": "success",
+            "columns": [
+              {
+                "name": "group_value",
+                "type": "text"
+              },
+              {
+                "name": "denominator",
+                "type": "int8"
+              },
+              {
+                "name": "numerator",
+                "type": "int8"
+              },
+              {
+                "name": "rate_percent",
+                "type": "numeric"
+              }
+            ],
+            "truncated": false,
+            "duration_ms": 11,
+            "executed_at": "2026-10-06T08:09:00.084130Z",
+            "execution_id": "401bae9f-232b-4880-b527-88db07d67901",
+            "result_complete": true,
+            "total_row_count": 2,
+            "preview_row_count": 2,
+            "expires_in_seconds": 600
+          },
+          "attempts": [
+            {
+              "sql": "SELECT u.channel AS group_value, COUNT(DISTINCT u.user_id) AS denominator, COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM tutorial_attempts a WHERE a.user_id=u.user_id AND a.step=3 AND a.completed IS TRUE AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-01' AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-10-01') THEN u.user_id END) AS numerator, 100.0 * COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM tutorial_attempts a WHERE a.user_id=u.user_id AND a.step=3 AND a.completed IS TRUE AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-01' AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-10-01') THEN u.user_id END) / NULLIF(COUNT(DISTINCT u.user_id),0) AS rate_percent FROM users u WHERE u.signup_date >= DATE '2026-09-01' AND u.signup_date < DATE '2026-09-08' GROUP BY u.channel ORDER BY u.channel",
+              "error": null,
+              "result": {
+                "rows": [
+                  [
+                    "ads",
+                    5,
+                    4,
+                    "80.0000000000000000"
+                  ],
+                  [
+                    "organic",
+                    15,
+                    12,
+                    "80.0000000000000000"
+                  ]
+                ],
+                "error": null,
+                "status": "success",
+                "columns": [
+                  {
+                    "name": "group_value",
+                    "type": "text"
+                  },
+                  {
+                    "name": "denominator",
+                    "type": "int8"
+                  },
+                  {
+                    "name": "numerator",
+                    "type": "int8"
+                  },
+                  {
+                    "name": "rate_percent",
+                    "type": "numeric"
+                  }
+                ],
+                "truncated": false,
+                "duration_ms": 11,
+                "executed_at": "2026-10-06T08:09:00.084130Z",
+                "execution_id": "401bae9f-232b-4880-b527-88db07d67901",
+                "result_complete": true,
+                "total_row_count": 2,
+                "preview_row_count": 2,
+                "expires_in_seconds": 600
+              }
+            }
+          ],
+          "conditions": {
+            "end": "2026-09-08",
+            "step": 3,
+            "unit": "user",
+            "start": "2026-09-01",
+            "metric": "tutorial_rate",
+            "filters": {},
+            "group_by": "channel",
+            "timezone": "UTC",
+            "event_end": "2026-10-01",
+            "numerator": "completed_users",
+            "denominator": "signup_users",
+            "event_start": "2026-09-01",
+            "period_basis": "explicit_dates"
+          },
+          "full_result": {
+            "rows": [
+              [
+                "ads",
+                5,
+                4,
+                "80.0000000000000000"
+              ],
+              [
+                "organic",
+                15,
+                12,
+                "80.0000000000000000"
+              ]
+            ],
+            "error": null,
+            "status": "success",
+            "columns": [
+              {
+                "name": "group_value",
+                "type": "text"
+              },
+              {
+                "name": "denominator",
+                "type": "int8"
+              },
+              {
+                "name": "numerator",
+                "type": "int8"
+              },
+              {
+                "name": "rate_percent",
+                "type": "numeric"
+              }
+            ],
+            "truncated": false,
+            "duration_ms": 11,
+            "executed_at": "2026-10-06T08:09:00.084130Z",
+            "execution_id": "401bae9f-232b-4880-b527-88db07d67901",
+            "result_complete": true,
+            "total_row_count": 2,
+            "preview_row_count": 2,
+            "expires_in_seconds": 600
+          },
+          "saved_execution": {
+            "sql": "SELECT u.channel AS group_value, COUNT(DISTINCT u.user_id) AS denominator, COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM tutorial_attempts a WHERE a.user_id=u.user_id AND a.step=3 AND a.completed IS TRUE AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-01' AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-10-01') THEN u.user_id END) AS numerator, 100.0 * COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM tutorial_attempts a WHERE a.user_id=u.user_id AND a.step=3 AND a.completed IS TRUE AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-01' AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-10-01') THEN u.user_id END) / NULLIF(COUNT(DISTINCT u.user_id),0) AS rate_percent FROM users u WHERE u.signup_date >= DATE '2026-09-01' AND u.signup_date < DATE '2026-09-08' GROUP BY u.channel ORDER BY u.channel",
+            "result": {
+              "rows": [
+                [
+                  "ads",
+                  5,
+                  4,
+                  "80.0000000000000000"
+                ],
+                [
+                  "organic",
+                  15,
+                  12,
+                  "80.0000000000000000"
+                ]
+              ],
+              "error": null,
+              "status": "success",
+              "columns": [
+                {
+                  "name": "group_value",
+                  "type": "text"
+                },
+                {
+                  "name": "denominator",
+                  "type": "int8"
+                },
+                {
+                  "name": "numerator",
+                  "type": "int8"
+                },
+                {
+                  "name": "rate_percent",
+                  "type": "numeric"
+                }
+              ],
+              "truncated": false,
+              "duration_ms": 11,
+              "executed_at": "2026-10-06T08:09:00.084130Z",
+              "execution_id": "401bae9f-232b-4880-b527-88db07d67901",
+              "result_complete": true,
+              "total_row_count": 2,
+              "preview_row_count": 2,
+              "expires_in_seconds": 600
+            }
+          }
+        },
+        "event_id": "164e0412f9c449a48c46ff5578211adc",
+        "user_answer": null,
+        "original_text": "UTC 2026-09-01 포함부터 2026-09-08 제외까지 가입한 신규 고유 사용자 전체를 분모로, 이들 중 UTC 2026-09-01 포함부터 2026-10-01 제외까지 튜토리얼 3단계를 완료한 고유 사용자를 분자로 완료율을 유입 채널별로 조회해줘. 사용자 단위이고 재도전 중복은 제거하며 다른 필터는 없어.",
+        "submitted_text": "UTC 2026-09-01 포함부터 2026-09-08 제외까지 가입한 신규 고유 사용자 전체를 분모로, 이들 중 UTC 2026-09-01 포함부터 2026-10-01 제외까지 튜토리얼 3단계를 완료한 고유 사용자를 분자로 완료율을 유입 채널별로 조회해줘. 사용자 단위이고 재도전 중복은 제거하며 다른 필터는 없어."
+      },
+      {
+        "at": "2026-10-06T08:09:19.800833+00:00",
+        "id": "a28be7fe-b5eb-455d-8a37-2a7b8658e521",
+        "plan": {
+          "sql": "SELECT u.channel AS group_value, COUNT(DISTINCT u.user_id) AS denominator, COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM tutorial_attempts a WHERE a.user_id=u.user_id AND a.step=3 AND a.completed IS TRUE AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-01' AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-10-01') THEN u.user_id END) AS numerator, 100.0 * COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM tutorial_attempts a WHERE a.user_id=u.user_id AND a.step=3 AND a.completed IS TRUE AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-01' AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-10-01') THEN u.user_id END) / NULLIF(COUNT(DISTINCT u.user_id),0) AS rate_percent FROM users u WHERE u.signup_date >= DATE '2026-09-08' AND u.signup_date < DATE '2026-09-15' GROUP BY u.channel ORDER BY u.channel",
+          "model": "gemma-4-26b-a4b-it",
+          "state": "ready",
+          "usage": {
+            "input_tokens": 1663,
+            "total_tokens": 1786,
+            "output_tokens": 123
+          },
+          "original": {
+            "text": "UTC 2026-09-08 포함부터 2026-09-15 제외까지 가입한 신규 고유 사용자 전체를 분모로, 이들 중 UTC 2026-09-01 포함부터 2026-10-01 제외까지 튜토리얼 3단계를 완료한 고유 사용자를 분자로 완료율을 유입 채널별로 조회해줘. 사용자 단위이고 재도전 중복은 제거하며 다른 필터는 없어.",
+            "clarification": null,
+            "previous_conditions": {
+              "end": "2026-09-08",
+              "step": 3,
+              "unit": "user",
+              "start": "2026-09-01",
+              "metric": "tutorial_rate",
+              "filters": {},
+              "group_by": "channel",
+              "timezone": "UTC",
+              "event_end": "2026-10-01",
+              "numerator": "completed_users",
+              "denominator": "signup_users",
+              "event_start": "2026-09-01",
+              "period_basis": "explicit_dates"
+            }
+          },
+          "help_type": "request_confirmation",
+          "conditions": {
+            "end": "2026-09-15",
+            "step": 3,
+            "unit": "user",
+            "start": "2026-09-08",
+            "metric": "tutorial_rate",
+            "filters": {},
+            "group_by": "channel",
+            "timezone": "UTC",
+            "event_end": "2026-10-01",
+            "numerator": "completed_users",
+            "denominator": "signup_users",
+            "event_start": "2026-09-01",
+            "period_basis": "explicit_dates"
+          },
+          "replaces_pending": false
+        },
+        "outcome": {
+          "sql": "SELECT u.channel AS group_value, COUNT(DISTINCT u.user_id) AS denominator, COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM tutorial_attempts a WHERE a.user_id=u.user_id AND a.step=3 AND a.completed IS TRUE AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-01' AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-10-01') THEN u.user_id END) AS numerator, 100.0 * COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM tutorial_attempts a WHERE a.user_id=u.user_id AND a.step=3 AND a.completed IS TRUE AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-01' AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-10-01') THEN u.user_id END) / NULLIF(COUNT(DISTINCT u.user_id),0) AS rate_percent FROM users u WHERE u.signup_date >= DATE '2026-09-08' AND u.signup_date < DATE '2026-09-15' GROUP BY u.channel ORDER BY u.channel",
+          "state": "success",
+          "limits": {
+            "max_rows": 1000,
+            "max_bytes": 1048576,
+            "preview_rows": 10,
+            "query_timeout_ms": 5000
+          },
+          "result": {
+            "rows": [
+              [
+                "ads",
+                15,
+                10,
+                "66.6666666666666667"
+              ],
+              [
+                "organic",
+                5,
+                4,
+                "80.0000000000000000"
+              ]
+            ],
+            "error": null,
+            "status": "success",
+            "columns": [
+              {
+                "name": "group_value",
+                "type": "text"
+              },
+              {
+                "name": "denominator",
+                "type": "int8"
+              },
+              {
+                "name": "numerator",
+                "type": "int8"
+              },
+              {
+                "name": "rate_percent",
+                "type": "numeric"
+              }
+            ],
+            "truncated": false,
+            "duration_ms": 11,
+            "executed_at": "2026-10-06T08:09:19.803313Z",
+            "execution_id": "1b95a95a-6327-47fb-bcfb-70323b4c2fd6",
+            "result_complete": true,
+            "total_row_count": 2,
+            "preview_row_count": 2,
+            "expires_in_seconds": 600
+          },
+          "attempts": [
+            {
+              "sql": "SELECT u.channel AS group_value, COUNT(DISTINCT u.user_id) AS denominator, COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM tutorial_attempts a WHERE a.user_id=u.user_id AND a.step=3 AND a.completed IS TRUE AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-01' AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-10-01') THEN u.user_id END) AS numerator, 100.0 * COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM tutorial_attempts a WHERE a.user_id=u.user_id AND a.step=3 AND a.completed IS TRUE AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-01' AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-10-01') THEN u.user_id END) / NULLIF(COUNT(DISTINCT u.user_id),0) AS rate_percent FROM users u WHERE u.signup_date >= DATE '2026-09-08' AND u.signup_date < DATE '2026-09-15' GROUP BY u.channel ORDER BY u.channel",
+              "error": null,
+              "result": {
+                "rows": [
+                  [
+                    "ads",
+                    15,
+                    10,
+                    "66.6666666666666667"
+                  ],
+                  [
+                    "organic",
+                    5,
+                    4,
+                    "80.0000000000000000"
+                  ]
+                ],
+                "error": null,
+                "status": "success",
+                "columns": [
+                  {
+                    "name": "group_value",
+                    "type": "text"
+                  },
+                  {
+                    "name": "denominator",
+                    "type": "int8"
+                  },
+                  {
+                    "name": "numerator",
+                    "type": "int8"
+                  },
+                  {
+                    "name": "rate_percent",
+                    "type": "numeric"
+                  }
+                ],
+                "truncated": false,
+                "duration_ms": 11,
+                "executed_at": "2026-10-06T08:09:19.803313Z",
+                "execution_id": "1b95a95a-6327-47fb-bcfb-70323b4c2fd6",
+                "result_complete": true,
+                "total_row_count": 2,
+                "preview_row_count": 2,
+                "expires_in_seconds": 600
+              }
+            }
+          ],
+          "conditions": {
+            "end": "2026-09-15",
+            "step": 3,
+            "unit": "user",
+            "start": "2026-09-08",
+            "metric": "tutorial_rate",
+            "filters": {},
+            "group_by": "channel",
+            "timezone": "UTC",
+            "event_end": "2026-10-01",
+            "numerator": "completed_users",
+            "denominator": "signup_users",
+            "event_start": "2026-09-01",
+            "period_basis": "explicit_dates"
+          },
+          "full_result": {
+            "rows": [
+              [
+                "ads",
+                15,
+                10,
+                "66.6666666666666667"
+              ],
+              [
+                "organic",
+                5,
+                4,
+                "80.0000000000000000"
+              ]
+            ],
+            "error": null,
+            "status": "success",
+            "columns": [
+              {
+                "name": "group_value",
+                "type": "text"
+              },
+              {
+                "name": "denominator",
+                "type": "int8"
+              },
+              {
+                "name": "numerator",
+                "type": "int8"
+              },
+              {
+                "name": "rate_percent",
+                "type": "numeric"
+              }
+            ],
+            "truncated": false,
+            "duration_ms": 11,
+            "executed_at": "2026-10-06T08:09:19.803313Z",
+            "execution_id": "1b95a95a-6327-47fb-bcfb-70323b4c2fd6",
+            "result_complete": true,
+            "total_row_count": 2,
+            "preview_row_count": 2,
+            "expires_in_seconds": 600
+          },
+          "saved_execution": {
+            "sql": "SELECT u.channel AS group_value, COUNT(DISTINCT u.user_id) AS denominator, COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM tutorial_attempts a WHERE a.user_id=u.user_id AND a.step=3 AND a.completed IS TRUE AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-01' AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-10-01') THEN u.user_id END) AS numerator, 100.0 * COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM tutorial_attempts a WHERE a.user_id=u.user_id AND a.step=3 AND a.completed IS TRUE AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-01' AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-10-01') THEN u.user_id END) / NULLIF(COUNT(DISTINCT u.user_id),0) AS rate_percent FROM users u WHERE u.signup_date >= DATE '2026-09-08' AND u.signup_date < DATE '2026-09-15' GROUP BY u.channel ORDER BY u.channel",
+            "result": {
+              "rows": [
+                [
+                  "ads",
+                  15,
+                  10,
+                  "66.6666666666666667"
+                ],
+                [
+                  "organic",
+                  5,
+                  4,
+                  "80.0000000000000000"
+                ]
+              ],
+              "error": null,
+              "status": "success",
+              "columns": [
+                {
+                  "name": "group_value",
+                  "type": "text"
+                },
+                {
+                  "name": "denominator",
+                  "type": "int8"
+                },
+                {
+                  "name": "numerator",
+                  "type": "int8"
+                },
+                {
+                  "name": "rate_percent",
+                  "type": "numeric"
+                }
+              ],
+              "truncated": false,
+              "duration_ms": 11,
+              "executed_at": "2026-10-06T08:09:19.803313Z",
+              "execution_id": "1b95a95a-6327-47fb-bcfb-70323b4c2fd6",
+              "result_complete": true,
+              "total_row_count": 2,
+              "preview_row_count": 2,
+              "expires_in_seconds": 600
+            }
+          }
+        },
+        "event_id": "85c3ca81331c4ee5bcb9a3fd192b633c",
+        "user_answer": null,
+        "original_text": "UTC 2026-09-08 포함부터 2026-09-15 제외까지 가입한 신규 고유 사용자 전체를 분모로, 이들 중 UTC 2026-09-01 포함부터 2026-10-01 제외까지 튜토리얼 3단계를 완료한 고유 사용자를 분자로 완료율을 유입 채널별로 조회해줘. 사용자 단위이고 재도전 중복은 제거하며 다른 필터는 없어.",
+        "submitted_text": "UTC 2026-09-08 포함부터 2026-09-15 제외까지 가입한 신규 고유 사용자 전체를 분모로, 이들 중 UTC 2026-09-01 포함부터 2026-10-01 제외까지 튜토리얼 3단계를 완료한 고유 사용자를 분자로 완료율을 유입 채널별로 조회해줘. 사용자 단위이고 재도전 중복은 제거하며 다른 필터는 없어."
+      }
+    ],
+    "reports": [
+      {
+        "at": "2026-10-06T08:09:19.892630+00:00",
+        "id": "cbcc67e0-e520-4ed4-b208-a88714313d01",
+        "content": {
+          "report_text": "업무 목표는 두 주 신규 가입자의 튜토리얼3단계 완료율 변화를 확인하고 우선 대응을 정하는 것이다. UTC 가입 기간은9월1~7일 및8~14일이고 완료 관측은10월1일 제외까지다. 분모는 신규 가입 고유 사용자, 분자는3단계 완료 고유 사용자다. 1주차16/20=80%. 2주차14/20=70%. 전체 완료율은10%p 하락했다. 1주차 채널 비율이 모두80%이지만 유입 구성만 바꾸면 전체70%가 된다. 채널 내 완료율 변화는 전체 하락에 기여하지 않는다. 구성 변화만으로 전체 하락을 완전히 설명한다. 관측은 인과를 증명하지 않는다. 재도전은 고유 사용자로 제거했고 실제 로그 누락은 확인 불가다. 표본40명으로 추가 로그와 표본 확인을 먼저 제안한다."
+        },
+        "version": 1,
+        "evidence_refs": [
+          "401bae9f-232b-4880-b527-88db07d67901",
+          "1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+        ],
+        "followup_answers": [
+          {
+            "at": "2026-10-06T08:09:19.917819+00:00",
+            "text": "현재 자료로 인과는 확정하지 않고 수집 상태와 기기/버전 로그를 먼저 확인한다.",
+            "message_id": "7646ea17-6b0d-4418-a080-2166e8e6b51b"
+          }
+        ]
+      },
+      {
+        "at": "2026-10-06T08:10:31.541137+00:00",
+        "id": "42cb7e72-3ce4-408a-8392-11f58b0407ff",
+        "content": {
+          "report_text": "업무 목표는 두 주 신규 가입자의 튜토리얼3단계 완료율 변화를 확인하고 우선 대응을 정하는 것이다. UTC 가입 기간은9월1~7일 및8~14일이고 완료 관측은10월1일 제외까지다. 분모는 신규 가입 고유 사용자, 분자는3단계 완료 고유 사용자다. 1주차16/20=80%. 2주차14/20=70%. 전체 완료율은10%p 하락했다. 1주차 채널 비율을 고정하고 구성만 바꾸면 전체80%가 된다. organic은80%로 유지하고 ads는80%에서66.67%로 낮아졌다. 구성 변화만으로 전체 하락을 설명할 수 없다. ads 집단의 관측 변화도 확인해야 한다. 관측은 인과를 증명하지 않는다. 재도전은 고유 사용자로 제거했고 실제 로그 누락은 확인 불가다. 표본40명으로 추가 로그와 표본 확인을 먼저 제안한다."
+        },
+        "version": 2,
+        "evidence_refs": [
+          "401bae9f-232b-4880-b527-88db07d67901",
+          "1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+        ],
+        "followup_answers": [
+          {
+            "at": "2026-10-06T08:10:31.594482+00:00",
+            "text": "추가 로그와 충분한 표본을 확인하고 필요하면 무작위 실험으로 완료율 및 D7·오류율을 검증한다.",
+            "message_id": "50e571ff-63f7-4ed7-a5bd-6dd106c4278d"
+          }
+        ],
+        "previous_report_id": "cbcc67e0-e520-4ed4-b208-a88714313d01"
+      }
+    ],
+    "guild_id": "verification",
+    "learning": [
+      {
+        "at": "2026-10-06T08:10:31.513240+00:00",
+        "held": false,
+        "task_id": "discord-tutorial-baseline",
+        "after_help": {},
+        "difficulty": "advanced",
+        "evaluation": {
+          "held": false,
+          "total": 75.0,
+          "criteria": [
+            {
+              "id": "problem_definition",
+              "name": "문제 정의",
+              "grade": 4,
+              "reason": "업무 목표, 대상(신규 가입자), 기간(9/1~7, 9/8~14), 지표 정의(분모/분자)를 명확히 연결하여 기술하였습니다.",
+              "improvement": "공개 상위 조건 충족으로 판정됐습니다. 다음 과제에서 추가 근거와 적용 한계를 다시 확인하세요.",
+              "evidence_refs": [
+                "report:1"
+              ]
+            },
+            {
+              "id": "metric_design",
+              "name": "지표·비교 설계",
+              "grade": 4,
+              "reason": "분모를 신규 가입 고유 사용자, 분자를 3단계 완료 고유 사용자로 정의하였으며, 재도전 중복 제거 및 관측 종료일 기준을 적절히 반영하였습니다.",
+              "improvement": "공개 상위 조건 충족으로 판정됐습니다. 다음 과제에서 추가 근거와 적용 한계를 다시 확인하세요.",
+              "evidence_refs": [
+                "report:1",
+                "execution:401bae9f-232b-4880-b527-88db07d67901",
+                "execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+              ]
+            },
+            {
+              "id": "hypothesis_review",
+              "name": "가설·대안 검토",
+              "grade": 2,
+              "reason": "유입 구성 변화가 전체 하락을 설명한다는 가설을 제시했으나, 검산 결과 1주차 채널 비율을 유지한 채 2주차 구성만 적용했을 때의 기대값은 80%이므로, 실제 2주차 수치인 70%를 구성 변화만으로 완전히 설명할 수 없다는 점에서 논리적 결함이 있습니다.",
+              "improvement": "구성 변화(Mix effect)가 전체 지표 변화에 미치는 영향을 다시 계산하여, 구성 변화로 설명 가능한 부분과 채널별 자체 완료율 변화(Rate effect)로 인한 부분을 분리하여 검토하십시오.",
+              "evidence_refs": [
+                "report:1"
+              ]
+            },
+            {
+              "id": "evidence_interpretation",
+              "name": "근거 해석",
+              "grade": 1,
+              "reason": "공개 실행 근거와 보고 주장의 계산 불일치: 1주차 채널 비율을 고정하고 2주차 구성만 적용하면 80.0000%입니다. 실제 2주차는 70.0000%입니다. 구성만으로 설명한다는 주장을 이 기준으로 확인하세요.",
+              "improvement": "선택한 두 주의 분자·분모와 계산 기준을 확인하고 해당 주장·결론을 수정하세요.",
+              "evidence_refs": [
+                "report:1",
+                "execution:401bae9f-232b-4880-b527-88db07d67901",
+                "execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+              ],
+              "provider_grade": 1,
+              "provider_reason": "구성 변화만으로 하락을 완전히 설명한다는 결론을 내렸으나, 이는 산술적 검증 결과와 일치하지 않는 잘못된 해석입니다. (구성 변화 시 기대치는 80%이나 실제는 70%임)",
+              "verification_source": "discord-arithmetic-v1",
+              "provider_improvement": "제시된 데이터와 계산된 수치 사이의 모순을 확인하고, 구성 효과와 채널별 효과를 구분하여 정확하게 해석하십시오."
+            },
+            {
+              "id": "decision_limits",
+              "name": "한계·의사결정",
+              "grade": 4,
+              "reason": "관측 데이터가 인과를 증명할 수 없음을 명시하였고, 표본 크기의 한계와 수집 상태(기기/버전 로그) 확인을 우선순위로 제안하여 불확실성에 대응하였습니다.",
+              "improvement": "공개 상위 조건 충족으로 판정됐습니다. 다음 과제에서 추가 근거와 적용 한계를 다시 확인하세요.",
+              "evidence_refs": [
+                "report:1",
+                "message:7646ea17-6b0d-4418-a080-2166e8e6b51b"
+              ]
+            }
+          ],
+          "help_history": [],
+          "human_review": "pending",
+          "recommendation": {
+            "evidence": [
+              [
+                "report:1"
+              ],
+              [
+                "report:1",
+                "execution:401bae9f-232b-4880-b527-88db07d67901",
+                "execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+              ]
+            ],
+            "unobserved": [],
+            "practice_criteria": [
+              "hypothesis_review",
+              "evidence_interpretation"
+            ]
+          },
+          "rubric_version": "discord-analysis-v1",
+          "response_repair": {
+            "attempts": 1,
+            "grades_preserved": true,
+            "original_validation_reason": "unknown_evidence_ref"
+          },
+          "arithmetic_verification": {
+            "notes": [],
+            "scope": "선택한 완전한 신규 가입자 완료율 근거의 명확한 두 주 수치·증감·구성 확정 주장. 다른 지표·모호한 표현은 미검산.",
+            "checks": [
+              {
+                "kind": "completion_rate",
+                "claim": "1주차16/20=80%",
+                "reason": "실제 분자/분모로 계산한 값은 80.0000입니다.",
+                "status": "matched",
+                "expected": "80",
+                "reported": "80",
+                "improvement": "선택한 두 주의 분자·분모와 계산 기준을 확인하고 해당 주장·결론을 수정하세요.",
+                "evidence_refs": [
+                  "execution:401bae9f-232b-4880-b527-88db07d67901",
+                  "execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+                ]
+              },
+              {
+                "kind": "numerator",
+                "claim": "1주차16/20=80%",
+                "reason": "실제 분자/분모로 계산한 값은 16.0000입니다.",
+                "status": "matched",
+                "expected": "16",
+                "reported": "16",
+                "improvement": "선택한 두 주의 분자·분모와 계산 기준을 확인하고 해당 주장·결론을 수정하세요.",
+                "evidence_refs": [
+                  "execution:401bae9f-232b-4880-b527-88db07d67901",
+                  "execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+                ]
+              },
+              {
+                "kind": "denominator",
+                "claim": "1주차16/20=80%",
+                "reason": "실제 분자/분모로 계산한 값은 20.0000입니다.",
+                "status": "matched",
+                "expected": "20",
+                "reported": "20",
+                "improvement": "선택한 두 주의 분자·분모와 계산 기준을 확인하고 해당 주장·결론을 수정하세요.",
+                "evidence_refs": [
+                  "execution:401bae9f-232b-4880-b527-88db07d67901",
+                  "execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+                ]
+              },
+              {
+                "kind": "completion_rate",
+                "claim": "2주차14/20=70%",
+                "reason": "실제 분자/분모로 계산한 값은 70.0000입니다.",
+                "status": "matched",
+                "expected": "70",
+                "reported": "70",
+                "improvement": "선택한 두 주의 분자·분모와 계산 기준을 확인하고 해당 주장·결론을 수정하세요.",
+                "evidence_refs": [
+                  "execution:401bae9f-232b-4880-b527-88db07d67901",
+                  "execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+                ]
+              },
+              {
+                "kind": "numerator",
+                "claim": "2주차14/20=70%",
+                "reason": "실제 분자/분모로 계산한 값은 14.0000입니다.",
+                "status": "matched",
+                "expected": "14",
+                "reported": "14",
+                "improvement": "선택한 두 주의 분자·분모와 계산 기준을 확인하고 해당 주장·결론을 수정하세요.",
+                "evidence_refs": [
+                  "execution:401bae9f-232b-4880-b527-88db07d67901",
+                  "execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+                ]
+              },
+              {
+                "kind": "denominator",
+                "claim": "2주차14/20=70%",
+                "reason": "실제 분자/분모로 계산한 값은 20.0000입니다.",
+                "status": "matched",
+                "expected": "20",
+                "reported": "20",
+                "improvement": "선택한 두 주의 분자·분모와 계산 기준을 확인하고 해당 주장·결론을 수정하세요.",
+                "evidence_refs": [
+                  "execution:401bae9f-232b-4880-b527-88db07d67901",
+                  "execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+                ]
+              },
+              {
+                "kind": "percentage_point_change",
+                "claim": "전체 완료율은10%p 하락",
+                "reason": "실제 분자/분모로 계산한 값은 -10.0000입니다.",
+                "status": "matched",
+                "expected": "-10",
+                "reported": "-10",
+                "improvement": "선택한 두 주의 분자·분모와 계산 기준을 확인하고 해당 주장·결론을 수정하세요.",
+                "evidence_refs": [
+                  "execution:401bae9f-232b-4880-b527-88db07d67901",
+                  "execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+                ]
+              },
+              {
+                "kind": "composition_only",
+                "claim": "1주차 채널 비율이 모두80%이지만 유입 구성만 바꾸면 전체70%가 된다.",
+                "reason": "1주차 채널 비율을 고정하고 2주차 구성만 적용하면 80.0000%입니다. 실제 2주차는 70.0000%입니다. 구성만으로 설명한다는 주장을 이 기준으로 확인하세요.",
+                "status": "error",
+                "expected": "80",
+                "reported": "70",
+                "improvement": "선택한 두 주의 분자·분모와 계산 기준을 확인하고 해당 주장·결론을 수정하세요.",
+                "evidence_refs": [
+                  "execution:401bae9f-232b-4880-b527-88db07d67901",
+                  "execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+                ]
+              },
+              {
+                "kind": "composition_only",
+                "claim": "구성 변화만으로 전체 하락을 완전히 설명한다.",
+                "reason": "1주차 채널 비율을 고정하고 2주차 구성만 적용하면 80.0000%입니다. 실제 2주차는 70.0000%입니다. 구성만으로 설명한다는 주장을 이 기준으로 확인하세요.",
+                "status": "error",
+                "expected": "80",
+                "reported": "70",
+                "improvement": "선택한 두 주의 분자·분모와 계산 기준을 확인하고 해당 주장·결론을 수정하세요.",
+                "evidence_refs": [
+                  "execution:401bae9f-232b-4880-b527-88db07d67901",
+                  "execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+                ]
+              }
+            ],
+            "errors": [
+              {
+                "kind": "composition_only",
+                "claim": "1주차 채널 비율이 모두80%이지만 유입 구성만 바꾸면 전체70%가 된다.",
+                "reason": "1주차 채널 비율을 고정하고 2주차 구성만 적용하면 80.0000%입니다. 실제 2주차는 70.0000%입니다. 구성만으로 설명한다는 주장을 이 기준으로 확인하세요.",
+                "status": "error",
+                "expected": "80",
+                "reported": "70",
+                "improvement": "선택한 두 주의 분자·분모와 계산 기준을 확인하고 해당 주장·결론을 수정하세요.",
+                "evidence_refs": [
+                  "execution:401bae9f-232b-4880-b527-88db07d67901",
+                  "execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+                ]
+              },
+              {
+                "kind": "composition_only",
+                "claim": "구성 변화만으로 전체 하락을 완전히 설명한다.",
+                "reason": "1주차 채널 비율을 고정하고 2주차 구성만 적용하면 80.0000%입니다. 실제 2주차는 70.0000%입니다. 구성만으로 설명한다는 주장을 이 기준으로 확인하세요.",
+                "status": "error",
+                "expected": "80",
+                "reported": "70",
+                "improvement": "선택한 두 주의 분자·분모와 계산 기준을 확인하고 해당 주장·결론을 수정하세요.",
+                "evidence_refs": [
+                  "execution:401bae9f-232b-4880-b527-88db07d67901",
+                  "execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+                ]
+              }
+            ],
+            "status": "errors_found",
+            "version": "discord-arithmetic-v1"
+          }
+        },
+        "before_help": {
+          "metric_design": 4,
+          "decision_limits": 4,
+          "hypothesis_review": 2,
+          "problem_definition": 4,
+          "evidence_interpretation": 1
+        },
+        "help_history": [],
+        "task_version": "discord-tutorial-v1",
+        "owner_user_id": "spec032-53dec0c3985c42ab9d0b684e99652bb5",
+        "rubric_version": "discord-analysis-v1",
+        "comparability_review": "pending",
+        "before_help_message_ids": [
+          "1a4973dc-b489-43a5-a84e-e5105ef922f4",
+          "06d97fe1-b403-4e3c-8049-0a4a3bb8e6f8",
+          "afe9c7a5-71ec-46e1-898b-44915ff655a4",
+          "c734015d-0e21-493f-bb9e-ef871a234603",
+          "4d556fcc-f093-4e58-a75f-08702ed4d3a9",
+          "7646ea17-6b0d-4418-a080-2166e8e6b51b",
+          "d51b7d0a-6f9b-40a1-b2ce-4ae4e6730c14"
+        ]
+      },
+      {
+        "owner_user_id": "spec032-53dec0c3985c42ab9d0b684e99652bb5",
+        "task_id": "discord-tutorial-baseline",
+        "task_version": "discord-tutorial-v1",
+        "rubric_version": "discord-analysis-v1",
+        "difficulty": "advanced",
+        "help_history": [],
+        "evaluation": {
+          "rubric_version": "discord-analysis-v1",
+          "criteria": [
+            {
+              "id": "problem_definition",
+              "name": "문제 정의",
+              "weight": 20,
+              "grade": 4,
+              "reason": "업무 목표, 분석 대상(두 주 신규 가입자), 기간(9월 1~14일 및 관측 종료일), 질문(완료율 변화 및 대응)을 모두 정확히 정의하였습니다.",
+              "improvement": "공개 상위 조건 충족으로 판정됐습니다. 다음 과제에서 추가 근거와 적용 한계를 다시 확인하세요.",
+              "evidence_refs": [
+                "report:2"
+              ]
+            },
+            {
+              "id": "metric_design",
+              "name": "지표·비교 설계",
+              "weight": 25,
+              "grade": 4,
+              "reason": "분모(신규 가입 고유 사용자)와 분자(3단계 완료 고유 사용자)를 명확히 구분하였으며, 재도전 중복을 제거하는 등 지표 설계 요구사항을 완벽히 충족하였습니다.",
+              "improvement": "공개 상위 조건 충족으로 판정됐습니다. 다음 과제에서 추가 근거와 적용 한계를 다시 확인하세요.",
+              "evidence_refs": [
+                "report:2",
+                "execution:401bae9f-232b-4880-b527-88db07d67901",
+                "execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+              ]
+            },
+            {
+              "id": "hypothesis_review",
+              "name": "가설·대안 검토",
+              "weight": 20,
+              "grade": 4,
+              "reason": "구성 효과(Composition effect)를 계산하여 전체 하락이 유입 채널 비중 변화만으로는 설명되지 않음을 논리적으로 검증하였고, 이를 통해 기존 가설(구성 변화)을 기각하였습니다.",
+              "improvement": "공개 상위 조건 충족으로 판정됐습니다. 다음 과제에서 추가 근거와 적용 한계를 다시 확인하세요.",
+              "evidence_refs": [
+                "report:2"
+              ]
+            },
+            {
+              "id": "evidence_interpretation",
+              "name": "근거 해석",
+              "weight": 20,
+              "grade": 4,
+              "reason": "관측 결과가 인과를 증명하지 않는다는 점을 명시하였고, 데이터의 한계(로그 누락 가능성, 표본 크기)와 사실(수치적 변화)을 명확히 구분하여 해석하였습니다.",
+              "improvement": "공개 상위 조건 충족으로 판정됐습니다. 다음 과제에서 추가 근거와 적용 한계를 다시 확인하세요.",
+              "evidence_refs": [
+                "report:2"
+              ]
+            },
+            {
+              "id": "decision_limits",
+              "name": "한계·의사결정",
+              "weight": 15,
+              "grade": 4,
+              "reason": "불확실성을 인정하고, 단순한 추측 대신 추가 로그 확인과 표본 검증, 그리고 무작위 실험(RCT)을 통한 검증이라는 구체적이고 타당한 후속 조치를 제안하였습니다.",
+              "improvement": "공개 상위 조건 충족으로 판정됐습니다. 다음 과제에서 추가 근거와 적용 한계를 다시 확인하세요.",
+              "evidence_refs": [
+                "report:2",
+                "message:50e571ff-63f7-4ed7-a5bd-6dd106c4278d"
+              ]
+            }
+          ],
+          "total": 100.0,
+          "held": false,
+          "arithmetic_verification": {
+            "version": "discord-arithmetic-v1",
+            "status": "checked_supported_claims",
+            "checks": [
+              {
+                "kind": "completion_rate",
+                "claim": "1주차16/20=80%",
+                "status": "matched",
+                "expected": "80",
+                "reported": "80",
+                "evidence_refs": [
+                  "execution:401bae9f-232b-4880-b527-88db07d67901",
+                  "execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+                ],
+                "reason": "실제 분자/분모로 계산한 값은 80.0000입니다.",
+                "improvement": "선택한 두 주의 분자·분모와 계산 기준을 확인하고 해당 주장·결론을 수정하세요."
+              },
+              {
+                "kind": "numerator",
+                "claim": "1주차16/20=80%",
+                "status": "matched",
+                "expected": "16",
+                "reported": "16",
+                "evidence_refs": [
+                  "execution:401bae9f-232b-4880-b527-88db07d67901",
+                  "execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+                ],
+                "reason": "실제 분자/분모로 계산한 값은 16.0000입니다.",
+                "improvement": "선택한 두 주의 분자·분모와 계산 기준을 확인하고 해당 주장·결론을 수정하세요."
+              },
+              {
+                "kind": "denominator",
+                "claim": "1주차16/20=80%",
+                "status": "matched",
+                "expected": "20",
+                "reported": "20",
+                "evidence_refs": [
+                  "execution:401bae9f-232b-4880-b527-88db07d67901",
+                  "execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+                ],
+                "reason": "실제 분자/분모로 계산한 값은 20.0000입니다.",
+                "improvement": "선택한 두 주의 분자·분모와 계산 기준을 확인하고 해당 주장·결론을 수정하세요."
+              },
+              {
+                "kind": "completion_rate",
+                "claim": "2주차14/20=70%",
+                "status": "matched",
+                "expected": "70",
+                "reported": "70",
+                "evidence_refs": [
+                  "execution:401bae9f-232b-4880-b527-88db07d67901",
+                  "execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+                ],
+                "reason": "실제 분자/분모로 계산한 값은 70.0000입니다.",
+                "improvement": "선택한 두 주의 분자·분모와 계산 기준을 확인하고 해당 주장·결론을 수정하세요."
+              },
+              {
+                "kind": "numerator",
+                "claim": "2주차14/20=70%",
+                "status": "matched",
+                "expected": "14",
+                "reported": "14",
+                "evidence_refs": [
+                  "execution:401bae9f-232b-4880-b527-88db07d67901",
+                  "execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+                ],
+                "reason": "실제 분자/분모로 계산한 값은 14.0000입니다.",
+                "improvement": "선택한 두 주의 분자·분모와 계산 기준을 확인하고 해당 주장·결론을 수정하세요."
+              },
+              {
+                "kind": "denominator",
+                "claim": "2주차14/20=70%",
+                "status": "matched",
+                "expected": "20",
+                "reported": "20",
+                "evidence_refs": [
+                  "execution:401bae9f-232b-4880-b527-88db07d67901",
+                  "execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+                ],
+                "reason": "실제 분자/분모로 계산한 값은 20.0000입니다.",
+                "improvement": "선택한 두 주의 분자·분모와 계산 기준을 확인하고 해당 주장·결론을 수정하세요."
+              },
+              {
+                "kind": "percentage_point_change",
+                "claim": "전체 완료율은10%p 하락",
+                "status": "matched",
+                "expected": "-10",
+                "reported": "-10",
+                "evidence_refs": [
+                  "execution:401bae9f-232b-4880-b527-88db07d67901",
+                  "execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+                ],
+                "reason": "실제 분자/분모로 계산한 값은 -10.0000입니다.",
+                "improvement": "선택한 두 주의 분자·분모와 계산 기준을 확인하고 해당 주장·결론을 수정하세요."
+              },
+              {
+                "kind": "composition_only",
+                "claim": "1주차 채널 비율을 고정하고 구성만 바꾸면 전체80%가 된다.",
+                "status": "matched",
+                "expected": "80",
+                "reported": "80",
+                "evidence_refs": [
+                  "execution:401bae9f-232b-4880-b527-88db07d67901",
+                  "execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+                ],
+                "reason": "1주차 채널 비율을 고정하고 2주차 구성만 적용하면 80.0000%입니다. 실제 2주차는 70.0000%입니다. 구성만으로 설명한다는 주장을 이 기준으로 확인하세요.",
+                "improvement": "선택한 두 주의 분자·분모와 계산 기준을 확인하고 해당 주장·결론을 수정하세요."
+              }
+            ],
+            "errors": [],
+            "notes": [],
+            "scope": "선택한 완전한 신규 가입자 완료율 근거의 명확한 두 주 수치·증감·구성 확정 주장. 다른 지표·모호한 표현은 미검산."
+          },
+          "help_history": [],
+          "recommendation": {
+            "practice_criteria": [],
+            "evidence": [],
+            "unobserved": []
+          },
+          "human_review": "pending",
+          "response_repair": {
+            "attempts": 1,
+            "original_validation_reason": "unknown_evidence_ref",
+            "grades_preserved": true
+          }
+        },
+        "held": false,
+        "comparability_review": "pending",
+        "before_help": {
+          "problem_definition": 4,
+          "metric_design": 4,
+          "hypothesis_review": 4,
+          "evidence_interpretation": 4,
+          "decision_limits": 4
+        },
+        "after_help": {},
+        "before_help_message_ids": [
+          "1a4973dc-b489-43a5-a84e-e5105ef922f4",
+          "06d97fe1-b403-4e3c-8049-0a4a3bb8e6f8",
+          "afe9c7a5-71ec-46e1-898b-44915ff655a4",
+          "c734015d-0e21-493f-bb9e-ef871a234603",
+          "4d556fcc-f093-4e58-a75f-08702ed4d3a9",
+          "7646ea17-6b0d-4418-a080-2166e8e6b51b",
+          "d51b7d0a-6f9b-40a1-b2ce-4ae4e6730c14",
+          "6d8b49ce-e306-42f9-98f8-cebfb50698d0",
+          "8756fad6-d555-42bf-8b29-98ad9425a8f2",
+          "50e571ff-63f7-4ed7-a5bd-6dd106c4278d",
+          "c57509e2-1f66-49bc-8398-2431aa21aacf"
+        ],
+        "at": "2026-10-06T08:11:39.464230+00:00"
+      }
+    ],
+    "messages": [
+      {
+        "at": "2026-10-06T08:08:54.839388+00:00",
+        "id": "e4d9a323-bb4d-4d28-ba3e-940e836da322",
+        "role": "stakeholder",
+        "text": "신규 가입자의 튜토리얼 3단계 완료율을 두 주와 유입 채널별로 비교하고, 신뢰성과 대안 설명을 점검해 우선 대응을 제안하세요.",
+        "event_id": "start",
+        "help_type": null
+      },
+      {
+        "at": "2026-10-06T08:08:54.867592+00:00",
+        "id": "1a4973dc-b489-43a5-a84e-e5105ef922f4",
+        "role": "user",
+        "text": "UTC 2026-09-01 포함부터 2026-09-08 제외까지 가입한 신규 고유 사용자 전체를 분모로, 이들 중 UTC 2026-09-01 포함부터 2026-10-01 제외까지 튜토리얼 3단계를 완료한 고유 사용자를 분자로 완료율을 유입 채널별로 조회해줘. 사용자 단위이고 재도전 중복은 제거하며 다른 필터는 없어.",
+        "event_id": "164e0412f9c449a48c46ff5578211adc",
+        "help_type": null
+      },
+      {
+        "at": "2026-10-06T08:09:00.095604+00:00",
+        "id": "30ddcca5-db17-49b3-a552-30699bbc7721",
+        "role": "mentor",
+        "text": "멘토: 이 비교를 선택한 이유와 검토할 가설을 설명해주세요. 어떤 결과가 나오면 가설을 수정하거나 기각하겠습니까? 이미 설명한 내용은 보고에도 연결할 수 있습니다.\n이 메시지에 답장하거나 @DA-Agent로 답해주세요. 메시지를 읽을 수 없으면 /answer를 사용하세요. 새 조회는 /query로 시작하세요.",
+        "event_id": "164e0412f9c449a48c46ff5578211adc",
+        "help_type": "request_confirmation"
+      },
+      {
+        "at": "2026-10-06T08:09:00.119004+00:00",
+        "id": "06d97fe1-b403-4e3c-8049-0a4a3bb8e6f8",
+        "role": "user",
+        "text": "UTC 2026-09-08 포함부터 2026-09-15 제외까지 가입한 신규 고유 사용자 전체를 분모로, 이들 중 UTC 2026-09-01 포함부터 2026-10-01 제외까지 튜토리얼 3단계를 완료한 고유 사용자를 분자로 완료율을 유입 채널별로 조회해줘. 사용자 단위이고 재도전 중복은 제거하며 다른 필터는 없어.",
+        "event_id": "85c3ca81331c4ee5bcb9a3fd192b633c",
+        "help_type": null
+      },
+      {
+        "at": "2026-10-06T08:09:19.845096+00:00",
+        "id": "afe9c7a5-71ec-46e1-898b-44915ff655a4",
+        "role": "user",
+        "text": "",
+        "event_id": "9342d7785b2c496b8d72fce9cf054d67",
+        "help_type": null
+      },
+      {
+        "at": "2026-10-06T08:09:19.868567+00:00",
+        "id": "c734015d-0e21-493f-bb9e-ef871a234603",
+        "role": "user",
+        "text": "",
+        "event_id": "e52db1a1eb514af18a9a6715cbf296a5",
+        "help_type": null
+      },
+      {
+        "at": "2026-10-06T08:09:19.892592+00:00",
+        "id": "4d556fcc-f093-4e58-a75f-08702ed4d3a9",
+        "role": "user",
+        "text": "업무 목표는 두 주 신규 가입자의 튜토리얼3단계 완료율 변화를 확인하고 우선 대응을 정하는 것이다. UTC 가입 기간은9월1~7일 및8~14일이고 완료 관측은10월1일 제외까지다. 분모는 신규 가입 고유 사용자, 분자는3단계 완료 고유 사용자다. 1주차16/20=80%. 2주차14/20=70%. 전체 완료율은10%p 하락했다. 1주차 채널 비율이 모두80%이지만 유입 구성만 바꾸면 전체70%가 된다. 채널 내 완료율 변화는 전체 하락에 기여하지 않는다. 구성 변화만으로 전체 하락을 완전히 설명한다. 관측은 인과를 증명하지 않는다. 재도전은 고유 사용자로 제거했고 실제 로그 누락은 확인 불가다. 표본40명으로 추가 로그와 표본 확인을 먼저 제안한다.",
+        "event_id": "ba7fcbb635c74ed2a7959758bfea7635",
+        "help_type": null
+      },
+      {
+        "at": "2026-10-06T08:09:19.892644+00:00",
+        "id": "141554e6-136c-4f35-9374-c328e88aca24",
+        "role": "stakeholder",
+        "text": "업무 담당자: 공개 업무 목표를 기준으로 제안한 대응의 우선순위와 실행 뒤 확인할 지표를 설명해주세요. 불확실한 설명은 어떻게 추가 확인하겠습니까?\n이 메시지에 답장하거나 @DA-Agent로 답해주세요. 메시지를 읽을 수 없으면 /answer를 사용하세요. 새 조회는 /query로 시작하세요.",
+        "event_id": "ba7fcbb635c74ed2a7959758bfea7635",
+        "help_type": null
+      },
+      {
+        "at": "2026-10-06T08:09:19.917790+00:00",
+        "id": "7646ea17-6b0d-4418-a080-2166e8e6b51b",
+        "role": "user",
+        "text": "현재 자료로 인과는 확정하지 않고 수집 상태와 기기/버전 로그를 먼저 확인한다.",
+        "event_id": "6eb70b52ab7a4853b980120c38a7ce07",
+        "help_type": null
+      },
+      {
+        "at": "2026-10-06T08:09:19.941602+00:00",
+        "id": "d51b7d0a-6f9b-40a1-b2ce-4ae4e6730c14",
+        "role": "user",
+        "text": "",
+        "event_id": "603f5c051ec843da907deba00b446acb",
+        "help_type": null
+      },
+      {
+        "at": "2026-10-06T08:10:31.541065+00:00",
+        "id": "6d8b49ce-e306-42f9-98f8-cebfb50698d0",
+        "role": "user",
+        "text": "업무 목표는 두 주 신규 가입자의 튜토리얼3단계 완료율 변화를 확인하고 우선 대응을 정하는 것이다. UTC 가입 기간은9월1~7일 및8~14일이고 완료 관측은10월1일 제외까지다. 분모는 신규 가입 고유 사용자, 분자는3단계 완료 고유 사용자다. 1주차16/20=80%. 2주차14/20=70%. 전체 완료율은10%p 하락했다. 1주차 채널 비율을 고정하고 구성만 바꾸면 전체80%가 된다. organic은80%로 유지하고 ads는80%에서66.67%로 낮아졌다. 구성 변화만으로 전체 하락을 설명할 수 없다. ads 집단의 관측 변화도 확인해야 한다. 관측은 인과를 증명하지 않는다. 재도전은 고유 사용자로 제거했고 실제 로그 누락은 확인 불가다. 표본40명으로 추가 로그와 표본 확인을 먼저 제안한다.",
+        "event_id": "64d16bf103c9452aaffdf82fbe1b78f1",
+        "help_type": null
+      },
+      {
+        "at": "2026-10-06T08:10:31.541155+00:00",
+        "id": "e163d3a1-67fc-4a62-909d-0bb55d32f968",
+        "role": "stakeholder",
+        "text": "업무 담당자: 공개 업무 목표를 기준으로 제안한 대응의 우선순위와 실행 뒤 확인할 지표를 설명해주세요. 불확실한 설명은 어떻게 추가 확인하겠습니까?\n이 메시지에 답장하거나 @DA-Agent로 답해주세요. 메시지를 읽을 수 없으면 /answer를 사용하세요. 새 조회는 /query로 시작하세요.",
+        "event_id": "64d16bf103c9452aaffdf82fbe1b78f1",
+        "help_type": null
+      },
+      {
+        "at": "2026-10-06T08:10:31.567007+00:00",
+        "id": "8756fad6-d555-42bf-8b29-98ad9425a8f2",
+        "role": "user",
+        "text": "",
+        "event_id": "e2eb449145ca4746b2148d49723d1732",
+        "help_type": null
+      },
+      {
+        "at": "2026-10-06T08:10:31.594454+00:00",
+        "id": "50e571ff-63f7-4ed7-a5bd-6dd106c4278d",
+        "role": "user",
+        "text": "추가 로그와 충분한 표본을 확인하고 필요하면 무작위 실험으로 완료율 및 D7·오류율을 검증한다.",
+        "event_id": "b2281c70fc7a4e7fa3d21f03103f7d9e",
+        "help_type": null
+      },
+      {
+        "id": "c57509e2-1f66-49bc-8398-2431aa21aacf",
+        "event_id": "65807fc7ab334cadbbf383469a2ff8ca",
+        "role": "user",
+        "text": "",
+        "at": "2026-10-06T08:10:31.620296+00:00",
+        "help_type": null
+      }
+    ],
+    "questions": [
+      {
+        "at": "2026-10-06T08:09:00.095596+00:00",
+        "id": "0991c622-4f70-4a1a-9dd4-cba8cd25e6fa",
+        "kind": "analysis_reason",
+        "text": "멘토: 이 비교를 선택한 이유와 검토할 가설을 설명해주세요. 어떤 결과가 나오면 가설을 수정하거나 기각하겠습니까? 이미 설명한 내용은 보고에도 연결할 수 있습니다.\n이 메시지에 답장하거나 @DA-Agent로 답해주세요. 메시지를 읽을 수 없으면 /answer를 사용하세요. 새 조회는 /query로 시작하세요.",
+        "state": "superseded",
+        "discord_message_ids": []
+      },
+      {
+        "at": "2026-10-06T08:09:19.892639+00:00",
+        "id": "c8dc7213-d15d-4b72-bbdd-daa58b831d26",
+        "kind": "followup",
+        "text": "업무 담당자: 공개 업무 목표를 기준으로 제안한 대응의 우선순위와 실행 뒤 확인할 지표를 설명해주세요. 불확실한 설명은 어떻게 추가 확인하겠습니까?\n이 메시지에 답장하거나 @DA-Agent로 답해주세요. 메시지를 읽을 수 없으면 /answer를 사용하세요. 새 조회는 /query로 시작하세요.",
+        "state": "answered",
+        "discord_message_ids": []
+      },
+      {
+        "at": "2026-10-06T08:10:31.541149+00:00",
+        "id": "c75870f3-148f-46b3-bb27-5d50bb9a56a7",
+        "kind": "followup",
+        "text": "업무 담당자: 공개 업무 목표를 기준으로 제안한 대응의 우선순위와 실행 뒤 확인할 지표를 설명해주세요. 불확실한 설명은 어떻게 추가 확인하겠습니까?\n이 메시지에 답장하거나 @DA-Agent로 답해주세요. 메시지를 읽을 수 없으면 /answer를 사용하세요. 새 조회는 /query로 시작하세요.",
+        "state": "answered",
+        "discord_message_ids": []
+      }
+    ],
+    "telemetry": [
+      {
+        "at": "2026-10-06T08:08:54.873542+00:00",
+        "cost": null,
+        "kind": "model",
+        "state": "completed",
+        "usage": {
+          "input_tokens": 1537,
+          "total_tokens": 1724,
+          "output_tokens": 187
+        },
+        "reason": null,
+        "duration_ms": 5197
+      },
+      {
+        "at": "2026-10-06T08:09:00.095532+00:00",
+        "kind": "sql",
+        "state": "success",
+        "attempts": 1,
+        "duration_ms": 11
+      },
+      {
+        "at": "2026-10-06T08:09:00.125356+00:00",
+        "cost": null,
+        "kind": "model",
+        "state": "completed",
+        "usage": {
+          "input_tokens": 1663,
+          "total_tokens": 1786,
+          "output_tokens": 123
+        },
+        "reason": null,
+        "duration_ms": 19674
+      },
+      {
+        "at": "2026-10-06T08:09:19.814155+00:00",
+        "kind": "sql",
+        "state": "success",
+        "attempts": 1,
+        "duration_ms": 11
+      },
+      {
+        "at": "2026-10-06T08:09:19.953908+00:00",
+        "cost": null,
+        "kind": "model",
+        "state": "completed",
+        "usage": {
+          "input_tokens": 9197,
+          "total_tokens": 10038,
+          "output_tokens": 841
+        },
+        "reason": null,
+        "duration_ms": 35043
+      },
+      {
+        "at": "2026-10-06T08:09:55.009173+00:00",
+        "cost": null,
+        "kind": "model",
+        "state": "completed",
+        "usage": {
+          "input_tokens": 7166,
+          "total_tokens": 8075,
+          "output_tokens": 909
+        },
+        "reason": null,
+        "duration_ms": 36492
+      },
+      {
+        "at": "2026-10-06T08:10:31.567052+00:00",
+        "code": "followup_missing",
+        "kind": "action_error",
+        "action": "submit"
+      },
+      {
+        "kind": "model",
+        "at": "2026-10-06T08:10:31.626701+00:00",
+        "state": "completed",
+        "cost": null,
+        "usage": {
+          "input_tokens": 9769,
+          "output_tokens": 659,
+          "total_tokens": 10428
+        },
+        "reason": null,
+        "duration_ms": 31269
+      },
+      {
+        "kind": "model",
+        "at": "2026-10-06T08:11:02.903442+00:00",
+        "state": "completed",
+        "cost": null,
+        "usage": {
+          "input_tokens": 8269,
+          "output_tokens": 896,
+          "total_tokens": 9165
+        },
+        "reason": null,
+        "duration_ms": 36550
+      }
+    ],
+    "thread_id": null,
+    "channel_id": "verification",
+    "conditions": {
+      "end": "2026-09-15",
+      "step": 3,
+      "unit": "user",
+      "start": "2026-09-08",
+      "metric": "tutorial_rate",
+      "filters": {},
+      "group_by": "channel",
+      "timezone": "UTC",
+      "event_end": "2026-10-01",
+      "numerator": "completed_users",
+      "denominator": "signup_users",
+      "event_start": "2026-09-01",
+      "period_basis": "explicit_dates"
+    },
+    "created_at": "2026-10-06T08:08:54.839360+00:00",
+    "difficulty": "advanced",
+    "executions": [
+      {
+        "at": "2026-10-06T08:09:00.095544+00:00",
+        "id": "401bae9f-232b-4880-b527-88db07d67901",
+        "sql": "SELECT u.channel AS group_value, COUNT(DISTINCT u.user_id) AS denominator, COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM tutorial_attempts a WHERE a.user_id=u.user_id AND a.step=3 AND a.completed IS TRUE AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-01' AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-10-01') THEN u.user_id END) AS numerator, 100.0 * COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM tutorial_attempts a WHERE a.user_id=u.user_id AND a.step=3 AND a.completed IS TRUE AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-01' AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-10-01') THEN u.user_id END) / NULLIF(COUNT(DISTINCT u.user_id),0) AS rate_percent FROM users u WHERE u.signup_date >= DATE '2026-09-01' AND u.signup_date < DATE '2026-09-08' GROUP BY u.channel ORDER BY u.channel",
+        "result": {
+          "rows": [
+            [
+              "ads",
+              5,
+              4,
+              "80.0000000000000000"
+            ],
+            [
+              "organic",
+              15,
+              12,
+              "80.0000000000000000"
+            ]
+          ],
+          "error": null,
+          "status": "success",
+          "columns": [
+            {
+              "name": "group_value",
+              "type": "text"
+            },
+            {
+              "name": "denominator",
+              "type": "int8"
+            },
+            {
+              "name": "numerator",
+              "type": "int8"
+            },
+            {
+              "name": "rate_percent",
+              "type": "numeric"
+            }
+          ],
+          "truncated": false,
+          "duration_ms": 11,
+          "executed_at": "2026-10-06T08:09:00.084130Z",
+          "execution_id": "401bae9f-232b-4880-b527-88db07d67901",
+          "result_complete": true,
+          "total_row_count": 2,
+          "preview_row_count": 2,
+          "expires_in_seconds": 600
+        },
+        "status": "success",
+        "query_id": "0cd56a24-4a82-4b6f-8440-595a9141eea2",
+        "conditions": {
+          "end": "2026-09-08",
+          "step": 3,
+          "unit": "user",
+          "start": "2026-09-01",
+          "metric": "tutorial_rate",
+          "filters": {},
+          "group_by": "channel",
+          "timezone": "UTC",
+          "event_end": "2026-10-01",
+          "numerator": "completed_users",
+          "denominator": "signup_users",
+          "event_start": "2026-09-01",
+          "period_basis": "explicit_dates"
+        },
+        "data_version": "tutorial-baseline-v1",
+        "execution_id": "401bae9f-232b-4880-b527-88db07d67901"
+      },
+      {
+        "at": "2026-10-06T08:09:19.814167+00:00",
+        "id": "1b95a95a-6327-47fb-bcfb-70323b4c2fd6",
+        "sql": "SELECT u.channel AS group_value, COUNT(DISTINCT u.user_id) AS denominator, COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM tutorial_attempts a WHERE a.user_id=u.user_id AND a.step=3 AND a.completed IS TRUE AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-01' AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-10-01') THEN u.user_id END) AS numerator, 100.0 * COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM tutorial_attempts a WHERE a.user_id=u.user_id AND a.step=3 AND a.completed IS TRUE AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-01' AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-10-01') THEN u.user_id END) / NULLIF(COUNT(DISTINCT u.user_id),0) AS rate_percent FROM users u WHERE u.signup_date >= DATE '2026-09-08' AND u.signup_date < DATE '2026-09-15' GROUP BY u.channel ORDER BY u.channel",
+        "result": {
+          "rows": [
+            [
+              "ads",
+              15,
+              10,
+              "66.6666666666666667"
+            ],
+            [
+              "organic",
+              5,
+              4,
+              "80.0000000000000000"
+            ]
+          ],
+          "error": null,
+          "status": "success",
+          "columns": [
+            {
+              "name": "group_value",
+              "type": "text"
+            },
+            {
+              "name": "denominator",
+              "type": "int8"
+            },
+            {
+              "name": "numerator",
+              "type": "int8"
+            },
+            {
+              "name": "rate_percent",
+              "type": "numeric"
+            }
+          ],
+          "truncated": false,
+          "duration_ms": 11,
+          "executed_at": "2026-10-06T08:09:19.803313Z",
+          "execution_id": "1b95a95a-6327-47fb-bcfb-70323b4c2fd6",
+          "result_complete": true,
+          "total_row_count": 2,
+          "preview_row_count": 2,
+          "expires_in_seconds": 600
+        },
+        "status": "success",
+        "query_id": "a28be7fe-b5eb-455d-8a37-2a7b8658e521",
+        "conditions": {
+          "end": "2026-09-15",
+          "step": 3,
+          "unit": "user",
+          "start": "2026-09-08",
+          "metric": "tutorial_rate",
+          "filters": {},
+          "group_by": "channel",
+          "timezone": "UTC",
+          "event_end": "2026-10-01",
+          "numerator": "completed_users",
+          "denominator": "signup_users",
+          "event_start": "2026-09-01",
+          "period_basis": "explicit_dates"
+        },
+        "data_version": "tutorial-baseline-v1",
+        "execution_id": "1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+      }
+    ],
+    "help_level": "independent",
+    "session_id": "4a5c9544-4f74-4083-a2aa-12d479476f6e",
+    "evaluations": [
+      {
+        "at": "2026-10-06T08:10:31.503070+00:00",
+        "id": "0d46a1ee-6fcc-4b40-8dae-6c569035e6cc",
+        "growth": {
+          "count": 0,
+          "status": "성장 판단 자료 부족",
+          "assisted": [],
+          "excluded": [
+            {
+              "reason": "시스템 보류/비교 검토 미완료/도움 전 근거 부족",
+              "task_id": "discord-tutorial-baseline"
+            }
+          ]
+        },
+        "result": {
+          "held": false,
+          "total": 75.0,
+          "criteria": [
+            {
+              "id": "problem_definition",
+              "name": "문제 정의",
+              "grade": 4,
+              "reason": "업무 목표, 대상(신규 가입자), 기간(9/1~7, 9/8~14), 지표 정의(분모/분자)를 명확히 연결하여 기술하였습니다.",
+              "improvement": "공개 상위 조건 충족으로 판정됐습니다. 다음 과제에서 추가 근거와 적용 한계를 다시 확인하세요.",
+              "evidence_refs": [
+                "report:1"
+              ]
+            },
+            {
+              "id": "metric_design",
+              "name": "지표·비교 설계",
+              "grade": 4,
+              "reason": "분모를 신규 가입 고유 사용자, 분자를 3단계 완료 고유 사용자로 정의하였으며, 재도전 중복 제거 및 관측 종료일 기준을 적절히 반영하였습니다.",
+              "improvement": "공개 상위 조건 충족으로 판정됐습니다. 다음 과제에서 추가 근거와 적용 한계를 다시 확인하세요.",
+              "evidence_refs": [
+                "report:1",
+                "execution:401bae9f-232b-4880-b527-88db07d67901",
+                "execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+              ]
+            },
+            {
+              "id": "hypothesis_review",
+              "name": "가설·대안 검토",
+              "grade": 2,
+              "reason": "유입 구성 변화가 전체 하락을 설명한다는 가설을 제시했으나, 검산 결과 1주차 채널 비율을 유지한 채 2주차 구성만 적용했을 때의 기대값은 80%이므로, 실제 2주차 수치인 70%를 구성 변화만으로 완전히 설명할 수 없다는 점에서 논리적 결함이 있습니다.",
+              "improvement": "구성 변화(Mix effect)가 전체 지표 변화에 미치는 영향을 다시 계산하여, 구성 변화로 설명 가능한 부분과 채널별 자체 완료율 변화(Rate effect)로 인한 부분을 분리하여 검토하십시오.",
+              "evidence_refs": [
+                "report:1"
+              ]
+            },
+            {
+              "id": "evidence_interpretation",
+              "name": "근거 해석",
+              "grade": 1,
+              "reason": "공개 실행 근거와 보고 주장의 계산 불일치: 1주차 채널 비율을 고정하고 2주차 구성만 적용하면 80.0000%입니다. 실제 2주차는 70.0000%입니다. 구성만으로 설명한다는 주장을 이 기준으로 확인하세요.",
+              "improvement": "선택한 두 주의 분자·분모와 계산 기준을 확인하고 해당 주장·결론을 수정하세요.",
+              "evidence_refs": [
+                "report:1",
+                "execution:401bae9f-232b-4880-b527-88db07d67901",
+                "execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+              ],
+              "provider_grade": 1,
+              "provider_reason": "구성 변화만으로 하락을 완전히 설명한다는 결론을 내렸으나, 이는 산술적 검증 결과와 일치하지 않는 잘못된 해석입니다. (구성 변화 시 기대치는 80%이나 실제는 70%임)",
+              "verification_source": "discord-arithmetic-v1",
+              "provider_improvement": "제시된 데이터와 계산된 수치 사이의 모순을 확인하고, 구성 효과와 채널별 효과를 구분하여 정확하게 해석하십시오."
+            },
+            {
+              "id": "decision_limits",
+              "name": "한계·의사결정",
+              "grade": 4,
+              "reason": "관측 데이터가 인과를 증명할 수 없음을 명시하였고, 표본 크기의 한계와 수집 상태(기기/버전 로그) 확인을 우선순위로 제안하여 불확실성에 대응하였습니다.",
+              "improvement": "공개 상위 조건 충족으로 판정됐습니다. 다음 과제에서 추가 근거와 적용 한계를 다시 확인하세요.",
+              "evidence_refs": [
+                "report:1",
+                "message:7646ea17-6b0d-4418-a080-2166e8e6b51b"
+              ]
+            }
+          ],
+          "help_history": [],
+          "human_review": "pending",
+          "recommendation": {
+            "evidence": [
+              [
+                "report:1"
+              ],
+              [
+                "report:1",
+                "execution:401bae9f-232b-4880-b527-88db07d67901",
+                "execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+              ]
+            ],
+            "unobserved": [],
+            "practice_criteria": [
+              "hypothesis_review",
+              "evidence_interpretation"
+            ]
+          },
+          "rubric_version": "discord-analysis-v1",
+          "response_repair": {
+            "attempts": 1,
+            "grades_preserved": true,
+            "original_validation_reason": "unknown_evidence_ref"
+          },
+          "arithmetic_verification": {
+            "notes": [],
+            "scope": "선택한 완전한 신규 가입자 완료율 근거의 명확한 두 주 수치·증감·구성 확정 주장. 다른 지표·모호한 표현은 미검산.",
+            "checks": [
+              {
+                "kind": "completion_rate",
+                "claim": "1주차16/20=80%",
+                "reason": "실제 분자/분모로 계산한 값은 80.0000입니다.",
+                "status": "matched",
+                "expected": "80",
+                "reported": "80",
+                "improvement": "선택한 두 주의 분자·분모와 계산 기준을 확인하고 해당 주장·결론을 수정하세요.",
+                "evidence_refs": [
+                  "execution:401bae9f-232b-4880-b527-88db07d67901",
+                  "execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+                ]
+              },
+              {
+                "kind": "numerator",
+                "claim": "1주차16/20=80%",
+                "reason": "실제 분자/분모로 계산한 값은 16.0000입니다.",
+                "status": "matched",
+                "expected": "16",
+                "reported": "16",
+                "improvement": "선택한 두 주의 분자·분모와 계산 기준을 확인하고 해당 주장·결론을 수정하세요.",
+                "evidence_refs": [
+                  "execution:401bae9f-232b-4880-b527-88db07d67901",
+                  "execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+                ]
+              },
+              {
+                "kind": "denominator",
+                "claim": "1주차16/20=80%",
+                "reason": "실제 분자/분모로 계산한 값은 20.0000입니다.",
+                "status": "matched",
+                "expected": "20",
+                "reported": "20",
+                "improvement": "선택한 두 주의 분자·분모와 계산 기준을 확인하고 해당 주장·결론을 수정하세요.",
+                "evidence_refs": [
+                  "execution:401bae9f-232b-4880-b527-88db07d67901",
+                  "execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+                ]
+              },
+              {
+                "kind": "completion_rate",
+                "claim": "2주차14/20=70%",
+                "reason": "실제 분자/분모로 계산한 값은 70.0000입니다.",
+                "status": "matched",
+                "expected": "70",
+                "reported": "70",
+                "improvement": "선택한 두 주의 분자·분모와 계산 기준을 확인하고 해당 주장·결론을 수정하세요.",
+                "evidence_refs": [
+                  "execution:401bae9f-232b-4880-b527-88db07d67901",
+                  "execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+                ]
+              },
+              {
+                "kind": "numerator",
+                "claim": "2주차14/20=70%",
+                "reason": "실제 분자/분모로 계산한 값은 14.0000입니다.",
+                "status": "matched",
+                "expected": "14",
+                "reported": "14",
+                "improvement": "선택한 두 주의 분자·분모와 계산 기준을 확인하고 해당 주장·결론을 수정하세요.",
+                "evidence_refs": [
+                  "execution:401bae9f-232b-4880-b527-88db07d67901",
+                  "execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+                ]
+              },
+              {
+                "kind": "denominator",
+                "claim": "2주차14/20=70%",
+                "reason": "실제 분자/분모로 계산한 값은 20.0000입니다.",
+                "status": "matched",
+                "expected": "20",
+                "reported": "20",
+                "improvement": "선택한 두 주의 분자·분모와 계산 기준을 확인하고 해당 주장·결론을 수정하세요.",
+                "evidence_refs": [
+                  "execution:401bae9f-232b-4880-b527-88db07d67901",
+                  "execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+                ]
+              },
+              {
+                "kind": "percentage_point_change",
+                "claim": "전체 완료율은10%p 하락",
+                "reason": "실제 분자/분모로 계산한 값은 -10.0000입니다.",
+                "status": "matched",
+                "expected": "-10",
+                "reported": "-10",
+                "improvement": "선택한 두 주의 분자·분모와 계산 기준을 확인하고 해당 주장·결론을 수정하세요.",
+                "evidence_refs": [
+                  "execution:401bae9f-232b-4880-b527-88db07d67901",
+                  "execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+                ]
+              },
+              {
+                "kind": "composition_only",
+                "claim": "1주차 채널 비율이 모두80%이지만 유입 구성만 바꾸면 전체70%가 된다.",
+                "reason": "1주차 채널 비율을 고정하고 2주차 구성만 적용하면 80.0000%입니다. 실제 2주차는 70.0000%입니다. 구성만으로 설명한다는 주장을 이 기준으로 확인하세요.",
+                "status": "error",
+                "expected": "80",
+                "reported": "70",
+                "improvement": "선택한 두 주의 분자·분모와 계산 기준을 확인하고 해당 주장·결론을 수정하세요.",
+                "evidence_refs": [
+                  "execution:401bae9f-232b-4880-b527-88db07d67901",
+                  "execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+                ]
+              },
+              {
+                "kind": "composition_only",
+                "claim": "구성 변화만으로 전체 하락을 완전히 설명한다.",
+                "reason": "1주차 채널 비율을 고정하고 2주차 구성만 적용하면 80.0000%입니다. 실제 2주차는 70.0000%입니다. 구성만으로 설명한다는 주장을 이 기준으로 확인하세요.",
+                "status": "error",
+                "expected": "80",
+                "reported": "70",
+                "improvement": "선택한 두 주의 분자·분모와 계산 기준을 확인하고 해당 주장·결론을 수정하세요.",
+                "evidence_refs": [
+                  "execution:401bae9f-232b-4880-b527-88db07d67901",
+                  "execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+                ]
+              }
+            ],
+            "errors": [
+              {
+                "kind": "composition_only",
+                "claim": "1주차 채널 비율이 모두80%이지만 유입 구성만 바꾸면 전체70%가 된다.",
+                "reason": "1주차 채널 비율을 고정하고 2주차 구성만 적용하면 80.0000%입니다. 실제 2주차는 70.0000%입니다. 구성만으로 설명한다는 주장을 이 기준으로 확인하세요.",
+                "status": "error",
+                "expected": "80",
+                "reported": "70",
+                "improvement": "선택한 두 주의 분자·분모와 계산 기준을 확인하고 해당 주장·결론을 수정하세요.",
+                "evidence_refs": [
+                  "execution:401bae9f-232b-4880-b527-88db07d67901",
+                  "execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+                ]
+              },
+              {
+                "kind": "composition_only",
+                "claim": "구성 변화만으로 전체 하락을 완전히 설명한다.",
+                "reason": "1주차 채널 비율을 고정하고 2주차 구성만 적용하면 80.0000%입니다. 실제 2주차는 70.0000%입니다. 구성만으로 설명한다는 주장을 이 기준으로 확인하세요.",
+                "status": "error",
+                "expected": "80",
+                "reported": "70",
+                "improvement": "선택한 두 주의 분자·분모와 계산 기준을 확인하고 해당 주장·결론을 수정하세요.",
+                "evidence_refs": [
+                  "execution:401bae9f-232b-4880-b527-88db07d67901",
+                  "execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+                ]
+              }
+            ],
+            "status": "errors_found",
+            "version": "discord-arithmetic-v1"
+          }
+        },
+        "event_id": "603f5c051ec843da907deba00b446acb",
+        "report_id": "cbcc67e0-e520-4ed4-b208-a88714313d01"
+      },
+      {
+        "id": "2d1e1524-56b6-49f8-9917-1e29a6badff0",
+        "report_id": "42cb7e72-3ce4-408a-8392-11f58b0407ff",
+        "event_id": "65807fc7ab334cadbbf383469a2ff8ca",
+        "at": "2026-10-06T08:11:39.453874+00:00",
+        "result": {
+          "rubric_version": "discord-analysis-v1",
+          "criteria": [
+            {
+              "id": "problem_definition",
+              "name": "문제 정의",
+              "weight": 20,
+              "grade": 4,
+              "reason": "업무 목표, 분석 대상(두 주 신규 가입자), 기간(9월 1~14일 및 관측 종료일), 질문(완료율 변화 및 대응)을 모두 정확히 정의하였습니다.",
+              "improvement": "공개 상위 조건 충족으로 판정됐습니다. 다음 과제에서 추가 근거와 적용 한계를 다시 확인하세요.",
+              "evidence_refs": [
+                "report:2"
+              ]
+            },
+            {
+              "id": "metric_design",
+              "name": "지표·비교 설계",
+              "weight": 25,
+              "grade": 4,
+              "reason": "분모(신규 가입 고유 사용자)와 분자(3단계 완료 고유 사용자)를 명확히 구분하였으며, 재도전 중복을 제거하는 등 지표 설계 요구사항을 완벽히 충족하였습니다.",
+              "improvement": "공개 상위 조건 충족으로 판정됐습니다. 다음 과제에서 추가 근거와 적용 한계를 다시 확인하세요.",
+              "evidence_refs": [
+                "report:2",
+                "execution:401bae9f-232b-4880-b527-88db07d67901",
+                "execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+              ]
+            },
+            {
+              "id": "hypothesis_review",
+              "name": "가설·대안 검토",
+              "weight": 20,
+              "grade": 4,
+              "reason": "구성 효과(Composition effect)를 계산하여 전체 하락이 유입 채널 비중 변화만으로는 설명되지 않음을 논리적으로 검증하였고, 이를 통해 기존 가설(구성 변화)을 기각하였습니다.",
+              "improvement": "공개 상위 조건 충족으로 판정됐습니다. 다음 과제에서 추가 근거와 적용 한계를 다시 확인하세요.",
+              "evidence_refs": [
+                "report:2"
+              ]
+            },
+            {
+              "id": "evidence_interpretation",
+              "name": "근거 해석",
+              "weight": 20,
+              "grade": 4,
+              "reason": "관측 결과가 인과를 증명하지 않는다는 점을 명시하였고, 데이터의 한계(로그 누락 가능성, 표본 크기)와 사실(수치적 변화)을 명확히 구분하여 해석하였습니다.",
+              "improvement": "공개 상위 조건 충족으로 판정됐습니다. 다음 과제에서 추가 근거와 적용 한계를 다시 확인하세요.",
+              "evidence_refs": [
+                "report:2"
+              ]
+            },
+            {
+              "id": "decision_limits",
+              "name": "한계·의사결정",
+              "weight": 15,
+              "grade": 4,
+              "reason": "불확실성을 인정하고, 단순한 추측 대신 추가 로그 확인과 표본 검증, 그리고 무작위 실험(RCT)을 통한 검증이라는 구체적이고 타당한 후속 조치를 제안하였습니다.",
+              "improvement": "공개 상위 조건 충족으로 판정됐습니다. 다음 과제에서 추가 근거와 적용 한계를 다시 확인하세요.",
+              "evidence_refs": [
+                "report:2",
+                "message:50e571ff-63f7-4ed7-a5bd-6dd106c4278d"
+              ]
+            }
+          ],
+          "total": 100.0,
+          "held": false,
+          "arithmetic_verification": {
+            "version": "discord-arithmetic-v1",
+            "status": "checked_supported_claims",
+            "checks": [
+              {
+                "kind": "completion_rate",
+                "claim": "1주차16/20=80%",
+                "status": "matched",
+                "expected": "80",
+                "reported": "80",
+                "evidence_refs": [
+                  "execution:401bae9f-232b-4880-b527-88db07d67901",
+                  "execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+                ],
+                "reason": "실제 분자/분모로 계산한 값은 80.0000입니다.",
+                "improvement": "선택한 두 주의 분자·분모와 계산 기준을 확인하고 해당 주장·결론을 수정하세요."
+              },
+              {
+                "kind": "numerator",
+                "claim": "1주차16/20=80%",
+                "status": "matched",
+                "expected": "16",
+                "reported": "16",
+                "evidence_refs": [
+                  "execution:401bae9f-232b-4880-b527-88db07d67901",
+                  "execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+                ],
+                "reason": "실제 분자/분모로 계산한 값은 16.0000입니다.",
+                "improvement": "선택한 두 주의 분자·분모와 계산 기준을 확인하고 해당 주장·결론을 수정하세요."
+              },
+              {
+                "kind": "denominator",
+                "claim": "1주차16/20=80%",
+                "status": "matched",
+                "expected": "20",
+                "reported": "20",
+                "evidence_refs": [
+                  "execution:401bae9f-232b-4880-b527-88db07d67901",
+                  "execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+                ],
+                "reason": "실제 분자/분모로 계산한 값은 20.0000입니다.",
+                "improvement": "선택한 두 주의 분자·분모와 계산 기준을 확인하고 해당 주장·결론을 수정하세요."
+              },
+              {
+                "kind": "completion_rate",
+                "claim": "2주차14/20=70%",
+                "status": "matched",
+                "expected": "70",
+                "reported": "70",
+                "evidence_refs": [
+                  "execution:401bae9f-232b-4880-b527-88db07d67901",
+                  "execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+                ],
+                "reason": "실제 분자/분모로 계산한 값은 70.0000입니다.",
+                "improvement": "선택한 두 주의 분자·분모와 계산 기준을 확인하고 해당 주장·결론을 수정하세요."
+              },
+              {
+                "kind": "numerator",
+                "claim": "2주차14/20=70%",
+                "status": "matched",
+                "expected": "14",
+                "reported": "14",
+                "evidence_refs": [
+                  "execution:401bae9f-232b-4880-b527-88db07d67901",
+                  "execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+                ],
+                "reason": "실제 분자/분모로 계산한 값은 14.0000입니다.",
+                "improvement": "선택한 두 주의 분자·분모와 계산 기준을 확인하고 해당 주장·결론을 수정하세요."
+              },
+              {
+                "kind": "denominator",
+                "claim": "2주차14/20=70%",
+                "status": "matched",
+                "expected": "20",
+                "reported": "20",
+                "evidence_refs": [
+                  "execution:401bae9f-232b-4880-b527-88db07d67901",
+                  "execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+                ],
+                "reason": "실제 분자/분모로 계산한 값은 20.0000입니다.",
+                "improvement": "선택한 두 주의 분자·분모와 계산 기준을 확인하고 해당 주장·결론을 수정하세요."
+              },
+              {
+                "kind": "percentage_point_change",
+                "claim": "전체 완료율은10%p 하락",
+                "status": "matched",
+                "expected": "-10",
+                "reported": "-10",
+                "evidence_refs": [
+                  "execution:401bae9f-232b-4880-b527-88db07d67901",
+                  "execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+                ],
+                "reason": "실제 분자/분모로 계산한 값은 -10.0000입니다.",
+                "improvement": "선택한 두 주의 분자·분모와 계산 기준을 확인하고 해당 주장·결론을 수정하세요."
+              },
+              {
+                "kind": "composition_only",
+                "claim": "1주차 채널 비율을 고정하고 구성만 바꾸면 전체80%가 된다.",
+                "status": "matched",
+                "expected": "80",
+                "reported": "80",
+                "evidence_refs": [
+                  "execution:401bae9f-232b-4880-b527-88db07d67901",
+                  "execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+                ],
+                "reason": "1주차 채널 비율을 고정하고 2주차 구성만 적용하면 80.0000%입니다. 실제 2주차는 70.0000%입니다. 구성만으로 설명한다는 주장을 이 기준으로 확인하세요.",
+                "improvement": "선택한 두 주의 분자·분모와 계산 기준을 확인하고 해당 주장·결론을 수정하세요."
+              }
+            ],
+            "errors": [],
+            "notes": [],
+            "scope": "선택한 완전한 신규 가입자 완료율 근거의 명확한 두 주 수치·증감·구성 확정 주장. 다른 지표·모호한 표현은 미검산."
+          },
+          "help_history": [],
+          "recommendation": {
+            "practice_criteria": [],
+            "evidence": [],
+            "unobserved": []
+          },
+          "human_review": "pending",
+          "response_repair": {
+            "attempts": 1,
+            "original_validation_reason": "unknown_evidence_ref",
+            "grades_preserved": true
+          }
+        },
+        "revision_comparison": {
+          "previous_evaluation_id": "0d46a1ee-6fcc-4b40-8dae-6c569035e6cc",
+          "previous_report_version": 1,
+          "report_version": 2,
+          "previous_total": 75.0,
+          "total": 100.0,
+          "criteria": [
+            {
+              "id": "problem_definition",
+              "before": 4,
+              "after": 4
+            },
+            {
+              "id": "metric_design",
+              "before": 4,
+              "after": 4
+            },
+            {
+              "id": "hypothesis_review",
+              "before": 2,
+              "after": 4
+            },
+            {
+              "id": "evidence_interpretation",
+              "before": 1,
+              "after": 4
+            },
+            {
+              "id": "decision_limits",
+              "before": 4,
+              "after": 4
+            }
+          ],
+          "previous_check_version": "discord-arithmetic-v1",
+          "check_version": "discord-arithmetic-v1",
+          "errors_before": 2,
+          "errors_after": 0,
+          "note": "동일 과제의 보고 수정 관측이며 학습 효과 입증은 아님"
+        },
+        "growth": {
+          "status": "성장 판단 자료 부족",
+          "count": 0,
+          "excluded": [
+            {
+              "task_id": "discord-tutorial-baseline",
+              "reason": "시스템 보류/비교 검토 미완료/도움 전 근거 부족"
+            },
+            {
+              "task_id": "discord-tutorial-baseline",
+              "reason": "시스템 보류/비교 검토 미완료/도움 전 근거 부족"
+            }
+          ],
+          "assisted": []
+        }
+      }
+    ],
+    "schema_name": "discord_5a701f1b2ec8493abbf2567d06e4d69b",
+    "data_version": "tutorial-baseline-v1",
+    "help_history": [],
+    "owner_user_id": "spec032-53dec0c3985c42ab9d0b684e99652bb5",
+    "pending_query": null,
+    "pending_question": null,
+    "selected_evidence": [
+      "401bae9f-232b-4880-b527-88db07d67901",
+      "1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+    ],
+    "direction_prompted": true
+  },
+  "first_submission": {
+    "evaluation_id": "0d46a1ee-6fcc-4b40-8dae-6c569035e6cc",
+    "report_id": "cbcc67e0-e520-4ed4-b208-a88714313d01",
+    "report_version": 1,
+    "session_id": "4a5c9544-4f74-4083-a2aa-12d479476f6e",
+    "guild_id": "verification",
+    "owner_user_id": "spec032-53dec0c3985c42ab9d0b684e99652bb5",
+    "post_name": "튜토리얼 완료율 변화와 우선 대응 · v1 · 4a5c9544-0d46a1ee",
+    "cards": [
+      {
+        "title": "제출 결과 요약",
+        "description": "튜토리얼 완료율 변화와 우선 대응\n제출·평가 기록을 저장했습니다. 평가 점수: 75.0/100 · 사람 검토 대기. /report로 수정 보고를 시작하고 새 후속 답변 뒤 재제출할 수 있습니다.\n보고 버전: 1 · 제출 시각 \\(UTC\\): 2026-10-06 08:10:31\n업무 목표: 신규 가입자의 튜토리얼 3단계 완료율을 두 주와 유입 채널별로 비교하고, 신뢰성과 대안 설명을 점검해 우선 대응을 제안하세요.\n평가는 공개 기준에 따른 모델 판정이며 학습 효과를 확정하지 않습니다.\n이 게시글은 DA-Result 채널에 접근할 수 있는 회원에게 공개됩니다.",
+        "source_url": "https://discord.com/channels/verification/None",
+        "score": 75.0,
+        "held": false
+      },
+      {
+        "title": "제출 보고서",
+        "description": "업무 목표는 두 주 신규 가입자의 튜토리얼3단계 완료율 변화를 확인하고 우선 대응을 정하는 것이다. UTC 가입 기간은9월1\\~7일 및8\\~14일이고 완료 관측은10월1일 제외까지다. 분모는 신규 가입 고유 사용자, 분자는3단계 완료 고유 사용자다. 1주차16/20=80%. 2주차14/20=70%. 전체 완료율은10%p 하락했다. 1주차 채널 비율이 모두80%이지만 유입 구성만 바꾸면 전체70%가 된다. 채널 내 완료율 변화는 전체 하락에 기여하지 않는다. 구성 변화만으로 전체 하락을 완전히 설명한다. 관측은 인과를 증명하지 않는다. 재도전은 고유 사용자로 제거했고 실제 로그 누락은 확인 불가다. 표본40명으로 추가 로그와 표본 확인을 먼저 제안한다."
+      },
+      {
+        "title": "업무 담당자 후속 질문에 대한 답변",
+        "description": "답변 1\n현재 자료로 인과는 확정하지 않고 수집 상태와 기기/버전 로그를 먼저 확인한다."
+      },
+      {
+        "title": "실행 근거 검산",
+        "description": "계산 불일치 확인\n선택한 완전한 신규 가입자 완료율 근거의 명확한 두 주 수치·증감·구성 확정 주장. 다른 지표·모호한 표현은 미검산.\n검산 정책: discord-arithmetic-v1\n확인한 주장: 9개 · 확인된 오류: 2개\n미검산 표현은 정답 확인을 의미하지 않습니다.\n\n보고 주장: 1주차 채널 비율이 모두80%이지만 유입 구성만 바꾸면 전체70%가 된다.\n검산 근거: 1주차 채널 비율을 고정하고 2주차 구성만 적용하면 80.0000%입니다. 실제 2주차는 70.0000%입니다. 구성만으로 설명한다는 주장을 이 기준으로 확인하세요.\n다음 수정: 선택한 두 주의 분자·분모와 계산 기준을 확인하고 해당 주장·결론을 수정하세요.\n저장 조회 근거: execution:401bae9f-232b-4880-b527-88db07d67901, execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6\n\n보고 주장: 구성 변화만으로 전체 하락을 완전히 설명한다.\n검산 근거: 1주차 채널 비율을 고정하고 2주차 구성만 적용하면 80.0000%입니다. 실제 2주차는 70.0000%입니다. 구성만으로 설명한다는 주장을 이 기준으로 확인하세요.\n다음 수정: 선택한 두 주의 분자·분모와 계산 기준을 확인하고 해당 주장·결론을 수정하세요.\n저장 조회 근거: execution:401bae9f-232b-4880-b527-88db07d67901, execution:1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+      },
+      {
+        "title": "문제 정의 · 등급 4/4 · 비중 20%",
+        "description": "평가 근거\n업무 목표, 대상\\(신규 가입자\\), 기간\\(9/1\\~7, 9/8\\~14\\), 지표 정의\\(분모/분자\\)를 명확히 연결하여 기술하였습니다.\n\n다음 개선 행동\n공개 상위 조건 충족으로 판정됐습니다. 다음 과제에서 추가 근거와 적용 한계를 다시 확인하세요.\n\n인용한 근거\n제출 보고서 버전: 1"
+      },
+      {
+        "title": "지표·비교 설계 · 등급 4/4 · 비중 25%",
+        "description": "평가 근거\n분모를 신규 가입 고유 사용자, 분자를 3단계 완료 고유 사용자로 정의하였으며, 재도전 중복 제거 및 관측 종료일 기준을 적절히 반영하였습니다.\n\n다음 개선 행동\n공개 상위 조건 충족으로 판정됐습니다. 다음 과제에서 추가 근거와 적용 한계를 다시 확인하세요.\n\n인용한 근거\n제출 보고서 버전: 1\n저장 조회 ID: 401bae9f-232b-4880-b527-88db07d67901\n저장 조회 ID: 1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+      },
+      {
+        "title": "가설·대안 검토 · 등급 2/4 · 비중 20%",
+        "description": "평가 근거\n유입 구성 변화가 전체 하락을 설명한다는 가설을 제시했으나, 검산 결과 1주차 채널 비율을 유지한 채 2주차 구성만 적용했을 때의 기대값은 80%이므로, 실제 2주차 수치인 70%를 구성 변화만으로 완전히 설명할 수 없다는 점에서 논리적 결함이 있습니다.\n\n다음 개선 행동\n구성 변화\\(Mix effect\\)가 전체 지표 변화에 미치는 영향을 다시 계산하여, 구성 변화로 설명 가능한 부분과 채널별 자체 완료율 변화\\(Rate effect\\)로 인한 부분을 분리하여 검토하십시오.\n\n인용한 근거\n제출 보고서 버전: 1"
+      },
+      {
+        "title": "근거 해석 · 등급 1/4 · 비중 20%",
+        "description": "평가 근거\n공개 실행 근거와 보고 주장의 계산 불일치: 1주차 채널 비율을 고정하고 2주차 구성만 적용하면 80.0000%입니다. 실제 2주차는 70.0000%입니다. 구성만으로 설명한다는 주장을 이 기준으로 확인하세요.\n\n다음 개선 행동\n선택한 두 주의 분자·분모와 계산 기준을 확인하고 해당 주장·결론을 수정하세요.\n\n인용한 근거\n제출 보고서 버전: 1\n저장 조회 ID: 401bae9f-232b-4880-b527-88db07d67901\n저장 조회 ID: 1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+      },
+      {
+        "title": "한계·의사결정 · 등급 4/4 · 비중 15%",
+        "description": "평가 근거\n관측 데이터가 인과를 증명할 수 없음을 명시하였고, 표본 크기의 한계와 수집 상태\\(기기/버전 로그\\) 확인을 우선순위로 제안하여 불확실성에 대응하였습니다.\n\n다음 개선 행동\n공개 상위 조건 충족으로 판정됐습니다. 다음 과제에서 추가 근거와 적용 한계를 다시 확인하세요.\n\n인용한 근거\n제출 보고서 버전: 1\n과제 대화 ID: 7646ea17-6b0d-4418-a080-2166e8e6b51b"
+      },
+      {
+        "title": "다음 연습 제안",
+        "description": "우선 연습: 가설·대안 검토 · 근거 해석"
+      },
+      {
+        "title": "학습 관측과 판단 한계",
+        "description": "성장 판단 자료 부족\n비교에 사용할 수 있는 관측: 0개\n제외된 관측: 1개\n사람이 과제 간 비교 가능성을 확인하고 도움 전 근거를 확보해야 성장 판단이 가능합니다."
+      }
+    ]
+  },
+  "second_submission": {
+    "evaluation_id": "2d1e1524-56b6-49f8-9917-1e29a6badff0",
+    "report_id": "42cb7e72-3ce4-408a-8392-11f58b0407ff",
+    "report_version": 2,
+    "session_id": "4a5c9544-4f74-4083-a2aa-12d479476f6e",
+    "guild_id": "verification",
+    "owner_user_id": "spec032-53dec0c3985c42ab9d0b684e99652bb5",
+    "post_name": "튜토리얼 완료율 변화와 우선 대응 · v2 · 4a5c9544-2d1e1524",
+    "cards": [
+      {
+        "title": "제출 결과 요약",
+        "description": "튜토리얼 완료율 변화와 우선 대응\n제출·평가 기록을 저장했습니다. 평가 점수: 100.0/100 · 사람 검토 대기. /report로 수정 보고를 시작하고 새 후속 답변 뒤 재제출할 수 있습니다.\n보고 버전: 2 · 제출 시각 \\(UTC\\): 2026-10-06 08:11:39\n업무 목표: 신규 가입자의 튜토리얼 3단계 완료율을 두 주와 유입 채널별로 비교하고, 신뢰성과 대안 설명을 점검해 우선 대응을 제안하세요.\n평가는 공개 기준에 따른 모델 판정이며 학습 효과를 확정하지 않습니다.\n이 게시글은 DA-Result 채널에 접근할 수 있는 회원에게 공개됩니다.",
+        "source_url": "https://discord.com/channels/verification/None",
+        "score": 100.0,
+        "held": false
+      },
+      {
+        "title": "제출 보고서",
+        "description": "업무 목표는 두 주 신규 가입자의 튜토리얼3단계 완료율 변화를 확인하고 우선 대응을 정하는 것이다. UTC 가입 기간은9월1\\~7일 및8\\~14일이고 완료 관측은10월1일 제외까지다. 분모는 신규 가입 고유 사용자, 분자는3단계 완료 고유 사용자다. 1주차16/20=80%. 2주차14/20=70%. 전체 완료율은10%p 하락했다. 1주차 채널 비율을 고정하고 구성만 바꾸면 전체80%가 된다. organic은80%로 유지하고 ads는80%에서66.67%로 낮아졌다. 구성 변화만으로 전체 하락을 설명할 수 없다. ads 집단의 관측 변화도 확인해야 한다. 관측은 인과를 증명하지 않는다. 재도전은 고유 사용자로 제거했고 실제 로그 누락은 확인 불가다. 표본40명으로 추가 로그와 표본 확인을 먼저 제안한다."
+      },
+      {
+        "title": "업무 담당자 후속 질문에 대한 답변",
+        "description": "답변 1\n추가 로그와 충분한 표본을 확인하고 필요하면 무작위 실험으로 완료율 및 D7·오류율을 검증한다."
+      },
+      {
+        "title": "실행 근거 검산",
+        "description": "지원하는 명확한 주장 검산\n선택한 완전한 신규 가입자 완료율 근거의 명확한 두 주 수치·증감·구성 확정 주장. 다른 지표·모호한 표현은 미검산.\n검산 정책: discord-arithmetic-v1\n확인한 주장: 8개 · 확인된 오류: 0개\n미검산 표현은 정답 확인을 의미하지 않습니다."
+      },
+      {
+        "title": "이전 제출과 수정 비교",
+        "description": "보고 v1 → v2\n이전 평가 ID: 0d46a1ee-6fcc-4b40-8dae-6c569035e6cc\n동일 과제의 보고 수정 관측이며 학습 효과 입증은 아님\n점수: 75.0 → 100.0\n문제 정의: 4 → 4\n지표·비교 설계: 4 → 4\n가설·대안 검토: 2 → 4\n근거 해석: 1 → 4\n한계·의사결정: 4 → 4\n확인된 검산 오류: 2 → 0\n검산 기준이 다른 경우 점수·오류 수를 같은 기준의 개선으로 단정하지 않습니다."
+      },
+      {
+        "title": "문제 정의 · 등급 4/4 · 비중 20%",
+        "description": "평가 근거\n업무 목표, 분석 대상\\(두 주 신규 가입자\\), 기간\\(9월 1\\~14일 및 관측 종료일\\), 질문\\(완료율 변화 및 대응\\)을 모두 정확히 정의하였습니다.\n\n다음 개선 행동\n공개 상위 조건 충족으로 판정됐습니다. 다음 과제에서 추가 근거와 적용 한계를 다시 확인하세요.\n\n인용한 근거\n제출 보고서 버전: 2"
+      },
+      {
+        "title": "지표·비교 설계 · 등급 4/4 · 비중 25%",
+        "description": "평가 근거\n분모\\(신규 가입 고유 사용자\\)와 분자\\(3단계 완료 고유 사용자\\)를 명확히 구분하였으며, 재도전 중복을 제거하는 등 지표 설계 요구사항을 완벽히 충족하였습니다.\n\n다음 개선 행동\n공개 상위 조건 충족으로 판정됐습니다. 다음 과제에서 추가 근거와 적용 한계를 다시 확인하세요.\n\n인용한 근거\n제출 보고서 버전: 2\n저장 조회 ID: 401bae9f-232b-4880-b527-88db07d67901\n저장 조회 ID: 1b95a95a-6327-47fb-bcfb-70323b4c2fd6"
+      },
+      {
+        "title": "가설·대안 검토 · 등급 4/4 · 비중 20%",
+        "description": "평가 근거\n구성 효과\\(Composition effect\\)를 계산하여 전체 하락이 유입 채널 비중 변화만으로는 설명되지 않음을 논리적으로 검증하였고, 이를 통해 기존 가설\\(구성 변화\\)을 기각하였습니다.\n\n다음 개선 행동\n공개 상위 조건 충족으로 판정됐습니다. 다음 과제에서 추가 근거와 적용 한계를 다시 확인하세요.\n\n인용한 근거\n제출 보고서 버전: 2"
+      },
+      {
+        "title": "근거 해석 · 등급 4/4 · 비중 20%",
+        "description": "평가 근거\n관측 결과가 인과를 증명하지 않는다는 점을 명시하였고, 데이터의 한계\\(로그 누락 가능성, 표본 크기\\)와 사실\\(수치적 변화\\)을 명확히 구분하여 해석하였습니다.\n\n다음 개선 행동\n공개 상위 조건 충족으로 판정됐습니다. 다음 과제에서 추가 근거와 적용 한계를 다시 확인하세요.\n\n인용한 근거\n제출 보고서 버전: 2"
+      },
+      {
+        "title": "한계·의사결정 · 등급 4/4 · 비중 15%",
+        "description": "평가 근거\n불확실성을 인정하고, 단순한 추측 대신 추가 로그 확인과 표본 검증, 그리고 무작위 실험\\(RCT\\)을 통한 검증이라는 구체적이고 타당한 후속 조치를 제안하였습니다.\n\n다음 개선 행동\n공개 상위 조건 충족으로 판정됐습니다. 다음 과제에서 추가 근거와 적용 한계를 다시 확인하세요.\n\n인용한 근거\n제출 보고서 버전: 2\n과제 대화 ID: 50e571ff-63f7-4ed7-a5bd-6dd106c4278d"
+      },
+      {
+        "title": "다음 연습 제안",
+        "description": "우선 연습: 현재 기준을 다른 과제에서도 적용하기"
+      },
+      {
+        "title": "학습 관측과 판단 한계",
+        "description": "성장 판단 자료 부족\n비교에 사용할 수 있는 관측: 0개\n제외된 관측: 2개\n사람이 과제 간 비교 가능성을 확인하고 도움 전 근거를 확보해야 성장 판단이 가능합니다."
+      }
+    ]
+  },
+  "restored": true,
+  "discord_transport": "not_sent"
+}

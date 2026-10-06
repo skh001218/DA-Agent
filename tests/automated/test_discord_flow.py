@@ -10,6 +10,7 @@ from da_agent.discord_store import DiscordStore
 from da_agent.discord_service import DiscordTrainingService
 from da_agent.discord_query import DiscordQueryEngine
 from da_agent.sql_runner import SqlRunner
+from discord_test_quality import ScriptedQualityRegistry
 
 
 class ScriptedProvider:
@@ -51,7 +52,7 @@ def flow():
     store.initialize()
     provider = ScriptedProvider()
     engine = DiscordQueryEngine(provider, SqlRunner(settings), settings)
-    service = DiscordTrainingService(store, engine, provider, settings)
+    service = DiscordTrainingService(store, engine, provider, settings, quality_registry=ScriptedQualityRegistry())
     owner = uuid.uuid4().hex
     session = service.start(owner, 'guild', 'parent', uuid.uuid4().hex)
     assert session.get('state') == 'analysis', session

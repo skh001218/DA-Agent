@@ -24,6 +24,7 @@ class DiscordSettings:
     execution_ttl: int = 600
     daily_call_limit: int = 30
     llm_model: str = 'gemma-4-26b-a4b-it'
+    quality_profiles_directory: str = '.local/evaluation-quality'
 
     @classmethod
     def from_env(cls, env=None):
@@ -56,7 +57,8 @@ class DiscordSettings:
             raise ValueError('DISCORD_MODEL must be a Gemma model ID')
         return cls(env[names[0]], guilds, *dsns, key_file,
                    message_content=env.get("DISCORD_MESSAGE_CONTENT", "false").lower() == "true",
-                   daily_call_limit=daily_limit, llm_model=model)
+                   daily_call_limit=daily_limit, llm_model=model,
+                   quality_profiles_directory=env.get('DISCORD_QUALITY_PROFILES_DIR','.local/evaluation-quality'))
 
 
 def create_client(service, settings):

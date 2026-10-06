@@ -9,7 +9,9 @@ from da_agent.discord_education import (representative_task, fixture_dataset, pr
 
 def verdict(grade=3):
     return {"criteria": [{"id": c["id"], "grade": grade, "evidence_refs": ["report:2", "execution:q1"],
-                         "reason": "제출된 정의·관측 근거가 공개 조건을 충족", "improvement": "수집 상태 확인을 추가"}
+                         "reason": "제출된 정의·관측 근거가 공개 조건을 충족", "improvement": "수집 상태 확인을 추가",
+                         'deductions': [] if grade>=3 else [dict(issue_id=c['id'],kind='missing_required',
+                             check_id=c['id']+':required',claim='',evidence_refs=['report:2'],reason='독립된 필수 조건 누락')]}
                          for c in representative_task()["rubric"]["criteria"]]}
 
 
@@ -42,23 +44,23 @@ def test_top_grade_without_defect_gets_attributed_next_practice():
 
 
 def test_lower_grade_still_requires_specific_improvement():
-    output=verdict(3)
+    output=verdict(2)
     output['criteria'][0]['improvement']=''
     result=evaluate(lambda _:output)
     assert result['held'] and result['validation_reason']=='criterion_detail_missing'
 
 
 def test_response_detail_repair_preserves_grades_once():
-    bad=verdict(3)
+    bad=verdict(2)
     bad['criteria'][0]['improvement']=''
-    outputs=iter([bad,verdict(3)])
+    outputs=iter([bad,verdict(2)])
     provider=SimpleNamespace(review=lambda messages:{'state':'completed','text':json.dumps(next(outputs))})
     result=evaluate(provider)
-    assert not result['held'] and result['total']==75 and result['response_repair']['grades_preserved']
+    assert not result['held'] and result['total']==50 and result['response_repair']['grades_preserved']
 
 
 def test_response_repair_cannot_change_grades():
-    bad=verdict(3)
+    bad=verdict(2)
     bad['criteria'][0]['improvement']=''
     outputs=iter([bad,verdict(4)])
     provider=SimpleNamespace(review=lambda messages:{'state':'completed','text':json.dumps(next(outputs))})
@@ -136,7 +138,8 @@ def test_gemini_review_interface_and_failure_without_api_call():
             assert json.loads(messages[1]["content"])["public_task"]["rubric"]["version"] == "discord-analysis-v1"
             return {"state": "completed", "text": json.dumps(verdict())}
     assert evaluate(Provider())["total"] == 75
-    assert evaluate(SimpleNamespace(review=lambda messages: {"state": "error", "reason": "api_rate_limited"}))["total"] is None
+    failed=evaluate(SimpleNamespace(review=lambda messages: {"state": "error", "reason": "api_rate_limited","quota_diagnostic":{"status":429}}))
+    assert failed['total'] is None and failed['provider_failure']['quota_diagnostic']=={'status':429}
 
 
 def test_growth_requires_reviewed_new_comparable_pre_help_evidence():

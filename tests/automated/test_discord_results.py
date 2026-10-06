@@ -56,6 +56,23 @@ def test_readable_cards_preserve_full_report_and_public_scores_without_private_j
     assert doc == original
 
 
+def test_verification_and_revision_cards_display_scope_errors_and_holds():
+    from da_agent.discord_verification import verify_report
+    from test_discord_verification import evidence
+    doc = document()
+    doc['reports'][0]['content'] = {'report_text':'구성 변화만으로 전체 하락을 완전히 설명한다.'}
+    doc['reports'][0]['evidence_refs'] = ['q1','q2']
+    doc['evaluations'][0]['result']['arithmetic_verification'] = verify_report(doc['task'], doc['reports'][0], evidence())
+    doc['evaluations'][0]['revision_comparison'] = dict(previous_evaluation_id='previous', previous_report_version=1,
+        report_version=2, criteria=[{'id':'evidence_interpretation','before':1,'after':None}],
+        errors_before=1, errors_after=0, previous_total=85, total=None, note='학습 효과 입증은 아님')
+    cards = build_submission(doc)['cards']
+    text = '\n'.join(c['title'] + c['description'] for c in cards)
+    assert '실행 근거 검산' in text and '80.0000%' in text and 'execution:q1' in text
+    assert '미검산 표현은 정답 확인' in text
+    assert '이전 제출과 수정 비교' in text and '1 → 보류' in text and '85 → 보류' in text
+
+
 def test_held_evaluation_does_not_claim_score_or_growth():
     doc = document()
     doc['evaluations'][0]['result'].update(held=True, total=None, reason='평가 서비스 오류')
@@ -86,7 +103,8 @@ def test_first_submit_saves_readable_result_even_when_evaluation_is_held(monkeyp
     doc.update(state='reporting', evaluations=[], learning=[], help_history=[], difficulty='intermediate')
     evaluator = Mock(return_value=result)
     monkeypatch.setattr('da_agent.discord_education.evaluate_report', evaluator)
-    service = DiscordTrainingService(Store(doc), None, Mock(), NS())
+    from discord_test_quality import ScriptedQualityRegistry
+    service = DiscordTrainingService(Store(doc), None, Mock(), NS(),quality_registry=ScriptedQualityRegistry())
     response = service.handle('owner', 'session', 'first-submit', 'submit')
     assert response['submission']['evaluation_id'] == doc['evaluations'][0]['id']
     assert doc['state'] == ('reporting' if held else 'completed')
@@ -103,6 +121,27 @@ def test_publication_journal_checks_owner_and_prevents_concurrent_creation():
         service.result_publication('other', 'session', 'evaluation')
     service.save_result_publication('owner', 'session', 'evaluation', status='partial', post_id='post')
     assert service.result_publication('owner', 'session', 'evaluation')['post_id'] == 'post'
+
+
+def test_profile_hold_does_not_claim_missing_learner_evidence_or_failed_response():
+    doc=document()
+    result=doc['evaluations'][0]['result']
+    result.update(held=True,total=None,profile_score_hold=True,
+        quality_profile={'status':'held','reasons':['유형 검증 미통과']},
+        quality_validation={'status':'passed','version':'evaluation-quality-v1','issues':[]},
+        recommendation={'practice_criteria':[]})
+    doc['evaluations'][0]['revision_feedback'] = dict(note='수정 관측',resolved=[],remaining=[],new=[],unverified=[])
+    text='\n'.join(c['description'] for c in build_submission(doc)['cards'])
+    assert '유형의 반복 품질 검증 대기' in text
+    assert '평가 응답을 확인하지 못한 시스템 보류' not in text
+    assert '오류 수정은 확인했습니다' in text and '남은 오류를 수정' not in text
+    result['provider_failure']={'reason':'api_rate_limited','provider_diagnostic':{'raw':'DO_NOT_DISPLAY'}}
+    text='\n'.join(c['description'] for c in build_submission(doc)['cards'])
+    assert '호출 한도 또는 요청 빈도 제한' in text and 'DO_NOT_DISPLAY' not in text
+    for row in result['criteria']: row.update(grade=None,improvement='')
+    text='\n'.join(c['description'] for c in build_submission(doc)['cards'])
+    assert '공급자 실패를 학습자 근거 부족으로 감점하지 않습니다' in text
+    assert '판정 가능한 근거를 보완' not in text
 
 
 def setup_forum(monkeypatch, exists=True):
