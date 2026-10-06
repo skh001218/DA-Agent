@@ -89,8 +89,8 @@ class DiscordTransport:
     async def command(self, event, action, *, session_id=None, text="", payload=None,
                       topic="tutorial", difficulty="intermediate", help_level=None):
         # First operation is the acknowledgement; model/DB work never precedes it.
-        await self.gateway.defer(event)
         try:
+            await self.gateway.defer(event)
             self._guild(event)
             owner, guild, event_id = str(event.user.id), str(event.guild.id), str(event.id)
             if action == "tip":
@@ -142,10 +142,17 @@ class DiscordTransport:
                                'error': '조회하지 못했습니다. 스레드의 오류 안내를 확인하세요.',
                                'success': '조회 결과를 저장했습니다. 스레드에서 확인하세요.'}
             await self.gateway.reply(event, acknowledgement.get(response.get('request_state'), '응답을 스레드에 남겼습니다. 내용을 확인하세요.'))
+        except asyncio.CancelledError:
+            if hasattr(self.gateway, 'interrupt'):
+                await asyncio.shield(self.gateway.interrupt(event))
+            raise
         except Exception as exc:
             # Do not expose exception strings: HTTP/DB errors can include credentials.
             message = exc.message if isinstance(exc, DomainError) else "처리하지 못했습니다. 기록은 보존됩니다. 권한·연결 상태를 확인한 뒤 /resume 으로 재개하세요."
             await self.gateway.reply(event, safe_chunks(message)[0])
+        finally:
+            if hasattr(self.gateway, 'finish'):
+                self.gateway.finish(event)
 
     async def _publish_result(self, event, channel, submission):
         owner, sid, eid = str(event.user.id), submission['session_id'], submission['evaluation_id']
