@@ -214,7 +214,7 @@ def main():
     query_engine = DiscordQueryEngine(provider, SqlRunner(settings), settings)
     service = DiscordTrainingService(store, query_engine, provider, settings)
     client = create_client(service, settings)
-    client.run(settings.token, log_level=None)
+    client.run(settings.token, log_handler=None)
 
 
 if __name__ == "__main__":

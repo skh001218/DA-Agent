@@ -226,6 +226,27 @@ def test_optional_real_command_registration_without_login(tmp_path):
     asyncio.run(check())
 
 
+def test_main_reaches_sdk_start_without_invalid_logging_configuration(tmp_path, monkeypatch):
+    pytest.importorskip("discord")
+    from da_agent import discord_bot, discord_provider, discord_store
+    settings = DiscordSettings("fake", (10,), "r", "a", "l", tmp_path / "key")
+    monkeypatch.setattr(DiscordSettings, "from_env", classmethod(lambda cls: settings))
+    monkeypatch.setattr(discord_provider, "DiscordGemmaProvider", lambda **kwargs: NS())
+    monkeypatch.setattr(discord_store, "DiscordStore", lambda dsn: NS(initialize=lambda: None))
+    class StartupReached(Exception):
+        pass
+    def client_factory(service, configured):
+        client = create_client(service, configured)
+        async def start(token, *, reconnect=True):
+            assert token == "fake"
+            raise StartupReached()
+        client.start = start
+        return client
+    monkeypatch.setattr(discord_bot, "create_client", client_factory)
+    with pytest.raises(StartupReached):
+        discord_bot.main()
+
+
 @pytest.mark.parametrize("privileged", [False, True])
 def test_sdk_gateway_rejects_additional_ordinary_member(tmp_path, monkeypatch, privileged):
     discord = pytest.importorskip("discord")

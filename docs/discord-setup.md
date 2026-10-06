@@ -35,6 +35,8 @@ Discord 전용 기록 DB와 전용 데이터 DB를 먼저 준비한다. 관리�
 
 ## Discord 안의 흐름
 
+2026-10-06 현재 이 PC의 독립 Docker 실행 환경을 준비했고, 서버 1556888486919934064의 `#da-agent`(1556888698992468039)에 접근·권한 확인 및 10개 명령 등록을 마쳤다. 실행·중지 명령과 비밀 파일 배치는 [독립 실행 Spec](../specs/025-discord-isolated-runtime.md)에 기록했다. PC와 Docker가 실행되는 동안 봇이 동작한다. 일반 메시지 Intent는 꺼져 있으므로 아래 슬래시 명령을 사용한다.
+
 1. 부모 텍스트 채널에서 `/training topic:tutorial difficulty:intermediate`를 실행한다. 난이도와 별개로 `help_level`을 안내 포함/내 정의 먼저 중 선택할 수 있다.
 2. 최초 Interaction을 바로 지연 응답하고, 과제 준비 뒤 비공개 과제 스레드와 업무 안내를 보낸다.
 3. 스레드에서 `/query text:...` 또는 일반 대화로 분석한다. 확인 질문 답변도 `/query`로 보낼 수 있다.
