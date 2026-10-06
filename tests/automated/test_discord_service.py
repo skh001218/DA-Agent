@@ -34,7 +34,7 @@ def service(store):
 
 def start(service, owner=None):
     owner = owner or uuid.uuid4().hex
-    session = service.start(owner, 'guild', 'channel', uuid.uuid4().hex)
+    session = service.start(owner, 'guild', 'channel', uuid.uuid4().hex, practice='analysis')
     assert 'session_id' in session, session
     return owner, session
 
@@ -44,7 +44,7 @@ def test_unsupported_topic_explained_before_dataset_provisioning():
     records.claim_event.return_value = None
     dataset = Mock()
     value = DiscordTrainingService(records, Mock(), Mock(), SimpleNamespace(daily_call_limit=30), dataset_factory=dataset)
-    response = value.start('owner', 'guild', 'channel', 'event', topic='게임 내 재화 변동에 대한 분석을 하고 싶어')
+    response = value.start('owner', 'guild', 'channel', 'event', topic='게임 내 재화 변동에 대한 분석을 하고 싶어', practice='analysis')
     assert response['state'] == 'failed'
     assert '튜토리얼 완료율 분석만 지원' in response['messages'][0]
     assert 'DB 설정' not in response['messages'][0]
@@ -184,9 +184,9 @@ def test_report_append_retains_original_versions_and_start_replay_binding(servic
     assert response['session']['reports'][0]['content']['report_text'] == '첫 문단'
     assert response['session']['reports'][1]['content']['report_text'] == '첫 문단\n다음 문단'
     event_id = uuid.uuid4().hex
-    another = service.start(owner, 'guild', 'channel', event_id)
+    another = service.start(owner, 'guild', 'channel', event_id, practice='analysis')
     service.bind_thread(owner, another['session_id'], uuid.uuid4().hex)
-    assert service.start(owner, 'guild', 'channel', event_id)['thread_id']
+    assert service.start(owner, 'guild', 'channel', event_id, practice='analysis')['thread_id']
 
 
 def test_sessions_guild_isolation_and_bind_thread(service):
@@ -215,8 +215,8 @@ def test_result_display_distinguishes_empty_null_preview_and_collection_limit():
 
 def test_help_level_separate_from_difficulty_and_invalid_setting_fails(service):
     owner = uuid.uuid4().hex
-    session = service.start(owner, 'guild', 'channel', uuid.uuid4().hex, difficulty='advanced', help_level='guided')
+    session = service.start(owner, 'guild', 'channel', uuid.uuid4().hex, difficulty='advanced', help_level='guided', practice='analysis')
     assert session['difficulty'] == 'advanced' and session['help_level'] == 'guided'
     assert session['task']['help_policy']['default_level'] == 'guided'
-    result = service.start(owner, 'guild', 'channel', uuid.uuid4().hex, help_level='invalid')
+    result = service.start(owner, 'guild', 'channel', uuid.uuid4().hex, help_level='invalid', practice='analysis')
     assert result['state'] == 'failed'

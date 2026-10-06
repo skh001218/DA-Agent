@@ -23,7 +23,7 @@ def main():
     service=DiscordTrainingService(store,None,provider,SimpleNamespace(daily_call_limit=10),
         dataset_factory=lambda *_:dict(schema_name='no_sql_execution_in_screen_check',data_version=source['task']['data_version']))
     owner='spec033-screen-'+uuid4().hex
-    doc=service.start(owner,'verification','verification',uuid4().hex,difficulty='advanced')
+    doc=service.start(owner,'verification','verification',uuid4().hex,difficulty='advanced', practice='analysis')
     sid=doc['session_id']
     with store.edit(owner,sid) as (record,conn):
         record['executions']=deepcopy(source['executions'])

@@ -10,6 +10,8 @@ def thread_title_base(document):
     task = document.get('task') or {}
     difficulty = DIFFICULTIES.get(document.get('difficulty') or task.get('difficulty'), '연습')
     title = unicodedata.normalize('NFKC', str(task.get('title') or '분석 연습'))
+    if document.get('practice') == 'analysis':
+        title = '분석 · ' + title
     title = ''.join(c for c in title if not unicodedata.category(c).startswith('C') or c.isspace())
     title = re.sub(r'\s+', ' ', title).strip()
     title = re.sub(r'[@#\[\]`]', '', title).strip() or '분석 연습'

@@ -1,0 +1,29 @@
+{
+  "trace": [
+    {
+      "action": "sqlrun",
+      "messages": [
+        "SQL 실행: error\nSQL 문법·표·컬럼 또는 DB 연결 상태를 확인하세요.\n수정한 전체 SQL을 sql 코드 블록으로 다시 답장하세요. 실행 ID: 1aef27af-95e1-41fb-8588-815d2ed82350"
+      ],
+      "state": "analysis"
+    },
+    {
+      "action": "sqlrun",
+      "messages": [
+        "SQL 실행 결과를 저장했습니다. 실행 ID: ca1e29e9-b96c-42a2-a12d-781af6d17b91\n전체 수집: 완료\n미리보기는 최대 10행이며 전체 결과와 구분합니다. /submit로 평가하거나 수정한 전체 SQL을 새 답장으로 제출하세요."
+      ],
+      "state": "analysis"
+    },
+    {
+      "action": "submit",
+      "messages": [
+        "SQL 평가 · 구문·실행: 충족 / 계산·출력: 충족 / 중복 처리: 충족 / 기간·관측: 충족 / 분모·누락: 충족",
+        "보완 항목을 수정해 전체 SQL을 새 답장으로 제출하세요. 모두 충족했다면 다른 문제에 적용하세요."
+      ],
+      "state": "completed"
+    }
+  ],
+  "restored": true,
+  "discord_live": "not_deployed_or_sent",
+  "public_private_schema_leak": false
+}

@@ -65,7 +65,9 @@ def render_submission_pdf(submission):
                            textColor=colors.HexColor('#315d91'), keepWithNext=True)
     cards = submission['cards']
     report_title = plain_text(cards[0]['description']).split('\n')[0] if cards else submission['post_name']
-    story = [Paragraph('DA / ANALYSIS REPORT', caption), Spacer(1, 6),
+    sql_practice = submission.get('practice') == 'sql'
+    document_label = 'DA / SQL PRACTICE' if sql_practice else 'DA / ANALYSIS REPORT'
+    story = [Paragraph(document_label, caption), Spacer(1, 6),
              Paragraph(escape(report_title), title)]
     evidence_results = submission.get('evidence_results', [])
     references = PDFEvidenceReferences(submission)
@@ -127,10 +129,10 @@ def render_submission_pdf(submission):
         canvas.line(48, 40, A4[0] - 48, 40)
         canvas.setFont(font, 8)
         canvas.setFillColor(colors.HexColor('#526275'))
-        canvas.drawString(48, 26, 'DA-Result | 분석 보고서 · 표준 보고서형')
+        canvas.drawString(48, 26, 'DA-Result | SQL 연습 결과' if sql_practice else 'DA-Result | 분석 보고서 · 표준 보고서형')
         canvas.drawRightString(A4[0] - 48, 26, str(document.page))
         if document.page > 1:
-            canvas.drawString(48, A4[1] - 30, 'DA / ANALYSIS REPORT')
+            canvas.drawString(48, A4[1] - 30, document_label)
         canvas.restoreState()
 
     doc.build(story, onFirstPage=footer, onLaterPages=footer)

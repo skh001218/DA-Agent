@@ -59,6 +59,9 @@ def representative_task(topic="tutorial", difficulty="intermediate", variant="ba
 
 def fixture_dataset(task):
     """Deterministic public fixture; no private cause/answer is part of model context."""
+    if task.get('sql_fixture'):
+        from .discord_sql_practice import fixture_rows
+        return fixture_rows(task, task['sql_fixture'])
     start = date.fromisoformat(task["period"]["start"])
     rows = {"users": [], "tutorial_attempts": [], "sessions": []}
     for number in range(1, 41):
@@ -113,6 +116,8 @@ def prepare_dataset(settings, task):
             cur.execute(sql.SQL("CREATE TABLE {}.tutorial_attempts(user_id integer REFERENCES {}.users, step integer NOT NULL, completed boolean NOT NULL, attempt_at timestamptz NOT NULL)").format(ns, ns))
             cur.execute(sql.SQL("CREATE TABLE {}.sessions(user_id integer REFERENCES {}.users, session_at timestamptz NOT NULL)").format(ns, ns))
             for table, rows in data.items():
+                if not rows:
+                    continue
                 placeholders = sql.SQL(",").join(sql.Placeholder() for _ in rows[0])
                 cur.executemany(sql.SQL("INSERT INTO {}.{} VALUES ({})").format(ns, sql.Identifier(table), placeholders), rows)
             cur.execute(sql.SQL("REVOKE ALL ON SCHEMA {} FROM PUBLIC").format(ns))

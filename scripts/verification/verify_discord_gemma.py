@@ -120,7 +120,7 @@ def main():
         store.initialize()
         service=DiscordTrainingService(store,engine,provider,settings)
         owner=uuid.uuid4().hex
-        session=service.start(owner,'verification-guild','verification-channel',uuid.uuid4().hex)
+        session=service.start(owner,'verification-guild','verification-channel',uuid.uuid4().hex, practice='analysis')
         sid=session['session_id']
         query=service.handle(owner,sid,uuid.uuid4().hex,'query',queries[3][1])
         saved=query['session']['executions']

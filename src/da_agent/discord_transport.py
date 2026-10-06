@@ -35,7 +35,7 @@ def safe_chunks(text, limit=1900):
 
 
 class DiscordTransport:
-    ACTIONS = {"query", "answer", "question", "help", "report", "followup", "submit", "sql", "evidence", "end", "message"}
+    ACTIONS = {"query", "sqlrun", "answer", "question", "help", "report", "followup", "submit", "sql", "evidence", "end", "message"}
 
     def __init__(self, service, gateway, guild_ids):
         self.service, self.gateway = service, gateway
@@ -56,21 +56,34 @@ class DiscordTransport:
         from .discord_tables import table_fallback
         for index, message in enumerate(messages):
             ids = []
-            for chunk in safe_chunks(message):
+            from .discord_sql_practice import TEMPLATE
+            # Only this constant authored template uses native Markdown fences.
+            for chunk in ([TEMPLATE] if (session or {}).get('practice') == 'sql' and message == TEMPLATE else safe_chunks(message)):
                 sent = await self.gateway.send(channel, chunk)
                 if getattr(sent, 'id', None) is not None:
                     ids.append(str(sent.id))
+            if ids and (session or {}).get('practice') == 'sql' and (message == TEMPLATE or message.startswith('SQL 실행')):
+                attempts = session.get('sql_attempts', [])
+                await self._call('bind_sql_prompt', session['owner_user_id'], session['session_id'], ids,
+                                 attempts[-1]['execution_id'] if attempts else None)
             question = (session or {}).get('pending_question')
             if ids and question and message == question['text']:
                 await self._call('bind_question', session['owner_user_id'], session['session_id'], question['id'], ids)
             for table in tables:
                 if table.get('after_message', 0) != index:
                     continue
+                sql_result = (session or {}).get('practice') == 'sql' and session.get('sql_attempts') and table.get('title') == '조회 결과'
                 try:
-                    await self.gateway.send_table(channel, table)
+                    table_ids = await self.gateway.send_table(channel, table)
+                    if table_ids and sql_result:
+                        await self._call('bind_sql_prompt', session['owner_user_id'], session['session_id'], table_ids,
+                                         session['sql_attempts'][-1]['execution_id'])
                 except Exception:
                     for chunk in safe_chunks('표 첨부를 표시하지 못해 행별 목록으로 제공합니다.\n' + table_fallback(table)):
-                        await self.gateway.send(channel, chunk)
+                        sent = await self.gateway.send(channel, chunk)
+                        if getattr(sent, 'id', None) and sql_result:
+                            await self._call('bind_sql_prompt', session['owner_user_id'], session['session_id'], [str(sent.id)],
+                                             session['sql_attempts'][-1]['execution_id'])
 
     async def _session(self, event, session_id=None):
         owner = str(event.user.id)
@@ -90,7 +103,7 @@ class DiscordTransport:
         return session
 
     async def command(self, event, action, *, session_id=None, text="", payload=None,
-                      topic="tutorial", difficulty="intermediate", help_level=None):
+                      topic="tutorial", difficulty="intermediate", help_level=None, practice=None, source_session_id=None):
         # First operation is the acknowledgement; model/DB work never precedes it.
         try:
             await self.gateway.defer(event)
@@ -109,7 +122,7 @@ class DiscordTransport:
             if action == "training":
                 await self.gateway.validate_parent(event.channel, event.user)
                 session = await self._call("start", owner, guild, str(event.channel.id), event_id,
-                                           topic=topic, difficulty=difficulty, help_level=help_level)
+                                           topic=topic, difficulty=difficulty, help_level=help_level, practice=practice, source_session_id=source_session_id)
                 if not session.get("session_id"):
                     for message in session.get("messages", ["과제 준비에 실패했습니다. 다시 시작하세요."]):
                         for chunk in safe_chunks(message):
@@ -145,7 +158,8 @@ class DiscordTransport:
                 if session.get("state") in {"stopped", "interrupted"}:
                     await self._call("handle", owner, session["session_id"], event_id, "continue")
                     response = await self._call("resume", owner, guild, session["session_id"])
-                await self._emit(channel, response.get("messages", []), response.get('session'), response.get('tables', []))
+                if not (response.get('submission') or {}).get('completed'):
+                    await self._emit(channel, response.get("messages", []), response.get('session'), response.get('tables', []))
                 if response.get('submission'):
                     await self._publish_result(event, channel, response['submission'])
                     return
@@ -154,11 +168,16 @@ class DiscordTransport:
             if action not in self.ACTIONS:
                 raise DomainError("discord_unknown_action", "지원하지 않는 명령입니다.")
             session = await self._session(event, session_id)
-            revising_completed = session.get('state') == 'completed' and action == 'report'
-            if session.get('state') == 'completed' and action not in {'submit', 'report'}:
+            revising_completed = session.get('state') == 'completed' and action in {'report', 'sqlrun'}
+            if session.get('state') == 'completed' and action not in {'submit', 'report', 'sqlrun', 'sql', 'help'}:
                 await self.gateway.reply(event, '완료된 과제입니다. /resume으로 결과·대화를 열람하거나 /history로 연습 기록을 확인하세요. 보고 수정은 /report로 시작하세요.')
                 return
             response = await self._call("handle", owner, session["session_id"], event_id, action, text=text, payload=payload)
+            if session.get('state') == 'completed' and action in {'sql', 'help'}:
+                for message in response.get('messages', []):
+                    for chunk in safe_chunks(message):
+                        await self.gateway.reply(event, chunk)
+                return
             if revising_completed:
                 if response.get('session', {}).get('state') == 'completed':
                     for message in response.get('messages', []):
@@ -259,7 +278,10 @@ class DiscordTransport:
         if thread_id:
             channel = await self.gateway.fetch_channel(int(thread_id))
             if channel is not None:
-                await self.gateway.validate_thread(channel, event.user)
+                if session.get('state') == 'completed':
+                    await self.gateway.validate_thread(channel, event.user, reopen=False)
+                else:
+                    await self.gateway.validate_thread(channel, event.user)
                 return channel
         # Missing/deleted thread: recover only into a validated private parent.
         await self.gateway.validate_parent(event.channel, event.user)
@@ -280,11 +302,29 @@ class DiscordTransport:
             session = await self._session(event)
         except Exception:
             return  # unrelated/other-owner messages must never trigger a model call
-        if session.get('state') == 'completed':
+        if session.get('state') == 'completed' and session.get('practice') != 'sql':
             return  # Archived training remains read-only; discussion belongs in the result forum.
-        text = self.gateway.message_text(message) if hasattr(self.gateway, 'message_text') else message.content
+        # Preserve SQL literals verbatim; stripping mentions across the entire
+        # message could alter a quoted learner SQL value. Outside-block mentions
+        # are ignored by the fenced SQL extractor instead.
+        text = message.content if session.get('practice') == 'sql' else (self.gateway.message_text(message) if hasattr(self.gateway, 'message_text') else message.content)
         reference = getattr(message, 'reference', None)
         reply_id = getattr(reference, 'message_id', None)
+        if session.get('practice') == 'sql':
+            if not reply_id or str(reply_id) not in session.get('sql_reply_targets', {}):
+                return
+            if not text.strip():
+                await self._emit(message.channel, ['답장 내용을 읽을 수 없습니다. 봇 멘션을 포함해 sql 코드 블록으로 답장하거나 /sqlrun text:코드블록을 사용하세요.'])
+                return
+            try:
+                response = await self._call('handle', str(message.author.id), session['session_id'], str(message.id),
+                    'sqlrun', text=text, payload={'reply_to_message_id': str(reply_id)})
+                if session.get('state') == 'completed' and response.get('session', {}).get('state') != 'completed':
+                    await self.gateway.validate_thread(message.channel, message.author)
+                await self._emit(message.channel, response.get('messages', []), response.get('session'), response.get('tables', []))
+            except Exception as exc:
+                await self._emit(message.channel, [exc.message if isinstance(exc, DomainError) else 'SQL 요청을 처리하지 못했습니다. /resume으로 기록을 확인하세요.'])
+            return
         bot_id = getattr(self.gateway, 'bot_user_id', None)
         mentioned = bot_id is not None and any(str(user.id) == str(bot_id) for user in getattr(message, 'mentions', []))
         if not reply_id and not mentioned:
