@@ -25,8 +25,10 @@ def main():
     finally:
         Path(name).unlink(missing_ok=True)
     lines = env.read_text(encoding="utf-8").splitlines()
-    lines = [line for line in lines if not line.startswith("DA_LLM_PROVIDER=")]
+    # This helper selects its newly written file, rather than a stale env key.
+    lines = [line for line in lines if not line.startswith(("DA_LLM_PROVIDER=", "GEMINI_API_KEY="))]
     lines.append("DA_LLM_PROVIDER=gemini")
+    lines.append("GEMINI_API_KEY=")
     if not any(line.startswith("GEMINI_MODEL=") for line in lines):
         lines.append("GEMINI_MODEL=gemini-3.5-flash-lite")
     env.write_text("\n".join(lines) + "\n", encoding="utf-8")

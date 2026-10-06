@@ -22,7 +22,11 @@ class GeminiProvider:
         self.last_error = None
 
     def _key(self):
-        # Explicit file configuration never falls through to another credential.
+        # A nonempty Gemini environment key takes precedence over the key file.
+        # Failed authentication never falls back to another credential.
+        environment_key = os.getenv("GEMINI_API_KEY", "").strip()
+        if environment_key:
+            return environment_key
         try:
             return self.key_file.read_text(encoding="utf-8-sig").strip()
         except (OSError, UnicodeError):

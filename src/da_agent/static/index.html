@@ -2,7 +2,7 @@
 <html lang="ko">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>DA-Agent · 분석 훈련</title><link rel="stylesheet" href="/static/codemirror.css"><link rel="stylesheet" href="/static/styles.css"><script src="/static/codemirror.js" defer></script><script src="/static/codemirror-sql.js" defer></script><script src="/static/sql-editor.js" defer></script><script src="/static/training.js" defer></script><script src="/static/app.js" defer></script></head>
 <body>
-<header><a class="brand" href="/">DA<span>·</span>Agent</a><span class="tag">분석 훈련실</span><div class="auth"><span id="auth-status">AI 연결 확인 중</span><button id="connect">ChatGPT 연결</button><button id="disconnect" hidden>연결 해제</button></div></header>
+<header><a class="brand" href="/">DA<span>·</span>Agent</a><span class="tag">분석 훈련실</span><div class="auth"><span id="auth-status">AI 연결 확인 중</span><span id="chatgpt-status" role="status" aria-live="polite">ChatGPT 로그인 확인 중</span><button id="connect" type="button" title="ChatGPT 로그인과 플랜 사용 권한 연결 확인">Continue with ChatGPT</button><button id="disconnect" type="button" hidden>ChatGPT 연결 해제</button></div></header>
 <main>
 <div id="notice" role="status" aria-live="polite" hidden></div>
 <section id="home"><div class="intro"><p class="eyebrow">LEARN THROUGH EVIDENCE</p><h1>질문을 정의하고,<br>데이터로 답하세요.</h1><p>원하는 훈련을 요청하고, 접속 데이터를 분석하거나 업무 요청을 구체화해보세요.</p></div>

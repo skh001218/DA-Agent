@@ -76,8 +76,15 @@ function homeTab(name, updateUrl = true) {
   }
 }
 async function authStatus() {
-  try { const auth = await api('/api/auth/status'); if (auth.provider === 'gemini') { $('#auth-status').textContent = auth.message; $('#connect').hidden = true; $('#disconnect').hidden = true; return; } const connected = ['connected', 'ready'].includes(auth.status); $('#auth-status').textContent = connected ? (auth.plan_enabled === false ? '로그인 연결됨 · 플랜 사용 권한 확인 필요' : auth.inference_verified ? 'ChatGPT 연결 · 실제 호출 확인됨' : '로그인 연결됨 · 실제 호출 검증 전') : (auth.message || 'ChatGPT 미연결'); $('#disconnect').hidden = !connected; $('#connect').hidden = connected; }
+  try { const auth = await api('/api/auth/status'); $('#auth-status').textContent = auth.provider === 'gemini' ? auth.message : 'ChatGPT 훈련 연결'; }
   catch (error) { $('#auth-status').textContent = 'AI 연결 확인 실패'; }
+  try {
+    const auth = await api('/api/chatgpt/status');
+    const connected = auth.connected;
+    $('#chatgpt-status').textContent = connected ? (auth.plan_enabled ? 'ChatGPT 로그인됨 · 플랜 사용 권한 연결됨' : 'ChatGPT 로그인됨 · 플랜 사용 권한 없음') : (auth.reason ? `ChatGPT 로그인 실패 · ${auth.message} (${auth.reason})` : 'ChatGPT 미로그인');
+    $('#disconnect').hidden = !connected;
+    $('#connect').hidden = connected && auth.plan_enabled;
+  } catch (error) { $('#chatgpt-status').textContent = 'ChatGPT 로그인 상태 확인 실패'; $('#connect').hidden = false; }
 }
 async function home() {
   homeTab(new URLSearchParams(location.search).get('home') === 'resume' ? 'resume' : 'new', false);
@@ -213,8 +220,8 @@ $('#submit-report').onclick = () => busy($('#submit-report'), async () => { awai
 $$('[data-hint]').forEach(button => { button.onclick = () => busy(button, async () => { const hint = await post(attemptPath('/hints'), { level: button.dataset.hint }); $('#hints').append(el('p', hint.content)); }); });
 $('#explanation-button').onclick = () => busy($('#explanation-button'), async () => { const result = await post(attemptPath('/explanation'), {}); $('#explanation').textContent = `${result.sql || ''}\n\n${pretty(result.explanation || '')}`; state.attempt.explanation_viewed = true; });
 $('#coach').onclick = () => busy($('#coach'), async () => { const message = $('#coach-message').value.trim(); if (!message) throw new Error('코칭 질문을 입력하세요.'); await flushDraft(); if (['request-v1', 'request-v2'].includes(state.attempt.contract_version)) { await requestConversation(message, $('#coach-evidence').value); } else { const result = await post(attemptPath('/coach'), { message, saved_execution_id: $('#coach-evidence').value || null }); $('#coach-result').textContent = pretty(result.feedback || result.error?.message || result); } await authStatus(); });
-$('#connect').onclick = () => busy($('#connect'), async () => { const popup = window.open('about:blank', '_blank'); if (!popup) throw new Error('로그인 창이 차단됐습니다. 이 앱의 팝업을 허용한 뒤 다시 연결하세요.'); popup.opener = null; try { const result = await post('/api/auth/start', {}); if (!result.authorization_url) throw new Error(result.message || '인증 주소를 받지 못했습니다.'); const url = new URL(result.authorization_url); if (url.protocol !== 'https:' || url.hostname !== 'auth.openai.com') throw new Error('공식 인증 주소를 확인할 수 없습니다.'); popup.location.replace(url.href); notice('새 창에서 공식 로그인과 권한 승인을 완료한 뒤 이 분석 창으로 돌아오세요. 입력은 이 창에 유지됩니다.'); } catch (error) { popup.close(); throw error; } });
-$('#disconnect').onclick = () => busy($('#disconnect'), async () => { await post('/api/auth/disconnect', {}); await authStatus(); });
+$('#connect').onclick = () => busy($('#connect'), async () => { const popup = window.open('about:blank', '_blank'); if (!popup) throw new Error('로그인 창이 차단됐습니다. 이 앱의 팝업을 허용한 뒤 다시 연결하세요.'); popup.opener = null; try { const result = await post('/api/chatgpt/start', {}); if (!result.authorization_url) throw new Error(result.message || '인증 주소를 받지 못했습니다.'); const url = new URL(result.authorization_url); if (url.protocol !== 'https:' || url.hostname !== 'auth.openai.com') throw new Error('공식 인증 주소를 확인할 수 없습니다.'); popup.location.replace(url.href); await authStatus(); notice('새 창에서 공식 로그인과 플랜 사용 권한 승인을 완료한 뒤 이 분석 창으로 돌아오세요. 훈련의 AI 연결 설정은 유지됩니다.'); } catch (error) { popup.close(); await authStatus(); throw error; } });
+$('#disconnect').onclick = () => busy($('#disconnect'), async () => { const result = await post('/api/chatgpt/disconnect', {}); await authStatus(); if (result.reason === 'remote_revocation_unconfirmed') notice('로컬 연결은 해제됐지만 원격 토큰 폐기를 확인하지 못했습니다. ChatGPT 설정에서 앱 연결을 확인하세요.'); });
 $('#home-button').onclick = () => busy($('#home-button'), async () => { if (!(await canLeave())) return; await home(); clearTimeout(state.saveTimer); state.attempt = null; $('#workspace').hidden = true; $('#home').hidden = false; history.replaceState(null, '', '/?home=resume'); homeTab('resume', false); notice(); });
 window.addEventListener('beforeunload', event => { if (state.dirty || (state.attempt && (sqlText().trim() || state.executions.some(item => !item.saved)))) { event.preventDefault(); event.returnValue = ''; } });
 window.addEventListener('focus', authStatus);
