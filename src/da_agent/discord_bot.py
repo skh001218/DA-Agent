@@ -68,6 +68,11 @@ def create_client(service, settings):
     class Gateway:
         def __init__(self, client):
             self.client = client
+            self.message_content_enabled = settings.message_content
+
+        def message_text(self, message):
+            import re
+            return re.sub(rf'<@!?{self.client.user.id}>', '', message.content).strip()
 
         async def defer(self, event):
             await event.response.defer(ephemeral=True, thinking=True)
@@ -79,6 +84,25 @@ def create_client(service, settings):
 
         async def send(self, channel, text):
             await channel.send(text, allowed_mentions=discord.AllowedMentions.none())
+
+        async def send_table(self, channel, table):
+            import asyncio
+            from io import BytesIO
+            from .discord_tables import render_table_png, table_fallback
+            pages = await asyncio.to_thread(render_table_png, table)
+            for index, page in enumerate(pages, 1):
+                attachment = discord.File(BytesIO(page), filename=f'table-{index}.png',
+                                          description=table_fallback(table)[:1024])
+                await channel.send(file=attachment, allowed_mentions=discord.AllowedMentions.none())
+
+        async def publish_result(self, parent, user, submission, publication, save):
+            from .discord_forum import ResultForumPublisher
+            return await ResultForumPublisher(self.client).publish(parent, user, submission, publication, save)
+
+        async def send_result_card(self, channel, submission, index, user):
+            from .discord_forum import ResultForumPublisher
+            await channel.send(embed=ResultForumPublisher(self.client).embed(submission, index, user),
+                               allowed_mentions=discord.AllowedMentions.none())
 
         def is_private_thread(self, channel):
             return isinstance(channel, discord.Thread) and channel.is_private()
@@ -146,8 +170,7 @@ def create_client(service, settings):
                 await tree.sync(guild=guild)
 
         async def on_message(self, message):
-            if settings.message_content:
-                await transport.message(message)
+            await transport.message(message)
 
     intents = discord.Intents.default()
     intents.message_content = settings.message_content
@@ -175,7 +198,11 @@ def create_client(service, settings):
         callback.__annotations__["interaction"] = discord.Interaction
         tree.add_command(app_commands.Command(name=action, description=description, callback=callback))
 
-    for action, description in {"query": "조회 요청 또는 확인 질문 답변", "followup": "업무 담당자 후속 질문에 답변"}.items():
+    @tree.command(name='query', description='조회 요청·확인 답변 (new_query로 이전 질문 초기화)')
+    async def query(interaction: discord.Interaction, text: str, new_query: bool = False):
+        await transport.command(interaction, 'query', text=text, payload={'new_query': new_query})
+
+    for action, description in {"followup": "업무 담당자 후속 질문에 답변"}.items():
         register_text_action(action, description)
 
     @tree.command(name="report", description="보고 초안 작성·수정 또는 긴 보고 이어 쓰기")

@@ -4,6 +4,8 @@ import time
 
 from .discord_store import record_id, timestamp
 from .errors import DomainError
+from .discord_tables import dictionary_tables, is_dictionary_request, result_table
+from .discord_results import build_submission, submission_summary
 
 
 REPORT_FIELDS = ('question', 'findings', 'hypothesis', 'alternatives', 'quality', 'limitations', 'action', 'next_checks')
@@ -88,11 +90,33 @@ class DiscordTrainingService:
             return {'messages': ['재개할 훈련이 없습니다. /training으로 시작하세요.']}
         if document['guild_id'] != str(guild_id):
             raise DomainError('forbidden', '이 서버의 훈련만 재개할 수 있습니다.', 403)
-        task = document['task']
-        public_intro = {key: task[key] for key in ('objective', 'period', 'timezone', 'dictionary', 'quality_information', 'rubric', 'help_policy', 'accepted_limits') if key in task}
-        return {'session': document, 'messages': [f"훈련 {document['session_id']} · 상태 {document['state']} · 저장 조회 {len(document['executions'])} · 보고 버전 {len(document['reports'])}",
-            '업무 담당자 · 공개 과제와 평가 조건: ' + json.dumps(public_intro, ensure_ascii=False),
-            '주제는 tutorial을 지원합니다. /query로 자연어 조회, /help로 도움, /report로 보고, /followup으로 후속 답변, /submit으로 최종 제출하세요.']}
+        tables = dictionary_tables(document['task'])
+        for table in tables:
+            table['after_message'] = 2
+        response = {'session': document, 'messages': format_task_intro(document), 'tables': tables}
+        if document.get('evaluations'):
+            response['submission'] = build_submission(document)
+        return response
+
+    def result_submission(self, user_id, session_id, evaluation_id=None):
+        return build_submission(self.get_session(user_id, session_id), evaluation_id)
+
+    def result_publication(self, user_id, session_id, evaluation_id):
+        document = self.get_session(user_id, session_id)
+        return document.get('result_publications', {}).get(evaluation_id, {})
+
+    def save_result_publication(self, user_id, session_id, evaluation_id, **changes):
+        allowed = {'status', 'forum_id', 'post_id', 'error_code'}
+        if not set(changes) <= allowed:
+            raise DomainError('publication_fields', '게시 기록 필드를 확인하세요.')
+        with self.store.edit(user_id, session_id) as (document, conn):
+            if not any(e['id'] == evaluation_id for e in document.get('evaluations', [])):
+                raise DomainError('result_missing', '이 훈련의 평가 기록을 선택하세요.')
+            publication = document.setdefault('result_publications', {}).setdefault(evaluation_id, {})
+            if changes.get('status') == 'creating' and publication.get('status') in {'creating', 'uncertain', 'partial', 'published'}:
+                raise DomainError('result_publish_busy', '다른 요청이 이미 게시를 시작했습니다. /resume으로 기존 게시 기록을 확인하세요.')
+            publication.update(changes, updated_at=timestamp())
+        return dict(publication)
 
     def _message(self, document, role, text, event_id, help_type=None):
         item = {'id': record_id(), 'event_id': str(event_id), 'role': role, 'text': text, 'at': timestamp(), 'help_type': help_type}
@@ -116,6 +140,17 @@ class DiscordTrainingService:
                 messages = ['요청 처리에 실패했습니다. 저장 기록을 재개해 확인하고 새 요청으로 다시 시도하세요.']
                 document['telemetry'].append({'kind': 'action_error', 'code': 'internal', 'at': timestamp(), 'action': action})
             response = {'messages': messages, 'session': document}
+            if action == 'submit' and document.get('evaluations') and (document['evaluations'][-1].get('event_id') == str(event_id) or document['state'] == 'completed'):
+                response['submission'] = build_submission(document)
+            if action in ('query', 'message', 'help') and is_dictionary_request(text):
+                response['tables'] = dictionary_tables(document['task'], text)
+            elif document['executions'] and document['queries'] and document['queries'][-1]['event_id'] == str(event_id):
+                execution = document['executions'][-1]
+                if execution['query_id'] == document['queries'][-1]['id']:
+                    response['tables'] = [result_table(execution)]
+            if action in ('query', 'clarify', 'message') and document['queries'] and document['queries'][-1]['event_id'] == str(event_id):
+                query = document['queries'][-1]
+                response['request_state'] = query.get('outcome', query['plan']).get('state', 'error')
             self.store.finish_event(event_id, response, conn)
         return response
 
@@ -140,6 +175,10 @@ class DiscordTrainingService:
             if document['state'] == 'stopped':
                 document['state'] = document.get('previous_state', 'analysis')
             return ['저장된 기준으로 훈련을 이어갑니다.']
+        if action in ('query', 'message', 'help') and is_dictionary_request(text):
+            return ['📚 데이터 사전 · 첨부한 표를 누르면 확대할 수 있습니다.']
+        if action == 'submit' and document['state'] == 'completed' and document.get('evaluations'):
+            return [submission_summary(document['evaluations'][-1])]
         if document['state'] in ('completed', 'stopped'):
             raise DomainError('state', '완료 또는 중단된 훈련입니다. 기록을 열람하거나 중단된 훈련을 재개하세요.')
         if action in ('note', 'hypothesis', 'quality', 'direction'):
@@ -153,9 +192,9 @@ class DiscordTrainingService:
             self._message(document, 'mentor', answer_text, event_id, kind)
             return ['멘토: ' + answer_text]
         if action in ('query', 'clarify', 'message'):
-            if action == 'message' and not document['pending_query'] and not any(word in text.lower() for word in ('보여', '조회', '계산', '비교', 'count', 'rate', 'retention')):
+            if action == 'message' and not document['pending_query'] and not any(word in text.lower() for word in ('보여', '조회', '계산', '비교', '알려', '알고', '완료율', '도전', '가입자', '재방문', 'count', 'rate', 'retention')):
                 return ['생각을 기록했습니다. 조회 요청은 /query, 도움은 /help, 보고는 /report로 진행할 수 있습니다.']
-            return self._query(document, event_id, text)
+            return self._query(document, event_id, text, new_query=payload.get('new_query', False))
         if action == 'report':
             content = payload.get('content') or {'report_text': text}
             if not isinstance(content, dict) or not any(isinstance(value, str) and value.strip() for value in content.values()):
@@ -183,7 +222,7 @@ class DiscordTrainingService:
             report = document['reports'][-1]
             provider = MeteredProvider(self.provider, self.store, document['owner_user_id'], self.daily_limit, document['telemetry'])
             evaluation = evaluate_report(provider, document['task'], report, document['messages'], document['executions'], document['help_history'])
-            document['evaluations'].append({'id': record_id(), 'report_id': report['id'], 'at': timestamp(), 'result': evaluation})
+            document['evaluations'].append({'id': record_id(), 'report_id': report['id'], 'event_id': str(event_id), 'at': timestamp(), 'result': evaluation})
             held = evaluation.get('held', evaluation.get('status') in ('held', 'error'))
             if held:
                 document['state'] = 'reporting'
@@ -198,22 +237,33 @@ class DiscordTrainingService:
                 'after_help': grades if document['help_history'] else {}, 'before_help_message_ids': [m['id'] for m in document['messages'] if m['role'] == 'user' and (not document['help_history'] or m['at'] < document['help_history'][0]['at'])], 'at': timestamp()}
             document['learning'].append(observation)
             growth = growth_observation(history + [observation])
-            return ['리뷰어: ' + json.dumps(evaluation, ensure_ascii=False), '학습 관측: ' + json.dumps(growth, ensure_ascii=False)]
+            document['evaluations'][-1]['growth'] = growth
+            return [submission_summary(document['evaluations'][-1])]
         raise DomainError('action', '지원하지 않는 행동입니다. /query·/help·/report·/submit을 사용하세요.')
 
-    def _query(self, document, event_id, text):
+    def _query(self, document, event_id, text, new_query=False):
         from .discord_query import DiscordQueryEngine
         pending = document['pending_query']
+        if new_query:
+            pending = None
+            document['pending_query'] = None
         provider = MeteredProvider(self.provider, self.store, document['owner_user_id'], self.daily_limit, document['telemetry'])
         engine = DiscordQueryEngine(provider, self.engine.runner, self.settings)
         original = pending['text'] if pending else text
         clarification = '\n'.join(pending.get('answers', []) + [text]) if pending else None
-        plan = engine.resolve(original, document['task'], previous_conditions=document['conditions'],
-            clarification=clarification, difficulty='beginner' if document['help_level'] == 'guided' else 'intermediate')
+        context = {'request': pending['text'], 'answers': pending.get('answers', []),
+                   'proposed_conditions': pending['plan'].get('proposed_conditions', {})} if pending else None
+        plan = engine.resolve(text, document['task'], previous_conditions=document['conditions'],
+            clarification=clarification, difficulty='beginner' if document['help_level'] == 'guided' else 'intermediate', pending_query=context)
         query = {'id': record_id(), 'original_text': original, 'user_answer': text if pending else None,
+            'submitted_text': text,
             'plan': plan, 'event_id': str(event_id), 'at': timestamp()}
         document['queries'].append(query)
+        if plan.get('replaces_pending'):
+            query.update(original_text=text, user_answer=None)
         if plan.get('state') == 'clarification':
+            if plan.get('replaces_pending'):
+                original, pending = text, None
             document['pending_query'] = {'text': original, 'plan': plan, 'answers': pending.get('answers', []) + [text] if pending else []}
             answer = plan.get('question', '기간·분자·분모·집계를 확정해주세요.')
             if plan.get('options'):
@@ -224,10 +274,20 @@ class DiscordTrainingService:
             self._message(document, 'mentor', answer, event_id, kind)
             return [answer]
         if plan.get('state') != 'ready':
+            if plan.get('reason') == 'unsupported_query':
+                document['pending_query'] = None
+            elif pending:
+                # Keep the supplied clarification even if the upstream call fails.
+                document['pending_query'] = dict(pending, answers=pending.get('answers', []) + [text])
             if plan.get('reason') == 'usage_limit':
                 return ['오늘의 API 호출 한도에 도달했습니다. 기존 기록·SQL 열람·재개는 계속 사용할 수 있습니다.']
             if plan.get('reason') == 'api_rate_limited':
                 return ['Gemma API 호출 한도(429)에 도달했습니다. 조회를 실행하지 않았으며 기록은 보존됩니다. 잠시 뒤 새 요청으로 다시 시도하세요.']
+            if plan.get('reason') in {'api_unavailable', 'api_timeout', 'api_key_invalid', 'api_permission_denied',
+                                     'api_request_invalid', 'api_invalid_response', 'api_empty_response', 'api_content_blocked',
+                                     'response_incomplete', 'provider_unavailable', 'provider_invalid_json',
+                                     'provider_invalid_response', 'api_key_missing', 'model_unavailable'}:
+                return ['모델 서비스 오류로 조회를 실행하지 못했습니다. 요청 내용과 기존 기록은 보존했습니다. 잠시 뒤 /query로 다시 요청하세요. 새 조회로 바꾸려면 new_query를 켜세요.']
             return [plan.get('message', '조회 조건을 해석할 수 없었습니다. 지원하는 지표와 기간을 명시해 다시 요청하세요.')]
         document['pending_query'] = None
         document['conditions'] = plan.get('conditions')
@@ -251,14 +311,90 @@ class DiscordTrainingService:
         return messages
 
 
+def format_task_intro(document):
+    """Render public conditions as readable sections without revealing private task data."""
+    task = document['task']
+    period = task.get('period', {})
+    state = {'analysis': '분석 중', 'followup': '후속 답변 대기', 'reporting': '보고 작성 중',
+             'completed': '완료', 'stopped': '중단', 'interrupted': '중단'}.get(document['state'], document['state'])
+    status = '\n'.join([
+        '📌 ' + task.get('title', '분석 훈련'),
+        f"상태: {state} · 저장 조회: {len(document['executions'])}개 · 보고: {len(document['reports'])}개",
+        f"훈련 ID: {document['session_id']}",
+    ])
+    brief = '\n'.join([
+        '🎯 업무 담당자 · 공개 과제와 평가 조건', task.get('objective', ''), '',
+        '기간과 비교 대상',
+        f"• 가입 기간: {period.get('start', '미정')}부터 {period.get('end', '미정')}까지"
+        + (' (종료일 제외)' if period.get('end_exclusive') else ' (종료일 포함)'),
+        f"• 시간 기준: {task.get('timezone', '미정')}",
+        f"• 관측 종료: {period.get('observation_end', '미정')}",
+    ])
+    data = ['📚 데이터 사전']
+    for name, table in task.get('dictionary', {}).items():
+        data.extend(['', f"{name} — 한 행: {table.get('unit', '미정')}", table.get('description', ''),
+                     '컬럼과 자료형은 아래 첨부 표에서 확인하세요.'])
+    quality = ['🔎 신뢰성 확인과 해석 한계', task.get('quality_information', {}).get('collection', ''),
+               '필수 점검: ' + task.get('quality_information', {}).get('required_check', '')]
+    quality.extend('• ' + limit for limit in task.get('accepted_limits', []))
+    rubric = task.get('rubric', {})
+    assessment = ['📋 평가 기준']
+    for criterion in rubric.get('criteria', []):
+        assessment.extend(['', f"{criterion['name']} ({criterion['weight']}%)",
+                           '필수: ' + criterion['required'], '핵심 오류: ' + criterion['core_error'],
+                           '추가 검증: ' + criterion['advanced']])
+    assessment.extend(['', '등급: ' + ' / '.join(f'{grade} = {meaning}' for grade, meaning in rubric.get('grades', {}).items()),
+                       f"통과 기준: {rubric.get('passing_grade', '미정')}등급 · 기준 버전: {rubric.get('version', '미정')}",
+                       '점수에 반영하지 않음: ' + ', '.join(rubric.get('non_scoring', []))])
+    if rubric.get('no_duplicate_penalty'):
+        assessment.append('같은 오류는 중복 감점하지 않습니다.')
+    policy = task.get('help_policy', {})
+    commands = ['▶ 이 문제를 이어가는 방법', '이 과제 스레드 안에서 아래 명령을 사용하세요.', '',
+                '1. /query — 조회 요청·확인 답변 (new_query를 켜면 이전 질문 초기화)',
+                '2. /help — 개념·분석 방향·중간 피드백 요청',
+                '3. /sql — 실행 SQL 확인 · /evidence — 조회를 보고 근거로 선택',
+                '4. /report — 보고 작성·수정 (append로 긴 보고 이어 쓰기)',
+                '5. /followup — 업무 담당자의 후속 질문에 답변',
+                '6. /submit — 최종 제출과 평가', '',
+                '/end — 중단·기록 보존 · /resume — 저장한 문제 재개',
+                '지원 주제: 튜토리얼 완료율 분석',
+                '기본 도움: ' + {'independent': '내 정의 먼저', 'guided': '안내 포함'}.get(policy.get('default_level'), '미정'),
+                '도움 유형: ' + ', '.join({'clarification': '정의 확인', 'concept': '개념', 'direction': '분석 방향', 'feedback': '피드백'}.get(kind, kind) for kind in policy.get('types', []))]
+    if policy.get('record_before_after'):
+        commands.append('도움받기 전후의 답변을 기록합니다.')
+    commands.append('대화로 질문·확인 답변을 보내려면 @DA-Agent를 선택해 멘션하세요. 일반 메시지 수신이 꺼져 있어도 멘션한 내용은 처리합니다.')
+    return [status, brief, '\n'.join(data), '\n'.join(quality), '\n'.join(assessment), '\n'.join(commands)]
+
+
 def format_result(execution, settings):
     result = execution['result']
     rows = result.get('rows', [])
     preview = rows[:10]
-    columns = [column['name'] if isinstance(column, dict) else str(column) for column in result.get('columns', [])]
-    lines = [f"실행 성공 · ID {execution['execution_id']}", '확정 계산 기준: ' + json.dumps(execution['conditions'], ensure_ascii=False),
-        '컬럼: ' + ' | '.join(columns)]
-    lines.extend(' | '.join('NULL (값 없음/분모 0)' if value is None else str(value) for value in row) for row in preview)
+    labels = {'metric': '지표', 'period': '기간', 'start': '시작일', 'end': '종료일',
+              'end_exclusive': '종료일 제외', 'numerator': '분자', 'denominator': '분모',
+              'aggregation': '집계', 'group_by': '그룹', 'timezone': '시간 기준',
+              'observation_end': '관측 종료', 'channel': '채널', 'step': '단계',
+              'unit': '단위', 'completion_window': '완료 관측 범위', 'event_start': '이벤트 시작일',
+              'event_end': '이벤트 종료일 (제외)', 'period_basis': '기간 기준', 'filters': '필터'}
+    meanings = {'tutorial_rate': '튜토리얼 완료율', 'd7_retention': 'D7 재방문율',
+                'weekly_return': '주간 재방문율', 'users_count': '가입 사용자 수',
+                'attempts_count': '도전 이벤트 수', 'duplicate_attempts': '중복 도전 이벤트 수',
+                'completed_users': '완료한 고유 사용자', 'signup_users': '가입한 고유 사용자',
+                'attempted_users': '도전한 고유 사용자', 'user': '고유 사용자',
+                'attempt': '도전 이벤트', 'explicit_dates': '명시한 날짜', 'channel': '유입 채널'}
+    def describe(value):
+        if isinstance(value, dict):
+            return ', '.join(f'{labels.get(k, k)}: {describe(v)}' for k, v in value.items())
+        if isinstance(value, list):
+            return ', '.join(describe(v) for v in value)
+        if isinstance(value, bool):
+            return '예' if value else '아니오'
+        return meanings.get(str(value), str(value))
+    lines = [f"실행 성공 · ID {execution['execution_id']}", '확정 계산 기준']
+    lines.extend(f'• {labels.get(key, key)}: {describe(value)}' for key, value in execution['conditions'].items())
+    lines.append('조회 결과는 첨부 표에서 확인하세요. 표를 누르면 확대할 수 있습니다.')
+    if any(value is None for row in preview for value in row):
+        lines.append('NULL은 값 없음입니다. 비율의 분모 0 등 원인을 확인하며 0%로 해석하지 않습니다.')
     if not rows:
         lines.append('빈 결과입니다. 원인을 단정하거나 0%로 해석하지 않습니다.')
     if len(rows) > 10:
