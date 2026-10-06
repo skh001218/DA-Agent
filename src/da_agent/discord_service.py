@@ -52,6 +52,8 @@ class DiscordTrainingService:
         if prior is not None:
             return self.get_session(user_id, prior['session']['session_id']) if 'session' in prior else prior
         try:
+            if topic not in {'tutorial', '튜토리얼'}:
+                raise DomainError('unsupported_topic', '현재는 튜토리얼 완료율 분석만 지원합니다. /training의 주제에서 튜토리얼 완료율 분석을 선택하세요. 게임 내 재화 변동 분석은 아직 지원하지 않습니다.')
             past = self.store.list(user_id, guild_id)
             variant = 'followup' if any(s['state'] == 'completed' for s in past) else 'baseline'
             task = representative_task(topic=topic, difficulty=difficulty, variant=variant)

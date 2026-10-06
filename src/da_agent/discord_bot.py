@@ -150,6 +150,7 @@ def create_client(service, settings):
 
     @tree.command(name="training", description="비공개 분석 훈련 시작")
     @app_commands.guild_only()
+    @app_commands.choices(topic=[app_commands.Choice(name="튜토리얼 완료율 분석", value="tutorial")])
     @app_commands.choices(difficulty=[app_commands.Choice(name="초급", value="beginner"), app_commands.Choice(name="중급", value="intermediate"), app_commands.Choice(name="고급", value="advanced")])
     @app_commands.choices(help_level=[app_commands.Choice(name="안내 포함", value="guided"), app_commands.Choice(name="내 정의 먼저", value="independent")])
     async def training(interaction: discord.Interaction, topic: str = "tutorial", difficulty: str = "intermediate", help_level: str | None = None):

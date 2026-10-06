@@ -222,6 +222,8 @@ def test_optional_real_command_registration_without_login(tmp_path):
         client = create_client(Service(), settings)
         assert {cmd.name for cmd in client.da_command_tree.get_commands()} == {"training", "resume", "query", "help", "report", "followup", "submit", "sql", "evidence", "end"}
         assert not client.intents.message_content
+        topic = next(p for p in client.da_command_tree.get_command('training').parameters if p.name == 'topic')
+        assert [(choice.name, choice.value) for choice in topic.choices] == [('튜토리얼 완료율 분석', 'tutorial')]
         await client.close()
     asyncio.run(check())
 

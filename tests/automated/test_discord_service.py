@@ -36,6 +36,20 @@ def start(service, owner=None):
     return owner, session
 
 
+def test_unsupported_topic_explained_before_dataset_provisioning():
+    records = Mock()
+    records.claim_event.return_value = None
+    dataset = Mock()
+    value = DiscordTrainingService(records, Mock(), Mock(), SimpleNamespace(daily_call_limit=30), dataset_factory=dataset)
+    response = value.start('owner', 'guild', 'channel', 'event', topic='게임 내 재화 변동에 대한 분석을 하고 싶어')
+    assert response['state'] == 'failed'
+    assert '튜토리얼 완료율 분석만 지원' in response['messages'][0]
+    assert 'DB 설정' not in response['messages'][0]
+    dataset.assert_not_called()
+    records.create.assert_not_called()
+    records.finish_event.assert_called_once_with('event', response)
+
+
 def test_owner_checked_before_event_model_or_mutation(service):
     owner, session = start(service)
     event = uuid.uuid4().hex
