@@ -11,3 +11,11 @@
 - 수정 후 Gateway ready 확인, 봇 컨테이너 running, restart count 0. 서버에 training/resume/query/help/report/followup/submit/sql/evidence/end 10개 명령 등록 확인.
 - 전송·SDK 회귀 테스트 22 passed. 기존 웹 health 재확인 ok.
 - 실제 사람 계정의 /training 화면 확인 및 두 사용자 전체 흐름은 대기. Message Content Intent false이므로 일반 문장 대신 슬래시 명령을 사용한다.
+
+## Server Members Intent 설정 후 복구
+
+- 사용자가 앱의 Server Members Intent 활성화 완료를 알림. 실제 앱 플래그에서 허용 확인.
+- 기존 과제 스레드 보관 해제·봇 참가 후 참가자 목록 조회 성공. 소유자와 봇 2명 외 참가자 없음.
+- 과제 1ac939a2-ced5-4519-b2bc-e57a031ebe93을 기존 스레드 1556891645016809593에 다시 연결. 과제 데이터와 실제 사용자 이벤트 보존.
+- 실제 Discord SDK Gateway 로그인 후 validate_thread 통과, 저장 기록의 resume 응답 생성 통과. 진단 로그인은 종료, 운영 봇은 계속 실행.
+- 전송 회귀 28 passed. 기존 웹 health ok. 사람 계정 /resume 화면 확인 대기.
