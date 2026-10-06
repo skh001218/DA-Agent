@@ -57,7 +57,7 @@ def reference_info(task, kind):
             '/sql — 저장된 조회의 실행 SQL 확인', '/evidence — 조회를 보고 근거로 선택',
             '/report — 보고 작성·수정 (append로 긴 보고 이어 쓰기)',
             '/followup — 업무 담당자 후속 질문 답변', '/submit — 최종 제출과 평가',
-            '/end — 중단·기록 보존', '/resume — 저장한 문제 재개'])
+            '/end — 중단·기록 보존', '/resume — 진행 과제 재개·완료 결과 열람', '/history — 내 연습 기록·결과 링크'])
     return None
 
 
@@ -73,7 +73,8 @@ COMMAND_TIPS = {
     'followup': ('보고 작성 후 업무 담당자의 후속 질문에 답합니다. 답장·멘션 또는 /answer도 사용할 수 있습니다.', 'text: 답변 (필수)', '/followup text:채널별 비교와 로그 점검을 먼저 진행하겠습니다'),
     'submit': ('최신 보고를 최종 제출하고 평가를 요청합니다. 먼저 보고를 작성하고 후속 질문에 답해야 합니다.', '추가 입력 없음', '/submit'),
     'end': ('훈련을 중단하고 기록을 보존합니다. /resume으로 이어갈 수 있습니다.', '추가 입력 없음', '/end'),
-    'resume': ('본인의 저장 과제를 불러옵니다. ID를 생략하면 같은 서버에서 최근 갱신된 과제를 선택합니다. 기존 스레드를 재사용하고 삭제됐다면 복구합니다. 저장 기록 전체를 다시 출력하지는 않습니다.', 'session_id: 특정 훈련 ID (선택)', '/resume\n/resume session_id:훈련ID'),
+    'resume': ('본인의 저장 과제를 불러옵니다. ID를 생략하면 같은 서버에서 최근 갱신된 과제를 선택합니다. 진행 과제는 재개·복구하고 완료 게시된 과제는 결과와 과거 대화 링크를 안내하며 보관·잠금을 유지합니다.', 'session_id: 특정 훈련 ID (선택)', '/resume\n/resume session_id:훈련ID'),
+    'history': ('현재 서버의 본인 연습 기록을 5개씩 확인합니다. 생성일·상태·평가 점수·결과 링크와 재개 명령을 안내합니다.', 'page: 페이지 번호 (선택, 기본 1)', '/history\n/history page:2'),
     'tip': ('명령어의 사용법과 예시를 확인합니다. 과제 없이도 사용할 수 있고 분석 상태를 바꾸지 않습니다.', 'command: 명령어 이름 (선택). report와 /report 모두 가능.', '/tip command:report\n/tip command:/report\n/tip'),
 }
 

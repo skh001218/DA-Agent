@@ -36,16 +36,15 @@ def build_submission(document, evaluation_id=None):
         for index, chunk in enumerate(safe_chunks(body), 1):
             cards.append(dict(title=title if index == 1 else f'{title} · 이어서 {index}', description=chunk))
 
-    source = f"https://discord.com/channels/{document['guild_id']}/{document['thread_id']}"
     submitted_at = datetime.fromisoformat(entry['at']).astimezone(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
     add('제출 결과 요약', '\n'.join([
         task.get('title', '분석 훈련'), submission_summary(entry),
         f"보고 버전: {report['version']} · 제출 시각 (UTC): {submitted_at}",
+        f"과제 ID: {document['session_id']}",
         '업무 목표: ' + task.get('objective', ''),
         '평가는 공개 기준에 따른 모델 판정이며 학습 효과를 확정하지 않습니다.',
         '이 게시글은 DA-Result 채널에 접근할 수 있는 회원에게 공개됩니다.',
     ]))
-    cards[0]['source_url'] = source
     cards[0]['score'] = result.get('total')
     cards[0]['held'] = bool(result.get('held'))
     for key, value in report.get('content', {}).items():
@@ -128,6 +127,7 @@ def build_submission(document, evaluation_id=None):
                                     location=location, answer_number=answer_number))
     return dict(evaluation_id=entry['id'], report_id=report['id'], report_version=report['version'],
                 session_id=document['session_id'], guild_id=document['guild_id'], owner_user_id=document['owner_user_id'],
+                thread_id=document.get('thread_id'), completed=document.get('state') == 'completed' and not result.get('held'),
                 post_name=name[:100], cards=cards, evidence_results=evidence_results,
                 message_sources=message_sources)
 

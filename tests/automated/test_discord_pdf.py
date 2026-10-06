@@ -34,7 +34,8 @@ def test_pdf_preserves_korean_public_report_held_scores_and_embeds_font():
                       if not line.startswith('DA-Result |') and line != 'DA / ANALYSIS REPORT'
                       and not line.strip().isdigit())
     assert ''.join(content.split()).count('긴보고서내용') == 700
-    assert 'https://discord.com/channels/guild/source' in text
+    assert '과제ID:session' in ''.join(text.split())
+    assert 'https://discord.com/channels/guild/source' not in text
     assert sub == before
     assert b'/FontFile2' in data
     assert '/' not in pdf_filename(sub)

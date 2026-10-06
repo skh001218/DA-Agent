@@ -84,6 +84,45 @@ class DiscordTrainingService:
             document['thread_id'] = str(thread_id)
         return self.get_session(user_id, session_id)
 
+    def reserve_thread_name(self, user_id, session_id):
+        return self.store.reserve_thread_name(user_id, session_id)
+
+    def history(self, user_id, guild_id, page=1):
+        from datetime import datetime, timedelta, timezone
+        from .discord_thread_titles import thread_title, thread_title_base
+        from .discord_transport import safe_chunks
+        if not isinstance(page, int) or isinstance(page, bool) or page < 1:
+            raise DomainError('history_page', '페이지는 1 이상의 정수로 입력하세요.')
+        sessions = self.list_sessions(user_id, guild_id)
+        if not sessions:
+            return ['아직 연습 기록이 없습니다. /training으로 시작하세요.']
+        pages = (len(sessions) + 4) // 5
+        if page > pages:
+            return [f'총 {pages}페이지입니다. /history page:{pages}로 마지막 페이지를 확인하세요.']
+        lines = [f'내 분석 연습 기록 · {page}/{pages}페이지 · 총 {len(sessions)}개']
+        states = {'analysis': '분석 중', 'reporting': '보고 작성', 'followup': '후속 답변',
+                  'completed': '완료', 'stopped': '중단', 'interrupted': '중단'}
+        for document in sessions[(page - 1) * 5:page * 5]:
+            title = document.get('thread_name') or thread_title(thread_title_base(document))
+            try:
+                created = datetime.fromisoformat(document['created_at']).astimezone(timezone(timedelta(hours=9))).strftime('%Y-%m-%d')
+            except (KeyError, ValueError, TypeError):
+                created = '날짜 미상'
+            lines.extend(['', safe_chunks(title)[0] + f" · {created} · {states.get(document.get('state'), '상태 확인 필요')}"])
+            evaluations = document.get('evaluations', [])
+            if evaluations:
+                entry = evaluations[-1]
+                result = entry['result']
+                lines.append('평가 보류' if result.get('held') else f"점수 {result.get('total', '미정')}/100")
+                publication = document.get('result_publications', {}).get(entry['id'], {})
+                if publication.get('status') == 'published' and str(document['guild_id']).isdecimal() and str(publication.get('post_id')).isdecimal():
+                    lines.append(f"[결과 보기](https://discord.com/channels/{document['guild_id']}/{publication['post_id']})")
+            lines.append(f"/resume session_id:{document['session_id']}")
+        if page < pages:
+            lines.extend(['', f'다음 기록: /history page:{page + 1}'])
+        # Five bounded titles and IDs fit comfortably in one Discord response.
+        return ['\n'.join(lines)]
+
     def bind_question(self, user_id, session_id, question_id, message_ids):
         with self.store.edit(user_id, session_id) as (document, conn):
             question = next((q for q in document.get('questions', []) if q['id'] == question_id), None)
