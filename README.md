@@ -96,6 +96,13 @@ DA-Agent/
 
 
 ## 요청에 맞춘 데이터와 시험 과제
+## Discord 포럼 분석 결과 PDF
+
+Discord 봇은 `/submit`으로 DA-Result 포럼에 게시할 때 공개 분석 보고서와 평가를 PDF로 생성해 첫 카드에 첨부합니다. `PDF 다운로드` 버튼을 누른 뒤 개인 응답에 표시된 파일을 Discord 기본 다운로드로 저장하세요. 포럼 회원은 첫 카드 첨부에서도 직접 저장할 수 있습니다. 기존 글에 PDF가 없으면 과제에서 `/submit` 또는 `/resume`으로 보완합니다.
+
+봇에 **파일 첨부** 권한이 필요합니다. `requirements-discord.txt`를 설치하고 봇을 재시작해야 합니다. Docker 이미지는 NanumGothic TTF를 설치하며 Windows에서는 맑은 고딕을 사용합니다. 다른 TTF는 `DISCORD_PDF_FONT` 환경 변수로 지정할 수 있습니다. [Spec 031](specs/031-discord-result-pdf.md)과 [실제 검증 기록](tests/reports/discord-pdf-live-verification-2026-10-06.md)에 과제 시작부터 게시·PDF 저장과 봇 재시작·재개 확인을 기록했습니다.
+
+## 요청에 맞춘 데이터와 시험 과제
 
 2026-10-05부터 훈련 요청의 기본 모드는 **요청별 합성 데이터 · 시험 과제**입니다. 원하는 주제와 목표를 입력하면 필요한 과제·테이블·컬럼·관계를 설계하고 실제 PostgreSQL 검산 후 제공합니다. 요청한 목표를 충족하지 못하면 다른 주제로 바꾸지 않고 질문하거나 실패 이유를 안내합니다.
 

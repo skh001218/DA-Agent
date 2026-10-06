@@ -187,6 +187,8 @@ def create_client(service, settings):
 
     class Client(discord.Client):
         async def setup_hook(self):
+            from .discord_pdf_view import ResultPDFView
+            self.add_view(ResultPDFView(settings.guild_ids))
             import asyncio
             await transport.gateway.responses.recover()
             self.response_maintenance = asyncio.create_task(transport.gateway.responses.maintenance())

@@ -29,7 +29,13 @@
 - 봇 컨테이너 `da-agent-discord-bot-1`에 6개 변경 모듈을 반영하고 재시작·ready 확인. 기존 운영 PDF 버튼·첨부 기능과 운영 조회 흐름을 보존하도록 현재 실행 소스에 새 기능만 병합했다. 해당 PDF 기능은 현재 작업 체크아웃과 별도로 개발된 코드다.
 - 현재 이미지 `da-agent-discord-bot:pdf-20261006`에 최종 스냅샷 저장. 변경 전 삭제 정책 이미지 `da-agent-discord-bot:before-archive-20261006`은 이력 보존용이며, 되돌리면 삭제 동작도 다시 활성화된다.
 - 파일 백업 `.local/thread-archive-backup`, 병합 실행 소스 `.local/thread-archive-runtime`. 컨테이너 내 확인 스크립트는 별도의 진단 파일이다.
-- compose 실행 루트는 다른 체크아웃 `C:/Users/Administrator/.codex/worktrees/discord-mvp/DA-Agent`이며 해당 체크아웃은 수정하지 않았다. 그곳에서 다시 빌드하기 전에 이번 변경을 병합해야 한다. 현재 작업 소스를 빌드할 때도 별도 PDF 변경과 통합해야 PDF 기능이 포함된다.
+- compose 실행 루트는 다른 체크아웃 `C:/Users/Administrator/.codex/worktrees/discord-mvp/DA-Agent`이며 해당 체크아웃은 수정하지 않았다. 그곳에서 다시 빌드하기 전에 이번 변경을 병합해야 한다.
+
+## PR 준비 시 최신 main 통합 검증
+
+- 최신 main의 PDF 기능(#24)을 이번 브랜치에 통합했다. PDF 근거·메시지 내보내기 데이터와 보관 처리용 스레드 정보를 함께 보존했다.
+- PDF의 요약 표기는 포럼 결과와 동일하게 과제 ID를 사용하도록 검증 기대값을 갱신했다. 과거 대화 링크는 게시 후 스레드 존재를 확인해 안내하는 흐름을 유지한다.
+- 통합 후 전체 자동 테스트: 487개 통과·65개 환경 의존 생략, 기존 FastAPI TestClient 의존성 경고 1개. `git diff --check` 통과.
 
 ## 확인의 한계
 

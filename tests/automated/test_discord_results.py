@@ -107,17 +107,23 @@ def test_publication_journal_checks_owner_and_prevents_concurrent_creation():
 
 def setup_forum(monkeypatch, exists=True):
     permissions = NS(view_channel=True, read_message_history=True, embed_links=True,
-                     send_messages=True, send_messages_in_threads=True, manage_channels=True, manage_threads=True)
+                     send_messages=True, send_messages_in_threads=True, manage_channels=True, manage_threads=True, attach_files=True)
     user = NS(id=1, display_name='참가자')
     bot = NS(id=2)
     posts = []
     class Message:
-        def __init__(self, embed): self.author, self.embeds = bot, [embed]
-        async def edit(self, **kwargs): self.embeds = [kwargs['embed']]
+        def __init__(self, embed, file=None, view=None):
+            self.author, self.embeds = bot, [embed]
+            self.attachments = [NS(filename=file.filename)] if file else []
+            self.view = view
+        async def edit(self, **kwargs):
+            if 'embed' in kwargs: self.embeds = [kwargs['embed']]
+            if 'attachments' in kwargs: self.attachments = [NS(filename=a.filename) for a in kwargs['attachments']]
+            if 'view' in kwargs: self.view = kwargs['view']
     class Thread:
-        def __init__(self, name, embed, parent):
+        def __init__(self, name, embed, parent, file=None, view=None):
             self.id, self.name, self.parent_id, self.archived = len(posts) + 10, name, parent, False
-            self.messages = [Message(embed)]
+            self.messages = [Message(embed, file, view)]
             self.fail_send = False
         async def fetch_message(self, ident): return self.messages[0]
         async def history(self, **kwargs):
@@ -138,7 +144,7 @@ def setup_forum(monkeypatch, exists=True):
             for thread in posts:
                 if thread.archived: yield thread
         async def create_thread(self, **kwargs):
-            thread = Thread(kwargs['name'], kwargs['embed'], self.id)
+            thread = Thread(kwargs['name'], kwargs['embed'], self.id, kwargs.get('file'), kwargs.get('view'))
             posts.append(thread)
             return NS(thread=thread)
     async def active_threads(): return [t for t in posts if not t.archived]
@@ -150,7 +156,7 @@ def setup_forum(monkeypatch, exists=True):
         forum = Forum(name)
         channels.append(forum)
         return forum
-    guild = NS(id='guild', me=bot, fetch_channels=fetch_channels, active_threads=active_threads, create_forum=create_forum)
+    guild = NS(id='guild', me=bot, fetch_channels=fetch_channels, active_threads=active_threads, create_forum=create_forum, filesize_limit=10 * 1024 * 1024)
     if exists: channels.append(Forum())
     parent = NS(guild=guild, category=NS(id=7), overwrites={'role': 'same permissions'}, permissions_for=lambda user: permissions)
     async def fetch_channel(ident): return next(t for t in posts if t.id == ident)

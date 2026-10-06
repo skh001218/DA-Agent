@@ -1,0 +1,133 @@
+{
+  "status": "passed",
+  "scope": "current local template; no deployment",
+  "runs": [
+    {
+      "run": 1,
+      "pages": 5,
+      "a4": true,
+      "page_stream_hashes": [
+        "9b71346c63ea12183ac628a386f4191b332c72d28fe446b6c89a59b2d934cb43",
+        "218349fdffe8d89657b5341cc69001df90d66e0afe13bbaa57a0870f604f2462",
+        "ad3bbd61d854219b300e076e8a0f02b0a5235655326530b0284941f05a6a8d02",
+        "ee11501c9e470af1e7bd619d2d37c1ba37c55121c15f1eb885c84fcfb242e226",
+        "e856ed1a976131f1ae754c1bc55c7b07f5becfcf8be37de284ca0f5ea4c95f89"
+      ],
+      "image_hashes": [
+        "d13e99bdf3036ed21c9331eb557d832517133c194488b19b93b62bc4501d70b4"
+      ],
+      "raster_hashes": [
+        "593dea43e620333d88c3e5fe530ef4ca79dc59fe8f94599ef9a752e3659db20f",
+        "a40b8d274d311363d5ed49ea33427303c1b84723009c0b1b7b02c229d780c399",
+        "5cc138fd89cc09c6bff70e5baaf6fd661e7c5f2230fb57d98820c4936bc5fa37",
+        "2ec777dbb2d8fbc64896842438c3814e3460612b1d58b3c9891c4e24586881ee",
+        "c13708b2be194bed8c017b3cdc5070c4192adb2ccd868a8c72365e8951505958"
+      ],
+      "internal_link_target_pages": [
+        2,
+        2,
+        1,
+        2,
+        2,
+        1,
+        2,
+        3,
+        2
+      ],
+      "font_sizes": [
+        8.0,
+        9.0,
+        10.0,
+        11.0,
+        13.0,
+        22.0
+      ]
+    },
+    {
+      "run": 2,
+      "pages": 5,
+      "a4": true,
+      "page_stream_hashes": [
+        "9b71346c63ea12183ac628a386f4191b332c72d28fe446b6c89a59b2d934cb43",
+        "218349fdffe8d89657b5341cc69001df90d66e0afe13bbaa57a0870f604f2462",
+        "ad3bbd61d854219b300e076e8a0f02b0a5235655326530b0284941f05a6a8d02",
+        "ee11501c9e470af1e7bd619d2d37c1ba37c55121c15f1eb885c84fcfb242e226",
+        "e856ed1a976131f1ae754c1bc55c7b07f5becfcf8be37de284ca0f5ea4c95f89"
+      ],
+      "image_hashes": [
+        "d13e99bdf3036ed21c9331eb557d832517133c194488b19b93b62bc4501d70b4"
+      ],
+      "raster_hashes": [
+        "593dea43e620333d88c3e5fe530ef4ca79dc59fe8f94599ef9a752e3659db20f",
+        "a40b8d274d311363d5ed49ea33427303c1b84723009c0b1b7b02c229d780c399",
+        "5cc138fd89cc09c6bff70e5baaf6fd661e7c5f2230fb57d98820c4936bc5fa37",
+        "2ec777dbb2d8fbc64896842438c3814e3460612b1d58b3c9891c4e24586881ee",
+        "c13708b2be194bed8c017b3cdc5070c4192adb2ccd868a8c72365e8951505958"
+      ],
+      "internal_link_target_pages": [
+        2,
+        2,
+        1,
+        2,
+        2,
+        1,
+        2,
+        3,
+        2
+      ],
+      "font_sizes": [
+        8.0,
+        9.0,
+        10.0,
+        11.0,
+        13.0,
+        22.0
+      ]
+    },
+    {
+      "run": 3,
+      "pages": 5,
+      "a4": true,
+      "page_stream_hashes": [
+        "9b71346c63ea12183ac628a386f4191b332c72d28fe446b6c89a59b2d934cb43",
+        "218349fdffe8d89657b5341cc69001df90d66e0afe13bbaa57a0870f604f2462",
+        "ad3bbd61d854219b300e076e8a0f02b0a5235655326530b0284941f05a6a8d02",
+        "ee11501c9e470af1e7bd619d2d37c1ba37c55121c15f1eb885c84fcfb242e226",
+        "e856ed1a976131f1ae754c1bc55c7b07f5becfcf8be37de284ca0f5ea4c95f89"
+      ],
+      "image_hashes": [
+        "d13e99bdf3036ed21c9331eb557d832517133c194488b19b93b62bc4501d70b4"
+      ],
+      "raster_hashes": [
+        "593dea43e620333d88c3e5fe530ef4ca79dc59fe8f94599ef9a752e3659db20f",
+        "a40b8d274d311363d5ed49ea33427303c1b84723009c0b1b7b02c229d780c399",
+        "5cc138fd89cc09c6bff70e5baaf6fd661e7c5f2230fb57d98820c4936bc5fa37",
+        "2ec777dbb2d8fbc64896842438c3814e3460612b1d58b3c9891c4e24586881ee",
+        "c13708b2be194bed8c017b3cdc5070c4192adb2ccd868a8c72365e8951505958"
+      ],
+      "internal_link_target_pages": [
+        2,
+        2,
+        1,
+        2,
+        2,
+        1,
+        2,
+        3,
+        2
+      ],
+      "font_sizes": [
+        8.0,
+        9.0,
+        10.0,
+        11.0,
+        13.0,
+        22.0
+      ]
+    }
+  ],
+  "sequential_runs": 1,
+  "concurrent_runs": 2,
+  "all_15_rendered_pages_identical": true,
+  "source_unchanged": true
+}
