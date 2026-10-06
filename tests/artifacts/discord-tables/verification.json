@@ -1,0 +1,37 @@
+{
+  "rendered": [
+    "table-1-1.png",
+    "table-2-1.png",
+    "table-3-1.png",
+    "table-4-1.png"
+  ],
+  "attachments": [
+    {
+      "message_id": "1556914192244674601",
+      "filename": "table-1.png",
+      "width": 1200,
+      "height": 486
+    },
+    {
+      "message_id": "1556913985863815172",
+      "filename": "table-1.png",
+      "width": 1200,
+      "height": 634
+    },
+    {
+      "message_id": "1556913979077693440",
+      "filename": "table-1.png",
+      "width": 1200,
+      "height": 486
+    },
+    {
+      "message_id": "1556913973457190923",
+      "filename": "table-1.png",
+      "width": 1200,
+      "height": 560
+    }
+  ],
+  "training_preserved": true,
+  "saved_execution_count": 1,
+  "saved_model_calls": 6
+}

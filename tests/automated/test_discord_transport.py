@@ -191,6 +191,25 @@ def test_owner_reply_uses_service_answer_action():
     assert call[2]['payload']['reply_to_message_id'] == '99'
 
 
+def test_unreadable_owner_message_gets_guidance_without_model_call():
+    service, gateway, transport, event = setup(channel=30)
+    service.session['thread_id'] = '30'
+    gateway.message_content_enabled = False
+    message = NS(reference=NS(message_id=101), id=102, author=event.user, guild=event.guild, channel=event.channel, content='', attachments=[])
+    asyncio.run(transport.message(message))
+    assert '@\u200bDA-Agent' in gateway.sent[-1][1]
+    assert not any(call[0] == 'handle' for call in service.calls)
+
+
+@pytest.mark.parametrize('state,expected', [('error', '조회하지 못했습니다'), ('clarification', '조건을 확인 중'), ('success', '결과를 저장')])
+def test_query_acknowledgement_matches_actual_state(state, expected):
+    service, gateway, transport, event = setup(channel=30)
+    service.session['thread_id'] = '30'
+    service.handle = lambda *args, **kwargs: {'messages': ['내용'], 'request_state': state}
+    asyncio.run(transport.command(event, 'query', text='조회'))
+    assert expected in gateway.replies[-1]
+
+
 def test_internal_errors_never_leak_secrets():
     service, gateway, transport, event = setup(channel=30)
     service.session["thread_id"] = "30"
