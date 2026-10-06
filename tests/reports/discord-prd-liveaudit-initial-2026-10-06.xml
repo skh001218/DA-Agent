@@ -1,0 +1,790 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="10" skipped="0" tests="129" time="4.637" timestamp="2026-10-06T07:13:46.666412+00:00" hostname="c1c7fee3ce09"><testcase classname="tests.automated.test_discord_transport" name="test_start_acknowledges_before_permissions_creates_private_binding" time="0.006" /><testcase classname="tests.automated.test_discord_transport" name="test_concurrent_starts_reuse_latest_thread_binding" time="0.004" /><testcase classname="tests.automated.test_discord_transport" name="test_failed_start_creates_no_thread_or_binding" time="0.003" /><testcase classname="tests.automated.test_discord_transport" name="test_resume_interrupted_session_calls_continue_after_permissions" time="0.003" /><testcase classname="tests.automated.test_discord_transport" name="test_fail_closed_before_service_start[99-False]" time="0.001" /><testcase classname="tests.automated.test_discord_transport" name="test_fail_closed_before_service_start[10-True]" time="0.001" /><testcase classname="tests.automated.test_discord_transport" name="test_foreign_owner_or_wrong_thread_never_handles[2-30]" time="0.002" /><testcase classname="tests.automated.test_discord_transport" name="test_foreign_owner_or_wrong_thread_never_handles[1-20]" time="0.002" /><testcase classname="tests.automated.test_discord_transport" name="test_result_chunks_plain_text_no_mentions" time="0.002" /><testcase classname="tests.automated.test_discord_transport" name="test_deleted_thread_recovery_preserves_session" time="0.002" /><testcase classname="tests.automated.test_discord_transport" name="test_resume_no_session_displays_service_guidance" time="0.002" /><testcase classname="tests.automated.test_discord_transport" name="test_permission_failure_preserves_existing_binding" time="0.002" /><testcase classname="tests.automated.test_discord_transport" name="test_unrelated_natural_message_is_silent[2-True-False]" time="0.002" /><testcase classname="tests.automated.test_discord_transport" name="test_unrelated_natural_message_is_silent[1-False-False]" time="0.001" /><testcase classname="tests.automated.test_discord_transport" name="test_unrelated_natural_message_is_silent[1-True-True]" time="0.001" /><testcase classname="tests.automated.test_discord_transport" name="test_owner_reply_uses_service_answer_action" time="0.003" /><testcase classname="tests.automated.test_discord_transport" name="test_internal_errors_never_leak_secrets" time="0.002" /><testcase classname="tests.automated.test_discord_transport" name="test_settings_require_explicit_isolated_configuration" time="0.008" /><testcase classname="tests.automated.test_discord_transport" name="test_optional_real_command_registration_without_login" time="0.294"><failure message="OSError: [Errno 30] Read-only file system: '.local/discord-responses'">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-0/test_optional_real_command_reg0')
+
+    def test_optional_real_command_registration_without_login(tmp_path):
+        pytest.importorskip("discord")
+        settings = DiscordSettings("fake", (10,), "r", "a", "l", tmp_path / "key")
+        async def check():
+            client = create_client(Service(), settings)
+            assert {cmd.name for cmd in client.da_command_tree.get_commands()} == {"training", "resume", "query", "answer", "help", "report", "followup", "submit", "sql", "evidence", "end", "tip"}
+            assert not client.intents.message_content
+            topic = next(p for p in client.da_command_tree.get_command('training').parameters if p.name == 'topic')
+            assert [(choice.name, choice.value) for choice in topic.choices] == [('튜토리얼 완료율 분석', 'tutorial')]
+            await client.close()
+&gt;       asyncio.run(check())
+
+tests/automated/test_discord_transport.py:230:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/usr/local/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests/automated/test_discord_transport.py:224: in check
+    client = create_client(Service(), settings)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/da_agent/discord_bot.py:209: in create_client
+    transport = DiscordTransport(service, Gateway(client), settings.guild_ids)
+                                          ^^^^^^^^^^^^^^^
+src/da_agent/discord_bot.py:73: in __init__
+    self.responses = DiscordResponses(os.environ.get('DISCORD_RESPONSE_DIRECTORY', '.local/discord-responses'))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/da_agent/discord_responses.py:17: in __init__
+    self.directory.mkdir(parents=True, exist_ok=True, mode=0o700)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = PosixPath('.local/discord-responses'), mode = 448, parents = True
+exist_ok = True
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+&gt;           os.mkdir(self, mode)
+E           OSError: [Errno 30] Read-only file system: '.local/discord-responses'
+
+/usr/local/lib/python3.12/pathlib.py:1311: OSError</failure></testcase><testcase classname="tests.automated.test_discord_transport" name="test_main_reaches_sdk_start_without_invalid_logging_configuration" time="0.002"><failure message="OSError: [Errno 30] Read-only file system: '.local/discord-responses'">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-0/test_main_reaches_sdk_start_wi0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x75df2a7eba10&gt;
+
+    def test_main_reaches_sdk_start_without_invalid_logging_configuration(tmp_path, monkeypatch):
+        pytest.importorskip("discord")
+        from da_agent import discord_bot, discord_provider, discord_store
+        settings = DiscordSettings("fake", (10,), "r", "a", "l", tmp_path / "key")
+        monkeypatch.setattr(DiscordSettings, "from_env", classmethod(lambda cls: settings))
+        monkeypatch.setattr(discord_provider, "DiscordGemmaProvider", lambda **kwargs: NS())
+        monkeypatch.setattr(discord_store, "DiscordStore", lambda dsn: NS(initialize=lambda: None))
+        class StartupReached(Exception):
+            pass
+        def client_factory(service, configured):
+            client = create_client(service, configured)
+            async def start(token, *, reconnect=True):
+                assert token == "fake"
+                raise StartupReached()
+            client.start = start
+            return client
+        monkeypatch.setattr(discord_bot, "create_client", client_factory)
+        with pytest.raises(StartupReached):
+&gt;           discord_bot.main()
+
+tests/automated/test_discord_transport.py:251:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src/da_agent/discord_bot.py:283: in main
+    client = create_client(service, settings)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/automated/test_discord_transport.py:243: in client_factory
+    client = create_client(service, configured)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/da_agent/discord_bot.py:209: in create_client
+    transport = DiscordTransport(service, Gateway(client), settings.guild_ids)
+                                          ^^^^^^^^^^^^^^^
+src/da_agent/discord_bot.py:73: in __init__
+    self.responses = DiscordResponses(os.environ.get('DISCORD_RESPONSE_DIRECTORY', '.local/discord-responses'))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/da_agent/discord_responses.py:17: in __init__
+    self.directory.mkdir(parents=True, exist_ok=True, mode=0o700)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = PosixPath('.local/discord-responses'), mode = 448, parents = True
+exist_ok = True
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+&gt;           os.mkdir(self, mode)
+E           OSError: [Errno 30] Read-only file system: '.local/discord-responses'
+
+/usr/local/lib/python3.12/pathlib.py:1311: OSError</failure></testcase><testcase classname="tests.automated.test_discord_transport" name="test_sdk_gateway_rejects_additional_ordinary_member[False-False-False]" time="0.002"><failure message="OSError: [Errno 30] Read-only file system: '.local/discord-responses'">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-0/test_sdk_gateway_rejects_addit0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x75df2a7eb7a0&gt;
+privileged = False, archived = False, access_denied = False
+
+    @pytest.mark.parametrize("privileged", [False, True])
+    @pytest.mark.parametrize("archived", [False, True])
+    @pytest.mark.parametrize("access_denied", [False, True])
+    def test_sdk_gateway_rejects_additional_ordinary_member(tmp_path, monkeypatch, privileged, archived, access_denied):
+        discord = pytest.importorskip("discord")
+        permissions = NS(view_channel=True, create_private_threads=True, send_messages_in_threads=True,
+                         manage_threads=True, read_message_history=True, administrator=False)
+        extra = NS(id=2)
+        owner = NS(id=1)
+        guild = NS(id=10, me=NS(id=99), get_member=lambda member_id: extra)
+        class Parent:
+            def __init__(self):
+                self.guild = guild
+            def permissions_for(self, member):
+                return NS(**{**vars(permissions), "manage_threads": privileged}) if member.id == 2 else permissions
+        class Thread:
+            def __init__(self):
+                self.guild, self.parent, self.invitable, self.archived = guild, Parent(), False, archived
+                self.joined = False
+            def is_private(self):
+                return True
+            async def join(self):
+                assert not self.archived
+                self.joined = True
+            async def edit(self, **kwargs):
+                self.archived = kwargs['archived']
+            async def fetch_members(self):
+                assert self.joined and not self.archived
+                if access_denied:
+                    raise discord.Forbidden(NS(status=403, reason='Forbidden'), {'code': 50001, 'message': 'Missing Access'})
+                return [NS(id=1), NS(id=2), NS(id=99)]
+        monkeypatch.setattr(discord, "Thread", Thread)
+        monkeypatch.setattr(discord, "TextChannel", Parent)
+        async def check():
+            client = create_client(Service(), DiscordSettings("fake", (10,), "r", "a", "l", tmp_path / "key"))
+            client._connection.user = NS(id=99)
+            if access_denied:
+                with pytest.raises(DomainError, match="Server Members Intent"):
+                    await client.da_transport.gateway.validate_thread(Thread(), owner)
+            elif privileged:
+                await client.da_transport.gateway.validate_thread(Thread(), owner)
+            else:
+                with pytest.raises(DomainError, match="다른 일반 참가자"):
+                    await client.da_transport.gateway.validate_thread(Thread(), owner)
+            await client.close()
+&gt;       asyncio.run(check())
+
+tests/automated/test_discord_transport.py:299:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/usr/local/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests/automated/test_discord_transport.py:288: in check
+    client = create_client(Service(), DiscordSettings("fake", (10,), "r", "a", "l", tmp_path / "key"))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/da_agent/discord_bot.py:209: in create_client
+    transport = DiscordTransport(service, Gateway(client), settings.guild_ids)
+                                          ^^^^^^^^^^^^^^^
+src/da_agent/discord_bot.py:73: in __init__
+    self.responses = DiscordResponses(os.environ.get('DISCORD_RESPONSE_DIRECTORY', '.local/discord-responses'))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/da_agent/discord_responses.py:17: in __init__
+    self.directory.mkdir(parents=True, exist_ok=True, mode=0o700)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = PosixPath('.local/discord-responses'), mode = 448, parents = True
+exist_ok = True
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+&gt;           os.mkdir(self, mode)
+E           OSError: [Errno 30] Read-only file system: '.local/discord-responses'
+
+/usr/local/lib/python3.12/pathlib.py:1311: OSError</failure></testcase><testcase classname="tests.automated.test_discord_transport" name="test_sdk_gateway_rejects_additional_ordinary_member[False-False-True]" time="0.002"><failure message="OSError: [Errno 30] Read-only file system: '.local/discord-responses'">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-0/test_sdk_gateway_rejects_addit1')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x75df2a859970&gt;
+privileged = True, archived = False, access_denied = False
+
+    @pytest.mark.parametrize("privileged", [False, True])
+    @pytest.mark.parametrize("archived", [False, True])
+    @pytest.mark.parametrize("access_denied", [False, True])
+    def test_sdk_gateway_rejects_additional_ordinary_member(tmp_path, monkeypatch, privileged, archived, access_denied):
+        discord = pytest.importorskip("discord")
+        permissions = NS(view_channel=True, create_private_threads=True, send_messages_in_threads=True,
+                         manage_threads=True, read_message_history=True, administrator=False)
+        extra = NS(id=2)
+        owner = NS(id=1)
+        guild = NS(id=10, me=NS(id=99), get_member=lambda member_id: extra)
+        class Parent:
+            def __init__(self):
+                self.guild = guild
+            def permissions_for(self, member):
+                return NS(**{**vars(permissions), "manage_threads": privileged}) if member.id == 2 else permissions
+        class Thread:
+            def __init__(self):
+                self.guild, self.parent, self.invitable, self.archived = guild, Parent(), False, archived
+                self.joined = False
+            def is_private(self):
+                return True
+            async def join(self):
+                assert not self.archived
+                self.joined = True
+            async def edit(self, **kwargs):
+                self.archived = kwargs['archived']
+            async def fetch_members(self):
+                assert self.joined and not self.archived
+                if access_denied:
+                    raise discord.Forbidden(NS(status=403, reason='Forbidden'), {'code': 50001, 'message': 'Missing Access'})
+                return [NS(id=1), NS(id=2), NS(id=99)]
+        monkeypatch.setattr(discord, "Thread", Thread)
+        monkeypatch.setattr(discord, "TextChannel", Parent)
+        async def check():
+            client = create_client(Service(), DiscordSettings("fake", (10,), "r", "a", "l", tmp_path / "key"))
+            client._connection.user = NS(id=99)
+            if access_denied:
+                with pytest.raises(DomainError, match="Server Members Intent"):
+                    await client.da_transport.gateway.validate_thread(Thread(), owner)
+            elif privileged:
+                await client.da_transport.gateway.validate_thread(Thread(), owner)
+            else:
+                with pytest.raises(DomainError, match="다른 일반 참가자"):
+                    await client.da_transport.gateway.validate_thread(Thread(), owner)
+            await client.close()
+&gt;       asyncio.run(check())
+
+tests/automated/test_discord_transport.py:299:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/usr/local/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests/automated/test_discord_transport.py:288: in check
+    client = create_client(Service(), DiscordSettings("fake", (10,), "r", "a", "l", tmp_path / "key"))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/da_agent/discord_bot.py:209: in create_client
+    transport = DiscordTransport(service, Gateway(client), settings.guild_ids)
+                                          ^^^^^^^^^^^^^^^
+src/da_agent/discord_bot.py:73: in __init__
+    self.responses = DiscordResponses(os.environ.get('DISCORD_RESPONSE_DIRECTORY', '.local/discord-responses'))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/da_agent/discord_responses.py:17: in __init__
+    self.directory.mkdir(parents=True, exist_ok=True, mode=0o700)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = PosixPath('.local/discord-responses'), mode = 448, parents = True
+exist_ok = True
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+&gt;           os.mkdir(self, mode)
+E           OSError: [Errno 30] Read-only file system: '.local/discord-responses'
+
+/usr/local/lib/python3.12/pathlib.py:1311: OSError</failure></testcase><testcase classname="tests.automated.test_discord_transport" name="test_sdk_gateway_rejects_additional_ordinary_member[False-True-False]" time="0.003"><failure message="OSError: [Errno 30] Read-only file system: '.local/discord-responses'">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-0/test_sdk_gateway_rejects_addit2')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x75df2a7eac00&gt;
+privileged = False, archived = True, access_denied = False
+
+    @pytest.mark.parametrize("privileged", [False, True])
+    @pytest.mark.parametrize("archived", [False, True])
+    @pytest.mark.parametrize("access_denied", [False, True])
+    def test_sdk_gateway_rejects_additional_ordinary_member(tmp_path, monkeypatch, privileged, archived, access_denied):
+        discord = pytest.importorskip("discord")
+        permissions = NS(view_channel=True, create_private_threads=True, send_messages_in_threads=True,
+                         manage_threads=True, read_message_history=True, administrator=False)
+        extra = NS(id=2)
+        owner = NS(id=1)
+        guild = NS(id=10, me=NS(id=99), get_member=lambda member_id: extra)
+        class Parent:
+            def __init__(self):
+                self.guild = guild
+            def permissions_for(self, member):
+                return NS(**{**vars(permissions), "manage_threads": privileged}) if member.id == 2 else permissions
+        class Thread:
+            def __init__(self):
+                self.guild, self.parent, self.invitable, self.archived = guild, Parent(), False, archived
+                self.joined = False
+            def is_private(self):
+                return True
+            async def join(self):
+                assert not self.archived
+                self.joined = True
+            async def edit(self, **kwargs):
+                self.archived = kwargs['archived']
+            async def fetch_members(self):
+                assert self.joined and not self.archived
+                if access_denied:
+                    raise discord.Forbidden(NS(status=403, reason='Forbidden'), {'code': 50001, 'message': 'Missing Access'})
+                return [NS(id=1), NS(id=2), NS(id=99)]
+        monkeypatch.setattr(discord, "Thread", Thread)
+        monkeypatch.setattr(discord, "TextChannel", Parent)
+        async def check():
+            client = create_client(Service(), DiscordSettings("fake", (10,), "r", "a", "l", tmp_path / "key"))
+            client._connection.user = NS(id=99)
+            if access_denied:
+                with pytest.raises(DomainError, match="Server Members Intent"):
+                    await client.da_transport.gateway.validate_thread(Thread(), owner)
+            elif privileged:
+                await client.da_transport.gateway.validate_thread(Thread(), owner)
+            else:
+                with pytest.raises(DomainError, match="다른 일반 참가자"):
+                    await client.da_transport.gateway.validate_thread(Thread(), owner)
+            await client.close()
+&gt;       asyncio.run(check())
+
+tests/automated/test_discord_transport.py:299:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/usr/local/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests/automated/test_discord_transport.py:288: in check
+    client = create_client(Service(), DiscordSettings("fake", (10,), "r", "a", "l", tmp_path / "key"))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/da_agent/discord_bot.py:209: in create_client
+    transport = DiscordTransport(service, Gateway(client), settings.guild_ids)
+                                          ^^^^^^^^^^^^^^^
+src/da_agent/discord_bot.py:73: in __init__
+    self.responses = DiscordResponses(os.environ.get('DISCORD_RESPONSE_DIRECTORY', '.local/discord-responses'))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/da_agent/discord_responses.py:17: in __init__
+    self.directory.mkdir(parents=True, exist_ok=True, mode=0o700)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = PosixPath('.local/discord-responses'), mode = 448, parents = True
+exist_ok = True
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+&gt;           os.mkdir(self, mode)
+E           OSError: [Errno 30] Read-only file system: '.local/discord-responses'
+
+/usr/local/lib/python3.12/pathlib.py:1311: OSError</failure></testcase><testcase classname="tests.automated.test_discord_transport" name="test_sdk_gateway_rejects_additional_ordinary_member[False-True-True]" time="0.002"><failure message="OSError: [Errno 30] Read-only file system: '.local/discord-responses'">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-0/test_sdk_gateway_rejects_addit3')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x75df2a859550&gt;
+privileged = True, archived = True, access_denied = False
+
+    @pytest.mark.parametrize("privileged", [False, True])
+    @pytest.mark.parametrize("archived", [False, True])
+    @pytest.mark.parametrize("access_denied", [False, True])
+    def test_sdk_gateway_rejects_additional_ordinary_member(tmp_path, monkeypatch, privileged, archived, access_denied):
+        discord = pytest.importorskip("discord")
+        permissions = NS(view_channel=True, create_private_threads=True, send_messages_in_threads=True,
+                         manage_threads=True, read_message_history=True, administrator=False)
+        extra = NS(id=2)
+        owner = NS(id=1)
+        guild = NS(id=10, me=NS(id=99), get_member=lambda member_id: extra)
+        class Parent:
+            def __init__(self):
+                self.guild = guild
+            def permissions_for(self, member):
+                return NS(**{**vars(permissions), "manage_threads": privileged}) if member.id == 2 else permissions
+        class Thread:
+            def __init__(self):
+                self.guild, self.parent, self.invitable, self.archived = guild, Parent(), False, archived
+                self.joined = False
+            def is_private(self):
+                return True
+            async def join(self):
+                assert not self.archived
+                self.joined = True
+            async def edit(self, **kwargs):
+                self.archived = kwargs['archived']
+            async def fetch_members(self):
+                assert self.joined and not self.archived
+                if access_denied:
+                    raise discord.Forbidden(NS(status=403, reason='Forbidden'), {'code': 50001, 'message': 'Missing Access'})
+                return [NS(id=1), NS(id=2), NS(id=99)]
+        monkeypatch.setattr(discord, "Thread", Thread)
+        monkeypatch.setattr(discord, "TextChannel", Parent)
+        async def check():
+            client = create_client(Service(), DiscordSettings("fake", (10,), "r", "a", "l", tmp_path / "key"))
+            client._connection.user = NS(id=99)
+            if access_denied:
+                with pytest.raises(DomainError, match="Server Members Intent"):
+                    await client.da_transport.gateway.validate_thread(Thread(), owner)
+            elif privileged:
+                await client.da_transport.gateway.validate_thread(Thread(), owner)
+            else:
+                with pytest.raises(DomainError, match="다른 일반 참가자"):
+                    await client.da_transport.gateway.validate_thread(Thread(), owner)
+            await client.close()
+&gt;       asyncio.run(check())
+
+tests/automated/test_discord_transport.py:299:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/usr/local/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests/automated/test_discord_transport.py:288: in check
+    client = create_client(Service(), DiscordSettings("fake", (10,), "r", "a", "l", tmp_path / "key"))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/da_agent/discord_bot.py:209: in create_client
+    transport = DiscordTransport(service, Gateway(client), settings.guild_ids)
+                                          ^^^^^^^^^^^^^^^
+src/da_agent/discord_bot.py:73: in __init__
+    self.responses = DiscordResponses(os.environ.get('DISCORD_RESPONSE_DIRECTORY', '.local/discord-responses'))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/da_agent/discord_responses.py:17: in __init__
+    self.directory.mkdir(parents=True, exist_ok=True, mode=0o700)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = PosixPath('.local/discord-responses'), mode = 448, parents = True
+exist_ok = True
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+&gt;           os.mkdir(self, mode)
+E           OSError: [Errno 30] Read-only file system: '.local/discord-responses'
+
+/usr/local/lib/python3.12/pathlib.py:1311: OSError</failure></testcase><testcase classname="tests.automated.test_discord_transport" name="test_sdk_gateway_rejects_additional_ordinary_member[True-False-False]" time="0.003"><failure message="OSError: [Errno 30] Read-only file system: '.local/discord-responses'">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-0/test_sdk_gateway_rejects_addit4')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x75df2a7eb710&gt;
+privileged = False, archived = False, access_denied = True
+
+    @pytest.mark.parametrize("privileged", [False, True])
+    @pytest.mark.parametrize("archived", [False, True])
+    @pytest.mark.parametrize("access_denied", [False, True])
+    def test_sdk_gateway_rejects_additional_ordinary_member(tmp_path, monkeypatch, privileged, archived, access_denied):
+        discord = pytest.importorskip("discord")
+        permissions = NS(view_channel=True, create_private_threads=True, send_messages_in_threads=True,
+                         manage_threads=True, read_message_history=True, administrator=False)
+        extra = NS(id=2)
+        owner = NS(id=1)
+        guild = NS(id=10, me=NS(id=99), get_member=lambda member_id: extra)
+        class Parent:
+            def __init__(self):
+                self.guild = guild
+            def permissions_for(self, member):
+                return NS(**{**vars(permissions), "manage_threads": privileged}) if member.id == 2 else permissions
+        class Thread:
+            def __init__(self):
+                self.guild, self.parent, self.invitable, self.archived = guild, Parent(), False, archived
+                self.joined = False
+            def is_private(self):
+                return True
+            async def join(self):
+                assert not self.archived
+                self.joined = True
+            async def edit(self, **kwargs):
+                self.archived = kwargs['archived']
+            async def fetch_members(self):
+                assert self.joined and not self.archived
+                if access_denied:
+                    raise discord.Forbidden(NS(status=403, reason='Forbidden'), {'code': 50001, 'message': 'Missing Access'})
+                return [NS(id=1), NS(id=2), NS(id=99)]
+        monkeypatch.setattr(discord, "Thread", Thread)
+        monkeypatch.setattr(discord, "TextChannel", Parent)
+        async def check():
+            client = create_client(Service(), DiscordSettings("fake", (10,), "r", "a", "l", tmp_path / "key"))
+            client._connection.user = NS(id=99)
+            if access_denied:
+                with pytest.raises(DomainError, match="Server Members Intent"):
+                    await client.da_transport.gateway.validate_thread(Thread(), owner)
+            elif privileged:
+                await client.da_transport.gateway.validate_thread(Thread(), owner)
+            else:
+                with pytest.raises(DomainError, match="다른 일반 참가자"):
+                    await client.da_transport.gateway.validate_thread(Thread(), owner)
+            await client.close()
+&gt;       asyncio.run(check())
+
+tests/automated/test_discord_transport.py:299:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/usr/local/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests/automated/test_discord_transport.py:288: in check
+    client = create_client(Service(), DiscordSettings("fake", (10,), "r", "a", "l", tmp_path / "key"))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/da_agent/discord_bot.py:209: in create_client
+    transport = DiscordTransport(service, Gateway(client), settings.guild_ids)
+                                          ^^^^^^^^^^^^^^^
+src/da_agent/discord_bot.py:73: in __init__
+    self.responses = DiscordResponses(os.environ.get('DISCORD_RESPONSE_DIRECTORY', '.local/discord-responses'))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/da_agent/discord_responses.py:17: in __init__
+    self.directory.mkdir(parents=True, exist_ok=True, mode=0o700)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = PosixPath('.local/discord-responses'), mode = 448, parents = True
+exist_ok = True
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+&gt;           os.mkdir(self, mode)
+E           OSError: [Errno 30] Read-only file system: '.local/discord-responses'
+
+/usr/local/lib/python3.12/pathlib.py:1311: OSError</failure></testcase><testcase classname="tests.automated.test_discord_transport" name="test_sdk_gateway_rejects_additional_ordinary_member[True-False-True]" time="0.002"><failure message="OSError: [Errno 30] Read-only file system: '.local/discord-responses'">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-0/test_sdk_gateway_rejects_addit5')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x75df2a83da60&gt;
+privileged = True, archived = False, access_denied = True
+
+    @pytest.mark.parametrize("privileged", [False, True])
+    @pytest.mark.parametrize("archived", [False, True])
+    @pytest.mark.parametrize("access_denied", [False, True])
+    def test_sdk_gateway_rejects_additional_ordinary_member(tmp_path, monkeypatch, privileged, archived, access_denied):
+        discord = pytest.importorskip("discord")
+        permissions = NS(view_channel=True, create_private_threads=True, send_messages_in_threads=True,
+                         manage_threads=True, read_message_history=True, administrator=False)
+        extra = NS(id=2)
+        owner = NS(id=1)
+        guild = NS(id=10, me=NS(id=99), get_member=lambda member_id: extra)
+        class Parent:
+            def __init__(self):
+                self.guild = guild
+            def permissions_for(self, member):
+                return NS(**{**vars(permissions), "manage_threads": privileged}) if member.id == 2 else permissions
+        class Thread:
+            def __init__(self):
+                self.guild, self.parent, self.invitable, self.archived = guild, Parent(), False, archived
+                self.joined = False
+            def is_private(self):
+                return True
+            async def join(self):
+                assert not self.archived
+                self.joined = True
+            async def edit(self, **kwargs):
+                self.archived = kwargs['archived']
+            async def fetch_members(self):
+                assert self.joined and not self.archived
+                if access_denied:
+                    raise discord.Forbidden(NS(status=403, reason='Forbidden'), {'code': 50001, 'message': 'Missing Access'})
+                return [NS(id=1), NS(id=2), NS(id=99)]
+        monkeypatch.setattr(discord, "Thread", Thread)
+        monkeypatch.setattr(discord, "TextChannel", Parent)
+        async def check():
+            client = create_client(Service(), DiscordSettings("fake", (10,), "r", "a", "l", tmp_path / "key"))
+            client._connection.user = NS(id=99)
+            if access_denied:
+                with pytest.raises(DomainError, match="Server Members Intent"):
+                    await client.da_transport.gateway.validate_thread(Thread(), owner)
+            elif privileged:
+                await client.da_transport.gateway.validate_thread(Thread(), owner)
+            else:
+                with pytest.raises(DomainError, match="다른 일반 참가자"):
+                    await client.da_transport.gateway.validate_thread(Thread(), owner)
+            await client.close()
+&gt;       asyncio.run(check())
+
+tests/automated/test_discord_transport.py:299:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/usr/local/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests/automated/test_discord_transport.py:288: in check
+    client = create_client(Service(), DiscordSettings("fake", (10,), "r", "a", "l", tmp_path / "key"))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/da_agent/discord_bot.py:209: in create_client
+    transport = DiscordTransport(service, Gateway(client), settings.guild_ids)
+                                          ^^^^^^^^^^^^^^^
+src/da_agent/discord_bot.py:73: in __init__
+    self.responses = DiscordResponses(os.environ.get('DISCORD_RESPONSE_DIRECTORY', '.local/discord-responses'))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/da_agent/discord_responses.py:17: in __init__
+    self.directory.mkdir(parents=True, exist_ok=True, mode=0o700)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = PosixPath('.local/discord-responses'), mode = 448, parents = True
+exist_ok = True
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+&gt;           os.mkdir(self, mode)
+E           OSError: [Errno 30] Read-only file system: '.local/discord-responses'
+
+/usr/local/lib/python3.12/pathlib.py:1311: OSError</failure></testcase><testcase classname="tests.automated.test_discord_transport" name="test_sdk_gateway_rejects_additional_ordinary_member[True-True-False]" time="0.002"><failure message="OSError: [Errno 30] Read-only file system: '.local/discord-responses'">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-0/test_sdk_gateway_rejects_addit6')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x75df2a85b8c0&gt;
+privileged = False, archived = True, access_denied = True
+
+    @pytest.mark.parametrize("privileged", [False, True])
+    @pytest.mark.parametrize("archived", [False, True])
+    @pytest.mark.parametrize("access_denied", [False, True])
+    def test_sdk_gateway_rejects_additional_ordinary_member(tmp_path, monkeypatch, privileged, archived, access_denied):
+        discord = pytest.importorskip("discord")
+        permissions = NS(view_channel=True, create_private_threads=True, send_messages_in_threads=True,
+                         manage_threads=True, read_message_history=True, administrator=False)
+        extra = NS(id=2)
+        owner = NS(id=1)
+        guild = NS(id=10, me=NS(id=99), get_member=lambda member_id: extra)
+        class Parent:
+            def __init__(self):
+                self.guild = guild
+            def permissions_for(self, member):
+                return NS(**{**vars(permissions), "manage_threads": privileged}) if member.id == 2 else permissions
+        class Thread:
+            def __init__(self):
+                self.guild, self.parent, self.invitable, self.archived = guild, Parent(), False, archived
+                self.joined = False
+            def is_private(self):
+                return True
+            async def join(self):
+                assert not self.archived
+                self.joined = True
+            async def edit(self, **kwargs):
+                self.archived = kwargs['archived']
+            async def fetch_members(self):
+                assert self.joined and not self.archived
+                if access_denied:
+                    raise discord.Forbidden(NS(status=403, reason='Forbidden'), {'code': 50001, 'message': 'Missing Access'})
+                return [NS(id=1), NS(id=2), NS(id=99)]
+        monkeypatch.setattr(discord, "Thread", Thread)
+        monkeypatch.setattr(discord, "TextChannel", Parent)
+        async def check():
+            client = create_client(Service(), DiscordSettings("fake", (10,), "r", "a", "l", tmp_path / "key"))
+            client._connection.user = NS(id=99)
+            if access_denied:
+                with pytest.raises(DomainError, match="Server Members Intent"):
+                    await client.da_transport.gateway.validate_thread(Thread(), owner)
+            elif privileged:
+                await client.da_transport.gateway.validate_thread(Thread(), owner)
+            else:
+                with pytest.raises(DomainError, match="다른 일반 참가자"):
+                    await client.da_transport.gateway.validate_thread(Thread(), owner)
+            await client.close()
+&gt;       asyncio.run(check())
+
+tests/automated/test_discord_transport.py:299:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/usr/local/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests/automated/test_discord_transport.py:288: in check
+    client = create_client(Service(), DiscordSettings("fake", (10,), "r", "a", "l", tmp_path / "key"))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/da_agent/discord_bot.py:209: in create_client
+    transport = DiscordTransport(service, Gateway(client), settings.guild_ids)
+                                          ^^^^^^^^^^^^^^^
+src/da_agent/discord_bot.py:73: in __init__
+    self.responses = DiscordResponses(os.environ.get('DISCORD_RESPONSE_DIRECTORY', '.local/discord-responses'))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/da_agent/discord_responses.py:17: in __init__
+    self.directory.mkdir(parents=True, exist_ok=True, mode=0o700)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = PosixPath('.local/discord-responses'), mode = 448, parents = True
+exist_ok = True
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+&gt;           os.mkdir(self, mode)
+E           OSError: [Errno 30] Read-only file system: '.local/discord-responses'
+
+/usr/local/lib/python3.12/pathlib.py:1311: OSError</failure></testcase><testcase classname="tests.automated.test_discord_transport" name="test_sdk_gateway_rejects_additional_ordinary_member[True-True-True]" time="0.002"><failure message="OSError: [Errno 30] Read-only file system: '.local/discord-responses'">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-0/test_sdk_gateway_rejects_addit7')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x75df2a83d8e0&gt;
+privileged = True, archived = True, access_denied = True
+
+    @pytest.mark.parametrize("privileged", [False, True])
+    @pytest.mark.parametrize("archived", [False, True])
+    @pytest.mark.parametrize("access_denied", [False, True])
+    def test_sdk_gateway_rejects_additional_ordinary_member(tmp_path, monkeypatch, privileged, archived, access_denied):
+        discord = pytest.importorskip("discord")
+        permissions = NS(view_channel=True, create_private_threads=True, send_messages_in_threads=True,
+                         manage_threads=True, read_message_history=True, administrator=False)
+        extra = NS(id=2)
+        owner = NS(id=1)
+        guild = NS(id=10, me=NS(id=99), get_member=lambda member_id: extra)
+        class Parent:
+            def __init__(self):
+                self.guild = guild
+            def permissions_for(self, member):
+                return NS(**{**vars(permissions), "manage_threads": privileged}) if member.id == 2 else permissions
+        class Thread:
+            def __init__(self):
+                self.guild, self.parent, self.invitable, self.archived = guild, Parent(), False, archived
+                self.joined = False
+            def is_private(self):
+                return True
+            async def join(self):
+                assert not self.archived
+                self.joined = True
+            async def edit(self, **kwargs):
+                self.archived = kwargs['archived']
+            async def fetch_members(self):
+                assert self.joined and not self.archived
+                if access_denied:
+                    raise discord.Forbidden(NS(status=403, reason='Forbidden'), {'code': 50001, 'message': 'Missing Access'})
+                return [NS(id=1), NS(id=2), NS(id=99)]
+        monkeypatch.setattr(discord, "Thread", Thread)
+        monkeypatch.setattr(discord, "TextChannel", Parent)
+        async def check():
+            client = create_client(Service(), DiscordSettings("fake", (10,), "r", "a", "l", tmp_path / "key"))
+            client._connection.user = NS(id=99)
+            if access_denied:
+                with pytest.raises(DomainError, match="Server Members Intent"):
+                    await client.da_transport.gateway.validate_thread(Thread(), owner)
+            elif privileged:
+                await client.da_transport.gateway.validate_thread(Thread(), owner)
+            else:
+                with pytest.raises(DomainError, match="다른 일반 참가자"):
+                    await client.da_transport.gateway.validate_thread(Thread(), owner)
+            await client.close()
+&gt;       asyncio.run(check())
+
+tests/automated/test_discord_transport.py:299:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/usr/local/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests/automated/test_discord_transport.py:288: in check
+    client = create_client(Service(), DiscordSettings("fake", (10,), "r", "a", "l", tmp_path / "key"))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/da_agent/discord_bot.py:209: in create_client
+    transport = DiscordTransport(service, Gateway(client), settings.guild_ids)
+                                          ^^^^^^^^^^^^^^^
+src/da_agent/discord_bot.py:73: in __init__
+    self.responses = DiscordResponses(os.environ.get('DISCORD_RESPONSE_DIRECTORY', '.local/discord-responses'))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/da_agent/discord_responses.py:17: in __init__
+    self.directory.mkdir(parents=True, exist_ok=True, mode=0o700)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = PosixPath('.local/discord-responses'), mode = 448, parents = True
+exist_ok = True
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+&gt;           os.mkdir(self, mode)
+E           OSError: [Errno 30] Read-only file system: '.local/discord-responses'
+
+/usr/local/lib/python3.12/pathlib.py:1311: OSError</failure></testcase><testcase classname="tests.automated.test_discord_service" name="test_unsupported_topic_explained_before_dataset_provisioning" time="0.001" /><testcase classname="tests.automated.test_discord_service" name="test_owner_checked_before_event_model_or_mutation" time="0.051" /><testcase classname="tests.automated.test_discord_service" name="test_duplicate_and_restart_restore_report_followup_and_stop" time="0.198" /><testcase classname="tests.automated.test_discord_service" name="test_event_claim_atomic_across_workers_and_uncertain_after_crash" time="0.050" /><testcase classname="tests.automated.test_discord_service" name="test_atomic_user_daily_limit_does_not_block_record_read" time="0.056" /><testcase classname="tests.automated.test_discord_service" name="test_concurrent_reports_keep_versions_ordered" time="0.082" /><testcase classname="tests.automated.test_discord_service" name="test_report_append_retains_original_versions_and_start_replay_binding" time="0.123" /><testcase classname="tests.automated.test_discord_service" name="test_sessions_guild_isolation_and_bind_thread" time="0.094" /><testcase classname="tests.automated.test_discord_service" name="test_result_display_distinguishes_empty_null_preview_and_collection_limit" time="0.000" /><testcase classname="tests.automated.test_discord_service" name="test_help_level_separate_from_difficulty_and_invalid_setting_fails" time="0.050" /><testcase classname="tests.automated.test_discord_query" name="test_all_operators_sql_policy[attempts_count]" time="0.008" /><testcase classname="tests.automated.test_discord_query" name="test_all_operators_sql_policy[d7_retention]" time="0.004" /><testcase classname="tests.automated.test_discord_query" name="test_all_operators_sql_policy[duplicate_attempts]" time="0.002" /><testcase classname="tests.automated.test_discord_query" name="test_all_operators_sql_policy[tutorial_rate]" time="0.005" /><testcase classname="tests.automated.test_discord_query" name="test_all_operators_sql_policy[users_count]" time="0.001" /><testcase classname="tests.automated.test_discord_query" name="test_all_operators_sql_policy[weekly_return]" time="0.005" /><testcase classname="tests.automated.test_discord_query" name="test_public_projection_excludes_hidden_fields_and_model_sql_is_ignored" time="0.001" /><testcase classname="tests.automated.test_discord_query" name="test_public_metric_definitions_are_provided_without_extra_private_fields" time="0.001" /><testcase classname="tests.automated.test_discord_query" name="test_invalid_or_ambiguous_conditions_do_not_execute[override0]" time="0.000" /><testcase classname="tests.automated.test_discord_query" name="test_invalid_or_ambiguous_conditions_do_not_execute[override1]" time="0.000" /><testcase classname="tests.automated.test_discord_query" name="test_invalid_or_ambiguous_conditions_do_not_execute[override2]" time="0.000" /><testcase classname="tests.automated.test_discord_query" name="test_invalid_or_ambiguous_conditions_do_not_execute[override3]" time="0.000" /><testcase classname="tests.automated.test_discord_query" name="test_invalid_or_ambiguous_conditions_do_not_execute[override4]" time="0.001" /><testcase classname="tests.automated.test_discord_query" name="test_invalid_or_ambiguous_conditions_do_not_execute[override5]" time="0.000" /><testcase classname="tests.automated.test_discord_query" name="test_invalid_or_ambiguous_conditions_do_not_execute[override6]" time="0.000" /><testcase classname="tests.automated.test_discord_query" name="test_invalid_or_ambiguous_conditions_do_not_execute[override7]" time="0.000" /><testcase classname="tests.automated.test_discord_query" name="test_invalid_or_ambiguous_conditions_do_not_execute[override8]" time="0.000" /><testcase classname="tests.automated.test_discord_query" name="test_rate_missing_denominator_requires_confirmation" time="0.000" /><testcase classname="tests.automated.test_discord_query" name="test_missing_public_columns_fail_closed" time="0.000" /><testcase classname="tests.automated.test_discord_query" name="test_beginner_choices_are_recorded_as_hint" time="0.000" /><testcase classname="tests.automated.test_discord_query" name="test_previous_conditions_only_reused_explicitly_and_original_answer_retained" time="0.001" /><testcase classname="tests.automated.test_discord_query" name="test_api_failure_never_fabricates_result" time="0.000" /><testcase classname="tests.automated.test_discord_query" name="test_success_captures_full_collected_result_immediately" time="0.001" /><testcase classname="tests.automated.test_discord_query" name="test_tampered_plan_does_not_execute" time="0.001" /><testcase classname="tests.automated.test_discord_query" name="test_bounded_same_intent_retry_preserves_every_attempt[connection-2]" time="0.001" /><testcase classname="tests.automated.test_discord_query" name="test_bounded_same_intent_retry_preserves_every_attempt[40001-2]" time="0.002" /><testcase classname="tests.automated.test_discord_query" name="test_bounded_same_intent_retry_preserves_every_attempt[blocked-1]" time="0.001" /><testcase classname="tests.automated.test_discord_query" name="test_bounded_same_intent_retry_preserves_every_attempt[timeout-1]" time="0.002" /><testcase classname="tests.automated.test_discord_query" name="test_bounded_same_intent_retry_preserves_every_attempt[syntax-1]" time="0.001" /><testcase classname="tests.automated.test_discord_query" name="test_result_capture_failure_cannot_be_used_as_evidence" time="0.001" /><testcase classname="tests.automated.test_discord_query" name="test_real_db_dedup_cohort_denominator_and_half_open_boundary" time="0.028" /><testcase classname="tests.automated.test_discord_query" name="test_real_db_group_filter_and_zero_denominator" time="0.024" /><testcase classname="tests.automated.test_discord_query" name="test_real_db_d7_is_exact_day_and_excludes_unobserved_cohort" time="0.021" /><testcase classname="tests.automated.test_discord_query" name="test_real_db_weekly_return_is_distinct_from_d7" time="0.018" /><testcase classname="tests.automated.test_discord_query" name="test_real_db_timezone_date_boundary" time="0.019" /><testcase classname="tests.automated.test_discord_query" name="test_real_db_readonly_runner_complete_capture_and_limits" time="0.025" /><testcase classname="tests.automated.test_discord_education" name="test_public_contract_and_deterministic_fixture" time="0.001" /><testcase classname="tests.automated.test_discord_education" name="test_top_grade_without_defect_gets_attributed_next_practice" time="0.000" /><testcase classname="tests.automated.test_discord_education" name="test_lower_grade_still_requires_specific_improvement" time="0.000" /><testcase classname="tests.automated.test_discord_education" name="test_response_detail_repair_preserves_grades_once" time="0.001" /><testcase classname="tests.automated.test_discord_education" name="test_response_repair_cannot_change_grades" time="0.001" /><testcase classname="tests.automated.test_discord_education" name="test_unsupported_task_does_not_fabricate_data" time="0.000" /><testcase classname="tests.automated.test_discord_education" name="test_help_is_recorded_separately_and_no_hidden_answers" time="0.000" /><testcase classname="tests.automated.test_discord_education" name="test_semantic_provider_context_public_only_and_weighted_score" time="0.001" /><testcase classname="tests.automated.test_discord_education" name="test_no_length_or_query_count_score[\ud310\ub2e8 \ubcf4\ub958. \ucd94\uac00 \ub85c\uadf8 \ud655\uc778.]" time="0.001" /><testcase classname="tests.automated.test_discord_education" name="test_no_length_or_query_count_score[\uac00\uc124 \uae30\uac01 \ud6c4 \ucc44\ub110 \uad6c\uc131 \ub300\uc548 \uac80\ud1a0.]" time="0.000" /><testcase classname="tests.automated.test_discord_education" name="test_no_length_or_query_count_score[\uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. \uac19\uc740 \uc0ac\uc2e4\uacfc \uadfc\uac70\ub97c \uae38\uac8c \uc11c\uc220. ]" time="0.000" /><testcase classname="tests.automated.test_discord_education" name="test_provider_contract_failure_is_held[unknown_ref]" time="0.001" /><testcase classname="tests.automated.test_discord_education" name="test_provider_contract_failure_is_held[invalid_grade]" time="0.000" /><testcase classname="tests.automated.test_discord_education" name="test_provider_contract_failure_is_held[missing_item]" time="0.000" /><testcase classname="tests.automated.test_discord_education" name="test_provider_contract_failure_is_held[missing_reason]" time="0.001" /><testcase classname="tests.automated.test_discord_education" name="test_provider_contract_failure_is_held[boolean_grade]" time="0.000" /><testcase classname="tests.automated.test_discord_education" name="test_partial_system_failure_holds_total_not_zero" time="0.000" /><testcase classname="tests.automated.test_discord_education" name="test_failed_query_not_admitted_as_success_evidence" time="0.000" /><testcase classname="tests.automated.test_discord_education" name="test_gemini_review_interface_and_failure_without_api_call" time="0.001" /><testcase classname="tests.automated.test_discord_education" name="test_growth_requires_reviewed_new_comparable_pre_help_evidence" time="0.000" /><testcase classname="tests.automated.test_discord_education" name="test_dataset_does_not_use_default_web_database" time="0.000" /><testcase classname="tests.automated.test_discord_education" name="test_isolated_postgres_fixture_readonly" time="0.031" /><testcase classname="tests.automated.test_discord_provider" name="test_gemma_json_and_whole_fence_only[{&quot;ok&quot;:true}]" time="0.003" /><testcase classname="tests.automated.test_discord_provider" name="test_gemma_json_and_whole_fence_only[```json\n{&quot;ok&quot;:true}\n```]" time="0.001" /><testcase classname="tests.automated.test_discord_provider" name="test_gemma_json_and_whole_fence_only[```\n{&quot;ok&quot;:true}\n```]" time="0.002" /><testcase classname="tests.automated.test_discord_provider" name="test_invalid_json_fails_closed[prefix {&quot;ok&quot;:true}]" time="0.001" /><testcase classname="tests.automated.test_discord_provider" name="test_invalid_json_fails_closed[[]]" time="0.001" /><testcase classname="tests.automated.test_discord_provider" name="test_invalid_json_fails_closed[```json\n{&quot;ok&quot;:true}\n``` trailing]" time="0.001" /><testcase classname="tests.automated.test_discord_provider" name="test_invalid_json_fails_closed[{bad}]" time="0.001" /><testcase classname="tests.automated.test_discord_provider" name="test_model_is_isolated_and_missing_key_does_not_call" time="0.056" /><testcase classname="tests.automated.test_discord_gemma_conditions" name="test_equivalent_step_filter_is_canonicalized_without_changing_intent" time="0.001" /><testcase classname="tests.automated.test_discord_gemma_conditions" name="test_conflicting_step_is_not_silently_chosen" time="0.000" /><testcase classname="tests.automated.test_discord_flow" name="test_actual_query_clarification_evidence_report_evaluation_restart" time="0.399" /><testcase classname="tests.automated.test_discord_flow" name="test_model_failure_preserves_report_and_no_false_evaluation" time="0.211" /><testcase classname="tests.automated.test_discord_flow" name="test_beginner_confirmation_records_assistance" time="0.127" /><testcase classname="tests.automated.test_discord_flow" name="test_capture_failure_and_budget_do_not_publish_unsaved_success" time="0.139" /><testcase classname="tests.automated.test_discord_answers" name="test_answer_keeps_original_query_and_question_context_after_restart" time="0.005" /><testcase classname="tests.automated.test_discord_answers" name="test_mentor_answer_records_reason_without_query_or_model_call" time="0.004" /><testcase classname="tests.automated.test_discord_answers" name="test_new_query_supersedes_old_question_and_does_not_inherit_answers" time="0.002" /><testcase classname="tests.automated.test_discord_answers" name="test_api_failure_keeps_answers_for_retry_and_explains_error" time="0.003" /><testcase classname="tests.automated.test_discord_answers" name="test_reply_to_old_or_unrelated_message_is_rejected_without_model_call" time="0.003" /><testcase classname="tests.automated.test_discord_answers" name="test_reply_to_current_question_and_followup_answer" time="0.003" /><testcase classname="tests.automated.test_discord_answers" name="test_answer_without_pending_question_does_not_start_query" time="0.001" /><testcase classname="tests.automated.test_discord_answers" name="test_transport_routes_only_replies_or_bot_mentions[True-False]" time="0.005" /><testcase classname="tests.automated.test_discord_answers" name="test_transport_routes_only_replies_or_bot_mentions[False-True]" time="0.004" /><testcase classname="tests.automated.test_discord_answers" name="test_transport_routes_only_replies_or_bot_mentions[False-False]" time="0.003" /><testcase classname="tests.automated.test_discord_answers" name="test_transport_emits_and_persists_discord_question_ids" time="0.003" /><testcase classname="tests.automated.test_discord_responses" name="test_restart_updates_original_and_removes_token" time="0.003" /><testcase classname="tests.automated.test_discord_responses" name="test_normal_reply_replaces_loading_then_sends_additional_chunks" time="0.002" /><testcase classname="tests.automated.test_discord_responses" name="test_active_requests_are_preserved_and_shutdown_interrupts" time="0.002" /><testcase classname="tests.automated.test_discord_responses" name="test_expired_token_is_removed_without_network_request" time="0.002" /><testcase classname="tests.automated.test_discord_responses" name="test_network_failure_and_rate_limit_retry_without_exposing_tokens" time="0.003" /><testcase classname="tests.automated.test_discord_responses" name="test_cancelled_request_updates_original_or_preserves_for_retry" time="0.002" /><testcase classname="tests.automated.test_discord_responses" name="test_cancelled_command_preserves_cancellation_and_clears_loading" time="0.001" /><testcase classname="tests.automated.test_discord_responses" name="test_reply_failure_becomes_recoverable_after_command_finishes" time="0.002" /></testsuite></testsuites>
