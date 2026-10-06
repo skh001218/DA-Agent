@@ -136,3 +136,35 @@ def test_history_uses_current_owner_and_server_without_task_or_model():
     asyncio.run(DiscordTransport(NS(history=history), Gateway(), ['10']).command(event, 'history', payload={'page': 2}))
     assert calls == [('1', '10', 2)]
     assert replies == ['[결과 보기](https://discord.com/channels/10/40)']
+
+
+@pytest.mark.parametrize('text, expected_reopen', [('수정한 분석 보고', True), ('', False)])
+def test_completed_report_reopens_only_after_valid_revision(text, expected_reopen):
+    doc = document()
+    doc.update(guild_id='10', owner_user_id='1', channel_id='20', thread_id='30',
+               selected_evidence=[], help_history=[], pending_question=None)
+    original_report = deepcopy(doc['reports'][0])
+    original_evaluation = deepcopy(doc['evaluations'][0])
+    service = DiscordTrainingService(Store(doc), None, None, NS())
+    channel = NS(id=30, archived=True, locked=True)
+    validations, sent, replies = [], [], []
+    class Gateway:
+        async def defer(self, event): pass
+        async def validate_thread(self, channel, user, *, reopen=True):
+            validations.append(reopen)
+            if reopen:
+                assert doc['state'] == 'followup'
+                channel.archived = channel.locked = False
+        async def send(self, channel, message): sent.append(message)
+        async def reply(self, event, message): replies.append(message)
+    event = NS(id=100, user=NS(id=1), guild=NS(id=10), channel=channel)
+    asyncio.run(DiscordTransport(service, Gateway(), ['10']).command(event, 'report', text=text))
+    assert validations == ([False, True] if expected_reopen else [False])
+    assert channel.archived is not expected_reopen
+    assert channel.locked is not expected_reopen
+    assert doc['reports'][0] == original_report
+    assert doc['evaluations'][0] == original_evaluation
+    assert len(doc['reports']) == (2 if expected_reopen else 1)
+    assert bool(sent) is expected_reopen
+    if not expected_reopen:
+        assert doc['state'] == 'completed' and any('작성하세요' in r for r in replies)

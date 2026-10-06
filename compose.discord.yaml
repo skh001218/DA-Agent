@@ -21,9 +21,11 @@ services:
       - ${DISCORD_TOKEN_PATH}:/run/secrets/discord_token:ro
       - ${DISCORD_API_KEY_PATH}:/run/secrets/gemma_key:ro
       - discord-responses:/app/.local/discord-responses
+      - discord-quality:/app/.local/evaluation-quality
     depends_on:
       db:
         condition: service_healthy
 volumes:
   discord-data:
   discord-responses:
+  discord-quality:

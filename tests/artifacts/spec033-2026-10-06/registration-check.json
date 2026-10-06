@@ -1,0 +1,22 @@
+{
+  "status": "completed",
+  "calls": 20,
+  "runs": 18,
+  "registration": {
+    "status": "held",
+    "reasons": [
+      "correct: 평가 보류",
+      "numeric_error: 점수 편차 초과 또는 관측 부족",
+      "numeric_error: 평가 보류",
+      "uncertainty: 평가 보류",
+      "missing_evidence: 점수 편차 초과 또는 관측 부족",
+      "missing_evidence: 평가 보류"
+    ],
+    "policy": "evaluation-quality-v1",
+    "scope": "등록한 고정 표본의 자동 품질 확인",
+    "human_review": "pending",
+    "retry": "문제·지표 정의와 실패 항목을 수정한 뒤 같은 표본으로 다시 검사하세요."
+  },
+  "active_profiles": 0,
+  "archives": 1
+}

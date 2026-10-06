@@ -1,0 +1,28 @@
+{
+  "date": "2026-10-06",
+  "model": "gemma-4-26b-a4b-it",
+  "scope": "Current workspace source in separate process; no Discord transport",
+  "database": "discord_audit_20261006",
+  "hashes": [
+    {
+      "path": "C:\\Users\\Administrator\\.codex\\worktrees\\2968\\DA-Agent\\src\\da_agent\\discord_education.py",
+      "sha256": "639A7021AFF22E5BC3ACA0F3F74E448E8A034E663B5FBC666417E0BA080639E2"
+    },
+    {
+      "path": "C:\\Users\\Administrator\\.codex\\worktrees\\2968\\DA-Agent\\src\\da_agent\\discord_query.py",
+      "sha256": "43849366793E747D68F9AFECB2CC18E1D1DD608566DC746DB1F8851CE524A357"
+    },
+    {
+      "path": "C:\\Users\\Administrator\\.codex\\worktrees\\2968\\DA-Agent\\src\\da_agent\\discord_service.py",
+      "sha256": "A453EC9E9D274901A4B7EAD9AE171FB4BADC6C33FC50AD531A2581C8F768EEEA"
+    },
+    {
+      "path": "C:\\Users\\Administrator\\.codex\\worktrees\\2968\\DA-Agent\\scripts\\verification\\audit_discord_training_levels.py",
+      "sha256": "8C41948870200C3B88833FF88F84339DEF0006065BFEFE6312F83328A0453159"
+    },
+    {
+      "path": "C:\\Users\\Administrator\\.codex\\worktrees\\2968\\DA-Agent\\scripts\\verification\\audit_discord_training_followups.py",
+      "sha256": "7878A49FC9D9BBCAD8A80325A6269E7D0799F8FB29F3C368C1F191F0671C0A21"
+    }
+  ]
+}

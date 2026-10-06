@@ -38,10 +38,12 @@ class MeteredProvider:
 
 
 class DiscordTrainingService:
-    def __init__(self, store, query_engine, provider, settings, dataset_factory=None):
+    def __init__(self, store, query_engine, provider, settings, dataset_factory=None, quality_registry=None):
         self.store, self.engine, self.provider, self.settings = store, query_engine, provider, settings
         self.dataset_factory = dataset_factory
         self.daily_limit = getattr(settings, 'daily_call_limit', 30)
+        from .evaluation_registry import QualityRegistry
+        self.quality_registry = quality_registry or QualityRegistry(getattr(settings,'quality_profiles_directory',None))
 
     def get_session(self, user_id, session_id):
         return self.store.get(user_id, session_id)
@@ -235,7 +237,7 @@ class DiscordTrainingService:
             return prior
         with self.store.edit(user_id, session_id) as (document, conn):
             self._restore_legacy_question(document, event_id)
-            self._message(document, 'user', text, event_id)
+            self._message(document, 'user', text, event_id)['action'] = action
             try:
                 messages = self._apply(document, event_id, action, text, payload or {})
             except DomainError as exc:
@@ -297,7 +299,7 @@ class DiscordTrainingService:
                 return [reference]
         if action == 'submit' and document['state'] == 'completed' and document.get('evaluations'):
             return [submission_summary(document['evaluations'][-1])]
-        if document['state'] in ('completed', 'stopped'):
+        if document['state'] == 'stopped' or document['state'] == 'completed' and action != 'report':
             raise DomainError('state', '완료 또는 중단된 훈련입니다. 기록을 열람하거나 중단된 훈련을 재개하세요.')
         if action in ('note', 'hypothesis', 'quality', 'direction'):
             return ['판단과 이유를 대화 기록에 저장했습니다. 조회 또는 보고를 요청하면 이어서 진행합니다.']
@@ -320,19 +322,23 @@ class DiscordTrainingService:
             self._close_question(document, 'superseded')
             return self._query(document, event_id, text)
         if action == 'report':
+            revising = document['state'] == 'completed'
             content = payload.get('content') or {'report_text': text}
             if not isinstance(content, dict) or not any(isinstance(value, str) and value.strip() for value in content.values()):
                 raise DomainError('report_empty', '분석 질문·발견·가설/대안·품질 점검·한계·대응을 작성하세요.')
             if payload.get('append') and document['reports']:
                 previous = document['reports'][-1]['content']
                 content = {**previous, **content, 'report_text': str(previous.get('report_text', '')) + '\n' + str(content.get('report_text', ''))}
+            prior_report = document['reports'][-1] if document['reports'] else None
             document['reports'].append({'id': record_id(), 'version': len(document['reports']) + 1, 'content': content,
                 'evidence_refs': list(document['selected_evidence']), 'at': timestamp()})
+            if prior_report:
+                document['reports'][-1]['previous_report_id'] = prior_report['id']
             document['state'] = 'followup'
             question = '업무 담당자: 공개 업무 목표를 기준으로 제안한 대응의 우선순위와 실행 뒤 확인할 지표를 설명해주세요. 불확실한 설명은 어떻게 추가 확인하겠습니까?'
             document['pending_query'] = None
             question = self._ask(document, 'followup', question, event_id)
-            return [f"보고 버전 {len(document['reports'])}을 저장했습니다.", question]
+            return [f"보고 버전 {len(document['reports'])}을 저장했습니다." + (' 이전 보고·평가는 보존됩니다. 새 후속 질문에 답한 뒤 /submit로 재평가하세요.' if revising else ''), question]
         if action == 'followup':
             if document['state'] != 'followup':
                 raise DomainError('state', '보고를 작성한 뒤 후속 질문에 답할 수 있습니다.')
@@ -346,9 +352,43 @@ class DiscordTrainingService:
             if document['state'] == 'followup':
                 raise DomainError('followup_missing', '업무 담당자의 후속 질문에 답한 뒤 최종 제출하세요.')
             report = document['reports'][-1]
+            model=getattr(self.provider,'model',None)
+            model=model if isinstance(model,str) else getattr(self.settings,'llm_model','unknown')
+            profile=self.quality_registry.check(document['task'],model)
+            latest=document['evaluations'][-1] if document['evaluations'] else None
+            if latest and latest['report_id']==report['id'] and latest['result'].get('profile_score_hold') and profile['status']!='eligible':
+                return [submission_summary(latest)]
             provider = MeteredProvider(self.provider, self.store, document['owner_user_id'], self.daily_limit, document['telemetry'])
-            evaluation = evaluate_report(provider, document['task'], report, document['messages'], document['executions'], document['help_history'])
+            # Prior drafts remain stored, but their report/followup messages do
+            # not masquerade as the final conclusion of a revised report.
+            current_followups = {a['message_id'] for a in report.get('followup_answers', []) if a.get('message_id')}
+            obsolete_followups = {a['message_id'] for r in document['reports'][:-1] for a in r.get('followup_answers', []) if a.get('message_id')} - current_followups
+            old_texts = {r.get('content', {}).get('report_text') for r in document['reports'][:-1]}
+            old_texts.discard(None)
+            evaluation_messages = [m for m in document['messages'] if m['id'] not in obsolete_followups
+                                   and m.get('action') != 'report'
+                                   and not (m.get('action') is None and m['role'] == 'user' and m.get('text') in old_texts)]
+            evaluation = evaluate_report(provider, document['task'], report, evaluation_messages, document['executions'], document['help_history'])
+            from .evaluation_registry import with_profile_policy
+            evaluation=with_profile_policy(evaluation,profile)
+            previous = next((e for e in reversed(document['evaluations']) if e['report_id'] != report['id']), None)
             document['evaluations'].append({'id': record_id(), 'report_id': report['id'], 'event_id': str(event_id), 'at': timestamp(), 'result': evaluation})
+            if previous:
+                from .evaluation_quality import revision_feedback
+                old_grades = {c['id']: c.get('grade') for c in previous['result'].get('criteria', [])}
+                old_report = next(r for r in document['reports'] if r['id'] == previous['report_id'])
+                document['evaluations'][-1]['revision_comparison'] = {
+                    'previous_evaluation_id': previous['id'], 'previous_report_version': old_report['version'],
+                    'report_version': report['version'],
+                    'previous_total': previous['result'].get('total'), 'total': evaluation.get('total'),
+                    'criteria': [{'id': c['id'], 'before': old_grades.get(c['id']), 'after': c.get('grade')}
+                                 for c in evaluation.get('criteria', [])],
+                    'previous_check_version': previous['result'].get('arithmetic_verification', {}).get('version'),
+                    'check_version': evaluation.get('arithmetic_verification', {}).get('version'),
+                    'errors_before': len(previous['result'].get('arithmetic_verification', {}).get('errors', [])) if 'arithmetic_verification' in previous['result'] else None,
+                    'errors_after': len(evaluation.get('arithmetic_verification', {}).get('errors', [])),
+                    'note': '동일 과제의 보고 수정 관측이며 학습 효과 입증은 아님'}
+                document['evaluations'][-1]['revision_feedback'] = revision_feedback(previous['result'], evaluation)
             held = evaluation.get('held', evaluation.get('status') in ('held', 'error'))
             if held:
                 document['state'] = 'reporting'
@@ -474,6 +514,8 @@ def format_task_intro(document):
                        '점수에 반영하지 않음: ' + ', '.join(rubric.get('non_scoring', []))])
     if rubric.get('no_duplicate_penalty'):
         assessment.append('같은 오류는 중복 감점하지 않습니다.')
+    from .discord_verification import POLICY
+    assessment.extend(['', '실행 근거 검산 정책', POLICY])
     policy = task.get('help_policy', {})
     commands = ['▶ 이 문제를 이어가는 방법', '이 과제 스레드 안에서 아래 명령을 사용하세요.', '',
                 '1. /query — 조회 요청·확인 답변 (new_query를 켜면 이전 질문 초기화)',

@@ -1,0 +1,47 @@
+[
+  {
+    "state": "completed",
+    "usage": {
+      "input_tokens": 1537,
+      "output_tokens": 187,
+      "total_tokens": 1724
+    },
+    "model": "gemma-4-26b-a4b-it",
+    "text": "{\"state\": \"ready\", \"conditions\": {\"metric\": \"tutorial_rate\", \"step\": 3, \"event_start\": \"2026-09-01\", \"event_end\": \"2026-10-01\", \"numerator\": \"completed_users\", \"denominator\": \"signup_users\", \"start\": \"2026-09-01\", \"end\": \"2026-09-08\", \"timezone\": \"UTC\", \"period_basis\": \"explicit_dates\", \"unit\": \"user\", \"group_by\": \"channel\", \"filters\": {}}, \"reuse_previous\": false}"
+  },
+  {
+    "state": "completed",
+    "usage": {
+      "input_tokens": 1663,
+      "output_tokens": 187,
+      "total_tokens": 1850
+    },
+    "model": "gemma-4-26b-a4b-it",
+    "text": "{\"state\": \"ready\", \"conditions\": {\"metric\": \"tutorial_rate\", \"start\": \"2026-09-08\", \"end\": \"2026-09-15\", \"timezone\": \"UTC\", \"period_basis\": \"explicit_dates\", \"unit\": \"user\", \"group_by\": \"channel\", \"filters\": {}, \"step\": 3, \"event_start\": \"2026-09-01\", \"event_end\": \"2026-10-01\", \"numerator\": \"completed_users\", \"denominator\": \"signup_users\"}, \"reuse_previous\": false}"
+  },
+  {
+    "state": "completed",
+    "usage": {
+      "input_tokens": 8765,
+      "output_tokens": 916,
+      "total_tokens": 9681
+    },
+    "model": "gemma-4-26b-a4b-it",
+    "text": "{\"criteria\": [{\"id\": \"problem_definition\", \"name\": \"문제 정의\", \"grade\": 4, \"evidence_refs\": [\"report:1\"], \"reason\": \"업무 목표(완료율 변화 확인 및 대응 제안), 대상(신규 가입자), 기간(9/1~7, 9/8~14 및 관측 종료일)을 모두 명확히 정의하였습니다.\", \"improvement\": \"\"}, {\"id\": \"metric_design\", \"name\": \"지표·비교 설계\", \"grade\": 3, \"evidence_refs\": [\"report:1\", \"execution:9721aa18-5a66-4e3c-baab-d882aeaf01d3\", \"execution:c4cbd297-e952-44a9-b5bf-2fd72bc2041b\"], \"reason\": \"분모를 신규 가입 고유 사용자, 분자를 3단계 완료 고유 사용자로 설정하였고, 재도전 중복을 제거하여 지표를 설계하였습니다.\", \"improvement\": \"\"}, {\"id\": \"hypothesis_review\", \"name\": \"가설·대안 검토\", \"grade\": 2, \"evidence_refs\": [\"report:1\", \"execution:9721aa18-5a66-4e3c-baab-d882aeaf01d3\", \"execution:c4cbd297-e952-44a9-b5bf-2fd72bc2041b\"], \"reason\": \"유입 구성 변화를 대안 설명으로 검토하였으나, 구성 변화만으로 전체 하락을 설명할 수 있다는 주장의 계산이 틀렸습니다(계산 검산 결과, 구성 변화만으로는 80%가 유지되어야 함). 필수적인 구성 변화에 따른 수치 검증이 부정확하여 타당한 대안 검토로 보기 어렵습니다.\", \"improvement\": \"유입 채널 구성 변화가 전체 완료율에 미치는 영향을 계산할 때, 1주차의 채널별 완료율을 적용하여 계산이 올바른지 재검증하세요.\"}, {\"id\": \"evidence_interpretation\", \"name\": \"근거 해석\", \"grade\": 3, \"evidence_refs\": [\"report:1\", \"execution:9721aa18-5a66-4e3c-baab-d882aeaf01d3\", \"execution:c4cbd297-e952-44a9-b5bf-2fd72bc2041b\"], \"reason\": \"실행 결과를 바탕으로 주차별 완료율과 하락 폭을 인용하였습니다. 구성 변화 가설의 계산 오류는 있으나, 관측 데이터가 인과를 증명하지 않는다는 점과 로그 누락 가능성을 구분하여 서술하였습니다.\", \"improvement\": \"\"}, {\"id\": \"decision_limits\", \"name\": \"한계·의사결정\", \"grade\": 4, \"evidence_refs\": [\"report:1\", \"message:ca04be0b-712d-4d40-924d-85ba4cac2f0d\"], \"reason\": \"표본 크기의 한계를 인지하고, 인과를 확정하기보다 수집 상태 및 기기/버전 로그 확인을 우선순위로 제안하며 불확실성에 대응하였습니다.\", \"improvement\": \"\"}]}"
+  },
+  {
+    "state": "completed",
+    "usage": {
+      "input_tokens": 6808,
+      "output_tokens": 1031,
+      "total_tokens": 7839
+    },
+    "model": "gemma-4-26b-a4b-it",
+    "text": "{\"criteria\": [{\"id\": \"problem_definition\", \"name\": \"문제 정의\", \"grade\": 4, \"evidence_refs\": [\"report:1\"], \"reason\": \"업무 목표(완료율 변화 확인 및 대응 제안), 대상(신규 가입자), 기간(9/1~7, 9/8~14 및 관측 종료일)을 모두 명확히 정의하였습니다.\", \"improvement\": \"공개 상위 조건 충족으로 판정됐습니다. 다음 과제에서 추가 근거와 적용 한계를 다시 확인하세요.\"}, {\"id\": \"metric_design\", \"name\": \"지표·비교 설계\", \"grade\": 3, \"evidence_refs\": [\"report:1\", \"execution:9721aa18-5a66-4e3c-baab-d882aeaf01d3\", \"execution:c4cbd297-e952-44a9-b5bf-2fd72bc2041b\"], \"reason\": \"분모를 신규 가입 고유 사용자, 분자를 3단계 완료 고유 사용자로 설정하였고, 재도전 중복을 제거하여 지표를 설계하였습니다.\", \"improvement\": \"지표 설계의 정확성이 확인되었습니다. 향후 관측 기간의 한계(observation end)가 지표 산출에 미치는 영향도 함께 고려해 보세요.\"}, {\"id\": \"hypothesis_review\", \"name\": \"가설·대안 검토\", \"grade\": 2, \"evidence_refs\": [\"report:1\", \"execution:9721aa18-5a66-4e3c-baab-d882aeaf01d3\", \"execution:c4cbd297-e952-44a9-b5bf-2fd72bc2041b\"], \"reason\": \"유입 구성 변화를 대안 설명으로 검토하였으나, 구성 변화만으로 전체 하락을 설명할 수 있다는 주장의 계산이 틀렸습니다(계산 검산 결과, 구성 변화만으로는 80%가 유지되어야 함). 필수적인 구성 변화에 따른 수치 검증이 부정확하여 타당한 대안 검토로 보기 어렵습니다.\", \"improvement\": \"유입 채널 구성 변화가 전체 완료율에 미치는 영향을 계산할 때, 1주차의 채널별 완료율을 적용하여 계산이 올바른지 재검증하세요.\"}, {\"id\": \"evidence_interpretation\", \"name\": \"근거 해석\", \"grade\": 3, \"evidence_refs\": [\"report:1\", \"execution:9721aa18-5a66-4e3c-baab-d882aeaf01d3\", \"execution:c4cbd297-e952-44a9-b5bf-2fd72bc2041b\"], \"reason\": \"실행 결과를 바탕으로 주차별 완료율과 하락 폭을 인용하였습니다. 구성 변화 가설의 계산 오류는 있으나, 관측 데이터가 인과를 증명하지 않는다는 점과 로그 누락 가능성을 구분하여 서술하였습니다.\", \"improvement\": \"가설 검증 시 계산의 정확성을 높여 사실과 설명의 분리를 더욱 명확히 하시기 바랍니다.\"}, {\"id\": \"decision_limits\", \"name\": \"한계·의사결정\", \"grade\": 4, \"evidence_refs\": [\"report:1\", \"message:ca04be0b-712d-4d40-924d-85ba4cac2f0d\"], \"reason\": \"표본 크기의 한계를 인지하고, 인과를 확정하기보다 수집 상태 및 기기/버전 로그 확인을 우선순위로 제안하며 불확실성에 대응하였습니다.\", \"improvement\": \"불확실한 상황에서 데이터 수집 환경을 먼저 점검하라는 제안은 매우 적절한 대응입니다.\"}]}"
+  },
+  {
+    "state": "error",
+    "reason": "api_unavailable",
+    "model": "gemma-4-26b-a4b-it"
+  }
+]

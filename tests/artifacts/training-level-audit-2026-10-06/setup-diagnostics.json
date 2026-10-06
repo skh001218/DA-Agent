@@ -1,0 +1,14 @@
+{
+  "preliminary_calls": 2,
+  "preliminary_call_states": [
+    "completed",
+    "completed"
+  ],
+  "interruption": "Verification script called non-existent SqlRunner.run after two successful NL queries",
+  "repair": "Use SqlRunner.execute and restart isolated audit with current source",
+  "completed_audit_calls": 15,
+  "followup_calls": 2,
+  "total_task_calls": 19,
+  "note": "Preliminary responses are not counted as final audit quality samples; interruption is a verification script error, not a product failure",
+  "audit_database_removed": true
+}

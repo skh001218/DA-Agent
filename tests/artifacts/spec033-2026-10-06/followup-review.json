@@ -1,0 +1,22 @@
+{
+  "date": "2026-10-06",
+  "kind": "read_only_code_reproduction_no_model_calls",
+  "public_definition_invalidation_checks": [
+    {
+      "changed_field": "accepted_limits",
+      "profile_key_changed": false,
+      "expected_key_changed": true
+    },
+    {
+      "changed_field": "valid_paths",
+      "profile_key_changed": false,
+      "expected_key_changed": true
+    },
+    {
+      "changed_field": "quality_information",
+      "profile_key_changed": false,
+      "expected_key_changed": true
+    }
+  ],
+  "beginner_advanced_public_rubric_equal": true
+}

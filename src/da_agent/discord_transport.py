@@ -154,10 +154,20 @@ class DiscordTransport:
             if action not in self.ACTIONS:
                 raise DomainError("discord_unknown_action", "지원하지 않는 명령입니다.")
             session = await self._session(event, session_id)
-            if session.get('state') == 'completed' and action != 'submit':
-                await self.gateway.reply(event, '완료된 과제입니다. /resume으로 결과·대화를 열람하거나 /history로 연습 기록을 확인하세요. 결과에 대한 의견은 포럼 댓글에서 이어가세요.')
+            revising_completed = session.get('state') == 'completed' and action == 'report'
+            if session.get('state') == 'completed' and action not in {'submit', 'report'}:
+                await self.gateway.reply(event, '완료된 과제입니다. /resume으로 결과·대화를 열람하거나 /history로 연습 기록을 확인하세요. 보고 수정은 /report로 시작하세요.')
                 return
             response = await self._call("handle", owner, session["session_id"], event_id, action, text=text, payload=payload)
+            if revising_completed:
+                if response.get('session', {}).get('state') == 'completed':
+                    for message in response.get('messages', []):
+                        for chunk in safe_chunks(message):
+                            await self.gateway.reply(event, chunk)
+                    return
+                # Reopen only after a valid revision is stored. Reading/replaying
+                # completed work keeps its archived thread and result intact.
+                await self.gateway.validate_thread(event.channel, event.user)
             if not (response.get('submission') or {}).get('completed'):
                 await self._emit(event.channel, response.get("messages", []), response.get('session'), response.get('tables', []))
             if response.get('submission'):

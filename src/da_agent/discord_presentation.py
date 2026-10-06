@@ -39,6 +39,7 @@ def reference_info(task, kind):
                           '컬럼: ' + ', '.join(f'{key}: {value}' for key, value in entry['columns'].items())])
         return '\n'.join(lines)
     if kind == 'evaluation_criteria':
+        from .discord_verification import POLICY
         rubric = task['rubric']
         lines = ['평가 기준']
         for criterion in rubric['criteria']:
@@ -50,6 +51,10 @@ def reference_info(task, kind):
                       '점수에 반영하지 않음: ' + ', '.join(rubric['non_scoring']),
                       '같은 오류는 중복 감점하지 않습니다.',
                       '인정하는 한계: ' + ' / '.join(task.get('accepted_limits', []))])
+        lines.extend(['', '실행 근거 검산 정책', POLICY])
+        lines.extend(['', '평가 신뢰성 정책',
+            '등급0~2에는 오류 ID·공개 기준·현재 보고 인용을 연결합니다. 중복 감점·근거 충돌은1회 재검토 후에도 해결되지 않으면 점수를 보류합니다.',
+            '시스템 보류는 학습자0점이 아닙니다. 근거를 확인한 뒤 /submit로 다시 평가할 수 있습니다.'])
         return '\n'.join(lines)
     if kind == 'commands':
         return '\n'.join(['전체 명령 안내', '/tip command:명령어 — 사용법과 예시 확인', '/training — 새 훈련 시작', '/query — 새 자연어 조회 요청', '/answer — 현재 봇 질문에 대한 답변', '/question — 용어당 최대 3줄로 뜻 설명',
@@ -69,7 +74,7 @@ COMMAND_TIPS = {
     'help': ('개념·분석 방향·중간 피드백 또는 참고 정보를 확인합니다.', 'text: 질문 (선택), kind: 개념/분석 방향/중간 검토/데이터 사전/평가 기준/전체 명령 (선택)', '/help kind:데이터 사전'),
     'sql': ('성공한 저장 조회의 실제 실행 SQL을 보여줍니다.', 'execution_id: 조회 결과에 표시된 실행 ID (필수)', '/sql execution_id:실행ID'),
     'evidence': ('성공한 저장 조회를 보고 근거로 선택합니다. 보고 저장 전에 선택하세요.', 'execution_id: 조회 결과에 표시된 실행 ID (필수)', '/evidence execution_id:실행ID'),
-    'report': ('보고를 작성하거나 수정합니다. 매번 새 버전으로 저장하며 이전 버전은 보존합니다.', 'text: 보고 내용 (필수), append: True면 최신 보고 뒤에 줄바꿈 후 추가. False 또는 생략하면 입력 내용만 저장. 첫 보고에서는 True여도 새로 작성합니다.', '/report text:분석 결과와 대응 제안…\n/report text:추가 검증과 한계… append:True\n내용을 모두 작성한 뒤 새 후속 질문에 답하고 /submit하세요.'),
+    'report': ('보고를 작성하거나 수정합니다. 평가 완료 후에도 새 보고 버전을 저장할 수 있고 이전 보고·평가는 보존합니다.', 'text: 보고 내용 (필수), append: True면 최신 보고 뒤에 줄바꿈 후 추가. False 또는 생략하면 입력 내용만 저장. 첫 보고에서는 True여도 새로 작성합니다.', '/report text:분석 결과와 대응 제안…\n/report text:추가 검증과 한계… append:True\n내용을 모두 작성한 뒤 새 후속 질문에 답하고 /submit하세요.'),
     'followup': ('보고 작성 후 업무 담당자의 후속 질문에 답합니다. 답장·멘션 또는 /answer도 사용할 수 있습니다.', 'text: 답변 (필수)', '/followup text:채널별 비교와 로그 점검을 먼저 진행하겠습니다'),
     'submit': ('최신 보고를 최종 제출하고 평가를 요청합니다. 먼저 보고를 작성하고 후속 질문에 답해야 합니다.', '추가 입력 없음', '/submit'),
     'end': ('훈련을 중단하고 기록을 보존합니다. /resume으로 이어갈 수 있습니다.', '추가 입력 없음', '/end'),
