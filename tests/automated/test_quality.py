@@ -31,7 +31,7 @@ def mock_review(messages):
 
 
 def start_run(client):
-    payload = {"package_id": "training-001", "release_version": "v1", "problem_id": "problem-001", "request_id": "quality-test-" + uuid.uuid4().hex}
+    payload = {"package_id": "training-001", "release_version": "v2", "problem_id": "problem-001", "request_id": "quality-test-" + uuid.uuid4().hex}
     response = client.post("/api/quality/runs", json=payload)
     assert response.status_code == 200, response.text
     return response.json()["run_id"], payload
@@ -65,7 +65,7 @@ def test_real_sql_fixtures_repetitions_human_judgments_and_replay(client):
     assert exported.json()["samples"][0]["results"][0]["human"]["reviewer"] == "test-reviewer"
     replay = client.post("/api/quality/runs", json=payload).json()
     assert replay["run_id"] == run_id and replay["completed_calls"] == 15
-    payload["release_version"] = "v2"
+    payload["release_version"] = "v1"
     assert client.post("/api/quality/runs", json=payload).status_code == 409
     assert client.put(f"/api/quality/runs/{run_id}/human", json={"sample_id": "missing", "repetition": 1, "checks": ["pass", "pass"], "critical_error": "no", "reviewer": "x", "note": ""}).status_code == 400
 
@@ -118,7 +118,7 @@ def test_busy_interrupted_and_missing_runs(client):
     with client.app.state.store.connect() as conn:
         from psycopg.types.json import Jsonb
         conn.execute("INSERT INTO quality_runs VALUES(%s,%s)", ("quality-test-running", Jsonb({"status": "running", "request_id": "quality-test-running"})))
-    response = client.post("/api/quality/runs", json={"package_id": "training-001", "release_version": "v1", "problem_id": "problem-001", "request_id": "quality-test-other"})
+    response = client.post("/api/quality/runs", json={"package_id": "training-001", "release_version": "v2", "problem_id": "problem-001", "request_id": "quality-test-other"})
     assert response.status_code == 409
     from da_agent.quality import initialize
     initialize(client.app.state.store)
