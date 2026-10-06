@@ -70,11 +70,11 @@ def event(service, owner, sid, action, text='', payload=None):
 def test_actual_query_clarification_evidence_report_evaluation_restart(flow):
     service, provider, owner, session = flow
     sid = session['session_id']
-    assert '공개 과제와 평가 조건' in service.resume(owner, 'guild', sid)['messages'][1]
+    assert '분석 대상' in service.resume(owner, 'guild', sid)['messages'][0]
     response = event(service, owner, sid, 'query', '비율을 보여줘')
     assert response['session']['pending_query'] and not response['session']['executions']
     assert not response['session']['help_history']  # neutral intermediate confirmation
-    response = event(service, owner, sid, 'query', '공개 기간 가입자 중 3단계 완료자 비율, 채널별 비교')
+    response = event(service, owner, sid, 'answer', '공개 기간 가입자 중 3단계 완료자 비율, 채널별 비교')
     execution = response['session']['executions'][0]
     assert len(execution['result']['rows']) == 2  # full collection retained despite preview_rows=1
     assert execution['result']['result_complete']
