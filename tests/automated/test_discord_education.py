@@ -33,6 +33,39 @@ def test_public_contract_and_deterministic_fixture():
     assert task["human_review"]["status"] == "pending"
 
 
+def test_top_grade_without_defect_gets_attributed_next_practice():
+    output=verdict(4)
+    for row in output['criteria']: row['improvement']=''
+    result=evaluate(lambda _:output)
+    assert not result['held'] and result['total']==100
+    assert all(row['improvement_source']=='public_rubric_next_practice' for row in result['criteria'])
+
+
+def test_lower_grade_still_requires_specific_improvement():
+    output=verdict(3)
+    output['criteria'][0]['improvement']=''
+    result=evaluate(lambda _:output)
+    assert result['held'] and result['validation_reason']=='criterion_detail_missing'
+
+
+def test_response_detail_repair_preserves_grades_once():
+    bad=verdict(3)
+    bad['criteria'][0]['improvement']=''
+    outputs=iter([bad,verdict(3)])
+    provider=SimpleNamespace(review=lambda messages:{'state':'completed','text':json.dumps(next(outputs))})
+    result=evaluate(provider)
+    assert not result['held'] and result['total']==75 and result['response_repair']['grades_preserved']
+
+
+def test_response_repair_cannot_change_grades():
+    bad=verdict(3)
+    bad['criteria'][0]['improvement']=''
+    outputs=iter([bad,verdict(4)])
+    provider=SimpleNamespace(review=lambda messages:{'state':'completed','text':json.dumps(next(outputs))})
+    result=evaluate(provider)
+    assert result['held'] and result['response_repair']['status']=='failed'
+
+
 def test_unsupported_task_does_not_fabricate_data():
     with pytest.raises(ValueError):
         representative_task(topic="economy")

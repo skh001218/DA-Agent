@@ -1,0 +1,682 @@
+{
+  "model": "gemma-4-26b-a4b-it",
+  "cases": [
+    {
+      "name": "ambiguous_rate",
+      "passed": true,
+      "details": {
+        "plan": {
+          "state": "clarification",
+          "question": "조회할 지표·분자와 분모·계산 단위·기간·시간대를 어떻게 정의하셨나요?",
+          "options": [],
+          "original": {
+            "text": "이번 주와 지난주 유저 비율을 보여줘.",
+            "clarification": null,
+            "previous_conditions": null
+          },
+          "help_type": "request_confirmation",
+          "proposed_conditions": {},
+          "usage": {
+            "input_tokens": 1233,
+            "output_tokens": 68,
+            "total_tokens": 2796
+          },
+          "model": "gemma-4-26b-a4b-it"
+        }
+      }
+    },
+    {
+      "name": "signup_users",
+      "passed": true,
+      "details": {
+        "plan": {
+          "state": "ready",
+          "conditions": {
+            "metric": "users_count",
+            "start": "2026-09-01",
+            "end": "2026-09-15",
+            "timezone": "UTC",
+            "period_basis": "explicit_dates",
+            "unit": "user",
+            "group_by": "channel",
+            "filters": {}
+          },
+          "sql": "SELECT u.channel AS group_value, COUNT(DISTINCT u.user_id) AS user_count FROM users u WHERE u.signup_date >= DATE '2026-09-01' AND u.signup_date < DATE '2026-09-15' GROUP BY u.channel ORDER BY u.channel",
+          "original": {
+            "text": "UTC 2026-09-01 포함~2026-09-15 제외 신규 가입 고유 사용자 수를 유입 채널별로 조회해줘.",
+            "clarification": null,
+            "previous_conditions": null
+          },
+          "help_type": "request_confirmation",
+          "usage": {
+            "input_tokens": 1264,
+            "output_tokens": 77,
+            "total_tokens": 1976
+          },
+          "model": "gemma-4-26b-a4b-it"
+        },
+        "execution": {
+          "state": "success",
+          "sql": "SELECT u.channel AS group_value, COUNT(DISTINCT u.user_id) AS user_count FROM users u WHERE u.signup_date >= DATE '2026-09-01' AND u.signup_date < DATE '2026-09-15' GROUP BY u.channel ORDER BY u.channel",
+          "conditions": {
+            "metric": "users_count",
+            "start": "2026-09-01",
+            "end": "2026-09-15",
+            "timezone": "UTC",
+            "period_basis": "explicit_dates",
+            "unit": "user",
+            "group_by": "channel",
+            "filters": {}
+          },
+          "attempts": [
+            {
+              "sql": "SELECT u.channel AS group_value, COUNT(DISTINCT u.user_id) AS user_count FROM users u WHERE u.signup_date >= DATE '2026-09-01' AND u.signup_date < DATE '2026-09-15' GROUP BY u.channel ORDER BY u.channel",
+              "result": {
+                "execution_id": "cf4a62fe-ffb2-42d2-bc66-29a157f1e911",
+                "status": "success",
+                "executed_at": "2026-10-06T04:00:07.576697Z",
+                "columns": [
+                  {
+                    "name": "group_value",
+                    "type": "text"
+                  },
+                  {
+                    "name": "user_count",
+                    "type": "int8"
+                  }
+                ],
+                "rows": [
+                  [
+                    "ads",
+                    20
+                  ]
+                ],
+                "preview_row_count": 1,
+                "total_row_count": 2,
+                "result_complete": true,
+                "truncated": true,
+                "error": null,
+                "expires_in_seconds": 600,
+                "duration_ms": 10
+              },
+              "error": null
+            }
+          ],
+          "result": {
+            "execution_id": "cf4a62fe-ffb2-42d2-bc66-29a157f1e911",
+            "status": "success",
+            "executed_at": "2026-10-06T04:00:07.576697Z",
+            "columns": [
+              {
+                "name": "group_value",
+                "type": "text"
+              },
+              {
+                "name": "user_count",
+                "type": "int8"
+              }
+            ],
+            "rows": [
+              [
+                "ads",
+                20
+              ]
+            ],
+            "preview_row_count": 1,
+            "total_row_count": 2,
+            "result_complete": true,
+            "truncated": true,
+            "error": null,
+            "expires_in_seconds": 600,
+            "duration_ms": 10
+          },
+          "saved_execution": {
+            "sql": "SELECT u.channel AS group_value, COUNT(DISTINCT u.user_id) AS user_count FROM users u WHERE u.signup_date >= DATE '2026-09-01' AND u.signup_date < DATE '2026-09-15' GROUP BY u.channel ORDER BY u.channel",
+            "result": {
+              "execution_id": "cf4a62fe-ffb2-42d2-bc66-29a157f1e911",
+              "status": "success",
+              "executed_at": "2026-10-06T04:00:07.576697Z",
+              "columns": [
+                {
+                  "name": "group_value",
+                  "type": "text"
+                },
+                {
+                  "name": "user_count",
+                  "type": "int8"
+                }
+              ],
+              "rows": [
+                [
+                  "ads",
+                  20
+                ],
+                [
+                  "organic",
+                  20
+                ]
+              ],
+              "preview_row_count": 2,
+              "total_row_count": 2,
+              "result_complete": true,
+              "truncated": false,
+              "error": null,
+              "expires_in_seconds": 600,
+              "duration_ms": 10
+            }
+          },
+          "full_result": {
+            "execution_id": "cf4a62fe-ffb2-42d2-bc66-29a157f1e911",
+            "status": "success",
+            "executed_at": "2026-10-06T04:00:07.576697Z",
+            "columns": [
+              {
+                "name": "group_value",
+                "type": "text"
+              },
+              {
+                "name": "user_count",
+                "type": "int8"
+              }
+            ],
+            "rows": [
+              [
+                "ads",
+                20
+              ],
+              [
+                "organic",
+                20
+              ]
+            ],
+            "preview_row_count": 2,
+            "total_row_count": 2,
+            "result_complete": true,
+            "truncated": false,
+            "error": null,
+            "expires_in_seconds": 600,
+            "duration_ms": 10
+          },
+          "limits": {
+            "preview_rows": 1,
+            "max_rows": 1000,
+            "max_bytes": 1048576,
+            "query_timeout_ms": 5000
+          }
+        }
+      }
+    },
+    {
+      "name": "attempt_events",
+      "passed": false,
+      "details": {
+        "plan": {
+          "state": "clarification",
+          "question": "공개 필터는 channel만 지원합니다.",
+          "options": [],
+          "original": {
+            "text": "UTC 2026-09-01 포함~2026-09-15 제외 튜토리얼 3단계 도전 이벤트 수를 조회해줘. 고유 사용자 수가 아니라 재도전을 포함한 이벤트 수야.",
+            "clarification": null,
+            "previous_conditions": null
+          },
+          "help_type": "request_confirmation",
+          "proposed_conditions": {
+            "metric": "attempts_count",
+            "start": "2026-09-01",
+            "end": "2026-09-15",
+            "timezone": "UTC",
+            "period_basis": "explicit_dates",
+            "unit": "attempt",
+            "group_by": null,
+            "filters": {
+              "step": 3
+            }
+          },
+          "usage": {
+            "input_tokens": 1274,
+            "output_tokens": 79,
+            "total_tokens": 2173
+          },
+          "model": "gemma-4-26b-a4b-it"
+        }
+      }
+    },
+    {
+      "name": "cohort_completion",
+      "passed": true,
+      "details": {
+        "plan": {
+          "state": "ready",
+          "conditions": {
+            "metric": "tutorial_rate",
+            "start": "2026-09-01",
+            "end": "2026-09-15",
+            "timezone": "UTC",
+            "period_basis": "explicit_dates",
+            "unit": "user",
+            "group_by": "channel",
+            "filters": {},
+            "step": 3,
+            "event_start": "2026-09-01",
+            "event_end": "2026-09-15",
+            "numerator": "completed_users",
+            "denominator": "signup_users"
+          },
+          "sql": "SELECT u.channel AS group_value, COUNT(DISTINCT u.user_id) AS denominator, COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM tutorial_attempts a WHERE a.user_id=u.user_id AND a.step=3 AND a.completed IS TRUE AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-01' AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-09-15') THEN u.user_id END) AS numerator, 100.0 * COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM tutorial_attempts a WHERE a.user_id=u.user_id AND a.step=3 AND a.completed IS TRUE AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-01' AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-09-15') THEN u.user_id END) / NULLIF(COUNT(DISTINCT u.user_id),0) AS rate_percent FROM users u WHERE u.signup_date >= DATE '2026-09-01' AND u.signup_date < DATE '2026-09-15' GROUP BY u.channel ORDER BY u.channel",
+          "original": {
+            "text": "UTC 2026-09-01 포함~2026-09-15 제외 가입한 신규 사용자가 분모, 같은 기간 튜토리얼 3단계를 완료한 고유 사용자가 분자야. 비율을 유입 채널별로 비교해줘. 도전 중복은 사용자별로 제거해.",
+            "clarification": null,
+            "previous_conditions": null
+          },
+          "help_type": "request_confirmation",
+          "usage": {
+            "input_tokens": 1298,
+            "output_tokens": 123,
+            "total_tokens": 3129
+          },
+          "model": "gemma-4-26b-a4b-it"
+        },
+        "execution": {
+          "state": "success",
+          "sql": "SELECT u.channel AS group_value, COUNT(DISTINCT u.user_id) AS denominator, COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM tutorial_attempts a WHERE a.user_id=u.user_id AND a.step=3 AND a.completed IS TRUE AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-01' AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-09-15') THEN u.user_id END) AS numerator, 100.0 * COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM tutorial_attempts a WHERE a.user_id=u.user_id AND a.step=3 AND a.completed IS TRUE AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-01' AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-09-15') THEN u.user_id END) / NULLIF(COUNT(DISTINCT u.user_id),0) AS rate_percent FROM users u WHERE u.signup_date >= DATE '2026-09-01' AND u.signup_date < DATE '2026-09-15' GROUP BY u.channel ORDER BY u.channel",
+          "conditions": {
+            "metric": "tutorial_rate",
+            "start": "2026-09-01",
+            "end": "2026-09-15",
+            "timezone": "UTC",
+            "period_basis": "explicit_dates",
+            "unit": "user",
+            "group_by": "channel",
+            "filters": {},
+            "step": 3,
+            "event_start": "2026-09-01",
+            "event_end": "2026-09-15",
+            "numerator": "completed_users",
+            "denominator": "signup_users"
+          },
+          "attempts": [
+            {
+              "sql": "SELECT u.channel AS group_value, COUNT(DISTINCT u.user_id) AS denominator, COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM tutorial_attempts a WHERE a.user_id=u.user_id AND a.step=3 AND a.completed IS TRUE AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-01' AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-09-15') THEN u.user_id END) AS numerator, 100.0 * COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM tutorial_attempts a WHERE a.user_id=u.user_id AND a.step=3 AND a.completed IS TRUE AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-01' AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-09-15') THEN u.user_id END) / NULLIF(COUNT(DISTINCT u.user_id),0) AS rate_percent FROM users u WHERE u.signup_date >= DATE '2026-09-01' AND u.signup_date < DATE '2026-09-15' GROUP BY u.channel ORDER BY u.channel",
+              "result": {
+                "execution_id": "7ba0b11c-78a4-4d41-8717-62f5df7c9b8a",
+                "status": "success",
+                "executed_at": "2026-10-06T04:01:39.666618Z",
+                "columns": [
+                  {
+                    "name": "group_value",
+                    "type": "text"
+                  },
+                  {
+                    "name": "denominator",
+                    "type": "int8"
+                  },
+                  {
+                    "name": "numerator",
+                    "type": "int8"
+                  },
+                  {
+                    "name": "rate_percent",
+                    "type": "numeric"
+                  }
+                ],
+                "rows": [
+                  [
+                    "ads",
+                    20,
+                    14,
+                    "70.0000000000000000"
+                  ]
+                ],
+                "preview_row_count": 1,
+                "total_row_count": 2,
+                "result_complete": true,
+                "truncated": true,
+                "error": null,
+                "expires_in_seconds": 600,
+                "duration_ms": 13
+              },
+              "error": null
+            }
+          ],
+          "result": {
+            "execution_id": "7ba0b11c-78a4-4d41-8717-62f5df7c9b8a",
+            "status": "success",
+            "executed_at": "2026-10-06T04:01:39.666618Z",
+            "columns": [
+              {
+                "name": "group_value",
+                "type": "text"
+              },
+              {
+                "name": "denominator",
+                "type": "int8"
+              },
+              {
+                "name": "numerator",
+                "type": "int8"
+              },
+              {
+                "name": "rate_percent",
+                "type": "numeric"
+              }
+            ],
+            "rows": [
+              [
+                "ads",
+                20,
+                14,
+                "70.0000000000000000"
+              ]
+            ],
+            "preview_row_count": 1,
+            "total_row_count": 2,
+            "result_complete": true,
+            "truncated": true,
+            "error": null,
+            "expires_in_seconds": 600,
+            "duration_ms": 13
+          },
+          "saved_execution": {
+            "sql": "SELECT u.channel AS group_value, COUNT(DISTINCT u.user_id) AS denominator, COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM tutorial_attempts a WHERE a.user_id=u.user_id AND a.step=3 AND a.completed IS TRUE AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-01' AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-09-15') THEN u.user_id END) AS numerator, 100.0 * COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM tutorial_attempts a WHERE a.user_id=u.user_id AND a.step=3 AND a.completed IS TRUE AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-01' AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-09-15') THEN u.user_id END) / NULLIF(COUNT(DISTINCT u.user_id),0) AS rate_percent FROM users u WHERE u.signup_date >= DATE '2026-09-01' AND u.signup_date < DATE '2026-09-15' GROUP BY u.channel ORDER BY u.channel",
+            "result": {
+              "execution_id": "7ba0b11c-78a4-4d41-8717-62f5df7c9b8a",
+              "status": "success",
+              "executed_at": "2026-10-06T04:01:39.666618Z",
+              "columns": [
+                {
+                  "name": "group_value",
+                  "type": "text"
+                },
+                {
+                  "name": "denominator",
+                  "type": "int8"
+                },
+                {
+                  "name": "numerator",
+                  "type": "int8"
+                },
+                {
+                  "name": "rate_percent",
+                  "type": "numeric"
+                }
+              ],
+              "rows": [
+                [
+                  "ads",
+                  20,
+                  14,
+                  "70.0000000000000000"
+                ],
+                [
+                  "organic",
+                  20,
+                  16,
+                  "80.0000000000000000"
+                ]
+              ],
+              "preview_row_count": 2,
+              "total_row_count": 2,
+              "result_complete": true,
+              "truncated": false,
+              "error": null,
+              "expires_in_seconds": 600,
+              "duration_ms": 13
+            }
+          },
+          "full_result": {
+            "execution_id": "7ba0b11c-78a4-4d41-8717-62f5df7c9b8a",
+            "status": "success",
+            "executed_at": "2026-10-06T04:01:39.666618Z",
+            "columns": [
+              {
+                "name": "group_value",
+                "type": "text"
+              },
+              {
+                "name": "denominator",
+                "type": "int8"
+              },
+              {
+                "name": "numerator",
+                "type": "int8"
+              },
+              {
+                "name": "rate_percent",
+                "type": "numeric"
+              }
+            ],
+            "rows": [
+              [
+                "ads",
+                20,
+                14,
+                "70.0000000000000000"
+              ],
+              [
+                "organic",
+                20,
+                16,
+                "80.0000000000000000"
+              ]
+            ],
+            "preview_row_count": 2,
+            "total_row_count": 2,
+            "result_complete": true,
+            "truncated": false,
+            "error": null,
+            "expires_in_seconds": 600,
+            "duration_ms": 13
+          },
+          "limits": {
+            "preview_rows": 1,
+            "max_rows": 1000,
+            "max_bytes": 1048576,
+            "query_timeout_ms": 5000
+          }
+        }
+      }
+    },
+    {
+      "name": "exact_d7",
+      "passed": true,
+      "details": {
+        "plan": {
+          "state": "ready",
+          "conditions": {
+            "metric": "d7_retention",
+            "start": "2026-09-01",
+            "end": "2026-09-15",
+            "timezone": "UTC",
+            "period_basis": "explicit_dates",
+            "unit": "user",
+            "group_by": null,
+            "filters": {},
+            "numerator": "d7_active_users",
+            "denominator": "observed_signup_users",
+            "event_end": "2026-10-01"
+          },
+          "sql": "SELECT COUNT(DISTINCT u.user_id) AS denominator, COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM sessions s WHERE s.user_id=u.user_id AND CAST(s.session_at AT TIME ZONE 'UTC' AS DATE) = u.signup_date + 7) THEN u.user_id END) AS numerator, 100.0 * COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM sessions s WHERE s.user_id=u.user_id AND CAST(s.session_at AT TIME ZONE 'UTC' AS DATE) = u.signup_date + 7) THEN u.user_id END) / NULLIF(COUNT(DISTINCT u.user_id),0) AS rate_percent FROM users u WHERE u.signup_date >= DATE '2026-09-01' AND u.signup_date < DATE '2026-09-15' AND u.signup_date + 8 <= DATE '2026-10-01'",
+          "original": {
+            "text": "UTC 2026-09-01 포함~2026-09-15 제외 가입 코호트의 D7 리텐션을 계산해줘. 가입 후 정확히 7일째 UTC 날짜 접속 고유 사용자/관측 완료 가입 고유 사용자이고 관측 종료는 공개 과제 기준이야.",
+            "clarification": null,
+            "previous_conditions": null
+          },
+          "help_type": "request_confirmation",
+          "usage": {
+            "input_tokens": 1297,
+            "output_tokens": 111,
+            "total_tokens": 4130
+          },
+          "model": "gemma-4-26b-a4b-it"
+        },
+        "execution": {
+          "state": "success",
+          "sql": "SELECT COUNT(DISTINCT u.user_id) AS denominator, COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM sessions s WHERE s.user_id=u.user_id AND CAST(s.session_at AT TIME ZONE 'UTC' AS DATE) = u.signup_date + 7) THEN u.user_id END) AS numerator, 100.0 * COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM sessions s WHERE s.user_id=u.user_id AND CAST(s.session_at AT TIME ZONE 'UTC' AS DATE) = u.signup_date + 7) THEN u.user_id END) / NULLIF(COUNT(DISTINCT u.user_id),0) AS rate_percent FROM users u WHERE u.signup_date >= DATE '2026-09-01' AND u.signup_date < DATE '2026-09-15' AND u.signup_date + 8 <= DATE '2026-10-01'",
+          "conditions": {
+            "metric": "d7_retention",
+            "start": "2026-09-01",
+            "end": "2026-09-15",
+            "timezone": "UTC",
+            "period_basis": "explicit_dates",
+            "unit": "user",
+            "group_by": null,
+            "filters": {},
+            "numerator": "d7_active_users",
+            "denominator": "observed_signup_users",
+            "event_end": "2026-10-01"
+          },
+          "attempts": [
+            {
+              "sql": "SELECT COUNT(DISTINCT u.user_id) AS denominator, COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM sessions s WHERE s.user_id=u.user_id AND CAST(s.session_at AT TIME ZONE 'UTC' AS DATE) = u.signup_date + 7) THEN u.user_id END) AS numerator, 100.0 * COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM sessions s WHERE s.user_id=u.user_id AND CAST(s.session_at AT TIME ZONE 'UTC' AS DATE) = u.signup_date + 7) THEN u.user_id END) / NULLIF(COUNT(DISTINCT u.user_id),0) AS rate_percent FROM users u WHERE u.signup_date >= DATE '2026-09-01' AND u.signup_date < DATE '2026-09-15' AND u.signup_date + 8 <= DATE '2026-10-01'",
+              "result": {
+                "execution_id": "cdca93b5-79ed-4378-ab43-f6677e030edb",
+                "status": "success",
+                "executed_at": "2026-10-06T04:02:56.523332Z",
+                "columns": [
+                  {
+                    "name": "denominator",
+                    "type": "int8"
+                  },
+                  {
+                    "name": "numerator",
+                    "type": "int8"
+                  },
+                  {
+                    "name": "rate_percent",
+                    "type": "numeric"
+                  }
+                ],
+                "rows": [
+                  [
+                    40,
+                    30,
+                    "75.0000000000000000"
+                  ]
+                ],
+                "preview_row_count": 1,
+                "total_row_count": 1,
+                "result_complete": true,
+                "truncated": false,
+                "error": null,
+                "expires_in_seconds": 600,
+                "duration_ms": 17
+              },
+              "error": null
+            }
+          ],
+          "result": {
+            "execution_id": "cdca93b5-79ed-4378-ab43-f6677e030edb",
+            "status": "success",
+            "executed_at": "2026-10-06T04:02:56.523332Z",
+            "columns": [
+              {
+                "name": "denominator",
+                "type": "int8"
+              },
+              {
+                "name": "numerator",
+                "type": "int8"
+              },
+              {
+                "name": "rate_percent",
+                "type": "numeric"
+              }
+            ],
+            "rows": [
+              [
+                40,
+                30,
+                "75.0000000000000000"
+              ]
+            ],
+            "preview_row_count": 1,
+            "total_row_count": 1,
+            "result_complete": true,
+            "truncated": false,
+            "error": null,
+            "expires_in_seconds": 600,
+            "duration_ms": 17
+          },
+          "saved_execution": {
+            "sql": "SELECT COUNT(DISTINCT u.user_id) AS denominator, COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM sessions s WHERE s.user_id=u.user_id AND CAST(s.session_at AT TIME ZONE 'UTC' AS DATE) = u.signup_date + 7) THEN u.user_id END) AS numerator, 100.0 * COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM sessions s WHERE s.user_id=u.user_id AND CAST(s.session_at AT TIME ZONE 'UTC' AS DATE) = u.signup_date + 7) THEN u.user_id END) / NULLIF(COUNT(DISTINCT u.user_id),0) AS rate_percent FROM users u WHERE u.signup_date >= DATE '2026-09-01' AND u.signup_date < DATE '2026-09-15' AND u.signup_date + 8 <= DATE '2026-10-01'",
+            "result": {
+              "execution_id": "cdca93b5-79ed-4378-ab43-f6677e030edb",
+              "status": "success",
+              "executed_at": "2026-10-06T04:02:56.523332Z",
+              "columns": [
+                {
+                  "name": "denominator",
+                  "type": "int8"
+                },
+                {
+                  "name": "numerator",
+                  "type": "int8"
+                },
+                {
+                  "name": "rate_percent",
+                  "type": "numeric"
+                }
+              ],
+              "rows": [
+                [
+                  40,
+                  30,
+                  "75.0000000000000000"
+                ]
+              ],
+              "preview_row_count": 1,
+              "total_row_count": 1,
+              "result_complete": true,
+              "truncated": false,
+              "error": null,
+              "expires_in_seconds": 600,
+              "duration_ms": 17
+            }
+          },
+          "full_result": {
+            "execution_id": "cdca93b5-79ed-4378-ab43-f6677e030edb",
+            "status": "success",
+            "executed_at": "2026-10-06T04:02:56.523332Z",
+            "columns": [
+              {
+                "name": "denominator",
+                "type": "int8"
+              },
+              {
+                "name": "numerator",
+                "type": "int8"
+              },
+              {
+                "name": "rate_percent",
+                "type": "numeric"
+              }
+            ],
+            "rows": [
+              [
+                40,
+                30,
+                "75.0000000000000000"
+              ]
+            ],
+            "preview_row_count": 1,
+            "total_row_count": 1,
+            "result_complete": true,
+            "truncated": false,
+            "error": null,
+            "expires_in_seconds": 600,
+            "duration_ms": 17
+          },
+          "limits": {
+            "preview_rows": 1,
+            "max_rows": 1000,
+            "max_bytes": 1048576,
+            "query_timeout_ms": 5000
+          }
+        }
+      }
+    }
+  ],
+  "live_calls": 5,
+  "human_review": "pending",
+  "discord_live": "not_configured"
+}

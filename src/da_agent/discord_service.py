@@ -224,6 +224,8 @@ class DiscordTrainingService:
         if plan.get('state') != 'ready':
             if plan.get('reason') == 'usage_limit':
                 return ['오늘의 API 호출 한도에 도달했습니다. 기존 기록·SQL 열람·재개는 계속 사용할 수 있습니다.']
+            if plan.get('reason') == 'api_rate_limited':
+                return ['Gemma API 호출 한도(429)에 도달했습니다. 조회를 실행하지 않았으며 기록은 보존됩니다. 잠시 뒤 새 요청으로 다시 시도하세요.']
             return [plan.get('message', '조회 조건을 해석할 수 없었습니다. 지원하는 지표와 기간을 명시해 다시 요청하세요.')]
         document['pending_query'] = None
         document['conditions'] = plan.get('conditions')

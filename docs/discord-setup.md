@@ -25,6 +25,7 @@ $env:DISCORD_RECORDS_DSN = 'postgresql://discord_recorder:<password>@127.0.0.1:5
 $env:DISCORD_ADMIN_DSN = 'postgresql://discord_admin:<password>@127.0.0.1:5432/discord_training'
 $env:DISCORD_LEARNER_DSN = 'postgresql://discord_learner:<password>@127.0.0.1:5432/discord_training'
 $env:DISCORD_GEMINI_KEY_FILE = 'C:\secrets\discord-gemini.key'
+$env:DISCORD_MODEL = 'gemma-4-26b-a4b-it'  # Discord 전용, 웹 GEMINI_MODEL 유지
 $env:DISCORD_DAILY_CALL_LIMIT = '30'  # 파일럿 운영자가 예산에 맞게 조정
 $env:DISCORD_MESSAGE_CONTENT = 'false'
 python -m da_agent.discord_bot

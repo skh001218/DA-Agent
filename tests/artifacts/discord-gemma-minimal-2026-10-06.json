@@ -1,0 +1,929 @@
+{
+  "model": "gemma-4-26b-a4b-it",
+  "cases": [
+    {
+      "name": "attempt_events",
+      "passed": true,
+      "details": {
+        "plan": {
+          "state": "ready",
+          "conditions": {
+            "metric": "attempts_count",
+            "start": "2026-09-01",
+            "end": "2026-09-15",
+            "timezone": "UTC",
+            "period_basis": "explicit_dates",
+            "unit": "attempt",
+            "group_by": null,
+            "filters": {},
+            "step": 3
+          },
+          "sql": "SELECT COUNT(*) AS attempts_count FROM tutorial_attempts a JOIN users u ON u.user_id=a.user_id WHERE CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-01' AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-09-15' AND a.step = 3",
+          "original": {
+            "text": "UTC 2026-09-01 포함~2026-09-15 제외 튜토리얼 3단계 도전 이벤트 수를 조회해줘. 고유 사용자 수가 아니라 재도전을 포함한 이벤트 수야.",
+            "clarification": null,
+            "previous_conditions": null
+          },
+          "help_type": "request_confirmation",
+          "usage": {
+            "input_tokens": 1274,
+            "output_tokens": 130,
+            "total_tokens": 1404
+          },
+          "model": "gemma-4-26b-a4b-it"
+        },
+        "execution": {
+          "state": "success",
+          "sql": "SELECT COUNT(*) AS attempts_count FROM tutorial_attempts a JOIN users u ON u.user_id=a.user_id WHERE CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-01' AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-09-15' AND a.step = 3",
+          "conditions": {
+            "metric": "attempts_count",
+            "start": "2026-09-01",
+            "end": "2026-09-15",
+            "timezone": "UTC",
+            "period_basis": "explicit_dates",
+            "unit": "attempt",
+            "group_by": null,
+            "filters": {},
+            "step": 3
+          },
+          "attempts": [
+            {
+              "sql": "SELECT COUNT(*) AS attempts_count FROM tutorial_attempts a JOIN users u ON u.user_id=a.user_id WHERE CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-01' AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-09-15' AND a.step = 3",
+              "result": {
+                "execution_id": "96fdd7ad-b2d9-41a3-a264-241b91dd5b9c",
+                "status": "success",
+                "executed_at": "2026-10-06T04:03:45.843209Z",
+                "columns": [
+                  {
+                    "name": "attempts_count",
+                    "type": "int8"
+                  }
+                ],
+                "rows": [
+                  [
+                    50
+                  ]
+                ],
+                "preview_row_count": 1,
+                "total_row_count": 1,
+                "result_complete": true,
+                "truncated": false,
+                "error": null,
+                "expires_in_seconds": 600,
+                "duration_ms": 9
+              },
+              "error": null
+            }
+          ],
+          "result": {
+            "execution_id": "96fdd7ad-b2d9-41a3-a264-241b91dd5b9c",
+            "status": "success",
+            "executed_at": "2026-10-06T04:03:45.843209Z",
+            "columns": [
+              {
+                "name": "attempts_count",
+                "type": "int8"
+              }
+            ],
+            "rows": [
+              [
+                50
+              ]
+            ],
+            "preview_row_count": 1,
+            "total_row_count": 1,
+            "result_complete": true,
+            "truncated": false,
+            "error": null,
+            "expires_in_seconds": 600,
+            "duration_ms": 9
+          },
+          "saved_execution": {
+            "sql": "SELECT COUNT(*) AS attempts_count FROM tutorial_attempts a JOIN users u ON u.user_id=a.user_id WHERE CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-01' AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-09-15' AND a.step = 3",
+            "result": {
+              "execution_id": "96fdd7ad-b2d9-41a3-a264-241b91dd5b9c",
+              "status": "success",
+              "executed_at": "2026-10-06T04:03:45.843209Z",
+              "columns": [
+                {
+                  "name": "attempts_count",
+                  "type": "int8"
+                }
+              ],
+              "rows": [
+                [
+                  50
+                ]
+              ],
+              "preview_row_count": 1,
+              "total_row_count": 1,
+              "result_complete": true,
+              "truncated": false,
+              "error": null,
+              "expires_in_seconds": 600,
+              "duration_ms": 9
+            }
+          },
+          "full_result": {
+            "execution_id": "96fdd7ad-b2d9-41a3-a264-241b91dd5b9c",
+            "status": "success",
+            "executed_at": "2026-10-06T04:03:45.843209Z",
+            "columns": [
+              {
+                "name": "attempts_count",
+                "type": "int8"
+              }
+            ],
+            "rows": [
+              [
+                50
+              ]
+            ],
+            "preview_row_count": 1,
+            "total_row_count": 1,
+            "result_complete": true,
+            "truncated": false,
+            "error": null,
+            "expires_in_seconds": 600,
+            "duration_ms": 9
+          },
+          "limits": {
+            "preview_rows": 1,
+            "max_rows": 1000,
+            "max_bytes": 1048576,
+            "query_timeout_ms": 5000
+          }
+        }
+      }
+    },
+    {
+      "name": "cohort_completion",
+      "passed": true,
+      "details": {
+        "plan": {
+          "state": "ready",
+          "conditions": {
+            "metric": "tutorial_rate",
+            "start": "2026-09-01",
+            "end": "2026-09-15",
+            "event_start": "2026-09-01",
+            "event_end": "2026-10-01",
+            "timezone": "UTC",
+            "period_basis": "explicit_dates",
+            "unit": "user",
+            "group_by": "channel",
+            "filters": {},
+            "step": 3,
+            "numerator": "completed_users",
+            "denominator": "signup_users"
+          },
+          "sql": "SELECT u.channel AS group_value, COUNT(DISTINCT u.user_id) AS denominator, COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM tutorial_attempts a WHERE a.user_id=u.user_id AND a.step=3 AND a.completed IS TRUE AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-01' AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-10-01') THEN u.user_id END) AS numerator, 100.0 * COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM tutorial_attempts a WHERE a.user_id=u.user_id AND a.step=3 AND a.completed IS TRUE AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-01' AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-10-01') THEN u.user_id END) / NULLIF(COUNT(DISTINCT u.user_id),0) AS rate_percent FROM users u WHERE u.signup_date >= DATE '2026-09-01' AND u.signup_date < DATE '2026-09-15' GROUP BY u.channel ORDER BY u.channel",
+          "original": {
+            "text": "UTC 2026-09-01 포함~2026-09-15 제외 가입한 신규 사용자가 분모, 같은 기간 튜토리얼 3단계를 완료한 고유 사용자가 분자야. 비율을 유입 채널별로 비교해줘. 도전 중복은 사용자별로 제거해.",
+            "clarification": null,
+            "previous_conditions": null
+          },
+          "help_type": "request_confirmation",
+          "usage": {
+            "input_tokens": 1298,
+            "output_tokens": 187,
+            "total_tokens": 1485
+          },
+          "model": "gemma-4-26b-a4b-it"
+        },
+        "execution": {
+          "state": "success",
+          "sql": "SELECT u.channel AS group_value, COUNT(DISTINCT u.user_id) AS denominator, COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM tutorial_attempts a WHERE a.user_id=u.user_id AND a.step=3 AND a.completed IS TRUE AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-01' AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-10-01') THEN u.user_id END) AS numerator, 100.0 * COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM tutorial_attempts a WHERE a.user_id=u.user_id AND a.step=3 AND a.completed IS TRUE AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-01' AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-10-01') THEN u.user_id END) / NULLIF(COUNT(DISTINCT u.user_id),0) AS rate_percent FROM users u WHERE u.signup_date >= DATE '2026-09-01' AND u.signup_date < DATE '2026-09-15' GROUP BY u.channel ORDER BY u.channel",
+          "conditions": {
+            "metric": "tutorial_rate",
+            "start": "2026-09-01",
+            "end": "2026-09-15",
+            "event_start": "2026-09-01",
+            "event_end": "2026-10-01",
+            "timezone": "UTC",
+            "period_basis": "explicit_dates",
+            "unit": "user",
+            "group_by": "channel",
+            "filters": {},
+            "step": 3,
+            "numerator": "completed_users",
+            "denominator": "signup_users"
+          },
+          "attempts": [
+            {
+              "sql": "SELECT u.channel AS group_value, COUNT(DISTINCT u.user_id) AS denominator, COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM tutorial_attempts a WHERE a.user_id=u.user_id AND a.step=3 AND a.completed IS TRUE AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-01' AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-10-01') THEN u.user_id END) AS numerator, 100.0 * COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM tutorial_attempts a WHERE a.user_id=u.user_id AND a.step=3 AND a.completed IS TRUE AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-01' AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-10-01') THEN u.user_id END) / NULLIF(COUNT(DISTINCT u.user_id),0) AS rate_percent FROM users u WHERE u.signup_date >= DATE '2026-09-01' AND u.signup_date < DATE '2026-09-15' GROUP BY u.channel ORDER BY u.channel",
+              "result": {
+                "execution_id": "a2628eeb-f5c5-421d-a578-a540040466af",
+                "status": "success",
+                "executed_at": "2026-10-06T04:04:07.122821Z",
+                "columns": [
+                  {
+                    "name": "group_value",
+                    "type": "text"
+                  },
+                  {
+                    "name": "denominator",
+                    "type": "int8"
+                  },
+                  {
+                    "name": "numerator",
+                    "type": "int8"
+                  },
+                  {
+                    "name": "rate_percent",
+                    "type": "numeric"
+                  }
+                ],
+                "rows": [
+                  [
+                    "ads",
+                    20,
+                    14,
+                    "70.0000000000000000"
+                  ]
+                ],
+                "preview_row_count": 1,
+                "total_row_count": 2,
+                "result_complete": true,
+                "truncated": true,
+                "error": null,
+                "expires_in_seconds": 600,
+                "duration_ms": 13
+              },
+              "error": null
+            }
+          ],
+          "result": {
+            "execution_id": "a2628eeb-f5c5-421d-a578-a540040466af",
+            "status": "success",
+            "executed_at": "2026-10-06T04:04:07.122821Z",
+            "columns": [
+              {
+                "name": "group_value",
+                "type": "text"
+              },
+              {
+                "name": "denominator",
+                "type": "int8"
+              },
+              {
+                "name": "numerator",
+                "type": "int8"
+              },
+              {
+                "name": "rate_percent",
+                "type": "numeric"
+              }
+            ],
+            "rows": [
+              [
+                "ads",
+                20,
+                14,
+                "70.0000000000000000"
+              ]
+            ],
+            "preview_row_count": 1,
+            "total_row_count": 2,
+            "result_complete": true,
+            "truncated": true,
+            "error": null,
+            "expires_in_seconds": 600,
+            "duration_ms": 13
+          },
+          "saved_execution": {
+            "sql": "SELECT u.channel AS group_value, COUNT(DISTINCT u.user_id) AS denominator, COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM tutorial_attempts a WHERE a.user_id=u.user_id AND a.step=3 AND a.completed IS TRUE AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-01' AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-10-01') THEN u.user_id END) AS numerator, 100.0 * COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM tutorial_attempts a WHERE a.user_id=u.user_id AND a.step=3 AND a.completed IS TRUE AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-01' AND CAST(a.attempt_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-10-01') THEN u.user_id END) / NULLIF(COUNT(DISTINCT u.user_id),0) AS rate_percent FROM users u WHERE u.signup_date >= DATE '2026-09-01' AND u.signup_date < DATE '2026-09-15' GROUP BY u.channel ORDER BY u.channel",
+            "result": {
+              "execution_id": "a2628eeb-f5c5-421d-a578-a540040466af",
+              "status": "success",
+              "executed_at": "2026-10-06T04:04:07.122821Z",
+              "columns": [
+                {
+                  "name": "group_value",
+                  "type": "text"
+                },
+                {
+                  "name": "denominator",
+                  "type": "int8"
+                },
+                {
+                  "name": "numerator",
+                  "type": "int8"
+                },
+                {
+                  "name": "rate_percent",
+                  "type": "numeric"
+                }
+              ],
+              "rows": [
+                [
+                  "ads",
+                  20,
+                  14,
+                  "70.0000000000000000"
+                ],
+                [
+                  "organic",
+                  20,
+                  16,
+                  "80.0000000000000000"
+                ]
+              ],
+              "preview_row_count": 2,
+              "total_row_count": 2,
+              "result_complete": true,
+              "truncated": false,
+              "error": null,
+              "expires_in_seconds": 600,
+              "duration_ms": 13
+            }
+          },
+          "full_result": {
+            "execution_id": "a2628eeb-f5c5-421d-a578-a540040466af",
+            "status": "success",
+            "executed_at": "2026-10-06T04:04:07.122821Z",
+            "columns": [
+              {
+                "name": "group_value",
+                "type": "text"
+              },
+              {
+                "name": "denominator",
+                "type": "int8"
+              },
+              {
+                "name": "numerator",
+                "type": "int8"
+              },
+              {
+                "name": "rate_percent",
+                "type": "numeric"
+              }
+            ],
+            "rows": [
+              [
+                "ads",
+                20,
+                14,
+                "70.0000000000000000"
+              ],
+              [
+                "organic",
+                20,
+                16,
+                "80.0000000000000000"
+              ]
+            ],
+            "preview_row_count": 2,
+            "total_row_count": 2,
+            "result_complete": true,
+            "truncated": false,
+            "error": null,
+            "expires_in_seconds": 600,
+            "duration_ms": 13
+          },
+          "limits": {
+            "preview_rows": 1,
+            "max_rows": 1000,
+            "max_bytes": 1048576,
+            "query_timeout_ms": 5000
+          }
+        }
+      }
+    },
+    {
+      "name": "weekly_return",
+      "passed": true,
+      "details": {
+        "plan": {
+          "state": "ready",
+          "conditions": {
+            "metric": "weekly_return",
+            "numerator": "returning_users",
+            "denominator": "baseline_active_users",
+            "baseline_start": "2026-09-01",
+            "baseline_end": "2026-09-08",
+            "start": "2026-09-08",
+            "end": "2026-09-15",
+            "timezone": "UTC",
+            "period_basis": "explicit_dates",
+            "unit": "user",
+            "group_by": null,
+            "filters": {}
+          },
+          "sql": "SELECT COUNT(DISTINCT u.user_id) AS denominator, COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM sessions s WHERE s.user_id=u.user_id AND CAST(s.session_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-08' AND CAST(s.session_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-09-15') THEN u.user_id END) AS numerator, 100.0 * COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM sessions s WHERE s.user_id=u.user_id AND CAST(s.session_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-08' AND CAST(s.session_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-09-15') THEN u.user_id END) / NULLIF(COUNT(DISTINCT u.user_id),0) AS rate_percent FROM users u WHERE EXISTS (SELECT 1 FROM sessions s WHERE s.user_id=u.user_id AND CAST(s.session_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-01' AND CAST(s.session_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-09-08')",
+          "original": {
+            "text": "UTC 2026-09-01 포함~2026-09-08 제외 접속 고유 사용자 중 UTC 2026-09-08 포함~2026-09-15 제외 다시 접속한 고유 사용자 비율을 조회해줘. 분모는 첫 기간 접속자고 달력 날짜는 위 날짜 그대로야.",
+            "clarification": null,
+            "previous_conditions": null
+          },
+          "help_type": "request_confirmation",
+          "usage": {
+            "input_tokens": 1307,
+            "output_tokens": 121,
+            "total_tokens": 1428
+          },
+          "model": "gemma-4-26b-a4b-it"
+        },
+        "execution": {
+          "state": "success",
+          "sql": "SELECT COUNT(DISTINCT u.user_id) AS denominator, COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM sessions s WHERE s.user_id=u.user_id AND CAST(s.session_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-08' AND CAST(s.session_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-09-15') THEN u.user_id END) AS numerator, 100.0 * COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM sessions s WHERE s.user_id=u.user_id AND CAST(s.session_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-08' AND CAST(s.session_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-09-15') THEN u.user_id END) / NULLIF(COUNT(DISTINCT u.user_id),0) AS rate_percent FROM users u WHERE EXISTS (SELECT 1 FROM sessions s WHERE s.user_id=u.user_id AND CAST(s.session_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-01' AND CAST(s.session_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-09-08')",
+          "conditions": {
+            "metric": "weekly_return",
+            "numerator": "returning_users",
+            "denominator": "baseline_active_users",
+            "baseline_start": "2026-09-01",
+            "baseline_end": "2026-09-08",
+            "start": "2026-09-08",
+            "end": "2026-09-15",
+            "timezone": "UTC",
+            "period_basis": "explicit_dates",
+            "unit": "user",
+            "group_by": null,
+            "filters": {}
+          },
+          "attempts": [
+            {
+              "sql": "SELECT COUNT(DISTINCT u.user_id) AS denominator, COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM sessions s WHERE s.user_id=u.user_id AND CAST(s.session_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-08' AND CAST(s.session_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-09-15') THEN u.user_id END) AS numerator, 100.0 * COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM sessions s WHERE s.user_id=u.user_id AND CAST(s.session_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-08' AND CAST(s.session_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-09-15') THEN u.user_id END) / NULLIF(COUNT(DISTINCT u.user_id),0) AS rate_percent FROM users u WHERE EXISTS (SELECT 1 FROM sessions s WHERE s.user_id=u.user_id AND CAST(s.session_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-01' AND CAST(s.session_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-09-08')",
+              "result": {
+                "execution_id": "0755c4b6-3d7c-42f6-8f52-33b83a748595",
+                "status": "success",
+                "executed_at": "2026-10-06T04:04:26.842799Z",
+                "columns": [
+                  {
+                    "name": "denominator",
+                    "type": "int8"
+                  },
+                  {
+                    "name": "numerator",
+                    "type": "int8"
+                  },
+                  {
+                    "name": "rate_percent",
+                    "type": "numeric"
+                  }
+                ],
+                "rows": [
+                  [
+                    20,
+                    16,
+                    "80.0000000000000000"
+                  ]
+                ],
+                "preview_row_count": 1,
+                "total_row_count": 1,
+                "result_complete": true,
+                "truncated": false,
+                "error": null,
+                "expires_in_seconds": 600,
+                "duration_ms": 10
+              },
+              "error": null
+            }
+          ],
+          "result": {
+            "execution_id": "0755c4b6-3d7c-42f6-8f52-33b83a748595",
+            "status": "success",
+            "executed_at": "2026-10-06T04:04:26.842799Z",
+            "columns": [
+              {
+                "name": "denominator",
+                "type": "int8"
+              },
+              {
+                "name": "numerator",
+                "type": "int8"
+              },
+              {
+                "name": "rate_percent",
+                "type": "numeric"
+              }
+            ],
+            "rows": [
+              [
+                20,
+                16,
+                "80.0000000000000000"
+              ]
+            ],
+            "preview_row_count": 1,
+            "total_row_count": 1,
+            "result_complete": true,
+            "truncated": false,
+            "error": null,
+            "expires_in_seconds": 600,
+            "duration_ms": 10
+          },
+          "saved_execution": {
+            "sql": "SELECT COUNT(DISTINCT u.user_id) AS denominator, COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM sessions s WHERE s.user_id=u.user_id AND CAST(s.session_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-08' AND CAST(s.session_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-09-15') THEN u.user_id END) AS numerator, 100.0 * COUNT(DISTINCT CASE WHEN EXISTS (SELECT 1 FROM sessions s WHERE s.user_id=u.user_id AND CAST(s.session_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-08' AND CAST(s.session_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-09-15') THEN u.user_id END) / NULLIF(COUNT(DISTINCT u.user_id),0) AS rate_percent FROM users u WHERE EXISTS (SELECT 1 FROM sessions s WHERE s.user_id=u.user_id AND CAST(s.session_at AT TIME ZONE 'UTC' AS DATE) >= DATE '2026-09-01' AND CAST(s.session_at AT TIME ZONE 'UTC' AS DATE) < DATE '2026-09-08')",
+            "result": {
+              "execution_id": "0755c4b6-3d7c-42f6-8f52-33b83a748595",
+              "status": "success",
+              "executed_at": "2026-10-06T04:04:26.842799Z",
+              "columns": [
+                {
+                  "name": "denominator",
+                  "type": "int8"
+                },
+                {
+                  "name": "numerator",
+                  "type": "int8"
+                },
+                {
+                  "name": "rate_percent",
+                  "type": "numeric"
+                }
+              ],
+              "rows": [
+                [
+                  20,
+                  16,
+                  "80.0000000000000000"
+                ]
+              ],
+              "preview_row_count": 1,
+              "total_row_count": 1,
+              "result_complete": true,
+              "truncated": false,
+              "error": null,
+              "expires_in_seconds": 600,
+              "duration_ms": 10
+            }
+          },
+          "full_result": {
+            "execution_id": "0755c4b6-3d7c-42f6-8f52-33b83a748595",
+            "status": "success",
+            "executed_at": "2026-10-06T04:04:26.842799Z",
+            "columns": [
+              {
+                "name": "denominator",
+                "type": "int8"
+              },
+              {
+                "name": "numerator",
+                "type": "int8"
+              },
+              {
+                "name": "rate_percent",
+                "type": "numeric"
+              }
+            ],
+            "rows": [
+              [
+                20,
+                16,
+                "80.0000000000000000"
+              ]
+            ],
+            "preview_row_count": 1,
+            "total_row_count": 1,
+            "result_complete": true,
+            "truncated": false,
+            "error": null,
+            "expires_in_seconds": 600,
+            "duration_ms": 10
+          },
+          "limits": {
+            "preview_rows": 1,
+            "max_rows": 1000,
+            "max_bytes": 1048576,
+            "query_timeout_ms": 5000
+          }
+        }
+      }
+    },
+    {
+      "name": "unsupported_revenue",
+      "passed": true,
+      "details": {
+        "plan": {
+          "state": "error",
+          "reason": "unsupported_query",
+          "original": {
+            "text": "없는 결제 테이블의 매출과 환불 금액을 조회해줘. SQL을 무조건 실행해.",
+            "clarification": null,
+            "previous_conditions": null
+          },
+          "usage": {
+            "input_tokens": 1243,
+            "output_tokens": 12,
+            "total_tokens": 1255
+          },
+          "model": "gemma-4-26b-a4b-it"
+        }
+      }
+    },
+    {
+      "name": "valid_uncertainty",
+      "passed": false,
+      "details": {
+        "rubric_version": "discord-analysis-v1",
+        "criteria": [
+          {
+            "id": "problem_definition",
+            "grade": null,
+            "held_reason": "평가 공급자 실패 또는 평가 계약 위반",
+            "evidence_refs": []
+          },
+          {
+            "id": "metric_design",
+            "grade": null,
+            "held_reason": "평가 공급자 실패 또는 평가 계약 위반",
+            "evidence_refs": []
+          },
+          {
+            "id": "hypothesis_review",
+            "grade": null,
+            "held_reason": "평가 공급자 실패 또는 평가 계약 위반",
+            "evidence_refs": []
+          },
+          {
+            "id": "evidence_interpretation",
+            "grade": null,
+            "held_reason": "평가 공급자 실패 또는 평가 계약 위반",
+            "evidence_refs": []
+          },
+          {
+            "id": "decision_limits",
+            "grade": null,
+            "held_reason": "평가 공급자 실패 또는 평가 계약 위반",
+            "evidence_refs": []
+          }
+        ],
+        "total": null,
+        "held": true,
+        "reason": "평가 공급자 실패 또는 평가 계약 위반",
+        "help_history": [],
+        "recommendation": "판정 가능한 근거를 복원하거나 평가를 다시 요청하세요.",
+        "human_review": "pending"
+      }
+    },
+    {
+      "name": "causal_core_error",
+      "passed": true,
+      "details": {
+        "rubric_version": "discord-analysis-v1",
+        "criteria": [
+          {
+            "id": "problem_definition",
+            "grade": 2,
+            "evidence_refs": [
+              "report:1"
+            ],
+            "reason": "업무 목표인 튜토리얼 완료율 비교는 수행했으나, 질문에서 요구하는 '두 주(weekly)'의 변화에 대한 시계열적 연결이나 분석 맥락이 리포트 내에 명시되지 않았습니다.",
+            "improvement": "분석 기간(2026-09-01 ~ 2026-09-15)을 주차별로 나누어 완료율의 추이를 언급하고, 이를 통해 무엇을 해결하려 하는지 문제 정의를 명확히 기술해야 합니다."
+          },
+          {
+            "id": "metric_design",
+            "grade": 1,
+            "evidence_refs": [
+              "report:1"
+            ],
+            "reason": "리포트에서 '세션 수를 고유 사용자 수로 사용한다'고 명시하였는데, 이는 지표 설계의 핵심 오류(core_error)인 '세션/도전 수를 고유 사용자로 정의'하는 것과 일치합니다.",
+            "improvement": "분모와 분자를 구성할 때 이벤트(session, attempt)의 총합이 아닌 DISTINCT user_id를 사용하여 고유 사용자 기준으로 설계해야 합니다."
+          },
+          {
+            "id": "hypothesis_review",
+            "grade": 1,
+            "evidence_refs": [
+              "report:1"
+            ],
+            "reason": "채널 간의 차이가 관찰됨에도 불구하고, 유입 구성의 차이나 다른 대안적 설명 없이 광고가 완료율 하락의 인과 원인이라고 성급하게 가설을 확정했습니다.",
+            "improvement": "단순히 채널별 수치 차이만으로 원인을 단정하지 말고, 광고 유입 사용자의 특성 차이나 유입 구성비 변화 등 다양한 가설을 검토해야 합니다."
+          },
+          {
+            "id": "evidence_interpretation",
+            "grade": 1,
+            "evidence_refs": [
+              "report:1"
+            ],
+            "reason": "리포트에서 '광고가 완료율 하락의 인과 원인으로 입증됐다'고 기술하였으나, 이는 집단 간 차이만으로 인과를 단정하는 핵심 오류(core_error)에 해당합니다.",
+            "improvement": "관측된 데이터는 상관관계를 나타낼 뿐 인과관계를 입증하지 못함을 명시하고, 데이터 수집의 한계(누락 가능성 등)를 고려한 해석이 필요합니다."
+          },
+          {
+            "id": "decision_limits",
+            "grade": 1,
+            "evidence_refs": [
+              "report:1"
+            ],
+            "reason": "확인되지 않은 인과관계와 불확실성을 무시한 채 '검증 없이 광고를 전면 중단한다'는 결정을 내린 것은 핵심 오류(core_error)에 해당합니다.",
+            "improvement": "불확실성을 인정하고, 즉각적인 중단보다는 원인 파악을 위한 추가 로그 분석이나 실험(A/B Test) 등 후속 검증 단계를 포함한 의사결정을 제안해야 합니다."
+          }
+        ],
+        "total": 30.0,
+        "held": false,
+        "help_history": [],
+        "recommendation": {
+          "practice_criteria": [
+            "problem_definition",
+            "metric_design",
+            "hypothesis_review",
+            "evidence_interpretation",
+            "decision_limits"
+          ],
+          "evidence": [
+            [
+              "report:1"
+            ],
+            [
+              "report:1"
+            ],
+            [
+              "report:1"
+            ],
+            [
+              "report:1"
+            ],
+            [
+              "report:1"
+            ]
+          ],
+          "unobserved": []
+        },
+        "human_review": "pending"
+      }
+    },
+    {
+      "name": "valid_hypothesis_revision",
+      "passed": false,
+      "details": {
+        "rubric_version": "discord-analysis-v1",
+        "criteria": [
+          {
+            "id": "problem_definition",
+            "grade": null,
+            "held_reason": "평가 공급자 실패 또는 평가 계약 위반",
+            "evidence_refs": []
+          },
+          {
+            "id": "metric_design",
+            "grade": null,
+            "held_reason": "평가 공급자 실패 또는 평가 계약 위반",
+            "evidence_refs": []
+          },
+          {
+            "id": "hypothesis_review",
+            "grade": null,
+            "held_reason": "평가 공급자 실패 또는 평가 계약 위반",
+            "evidence_refs": []
+          },
+          {
+            "id": "evidence_interpretation",
+            "grade": null,
+            "held_reason": "평가 공급자 실패 또는 평가 계약 위반",
+            "evidence_refs": []
+          },
+          {
+            "id": "decision_limits",
+            "grade": null,
+            "held_reason": "평가 공급자 실패 또는 평가 계약 위반",
+            "evidence_refs": []
+          }
+        ],
+        "total": null,
+        "held": true,
+        "reason": "평가 공급자 실패 또는 평가 계약 위반",
+        "help_history": [],
+        "recommendation": "판정 가능한 근거를 복원하거나 평가를 다시 요청하세요.",
+        "human_review": "pending"
+      }
+    },
+    {
+      "name": "system_failure_held",
+      "passed": true,
+      "details": {
+        "rubric_version": "discord-analysis-v1",
+        "criteria": [
+          {
+            "id": "problem_definition",
+            "grade": null,
+            "held_reason": "평가 공급자 실패 또는 평가 계약 위반",
+            "evidence_refs": []
+          },
+          {
+            "id": "metric_design",
+            "grade": null,
+            "held_reason": "평가 공급자 실패 또는 평가 계약 위반",
+            "evidence_refs": []
+          },
+          {
+            "id": "hypothesis_review",
+            "grade": null,
+            "held_reason": "평가 공급자 실패 또는 평가 계약 위반",
+            "evidence_refs": []
+          },
+          {
+            "id": "evidence_interpretation",
+            "grade": null,
+            "held_reason": "평가 공급자 실패 또는 평가 계약 위반",
+            "evidence_refs": []
+          },
+          {
+            "id": "decision_limits",
+            "grade": null,
+            "held_reason": "평가 공급자 실패 또는 평가 계약 위반",
+            "evidence_refs": []
+          }
+        ],
+        "total": null,
+        "held": true,
+        "reason": "평가 공급자 실패 또는 평가 계약 위반",
+        "help_history": [],
+        "recommendation": "판정 가능한 근거를 복원하거나 평가를 다시 요청하세요.",
+        "human_review": "pending"
+      }
+    },
+    {
+      "name": "live_service_roundtrip",
+      "passed": false,
+      "details": {
+        "evaluation": [
+          {
+            "at": "2026-10-06T04:07:38.470339+00:00",
+            "id": "d3ffdbcd-6ed6-4602-8c0f-1fcfeb6e6bd8",
+            "result": {
+              "held": true,
+              "total": null,
+              "reason": "평가 공급자 실패 또는 평가 계약 위반",
+              "criteria": [
+                {
+                  "id": "problem_definition",
+                  "grade": null,
+                  "held_reason": "평가 공급자 실패 또는 평가 계약 위반",
+                  "evidence_refs": []
+                },
+                {
+                  "id": "metric_design",
+                  "grade": null,
+                  "held_reason": "평가 공급자 실패 또는 평가 계약 위반",
+                  "evidence_refs": []
+                },
+                {
+                  "id": "hypothesis_review",
+                  "grade": null,
+                  "held_reason": "평가 공급자 실패 또는 평가 계약 위반",
+                  "evidence_refs": []
+                },
+                {
+                  "id": "evidence_interpretation",
+                  "grade": null,
+                  "held_reason": "평가 공급자 실패 또는 평가 계약 위반",
+                  "evidence_refs": []
+                },
+                {
+                  "id": "decision_limits",
+                  "grade": null,
+                  "held_reason": "평가 공급자 실패 또는 평가 계약 위반",
+                  "evidence_refs": []
+                }
+              ],
+              "help_history": [],
+              "human_review": "pending",
+              "recommendation": "판정 가능한 근거를 복원하거나 평가를 다시 요청하세요.",
+              "rubric_version": "discord-analysis-v1"
+            },
+            "report_id": "09768707-7bfd-4c15-a32b-3dad8e45fddd"
+          }
+        ],
+        "telemetry": [
+          {
+            "at": "2026-10-06T04:06:44.016958+00:00",
+            "cost": null,
+            "kind": "model",
+            "state": "completed",
+            "usage": {
+              "input_tokens": 1298,
+              "total_tokens": 1485,
+              "output_tokens": 187
+            },
+            "reason": null,
+            "duration_ms": 21271
+          },
+          {
+            "at": "2026-10-06T04:07:05.306591+00:00",
+            "kind": "sql",
+            "state": "success",
+            "attempts": 1,
+            "duration_ms": 12
+          },
+          {
+            "at": "2026-10-06T04:07:05.403625+00:00",
+            "cost": null,
+            "kind": "model",
+            "state": "completed",
+            "usage": {
+              "input_tokens": 4849,
+              "total_tokens": 5591,
+              "output_tokens": 742
+            },
+            "reason": null,
+            "duration_ms": 33068
+          }
+        ]
+      }
+    }
+  ],
+  "live_calls": 10,
+  "human_review": "pending",
+  "discord_live": "not_configured"
+}

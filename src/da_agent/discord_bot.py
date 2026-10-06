@@ -22,6 +22,7 @@ class DiscordSettings:
     preview_rows: int = 200
     execution_ttl: int = 600
     daily_call_limit: int = 30
+    llm_model: str = 'gemma-4-26b-a4b-it'
 
     @classmethod
     def from_env(cls, env=None):
@@ -48,9 +49,13 @@ class DiscordSettings:
         daily_limit = int(env.get("DISCORD_DAILY_CALL_LIMIT", "30"))
         if daily_limit <= 0:
             raise ValueError("DISCORD_DAILY_CALL_LIMIT must be positive")
+        model = env.get('DISCORD_MODEL', 'gemma-4-26b-a4b-it')
+        import re
+        if not re.fullmatch(r'gemma-[a-zA-Z0-9._-]{1,95}', model):
+            raise ValueError('DISCORD_MODEL must be a Gemma model ID')
         return cls(env[names[0]], guilds, *dsns, key_file,
                    message_content=env.get("DISCORD_MESSAGE_CONTENT", "false").lower() == "true",
-                   daily_call_limit=daily_limit)
+                   daily_call_limit=daily_limit, llm_model=model)
 
 
 def create_client(service, settings):
@@ -198,12 +203,12 @@ def create_client(service, settings):
 
 def main():
     settings = DiscordSettings.from_env()
-    from .api_provider import GeminiProvider
+    from .discord_provider import DiscordGemmaProvider
     from .discord_store import DiscordStore
     from .discord_service import DiscordTrainingService
     from .discord_query import DiscordQueryEngine
     from .sql_runner import SqlRunner
-    provider = GeminiProvider(key_file=settings.gemini_key_file)
+    provider = DiscordGemmaProvider(key_file=settings.gemini_key_file, model=settings.llm_model)
     store = DiscordStore(settings.records_dsn)
     store.initialize()
     query_engine = DiscordQueryEngine(provider, SqlRunner(settings), settings)

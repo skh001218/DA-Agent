@@ -224,6 +224,10 @@ class DiscordQueryEngine:
                 'If intent is a causal analysis goal, ask the user to choose their next comparison. '
                 'Reuse previous confirmed conditions only if user asks to keep them, then set reuse_previous=true. '
                 'Questions must ask intent without teaching an answer. Do not invent unsupported fields.'
+                ' Each ready conditions MUST include period_basis="explicit_dates" and unit="user" or "attempt", even when obvious. '
+                'Full example for signup count: {"state":"ready","conditions":{"metric":"users_count","start":"2026-09-01","end":"2026-09-15","timezone":"UTC","period_basis":"explicit_dates","unit":"user","group_by":null,"filters":{}},"reuse_previous":false}. '
+                'For ratios retain every common key from that example and add the explicitly confirmed numerator, denominator and metric-specific dates. '
+                'Omit no required key. Use no keys outside condition_keys. Explicit numeric dates already resolve calendar-week vs recent-7-days ambiguity.'
             )
             response = self.provider.review([{'role': 'system', 'content': instruction},
                                              {'role': 'user', 'content': json.dumps(envelope, ensure_ascii=False)}])
@@ -239,6 +243,13 @@ class DiscordQueryEngine:
             if parsed.get('state') != 'ready':
                 return dict(state='error', reason='unsupported_query', original=original, **metadata)
             conditions = parsed.get('conditions', {})
+            if isinstance(conditions, dict) and isinstance(conditions.get('filters'), dict) and 'step' in conditions['filters']:
+                # Equivalent placement of the supported step condition only.
+                # A conflict remains invalid and requires user confirmation.
+                conditions = copy.deepcopy(conditions)
+                step = conditions['filters'].get('step')
+                if 'step' not in conditions or conditions['step'] == step:
+                    conditions['step'] = conditions['filters'].pop('step')
             if parsed.get('reuse_previous') is True and previous_conditions:
                 conditions = dict(previous_conditions, **conditions)
             try:
