@@ -19,6 +19,26 @@ function renderProblemMetadata(problem) {
     container.append(detail);
   }
   if (problem.original_request) container.append(el('p', `내 요청: ${problem.original_request}`, 'prose'));
+  if (problem.source_case) {
+    const research = problem.source_case;
+    const detail = el('details'); detail.append(el('summary','참고한 실무 사례와 출처'));
+    detail.append(el('p',`선정 주제: ${research.topic}`),el('p',research.business_problem,'prose'),
+      el('p',`선정 이유: ${research.selection_reason}`,'prose'),el('p',`검색 확인: ${kst(research.searched_at)}`,'muted'));
+    for (const source of research.sources || []) {
+      let url; try {url=new URL(source.url);} catch {continue;}
+      if (url.protocol!=='https:' || url.username || url.password) continue;
+      const link=el('a',source.title); link.href=url.href; link.target='_blank'; link.rel='noopener noreferrer'; detail.append(link);
+      for(const fact of source.supported_excerpts || []) detail.append(el('p',fact,'prose'));
+    }
+    detail.append(el('p','출처 문장은 공개 사례의 검색 인용 근거입니다. 문제의 업무 설정·수치·데이터는 연습용 합성 조건이며 실무 전체를 대표하는 사례가 아닙니다.','muted'));
+    if (research.search_suggestions) {
+      const frame=el('iframe'); frame.title='검색 제공자의 관련 검색';
+      frame.setAttribute('sandbox','allow-popups allow-popups-to-escape-sandbox'); frame.style.width='100%'; frame.style.border='0';
+      frame.srcdoc='<meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;">'+research.search_suggestions;
+      detail.append(frame);
+    }
+    container.append(detail);
+  }
   if (problem.evaluation_status) container.append(el('p', problem.evaluation_status, 'muted'));
   if (problem.goal) container.append(el('p', `학습 목표: ${problem.goal}`, 'prose'));
   if ((problem.required_judgments || problem.completion_conditions)?.length) {container.append(el('h3','기대 제출물·완료 조건'));for(const text of problem.required_judgments || problem.completion_conditions)container.append(el('p',text,'prose'));}
@@ -76,8 +96,15 @@ function homeTab(name, updateUrl = true) {
   }
 }
 async function authStatus() {
-  try { const auth = await api('/api/auth/status'); if (auth.provider === 'gemini') { $('#auth-status').textContent = auth.message; $('#connect').hidden = true; $('#disconnect').hidden = true; return; } const connected = ['connected', 'ready'].includes(auth.status); $('#auth-status').textContent = connected ? (auth.plan_enabled === false ? '로그인 연결됨 · 플랜 사용 권한 확인 필요' : auth.inference_verified ? 'ChatGPT 연결 · 실제 호출 확인됨' : '로그인 연결됨 · 실제 호출 검증 전') : (auth.message || 'ChatGPT 미연결'); $('#disconnect').hidden = !connected; $('#connect').hidden = connected; }
+  try { const auth = await api('/api/auth/status'); $('#auth-status').textContent = auth.provider === 'gemini' ? auth.message : 'ChatGPT 훈련 연결'; }
   catch (error) { $('#auth-status').textContent = 'AI 연결 확인 실패'; }
+  try {
+    const auth = await api('/api/chatgpt/status');
+    const connected = auth.connected;
+    $('#chatgpt-status').textContent = connected ? (auth.plan_enabled ? 'ChatGPT 로그인됨 · 플랜 사용 권한 연결됨' : 'ChatGPT 로그인됨 · 플랜 사용 권한 없음') : (auth.reason ? `ChatGPT 로그인 실패 · ${auth.message} (${auth.reason})` : 'ChatGPT 미로그인');
+    $('#disconnect').hidden = !connected;
+    $('#connect').hidden = connected && auth.plan_enabled;
+  } catch (error) { $('#chatgpt-status').textContent = 'ChatGPT 로그인 상태 확인 실패'; $('#connect').hidden = false; }
 }
 async function home() {
   homeTab(new URLSearchParams(location.search).get('home') === 'resume' ? 'resume' : 'new', false);
@@ -213,8 +240,8 @@ $('#submit-report').onclick = () => busy($('#submit-report'), async () => { awai
 $$('[data-hint]').forEach(button => { button.onclick = () => busy(button, async () => { const hint = await post(attemptPath('/hints'), { level: button.dataset.hint }); $('#hints').append(el('p', hint.content)); }); });
 $('#explanation-button').onclick = () => busy($('#explanation-button'), async () => { const result = await post(attemptPath('/explanation'), {}); $('#explanation').textContent = `${result.sql || ''}\n\n${pretty(result.explanation || '')}`; state.attempt.explanation_viewed = true; });
 $('#coach').onclick = () => busy($('#coach'), async () => { const message = $('#coach-message').value.trim(); if (!message) throw new Error('코칭 질문을 입력하세요.'); await flushDraft(); if (['request-v1', 'request-v2'].includes(state.attempt.contract_version)) { await requestConversation(message, $('#coach-evidence').value); } else { const result = await post(attemptPath('/coach'), { message, saved_execution_id: $('#coach-evidence').value || null }); $('#coach-result').textContent = pretty(result.feedback || result.error?.message || result); } await authStatus(); });
-$('#connect').onclick = () => busy($('#connect'), async () => { const popup = window.open('about:blank', '_blank'); if (!popup) throw new Error('로그인 창이 차단됐습니다. 이 앱의 팝업을 허용한 뒤 다시 연결하세요.'); popup.opener = null; try { const result = await post('/api/auth/start', {}); if (!result.authorization_url) throw new Error(result.message || '인증 주소를 받지 못했습니다.'); const url = new URL(result.authorization_url); if (url.protocol !== 'https:' || url.hostname !== 'auth.openai.com') throw new Error('공식 인증 주소를 확인할 수 없습니다.'); popup.location.replace(url.href); notice('새 창에서 공식 로그인과 권한 승인을 완료한 뒤 이 분석 창으로 돌아오세요. 입력은 이 창에 유지됩니다.'); } catch (error) { popup.close(); throw error; } });
-$('#disconnect').onclick = () => busy($('#disconnect'), async () => { await post('/api/auth/disconnect', {}); await authStatus(); });
+$('#connect').onclick = () => busy($('#connect'), async () => { const popup = window.open('about:blank', '_blank'); if (!popup) throw new Error('로그인 창이 차단됐습니다. 이 앱의 팝업을 허용한 뒤 다시 연결하세요.'); popup.opener = null; try { const result = await post('/api/chatgpt/start', {}); if (!result.authorization_url) throw new Error(result.message || '인증 주소를 받지 못했습니다.'); const url = new URL(result.authorization_url); if (url.protocol !== 'https:' || url.hostname !== 'auth.openai.com') throw new Error('공식 인증 주소를 확인할 수 없습니다.'); popup.location.replace(url.href); await authStatus(); notice('새 창에서 공식 로그인과 플랜 사용 권한 승인을 완료한 뒤 이 분석 창으로 돌아오세요. 훈련의 AI 연결 설정은 유지됩니다.'); } catch (error) { popup.close(); await authStatus(); throw error; } });
+$('#disconnect').onclick = () => busy($('#disconnect'), async () => { const result = await post('/api/chatgpt/disconnect', {}); await authStatus(); if (result.reason === 'remote_revocation_unconfirmed') notice('로컬 연결은 해제됐지만 원격 토큰 폐기를 확인하지 못했습니다. ChatGPT 설정에서 앱 연결을 확인하세요.'); });
 $('#home-button').onclick = () => busy($('#home-button'), async () => { if (!(await canLeave())) return; await home(); clearTimeout(state.saveTimer); state.attempt = null; $('#workspace').hidden = true; $('#home').hidden = false; history.replaceState(null, '', '/?home=resume'); homeTab('resume', false); notice(); });
 window.addEventListener('beforeunload', event => { if (state.dirty || (state.attempt && (sqlText().trim() || state.executions.some(item => !item.saved)))) { event.preventDefault(); event.returnValue = ''; } });
 window.addEventListener('focus', authStatus);

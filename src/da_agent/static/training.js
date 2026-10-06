@@ -62,13 +62,14 @@ async function pollTraining(id) {
   $('#clarification').hidden = true; $('#retry-training').hidden = true;
   history.replaceState(null, '', `/?request=${encodeURIComponent(id)}`);
   const labels = {accepted:'요청 접수',planning:'과제 설계',preparing_data:'데이터 준비',validating:'데이터와 실제 계산 검증',ready:'출제 완료',failed:'출제 실패',cancelled:'취소',interrupted:'작업 중단',needs_clarification:'요청 확인 필요'};
+  const phases = {'case-search-v1':'실무 사례 검색','case-selection-v1':'검색 근거 확인·사례 선정'};
   try {
     for (let round=0; round<120; round++) {
       const result = await api(`/api/training/requests/${encodeURIComponent(id)}`); currentRequest = result;
       if (!$('#training-request').value && (result.message || result.request?.message)) $('#training-request').value=result.message || result.request.message;
       const started = Date.parse(result.created_at || result.states?.[0]?.at || result.states?.[0]?.timestamp);
       const elapsed = Number.isFinite(started) ? ` · 경과 ${Math.max(0,Math.floor((Date.now()-started)/1000))}초` : '';
-      $('#request-status').textContent = `${labels[result.status] || result.status}${elapsed} · 수정 번호 ${result.revision ?? '없음'}${result.error ? '\n'+pretty(result.error) : ''}\n${(result.states || []).map(x => labels[x.status] || x.status).join(' → ')}${result.questions?.length ? '\n'+result.questions.join('\n') : result.clarification ? '\n'+pretty(result.clarification) : ''}`;
+      $('#request-status').textContent = `${result.status==='planning' ? (phases[result.phase] || labels[result.status]) : (labels[result.status] || result.status)}${elapsed} · 수정 번호 ${result.revision ?? '없음'}${result.error ? '\n'+pretty(result.error) : ''}\n${(result.states || []).map(x => phases[x.phase] || labels[x.status] || x.status).join(' → ')}${result.questions?.length ? '\n'+result.questions.join('\n') : result.clarification ? '\n'+pretty(result.clarification) : ''}`;
       if (result.failure_history?.length > 1) $('#request-status').textContent += `\n최초 실패: ${result.failure_history[0].error}`;
       if (result.status === 'failed' && !result.retry_allowed) $('#request-status').textContent += '\n현재 요청은 재시도할 수 없습니다. 입력을 보완해 새 요청으로 시작하세요.';
       $('#cancel-training').hidden = ['ready','failed','cancelled','interrupted'].includes(result.status);
@@ -95,7 +96,7 @@ function trainingOpen(attempt) {
   renderConversation(attempt.messages || []);
   $('#business-facts').onclick = () => busy($('#business-facts'), async () => {
     const facts = await api(attemptPath('/business-facts'));
-    renderProblemMetadata(facts);
+    renderProblemMetadata({...state.attempt.problem,...facts});
     $('#business-result').textContent = '출제 전에 고정한 업무 조건입니다. 이 자료로 원인을 확정할 수 있는 것은 아닙니다.';
   });
 }

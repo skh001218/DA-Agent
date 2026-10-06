@@ -1,0 +1,12 @@
+{
+  "http_status": 200,
+  "model": "gemini-3.5-flash-lite",
+  "error": {
+    "code": null,
+    "status": null,
+    "message": null,
+    "details": []
+  },
+  "retry_after": null,
+  "success": true
+}

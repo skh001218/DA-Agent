@@ -16,6 +16,19 @@ def completed(text="검토 완료"):
     return {"candidates": [{"finishReason": "STOP", "content": {"parts": [{"text": text}]}}]}
 
 
+def test_gemma_uses_minimal_thinking_for_json_generation(tmp_path):
+    sent=[]
+    value=provider(tmp_path,lambda request:(sent.append(json.loads(request.content)) or httpx.Response(200,json=completed('{}'))))
+    result=value.review([{'role':'user','content':json.dumps({'case_selection_version':'case-selection-v1',
+        'schema':{'type':'object','properties':{'topic':{'type':'string'}}}})}],model='gemma-4-26b-a4b-it')
+    assert result['state']=='completed'
+    assert sent[0]['generationConfig']['thinkingConfig']=={'thinkingLevel':'minimal'}
+    assert sent[0]['generationConfig']['responseMimeType']=='application/json'
+    assert 'responseJsonSchema' not in sent[0]['generationConfig']
+    envelope=json.loads(sent[0]['contents'][0]['parts'][0]['text'])
+    assert envelope['schema']['properties']['topic']['type']=='string'
+
+
 def test_explicit_provider_selection_and_missing_key(tmp_path, monkeypatch):
     monkeypatch.setenv("DA_LLM_PROVIDER", "gemini")
     monkeypatch.setenv("GEMINI_API_KEY_FILE", str(tmp_path / "missing"))

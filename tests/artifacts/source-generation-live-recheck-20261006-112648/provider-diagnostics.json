@@ -1,0 +1,29 @@
+[
+  {
+    "kind": "ai",
+    "domain": "adaptive",
+    "status": "failed",
+    "event_id": "3df329cd-7d61-4dd1-bcc6-c1f7ed2496a7",
+    "error_code": "provider_failure",
+    "event_type": "ai_started",
+    "request_id": "75a2350c-aa4e-470f-a891-c778f28eb019",
+    "started_at": "2026-10-06T02:26:48.312399Z",
+    "duration_ms": 368,
+    "finished_at": "2026-10-06T02:26:48.680737Z",
+    "occurred_at": "2026-10-06T02:26:48.312399Z",
+    "input_tokens": null,
+    "operation_id": "464afb7f-7cf9-4175-aaa9-7cd71853adbe",
+    "model_version": "gemini-3.5-flash-lite",
+    "output_tokens": null,
+    "rules_version": "adaptive-recipe-v1",
+    "prompt_version": "case-search-v1",
+    "schema_version": "event-v2",
+    "provider_diagnostic": {
+      "stage": "http",
+      "timeout": false,
+      "request_id": "e1a83fc3-871e-45ae-aa51-656bbedea21a",
+      "http_status": 429
+    },
+    "usage_missing_reason": "not_reported"
+  }
+]

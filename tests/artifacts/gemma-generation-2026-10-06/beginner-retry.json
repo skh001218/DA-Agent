@@ -1,0 +1,65 @@
+{
+  "error": "검색 근거에 맞는 실무 사례 후보를 구성하지 못했습니다. 요청을 보존했습니다.",
+  "phase": "case-selection-v1",
+  "states": [
+    {
+      "at": "2026-10-06T03:46:12.356513Z",
+      "status": "accepted"
+    },
+    {
+      "at": "2026-10-06T03:46:12.493723Z",
+      "phase": "case-search-v1",
+      "status": "planning"
+    },
+    {
+      "at": "2026-10-06T03:46:42.309628Z",
+      "status": "failed"
+    },
+    {
+      "at": "2026-10-06T03:48:29.901371Z",
+      "phase": "case-search-v1",
+      "status": "planning"
+    },
+    {
+      "at": "2026-10-06T03:49:10.753391Z",
+      "phase": "case-selection-v1",
+      "status": "planning"
+    },
+    {
+      "at": "2026-10-06T03:50:43.167773Z",
+      "status": "failed"
+    }
+  ],
+  "status": "failed",
+  "message": "실무에서 일어날만한 문제를 분석하고싶어",
+  "revision": 1,
+  "questions": [],
+  "attempt_id": null,
+  "created_at": "2026-10-06T03:46:12.356470Z",
+  "error_code": "research_invalid",
+  "request_id": "f1a60980-4d9b-443d-ada5-ef295a386e4f",
+  "operation_id": "a7aa23c4-d3ad-4213-9563-a9d8ef929d75",
+  "retry_allowed": true,
+  "failure_detail": null,
+  "planning_calls": 3,
+  "failure_history": [
+    {
+      "at": "2026-10-06T03:46:42.309614Z",
+      "error": "실제 검색 질의를 확인하지 못해 출제하지 않았습니다.",
+      "error_code": "research_unverified",
+      "failure_detail": null,
+      "planning_calls": 1
+    },
+    {
+      "at": "2026-10-06T03:50:43.167756Z",
+      "error": "검색 근거에 맞는 실무 사례 후보를 구성하지 못했습니다. 요청을 보존했습니다.",
+      "error_code": "research_invalid",
+      "failure_detail": null,
+      "planning_calls": 3
+    }
+  ],
+  "contract_version": "request-v2",
+  "generation_attempts": 0,
+  "parent_operation_id": "fa3c9cf6-ba4a-4a8c-90c5-8f72c6ede5e1",
+  "recommendation_change": null
+}

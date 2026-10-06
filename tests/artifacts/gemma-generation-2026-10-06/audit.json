@@ -1,0 +1,1488 @@
+[
+  {
+    "request": {
+      "body": {
+        "goal": null,
+        "domain": "auto",
+        "message": "실무에서 일어날만한 문제를 분석하고싶어",
+        "data_mode": "adaptive",
+        "sql_level": null,
+        "task_kind": "auto",
+        "difficulty": "beginner",
+        "request_id": "f1a60980-4d9b-443d-ada5-ef295a386e4f",
+        "user_count": 200,
+        "time_condition": null,
+        "contract_version": "request-v2",
+        "recommendation_id": null,
+        "intentional_repeat": false
+      },
+      "error": "요청별 데이터 설계 호출을 완료하지 못했습니다. 입력을 유지했습니다.",
+      "phase": "adaptive-design-repair-v1",
+      "states": [
+        {
+          "at": "2026-10-06T03:46:12.356513Z",
+          "status": "accepted"
+        },
+        {
+          "at": "2026-10-06T03:46:12.493723Z",
+          "phase": "case-search-v1",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-06T03:46:42.309628Z",
+          "status": "failed"
+        },
+        {
+          "at": "2026-10-06T03:48:29.901371Z",
+          "phase": "case-search-v1",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-06T03:49:10.753391Z",
+          "phase": "case-selection-v1",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-06T03:50:43.167773Z",
+          "status": "failed"
+        },
+        {
+          "at": "2026-10-06T03:55:31.399304Z",
+          "phase": "case-selection-v1",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-06T03:55:45.625343Z",
+          "phase": "adaptive-design-v1",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-06T03:56:30.468978Z",
+          "phase": "adaptive-design-repair-v1",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-06T03:57:16.512934Z",
+          "phase": "adaptive-design-repair-v1",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-06T03:57:22.103630Z",
+          "status": "failed"
+        }
+      ],
+      "status": "failed",
+      "message": "실무에서 일어날만한 문제를 분석하고싶어",
+      "revision": 2,
+      "questions": [],
+      "attempt_id": null,
+      "created_at": "2026-10-06T03:46:12.356470Z",
+      "error_code": "api_rate_limited",
+      "request_id": "f1a60980-4d9b-443d-ada5-ef295a386e4f",
+      "operation_id": "33e8c916-824e-4a32-bde8-c65abc0fb707",
+      "retry_allowed": false,
+      "failure_detail": null,
+      "planning_calls": 7,
+      "failure_history": [
+        {
+          "at": "2026-10-06T03:46:42.309614Z",
+          "error": "실제 검색 질의를 확인하지 못해 출제하지 않았습니다.",
+          "error_code": "research_unverified",
+          "failure_detail": null,
+          "planning_calls": 1
+        },
+        {
+          "at": "2026-10-06T03:50:43.167756Z",
+          "error": "검색 근거에 맞는 실무 사례 후보를 구성하지 못했습니다. 요청을 보존했습니다.",
+          "error_code": "research_invalid",
+          "failure_detail": null,
+          "planning_calls": 3
+        },
+        {
+          "at": "2026-10-06T03:57:22.103616Z",
+          "error": "요청별 데이터 설계 호출을 완료하지 못했습니다. 입력을 유지했습니다.",
+          "error_code": "api_rate_limited",
+          "failure_detail": null,
+          "planning_calls": 7
+        }
+      ],
+      "contract_version": "request-v2",
+      "generation_attempts": 0,
+      "parent_operation_id": "a7aa23c4-d3ad-4213-9563-a9d8ef929d75",
+      "recommendation_change": null
+    },
+    "diagnostics": {
+      "seed": 3784352914,
+      "plan_id": "d99ae537-2d41-4b85-a03e-9228fd6765e6",
+      "source_case": {
+        "scope": "broad",
+        "topic": "구독 서비스 고객 이탈 방지",
+        "queries": [
+          "real-world business analytics case studies for beginners marketing e-commerce logistics",
+          "e-commerce customer churn analysis case study business problem",
+          "retail inventory optimization business case study analysis questions",
+          "subscription service churn rate analysis business decision case study",
+          "logistics delivery time optimization case study business analytics"
+        ],
+        "sources": [
+          {
+            "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFANAGDa9OD3tm65XmS6dtw9Cg4SQyVWATSCmPIPVSghsI4gmPkFCfQqXBQ9z6QmjbeYPNszLSFzi-atLPRf8X7m7xfweMxQNS_jCnXBQxT3MH10zYNSqJWa3n5t2sWFiMhoyr-yEIwtbL0WwiCqhdJw_okGMk=",
+            "title": "learnhub4u.com",
+            "source_id": "source-1",
+            "supported_excerpts": [
+              "*   **실제 확인 사실:** 구독 기반 비즈니스(예: Netflix, 음악 스트리밍, 웰니스 브랜드 등)에서 고객이 서비스를 중단하는 '이탈'은 수익성에 치명적입니다."
+            ]
+          },
+          {
+            "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGDL61jlOaEQ8fD7eQFxvI8CnUV-GZejQimkIZKPylTKQOpGc7Ad9PzaRYnksxP2QnfiksXrq5abNGWDWZgdOP5giSjRvTa75Q1g78PJv5rRapeA5FkhTdr3Fl-vdmpBNfXnV7bsZJBGUrutaw8h1_66NuL522y_Y8MqY6t5_FJNeijXjeP6j5qvYF45wl53wfLlQjLr4Tp4JHTabbKk7lW5xdmR2ZT8JH35vSlHw4t6PvfKUp0ClZrNMgliBQ=",
+            "title": "medium.com",
+            "source_id": "source-2",
+            "supported_excerpts": [
+              "*   **결정:** 이탈 위험군 고객에게 맞춤형 할인 쿠폰을 발송하거나, 선호 콘텐츠를 추천하는 등의 리텐션(Retention) 캠페인 실행. [1.4.1]"
+            ]
+          }
+        ],
+        "version": "case-research-v1",
+        "decision": "이탈 위험군을 대상으로 맞춤형 할인 쿠폰을 발송하거나 선호 콘텐츠 추천 캠페인을 실행합니다.",
+        "candidates": [
+          {
+            "topic": "구독 서비스 고객 이탈 방지",
+            "decision": "이탈 위험군을 대상으로 맞춤형 할인 쿠폰을 발송하거나 선호 콘텐츠 추천 캠페인을 실행합니다.",
+            "source_ids": [
+              "source-1",
+              "source-2"
+            ],
+            "novelty_reason": "최근 과제인 RPG 게임 데이터와 완전히 다른 비즈니스 도메인인 구독 경제를 다룹니다.",
+            "overlaps_recent": false,
+            "business_problem": "구독 기반 비즈니스 모델에서 고객의 이탈은 수익성에 치명적인 영향을 미칩니다.",
+            "analysis_question": "구독 유형별 이탈률을 계산하고 이탈 위험이 높은 고객군의 특징을 비교하세요."
+          },
+          {
+            "topic": "소매 유통 재고 최적화",
+            "decision": "과거 판매 이력과 입고 예정 데이터를 바탕으로 적정 재고 수준을 재설정합니다.",
+            "source_ids": [
+              "source-3",
+              "source-4"
+            ],
+            "novelty_reason": "게임 밸런싱이 아닌 실물 자산의 공급망 관리 및 재고 운영 문제를 다룹니다.",
+            "overlaps_recent": false,
+            "business_problem": "인기 제품의 품절로 인한 매출 손실과 비인기 제품의 과잉 재고로 인한 운영 비용 상승이 발생합니다.",
+            "analysis_question": "제품 카테고리별 재고 회전율과 품절 발생 빈도를 분석하여 재고 수준을 평가하세요."
+          },
+          {
+            "topic": "프로모션 효율 및 매출 분석",
+            "decision": "판매 데이터와 프로모션 일정을 결합하여 향후 마케팅 예산 배분을 결정합니다.",
+            "source_ids": [
+              "source-3",
+              "source-4"
+            ],
+            "novelty_reason": "단순 수치 측정이 아닌 프로모션과 외부 변수를 결합한 판매 전략 수립을 다룹니다.",
+            "overlaps_recent": false,
+            "business_problem": "프로모션 일정과 외부 요인이 제품 판매량 및 재고 상태에 미치는 영향을 파악해야 합니다.",
+            "analysis_question": "프로모션 기간 전후의 매출 변화량과 외부 요인에 따른 판매량 차이를 분석하세요."
+          }
+        ],
+        "searched_at": "2026-10-06T03:49:10.734401+00:00",
+        "business_problem": "구독 기반 비즈니스 모델에서 고객의 이탈은 수익성에 치명적인 영향을 미칩니다.",
+        "selection_reason": "최근 과제인 RPG 게임 밸런싱 이슈와 가장 이질적이면서 실무적인 구독 경제 모델을 포함하고 있습니다.",
+        "analysis_question": "구독 유형별 이탈률을 계산하고 이탈 위험이 높은 고객군의 특징을 비교하세요.",
+        "search_suggestions": "<style>\n.container {\n  align-items: center;\n  border-radius: 8px;\n  display: flex;\n  font-family: Google Sans, Roboto, sans-serif;\n  font-size: 14px;\n  line-height: 20px;\n  padding: 8px 12px;\n}\n.chip {\n  display: inline-block;\n  border: solid 1px;\n  border-radius: 16px;\n  min-width: 14px;\n  padding: 5px 16px;\n  text-align: center;\n  user-select: none;\n  margin: 0 8px;\n  -webkit-tap-highlight-color: transparent;\n}\n.carousel {\n  overflow: auto;\n  scrollbar-width: none;\n  white-space: nowrap;\n  margin-right: -12px;\n}\n.headline {\n  display: flex;\n  margin-right: 4px;\n}\n.gradient-container {\n  position: relative;\n}\n.gradient {\n  position: absolute;\n  transform: translate(3px, -9px);\n  height: 36px;\n  width: 9px;\n}\n@media (prefers-color-scheme: light) {\n  .container {\n    background-color: #fafafa;\n    box-shadow: 0 0 0 1px #0000000f;\n  }\n  .headline-label {\n    color: #1f1f1f;\n  }\n  .chip {\n    background-color: #ffffff;\n    border-color: #d2d2d2;\n    color: #5e5e5e;\n    text-decoration: none;\n  }\n  .chip:hover {\n    background-color: #f2f2f2;\n  }\n  .chip:focus {\n    background-color: #f2f2f2;\n  }\n  .chip:active {\n    background-color: #d8d8d8;\n    border-color: #b6b6b6;\n  }\n  .logo-dark {\n    display: none;\n  }\n  .gradient {\n    background: linear-gradient(90deg, #fafafa 15%, #fafafa00 100%);\n  }\n}\n@media (prefers-color-scheme: dark) {\n  .container {\n    background-color: #1f1f1f;\n    box-shadow: 0 0 0 1px #ffffff26;\n  }\n  .headline-label {\n    color: #fff;\n  }\n  .chip {\n    background-color: #2c2c2c;\n    border-color: #3c4043;\n    color: #fff;\n    text-decoration: none;\n  }\n  .chip:hover {\n    background-color: #353536;\n  }\n  .chip:focus {\n    background-color: #353536;\n  }\n  .chip:active {\n    background-color: #464849;\n    border-color: #53575b;\n  }\n  .logo-light {\n    display: none;\n  }\n  .gradient {\n    background: linear-gradient(90deg, #1f1f1f 15%, #1f1f1f00 100%);\n  }\n}\n</style>\n<div class=\"container\">\n  <div class=\"headline\">\n    <svg class=\"logo-light\" width=\"18\" height=\"18\" viewBox=\"9 9 35 35\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n      <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M42.8622 27.0064C42.8622 25.7839 42.7525 24.6084 42.5487 23.4799H26.3109V30.1568H35.5897C35.1821 32.3041 33.9596 34.1222 32.1258 35.3448V39.6864H37.7213C40.9814 36.677 42.8622 32.2571 42.8622 27.0064V27.0064Z\" fill=\"#4285F4\"/>\n      <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M26.3109 43.8555C30.9659 43.8555 34.8687 42.3195 37.7213 39.6863L32.1258 35.3447C30.5898 36.3792 28.6306 37.0061 26.3109 37.0061C21.8282 37.0061 18.0195 33.9811 16.6559 29.906H10.9194V34.3573C13.7563 39.9841 19.5712 43.8555 26.3109 43.8555V43.8555Z\" fill=\"#34A853\"/>\n      <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M16.6559 29.8904C16.3111 28.8559 16.1074 27.7588 16.1074 26.6146C16.1074 25.4704 16.3111 24.3733 16.6559 23.3388V18.8875H10.9194C9.74388 21.2072 9.06992 23.8247 9.06992 26.6146C9.06992 29.4045 9.74388 32.022 10.9194 34.3417L15.3864 30.8621L16.6559 29.8904V29.8904Z\" fill=\"#FBBC05\"/>\n      <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M26.3109 16.2386C28.85 16.2386 31.107 17.1164 32.9095 18.8091L37.8466 13.8719C34.853 11.082 30.9659 9.3736 26.3109 9.3736C19.5712 9.3736 13.7563 13.245 10.9194 18.8875L16.6559 23.3388C18.0195 19.2636 21.8282 16.2386 26.3109 16.2386V16.2386Z\" fill=\"#EA4335\"/>\n    </svg>\n    <svg class=\"logo-dark\" width=\"18\" height=\"18\" viewBox=\"0 0 48 48\" xmlns=\"http://www.w3.org/2000/svg\">\n      <circle cx=\"24\" cy=\"23\" fill=\"#FFF\" r=\"22\"/>\n      <path d=\"M33.76 34.26c2.75-2.56 4.49-6.37 4.49-11.26 0-.89-.08-1.84-.29-3H24.01v5.99h8.03c-.4 2.02-1.5 3.56-3.07 4.56v.75l3.91 2.97h.88z\" fill=\"#4285F4\"/>\n      <path d=\"M15.58 25.77A8.845 8.845 0 0 0 24 31.86c1.92 0 3.62-.46 4.97-1.31l4.79 3.71C31.14 36.7 27.65 38 24 38c-5.93 0-11.01-3.4-13.45-8.36l.17-1.01 4.06-2.85h.8z\" fill=\"#34A853\"/>\n      <path d=\"M15.59 20.21a8.864 8.864 0 0 0 0 5.58l-5.03 3.86c-.98-2-1.53-4.25-1.53-6.64 0-2.39.55-4.64 1.53-6.64l1-.22 3.81 2.98.22 1.08z\" fill=\"#FBBC05\"/>\n      <path d=\"M24 14.14c2.11 0 4.02.75 5.52 1.98l4.36-4.36C31.22 9.43 27.81 8 24 8c-5.93 0-11.01 3.4-13.45 8.36l5.03 3.85A8.86 8.86 0 0 1 24 14.14z\" fill=\"#EA4335\"/>\n    </svg>\n    <div class=\"gradient-container\"><div class=\"gradient\"></div></div>\n  </div>\n  <div class=\"carousel\">\n<a class=\"chip\" href=\"https://www.google.com/search?q=real-world+business+analytics+case+studies+for+beginners+marketing+e-commerce+logistics&client=app-vertex-grounding&safesearch=active\">real-world business analytics case studies for beginners marketing e-commerce logistics</a>\n<a class=\"chip\" href=\"https://www.google.com/search?q=e-commerce+customer+churn+analysis+case+study+business+problem&client=app-vertex-grounding&safesearch=active\">e-commerce customer churn analysis case study business problem</a>\n<a class=\"chip\" href=\"https://www.google.com/search?q=retail+inventory+optimization+business+case+study+analysis+questions&client=app-vertex-grounding&safesearch=active\">retail inventory optimization business case study analysis questions</a>\n<a class=\"chip\" href=\"https://www.google.com/search?q=subscription+service+churn+rate+analysis+business+decision+case+study&client=app-vertex-grounding&safesearch=active\">subscription service churn rate analysis business decision case study</a>\n<a class=\"chip\" href=\"https://www.google.com/search?q=logistics+delivery+time+optimization+case+study+business+analytics&client=app-vertex-grounding&safesearch=active\">logistics delivery time optimization case study business analytics</a>\n  </div>\n</div>"
+      },
+      "case_research": {
+        "queries": [
+          "real-world business analytics case studies for beginners marketing e-commerce logistics",
+          "e-commerce customer churn analysis case study business problem",
+          "retail inventory optimization business case study analysis questions",
+          "subscription service churn rate analysis business decision case study",
+          "logistics delivery time optimization case study business analytics"
+        ],
+        "sources": [
+          {
+            "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFANAGDa9OD3tm65XmS6dtw9Cg4SQyVWATSCmPIPVSghsI4gmPkFCfQqXBQ9z6QmjbeYPNszLSFzi-atLPRf8X7m7xfweMxQNS_jCnXBQxT3MH10zYNSqJWa3n5t2sWFiMhoyr-yEIwtbL0WwiCqhdJw_okGMk=",
+            "title": "learnhub4u.com",
+            "source_id": "source-1",
+            "supported_excerpts": [
+              "*   **실제 확인 사실:** 구독 기반 비즈니스(예: Netflix, 음악 스트리밍, 웰니스 브랜드 등)에서 고객이 서비스를 중단하는 '이탈'은 수익성에 치명적입니다."
+            ]
+          },
+          {
+            "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGDL61jlOaEQ8fD7eQFxvI8CnUV-GZejQimkIZKPylTKQOpGc7Ad9PzaRYnksxP2QnfiksXrq5abNGWDWZgdOP5giSjRvTa75Q1g78PJv5rRapeA5FkhTdr3Fl-vdmpBNfXnV7bsZJBGUrutaw8h1_66NuL522y_Y8MqY6t5_FJNeijXjeP6j5qvYF45wl53wfLlQjLr4Tp4JHTabbKk7lW5xdmR2ZT8JH35vSlHw4t6PvfKUp0ClZrNMgliBQ=",
+            "title": "medium.com",
+            "source_id": "source-2",
+            "supported_excerpts": [
+              "*   **결정:** 이탈 위험군 고객에게 맞춤형 할인 쿠폰을 발송하거나, 선호 콘텐츠를 추천하는 등의 리텐션(Retention) 캠페인 실행. [1.4.1]"
+            ]
+          },
+          {
+            "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEbqe9AVKRsRUG7i50xEbW4sjBlIFn3OsCZIDKZM8Bp4t8QRPfjkLvOL20NWPnq4Bp2CJMHHGnRLDKbgKVGAxwY0-gZ6LqzycQjTvRCpu6kyQs7dd2lrDHH6TRNVnCNQPr3vVE4S6Nx-8P6CQ==",
+            "title": "scribd.com",
+            "source_id": "source-3",
+            "supported_excerpts": [
+              "*   **실제 확인 사실:** 대형 소매 체인은 인기 제품의 품절(Stockout)과 비인기 제품의 과잉 재고(Overstock) 문제로 인해 매출 손실과 운영 비용 상승을 동시에 겪습니다. [1.3.1]",
+              "*   **관측 자료:** 과거 판매 이력, 현재 재고 수준, 입고 예정 데이터, 프로모션 일정, 외부 요인(날씨, 공휴일)."
+            ]
+          },
+          {
+            "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGI29gCY2jqDfB5z9KUl-SJoUSGM8kZtL9nhU7T7zlFpIpsrLrxaR0O8DKdiS_CDDoWEwhjURVfFvNh0Up6OIC8d8i42QvEUzClUEnyraaSq64B0Wbi_r_DZqAyqCc-jNZmqbQU4dDPVRImP2w1FayOzXJHCyVEzTLTLiy3",
+            "title": "madforcoding.com",
+            "source_id": "source-4",
+            "supported_excerpts": [
+              "*   **관측 자료:** 과거 판매 이력, 현재 재고 수준, 입고 예정 데이터, 프로모션 일정, 외부 요인(날씨, 공휴일)."
+            ]
+          }
+        ],
+        "version": "case-research-v1",
+        "searched_at": "2026-10-06T03:49:10.734401+00:00",
+        "search_suggestions": "<style>\n.container {\n  align-items: center;\n  border-radius: 8px;\n  display: flex;\n  font-family: Google Sans, Roboto, sans-serif;\n  font-size: 14px;\n  line-height: 20px;\n  padding: 8px 12px;\n}\n.chip {\n  display: inline-block;\n  border: solid 1px;\n  border-radius: 16px;\n  min-width: 14px;\n  padding: 5px 16px;\n  text-align: center;\n  user-select: none;\n  margin: 0 8px;\n  -webkit-tap-highlight-color: transparent;\n}\n.carousel {\n  overflow: auto;\n  scrollbar-width: none;\n  white-space: nowrap;\n  margin-right: -12px;\n}\n.headline {\n  display: flex;\n  margin-right: 4px;\n}\n.gradient-container {\n  position: relative;\n}\n.gradient {\n  position: absolute;\n  transform: translate(3px, -9px);\n  height: 36px;\n  width: 9px;\n}\n@media (prefers-color-scheme: light) {\n  .container {\n    background-color: #fafafa;\n    box-shadow: 0 0 0 1px #0000000f;\n  }\n  .headline-label {\n    color: #1f1f1f;\n  }\n  .chip {\n    background-color: #ffffff;\n    border-color: #d2d2d2;\n    color: #5e5e5e;\n    text-decoration: none;\n  }\n  .chip:hover {\n    background-color: #f2f2f2;\n  }\n  .chip:focus {\n    background-color: #f2f2f2;\n  }\n  .chip:active {\n    background-color: #d8d8d8;\n    border-color: #b6b6b6;\n  }\n  .logo-dark {\n    display: none;\n  }\n  .gradient {\n    background: linear-gradient(90deg, #fafafa 15%, #fafafa00 100%);\n  }\n}\n@media (prefers-color-scheme: dark) {\n  .container {\n    background-color: #1f1f1f;\n    box-shadow: 0 0 0 1px #ffffff26;\n  }\n  .headline-label {\n    color: #fff;\n  }\n  .chip {\n    background-color: #2c2c2c;\n    border-color: #3c4043;\n    color: #fff;\n    text-decoration: none;\n  }\n  .chip:hover {\n    background-color: #353536;\n  }\n  .chip:focus {\n    background-color: #353536;\n  }\n  .chip:active {\n    background-color: #464849;\n    border-color: #53575b;\n  }\n  .logo-light {\n    display: none;\n  }\n  .gradient {\n    background: linear-gradient(90deg, #1f1f1f 15%, #1f1f1f00 100%);\n  }\n}\n</style>\n<div class=\"container\">\n  <div class=\"headline\">\n    <svg class=\"logo-light\" width=\"18\" height=\"18\" viewBox=\"9 9 35 35\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n      <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M42.8622 27.0064C42.8622 25.7839 42.7525 24.6084 42.5487 23.4799H26.3109V30.1568H35.5897C35.1821 32.3041 33.9596 34.1222 32.1258 35.3448V39.6864H37.7213C40.9814 36.677 42.8622 32.2571 42.8622 27.0064V27.0064Z\" fill=\"#4285F4\"/>\n      <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M26.3109 43.8555C30.9659 43.8555 34.8687 42.3195 37.7213 39.6863L32.1258 35.3447C30.5898 36.3792 28.6306 37.0061 26.3109 37.0061C21.8282 37.0061 18.0195 33.9811 16.6559 29.906H10.9194V34.3573C13.7563 39.9841 19.5712 43.8555 26.3109 43.8555V43.8555Z\" fill=\"#34A853\"/>\n      <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M16.6559 29.8904C16.3111 28.8559 16.1074 27.7588 16.1074 26.6146C16.1074 25.4704 16.3111 24.3733 16.6559 23.3388V18.8875H10.9194C9.74388 21.2072 9.06992 23.8247 9.06992 26.6146C9.06992 29.4045 9.74388 32.022 10.9194 34.3417L15.3864 30.8621L16.6559 29.8904V29.8904Z\" fill=\"#FBBC05\"/>\n      <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M26.3109 16.2386C28.85 16.2386 31.107 17.1164 32.9095 18.8091L37.8466 13.8719C34.853 11.082 30.9659 9.3736 26.3109 9.3736C19.5712 9.3736 13.7563 13.245 10.9194 18.8875L16.6559 23.3388C18.0195 19.2636 21.8282 16.2386 26.3109 16.2386V16.2386Z\" fill=\"#EA4335\"/>\n    </svg>\n    <svg class=\"logo-dark\" width=\"18\" height=\"18\" viewBox=\"0 0 48 48\" xmlns=\"http://www.w3.org/2000/svg\">\n      <circle cx=\"24\" cy=\"23\" fill=\"#FFF\" r=\"22\"/>\n      <path d=\"M33.76 34.26c2.75-2.56 4.49-6.37 4.49-11.26 0-.89-.08-1.84-.29-3H24.01v5.99h8.03c-.4 2.02-1.5 3.56-3.07 4.56v.75l3.91 2.97h.88z\" fill=\"#4285F4\"/>\n      <path d=\"M15.58 25.77A8.845 8.845 0 0 0 24 31.86c1.92 0 3.62-.46 4.97-1.31l4.79 3.71C31.14 36.7 27.65 38 24 38c-5.93 0-11.01-3.4-13.45-8.36l.17-1.01 4.06-2.85h.8z\" fill=\"#34A853\"/>\n      <path d=\"M15.59 20.21a8.864 8.864 0 0 0 0 5.58l-5.03 3.86c-.98-2-1.53-4.25-1.53-6.64 0-2.39.55-4.64 1.53-6.64l1-.22 3.81 2.98.22 1.08z\" fill=\"#FBBC05\"/>\n      <path d=\"M24 14.14c2.11 0 4.02.75 5.52 1.98l4.36-4.36C31.22 9.43 27.81 8 24 8c-5.93 0-11.01 3.4-13.45 8.36l5.03 3.85A8.86 8.86 0 0 1 24 14.14z\" fill=\"#EA4335\"/>\n    </svg>\n    <div class=\"gradient-container\"><div class=\"gradient\"></div></div>\n  </div>\n  <div class=\"carousel\">\n<a class=\"chip\" href=\"https://www.google.com/search?q=real-world+business+analytics+case+studies+for+beginners+marketing+e-commerce+logistics&client=app-vertex-grounding&safesearch=active\">real-world business analytics case studies for beginners marketing e-commerce logistics</a>\n<a class=\"chip\" href=\"https://www.google.com/search?q=e-commerce+customer+churn+analysis+case+study+business+problem&client=app-vertex-grounding&safesearch=active\">e-commerce customer churn analysis case study business problem</a>\n<a class=\"chip\" href=\"https://www.google.com/search?q=retail+inventory+optimization+business+case+study+analysis+questions&client=app-vertex-grounding&safesearch=active\">retail inventory optimization business case study analysis questions</a>\n<a class=\"chip\" href=\"https://www.google.com/search?q=subscription+service+churn+rate+analysis+business+decision+case+study&client=app-vertex-grounding&safesearch=active\">subscription service churn rate analysis business decision case study</a>\n<a class=\"chip\" href=\"https://www.google.com/search?q=logistics+delivery+time+optimization+case+study+business+analytics&client=app-vertex-grounding&safesearch=active\">logistics delivery time optimization case study business analytics</a>\n  </div>\n</div>"
+      },
+      "schema_issues": [],
+      "schema_reviews": [
+        {
+          "issues": [
+            {
+              "type": "missing",
+              "message": "Field required",
+              "location": [
+                "reason"
+              ]
+            }
+          ],
+          "planning_calls": 5
+        },
+        {
+          "issues": [
+            {
+              "type": "missing",
+              "message": "Field required",
+              "location": [
+                "reason"
+              ]
+            }
+          ],
+          "planning_calls": 6
+        },
+        {
+          "issues": [],
+          "planning_calls": 7
+        }
+      ],
+      "recent_snapshot": [
+        {
+          "goal": "보스 레이드 콘텐츠별 실패 현상 및 성공률 편차를 측정하고, 교란 요인과 대안 설명을 비교하여 최적의 밸런스 조정 의사결정을 내립니다.",
+          "domain": "RPG 보스 레이드 숙련도별 교란 요인 및 실패 현상 조사 분석",
+          "format": "investigation",
+          "ambiguity": "advanced",
+          "situation": "0bc2968d71bd",
+          "structure": "avg:True:1|ratio:False:0|ratio:True:1|ratio:True:2",
+          "difficulty": "advanced",
+          "evaluation": "adaptive",
+          "quality_version": "task-quality-v1",
+          "required_judgment": "investigation"
+        },
+        {
+          "goal": "보스 레이드 콘텐츠별 실패 현상 및 성공률 편차를 측정하고, 교란 요인과 대안 설명을 비교하여 최적의 밸런스 조정 의사결정을 내립니다.",
+          "domain": "가상 RPG 보스 레이드 숙련도별 교란 요인 및 실패 현상 조사 분석",
+          "format": "investigation",
+          "ambiguity": "advanced",
+          "situation": "eb8ba345592e",
+          "structure": "avg:True:2|ratio:False:1|ratio:True:2|ratio:True:2",
+          "difficulty": "advanced",
+          "evaluation": "adaptive",
+          "quality_version": "task-quality-v1",
+          "required_judgment": "investigation"
+        },
+        {
+          "goal": "보스 레이드 콘텐츠별 성공률과 숙련도 그룹에 따른 소요 시간 편차를 측정하고 비교하여 밸런스 조정안을 검토합니다.",
+          "domain": "RPG 보스 레이드 성공률 및 소요시간 비교 분석",
+          "format": "investigation",
+          "ambiguity": "intermediate",
+          "situation": "4717d0e36b67",
+          "structure": "avg:True:1|ratio:True:1",
+          "difficulty": "intermediate",
+          "evaluation": "adaptive",
+          "quality_version": "task-quality-v1",
+          "required_judgment": "investigation"
+        },
+        {
+          "goal": "보스 레이드 콘텐츠의 성공률 편차에 영향을 주는 숙련도 및 장비 티어별 교란 요인을 분석하여 최적의 밸런스 조정 의사결정을 내립니다.",
+          "domain": "가상 RPG 보스 레이드 숙련도별 성공률 및 소요시간 교란 요인 분석",
+          "format": "investigation",
+          "ambiguity": "advanced",
+          "situation": "a79d429528fe",
+          "structure": "avg:True:1|ratio:False:0|ratio:True:1",
+          "difficulty": "advanced",
+          "evaluation": "adaptive",
+          "quality_version": "task-quality-v1",
+          "required_judgment": "investigation"
+        },
+        {
+          "goal": "특정 보스 레이드 콘텐츠의 성공률과 평균 소요 시간을 측정하고 운영 개선안을 도출합니다.",
+          "domain": "가상 RPG 보스 레이드 성공률 및 전투 소요 시간 측정 분석",
+          "format": "calculation",
+          "ambiguity": "beginner",
+          "situation": "ea3f3ebb8c18",
+          "structure": "avg:False:0|ratio:False:0",
+          "difficulty": "beginner",
+          "evaluation": "adaptive",
+          "quality_version": "task-quality-v1",
+          "required_judgment": "calculation"
+        }
+      ]
+    },
+    "operations": [
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "d92701d4-14e0-4a96-a902-19d29167664f",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "f1a60980-4d9b-443d-ada5-ef295a386e4f",
+        "started_at": "2026-10-06T03:46:12.509959Z",
+        "duration_ms": 29774,
+        "finished_at": "2026-10-06T03:46:42.284956Z",
+        "occurred_at": "2026-10-06T03:46:12.509959Z",
+        "input_tokens": 1092,
+        "operation_id": "a0d59967-e3aa-4922-b7e4-7aaf247718ea",
+        "model_version": "gemma-4-26b-a4b-it",
+        "output_tokens": 1337,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "case-search-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      },
+      {
+        "kind": "generation",
+        "domain": "adaptive",
+        "status": "failed",
+        "event_id": "a42fa484-a6be-467b-9c80-711931ce3ddf",
+        "task_kind": "auto",
+        "error_code": "validation_failed",
+        "event_type": "generation_started",
+        "request_id": "f1a60980-4d9b-443d-ada5-ef295a386e4f",
+        "started_at": "2026-10-06T03:46:12.388617Z",
+        "duration_ms": 29942,
+        "finished_at": "2026-10-06T03:46:42.330665Z",
+        "occurred_at": "2026-10-06T03:46:12.388617Z",
+        "operation_id": "fa3c9cf6-ba4a-4a8c-90c5-8f72c6ede5e1",
+        "rules_version": "access-plan-v2",
+        "schema_version": "event-v2",
+        "requested_difficulty": "beginner"
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "16d892fd-222d-4db5-93d4-7016070e64c4",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "f1a60980-4d9b-443d-ada5-ef295a386e4f",
+        "started_at": "2026-10-06T03:48:29.915042Z",
+        "duration_ms": 40817,
+        "finished_at": "2026-10-06T03:49:10.732558Z",
+        "occurred_at": "2026-10-06T03:48:29.915042Z",
+        "input_tokens": 1168,
+        "operation_id": "856a4b10-ac63-44ed-9c09-2d952d2970d0",
+        "model_version": "gemma-4-26b-a4b-it",
+        "output_tokens": 1682,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "case-search-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      },
+      {
+        "kind": "generation",
+        "domain": "adaptive",
+        "status": "failed",
+        "event_id": "5e2bb9b6-b9be-4712-8801-48f7933c2bd5",
+        "task_kind": "auto",
+        "error_code": "validation_failed",
+        "event_type": "generation_started",
+        "request_id": "f1a60980-4d9b-443d-ada5-ef295a386e4f",
+        "started_at": "2026-10-06T03:48:29.871672Z",
+        "duration_ms": 133319,
+        "finished_at": "2026-10-06T03:50:43.191075Z",
+        "occurred_at": "2026-10-06T03:48:29.871672Z",
+        "operation_id": "a7aa23c4-d3ad-4213-9563-a9d8ef929d75",
+        "rules_version": "access-plan-v2",
+        "schema_version": "event-v2",
+        "parent_operation_id": "fa3c9cf6-ba4a-4a8c-90c5-8f72c6ede5e1",
+        "requested_difficulty": "beginner"
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "failed",
+        "event_id": "8bbc78e3-98ea-43e5-97bc-6907c38025a0",
+        "error_code": "provider_failure",
+        "event_type": "ai_started",
+        "request_id": "f1a60980-4d9b-443d-ada5-ef295a386e4f",
+        "started_at": "2026-10-06T03:49:10.766079Z",
+        "duration_ms": 92372,
+        "finished_at": "2026-10-06T03:50:43.138220Z",
+        "occurred_at": "2026-10-06T03:49:10.766079Z",
+        "input_tokens": null,
+        "operation_id": "68655121-821f-44c7-a53c-79af9e0bcea5",
+        "model_version": "gemma-4-26b-a4b-it",
+        "output_tokens": null,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "case-selection-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": {
+          "stage": "response",
+          "timeout": false,
+          "request_id": "3f4306ef-1b79-4554-bdf4-97c54603aa2d",
+          "http_status": 200
+        },
+        "usage_missing_reason": "not_reported"
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "79d2d582-76b2-45c7-a0af-c23d779d00cc",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "f1a60980-4d9b-443d-ada5-ef295a386e4f",
+        "started_at": "2026-10-06T03:55:31.413066Z",
+        "duration_ms": 14185,
+        "finished_at": "2026-10-06T03:55:45.598278Z",
+        "occurred_at": "2026-10-06T03:55:31.413066Z",
+        "input_tokens": 2605,
+        "operation_id": "dc3a0ec4-cbf0-408e-b14d-0ba2b9d29c60",
+        "model_version": "gemma-4-26b-a4b-it",
+        "output_tokens": 618,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "case-selection-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      },
+      {
+        "kind": "generation",
+        "domain": "adaptive",
+        "status": "failed",
+        "event_id": "bff1f0bd-6737-474a-bc73-ac3df2e1a09c",
+        "task_kind": "auto",
+        "error_code": "validation_failed",
+        "event_type": "generation_started",
+        "request_id": "f1a60980-4d9b-443d-ada5-ef295a386e4f",
+        "started_at": "2026-10-06T03:55:31.365754Z",
+        "duration_ms": 110764,
+        "finished_at": "2026-10-06T03:57:22.130567Z",
+        "occurred_at": "2026-10-06T03:55:31.365754Z",
+        "operation_id": "33e8c916-824e-4a32-bde8-c65abc0fb707",
+        "rules_version": "access-plan-v2",
+        "schema_version": "event-v2",
+        "parent_operation_id": "a7aa23c4-d3ad-4213-9563-a9d8ef929d75",
+        "requested_difficulty": "beginner"
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "5cb31b38-e55b-44da-9dc1-3440840e042a",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "f1a60980-4d9b-443d-ada5-ef295a386e4f",
+        "started_at": "2026-10-06T03:55:45.640193Z",
+        "duration_ms": 44785,
+        "finished_at": "2026-10-06T03:56:30.425202Z",
+        "occurred_at": "2026-10-06T03:55:45.640193Z",
+        "input_tokens": 11269,
+        "operation_id": "d03833ea-9444-416e-96a1-13d921e9b9b2",
+        "model_version": "gemma-4-26b-a4b-it",
+        "output_tokens": 1807,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "7c308a93-2be6-462a-974c-368758dd8ab5",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "f1a60980-4d9b-443d-ada5-ef295a386e4f",
+        "started_at": "2026-10-06T03:56:30.489009Z",
+        "duration_ms": 45988,
+        "finished_at": "2026-10-06T03:57:16.477111Z",
+        "occurred_at": "2026-10-06T03:56:30.489009Z",
+        "input_tokens": 13350,
+        "operation_id": "c8c50ee2-758d-494f-9896-9e1634df7129",
+        "model_version": "gemma-4-26b-a4b-it",
+        "output_tokens": 1886,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-repair-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "failed",
+        "event_id": "7a9a4c75-8347-4200-b5fa-a6d38aae01ad",
+        "error_code": "provider_failure",
+        "event_type": "ai_started",
+        "request_id": "f1a60980-4d9b-443d-ada5-ef295a386e4f",
+        "started_at": "2026-10-06T03:57:16.529541Z",
+        "duration_ms": 5536,
+        "finished_at": "2026-10-06T03:57:22.066214Z",
+        "occurred_at": "2026-10-06T03:57:16.529541Z",
+        "input_tokens": null,
+        "operation_id": "24122e75-81b8-4002-8ddc-250cead10566",
+        "model_version": "gemma-4-26b-a4b-it",
+        "output_tokens": null,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-repair-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": {
+          "stage": "http",
+          "timeout": false,
+          "request_id": "09b85494-0640-4996-9a0d-235b5fbcb5ca",
+          "http_status": 429
+        },
+        "usage_missing_reason": "not_reported"
+      }
+    ]
+  },
+  {
+    "request": {
+      "body": {
+        "goal": null,
+        "domain": "auto",
+        "message": "실무에서 일어날만한 문제를 분석하고싶어",
+        "data_mode": "adaptive",
+        "sql_level": null,
+        "task_kind": "auto",
+        "difficulty": "intermediate",
+        "request_id": "85cc8824-79aa-446c-a80f-255880ea155f",
+        "user_count": 200,
+        "time_condition": null,
+        "contract_version": "request-v2",
+        "recommendation_id": null,
+        "intentional_repeat": false
+      },
+      "error": "검색 근거에 맞는 실무 사례 후보를 구성하지 못했습니다. 요청을 보존했습니다.",
+      "phase": "case-selection-v1",
+      "states": [
+        {
+          "at": "2026-10-06T03:46:43.194447Z",
+          "status": "accepted"
+        },
+        {
+          "at": "2026-10-06T03:46:43.279255Z",
+          "phase": "case-search-v1",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-06T03:47:20.093422Z",
+          "status": "failed"
+        },
+        {
+          "at": "2026-10-06T03:50:43.594539Z",
+          "phase": "case-search-v1",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-06T03:51:19.372168Z",
+          "phase": "case-selection-v1",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-06T03:52:51.961054Z",
+          "status": "failed"
+        },
+        {
+          "at": "2026-10-06T03:57:22.876890Z",
+          "phase": "case-selection-v1",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-06T03:57:27.466354Z",
+          "status": "failed"
+        }
+      ],
+      "status": "failed",
+      "message": "실무에서 일어날만한 문제를 분석하고싶어",
+      "revision": 2,
+      "questions": [],
+      "attempt_id": null,
+      "created_at": "2026-10-06T03:46:43.194425Z",
+      "error_code": "research_invalid",
+      "request_id": "85cc8824-79aa-446c-a80f-255880ea155f",
+      "operation_id": "3d2a2019-5431-4765-80b2-cc77cf58be7c",
+      "retry_allowed": true,
+      "failure_detail": null,
+      "planning_calls": 4,
+      "failure_history": [
+        {
+          "at": "2026-10-06T03:47:20.093409Z",
+          "error": "실제 검색 질의를 확인하지 못해 출제하지 않았습니다.",
+          "error_code": "research_unverified",
+          "failure_detail": null,
+          "planning_calls": 1
+        },
+        {
+          "at": "2026-10-06T03:52:51.961041Z",
+          "error": "검색 근거에 맞는 실무 사례 후보를 구성하지 못했습니다. 요청을 보존했습니다.",
+          "error_code": "research_invalid",
+          "failure_detail": null,
+          "planning_calls": 3
+        },
+        {
+          "at": "2026-10-06T03:57:27.466339Z",
+          "error": "검색 근거에 맞는 실무 사례 후보를 구성하지 못했습니다. 요청을 보존했습니다.",
+          "error_code": "research_invalid",
+          "failure_detail": null,
+          "planning_calls": 4
+        }
+      ],
+      "contract_version": "request-v2",
+      "generation_attempts": 0,
+      "parent_operation_id": "218bf760-407c-419f-8fb0-e3d0b84350a2",
+      "recommendation_change": null
+    },
+    "diagnostics": {
+      "seed": 633612924,
+      "plan_id": "99991fa8-7c47-432d-90e5-d88ecf25cddf",
+      "case_research": {
+        "queries": [
+          "real-world business analytics case studies marketing churn retention",
+          "e-commerce customer segmentation case study analytics",
+          "supply chain optimization analytics case study",
+          "predictive maintenance manufacturing case study analytics",
+          "retail inventory management data analytics case study"
+        ],
+        "sources": [
+          {
+            "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHARDZ32Ig0vfNyyf55cPXa_sEQEcs-SubaP9x58qoO_8i50GTJsK1cuJm73u2onEkhq5AuEqJ-V7WxtnzGuXuTLgGI4LMr3CUbptQBaXBuIgbhg-wDdB10Nk8Ptp0-QmVLDf75lTufH6Lu9y9VVHA6YOUJclXcMtYfCYokyCEwaOICzP4yirop_q7YTWaR4pv8lNJfkjjaJQDK8fo=",
+            "title": "mutuallyhuman.com",
+            "source_id": "source-1",
+            "supported_excerpts": [
+              "*   **업무 문제**: 대규모 고객 기반을 보유하고 있으나, 고객이 왜 떠나는지 알지 못하며 이탈 방지를 위한 선제적 조치가 어려움.",
+              "[제조/운영] 설비 예지 보전(Predictive Maintenance)\n설비의 고장을 미리 예측하여 갑작스러운 가동 중단(Downtime)을 방지하는 사례입니다."
+            ]
+          },
+          {
+            "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGpDBdRebffPByGfrjnsX71vKHITip3uldGkgJCvR4mmTjeyiuOdVw9m6h8VJ6VxgNyG_-uqC55uh19l4BJoIlB4Pe1v0J09sK-DPmrTR6B3uvFe3it74tm0Epzei6nHHdSQ0qhAohCUvrmLTHQp6-hXUKKQR6WANQ=",
+            "title": "data-mania.com",
+            "source_id": "source-2",
+            "supported_excerpts": [
+              "*   **결정**: 이탈 위험도가 높은 고객군을 대상으로 한 타겟 마케팅 캠페인 설계 및 고객 생애 가치(CLV) 개선 전략 수립."
+            ]
+          },
+          {
+            "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEDQkcb-IsLbeEg5Z363T1-KP6RqXaKt_VBfU1MoHkQwUXbQpSIbK5Y8Pu6h60faVu5mUuaUO3KuBh0C2cZwEeK74h2uBd6IdzgZVRelXemqbJungMRikHUfIHZ4HXNDkzWkm7ouyZx6EXxwplERmbpz0mXMU1s5CQYGYZNZhkEsVNP7Id244P8XiiX3pTr8ht-EyqeujI6btuEWPJ1EbEnLF6wEaAv4VIcbm3jRemhftEeLw==",
+            "title": "medium.com",
+            "source_id": "source-3",
+            "supported_excerpts": [
+              "*   **실제 확인 사실**: 한 제약 유통사는 머신러닝 기반 수요 예측을 통해 예측 오차를 25% 줄이고, 6개월 내 재고 과잉을 40% 감소시킬 것으로 기대되는 성과를 거두었습니다 [1.3.2].",
+              "*   [1.3.2] SupChains & DragonRitter, \"An End-to-End Supply Chain Optimization Case Study\""
+            ]
+          },
+          {
+            "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEKxQT-lxv86kQ9wPl58j3sp2KvFkzK6PMl2ANwMrTlcbl2lG9jMlm7QDWnOIsPH0eDrz6_4zXHTXhoMokw1k0bGfkgTUAVXZySRQG4TmVFoGlckst1CkzBt71Ehv8xTVGd53EP8z5xlKsTa2tpqWDT5P0io5p5hRVbfZnxaiZVpR6RRRydHA==",
+            "title": "factored.ai",
+            "source_id": "source-4",
+            "supported_excerpts": [
+              "[제조/운영] 설비 예지 보전(Predictive Maintenance)\n설비의 고장을 미리 예측하여 갑작스러운 가동 중단(Downtime)을 방지하는 사례입니다."
+            ]
+          },
+          {
+            "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHukFtr_kefj83uD3obDfkqUAooBssgMfXh3tyh4wmwTwnZoRPAn2Y2qqKKb_i6CzsrOjpRngexxpiumMtOpvvxzHJHdwFNgb17TV_4ohuF0M5NI5YImvfj8JekdWloG2n6WwCc2ke3ChA9cBXISVZ1SODyHfKL8kqQztP21cd9aZ2wbpAahpyM9gY=",
+            "title": "medium.com",
+            "source_id": "source-5",
+            "supported_excerpts": [
+              "[제조/운영] 설비 예지 보전(Predictive Maintenance)\n설비의 고장을 미리 예측하여 갑작스러운 가동 중단(Downtime)을 방지하는 사례입니다."
+            ]
+          }
+        ],
+        "version": "case-research-v1",
+        "searched_at": "2026-10-06T03:51:19.352123+00:00",
+        "search_suggestions": "<style>\n.container {\n  align-items: center;\n  border-radius: 8px;\n  display: flex;\n  font-family: Google Sans, Roboto, sans-serif;\n  font-size: 14px;\n  line-height: 20px;\n  padding: 8px 12px;\n}\n.chip {\n  display: inline-block;\n  border: solid 1px;\n  border-radius: 16px;\n  min-width: 14px;\n  padding: 5px 16px;\n  text-align: center;\n  user-select: none;\n  margin: 0 8px;\n  -webkit-tap-highlight-color: transparent;\n}\n.carousel {\n  overflow: auto;\n  scrollbar-width: none;\n  white-space: nowrap;\n  margin-right: -12px;\n}\n.headline {\n  display: flex;\n  margin-right: 4px;\n}\n.gradient-container {\n  position: relative;\n}\n.gradient {\n  position: absolute;\n  transform: translate(3px, -9px);\n  height: 36px;\n  width: 9px;\n}\n@media (prefers-color-scheme: light) {\n  .container {\n    background-color: #fafafa;\n    box-shadow: 0 0 0 1px #0000000f;\n  }\n  .headline-label {\n    color: #1f1f1f;\n  }\n  .chip {\n    background-color: #ffffff;\n    border-color: #d2d2d2;\n    color: #5e5e5e;\n    text-decoration: none;\n  }\n  .chip:hover {\n    background-color: #f2f2f2;\n  }\n  .chip:focus {\n    background-color: #f2f2f2;\n  }\n  .chip:active {\n    background-color: #d8d8d8;\n    border-color: #b6b6b6;\n  }\n  .logo-dark {\n    display: none;\n  }\n  .gradient {\n    background: linear-gradient(90deg, #fafafa 15%, #fafafa00 100%);\n  }\n}\n@media (prefers-color-scheme: dark) {\n  .container {\n    background-color: #1f1f1f;\n    box-shadow: 0 0 0 1px #ffffff26;\n  }\n  .headline-label {\n    color: #fff;\n  }\n  .chip {\n    background-color: #2c2c2c;\n    border-color: #3c4043;\n    color: #fff;\n    text-decoration: none;\n  }\n  .chip:hover {\n    background-color: #353536;\n  }\n  .chip:focus {\n    background-color: #353536;\n  }\n  .chip:active {\n    background-color: #464849;\n    border-color: #53575b;\n  }\n  .logo-light {\n    display: none;\n  }\n  .gradient {\n    background: linear-gradient(90deg, #1f1f1f 15%, #1f1f1f00 100%);\n  }\n}\n</style>\n<div class=\"container\">\n  <div class=\"headline\">\n    <svg class=\"logo-light\" width=\"18\" height=\"18\" viewBox=\"9 9 35 35\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n      <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M42.8622 27.0064C42.8622 25.7839 42.7525 24.6084 42.5487 23.4799H26.3109V30.1568H35.5897C35.1821 32.3041 33.9596 34.1222 32.1258 35.3448V39.6864H37.7213C40.9814 36.677 42.8622 32.2571 42.8622 27.0064V27.0064Z\" fill=\"#4285F4\"/>\n      <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M26.3109 43.8555C30.9659 43.8555 34.8687 42.3195 37.7213 39.6863L32.1258 35.3447C30.5898 36.3792 28.6306 37.0061 26.3109 37.0061C21.8282 37.0061 18.0195 33.9811 16.6559 29.906H10.9194V34.3573C13.7563 39.9841 19.5712 43.8555 26.3109 43.8555V43.8555Z\" fill=\"#34A853\"/>\n      <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M16.6559 29.8904C16.3111 28.8559 16.1074 27.7588 16.1074 26.6146C16.1074 25.4704 16.3111 24.3733 16.6559 23.3388V18.8875H10.9194C9.74388 21.2072 9.06992 23.8247 9.06992 26.6146C9.06992 29.4045 9.74388 32.022 10.9194 34.3417L15.3864 30.8621L16.6559 29.8904V29.8904Z\" fill=\"#FBBC05\"/>\n      <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M26.3109 16.2386C28.85 16.2386 31.107 17.1164 32.9095 18.8091L37.8466 13.8719C34.853 11.082 30.9659 9.3736 26.3109 9.3736C19.5712 9.3736 13.7563 13.245 10.9194 18.8875L16.6559 23.3388C18.0195 19.2636 21.8282 16.2386 26.3109 16.2386V16.2386Z\" fill=\"#EA4335\"/>\n    </svg>\n    <svg class=\"logo-dark\" width=\"18\" height=\"18\" viewBox=\"0 0 48 48\" xmlns=\"http://www.w3.org/2000/svg\">\n      <circle cx=\"24\" cy=\"23\" fill=\"#FFF\" r=\"22\"/>\n      <path d=\"M33.76 34.26c2.75-2.56 4.49-6.37 4.49-11.26 0-.89-.08-1.84-.29-3H24.01v5.99h8.03c-.4 2.02-1.5 3.56-3.07 4.56v.75l3.91 2.97h.88z\" fill=\"#4285F4\"/>\n      <path d=\"M15.58 25.77A8.845 8.845 0 0 0 24 31.86c1.92 0 3.62-.46 4.97-1.31l4.79 3.71C31.14 36.7 27.65 38 24 38c-5.93 0-11.01-3.4-13.45-8.36l.17-1.01 4.06-2.85h.8z\" fill=\"#34A853\"/>\n      <path d=\"M15.59 20.21a8.864 8.864 0 0 0 0 5.58l-5.03 3.86c-.98-2-1.53-4.25-1.53-6.64 0-2.39.55-4.64 1.53-6.64l1-.22 3.81 2.98.22 1.08z\" fill=\"#FBBC05\"/>\n      <path d=\"M24 14.14c2.11 0 4.02.75 5.52 1.98l4.36-4.36C31.22 9.43 27.81 8 24 8c-5.93 0-11.01 3.4-13.45 8.36l5.03 3.85A8.86 8.86 0 0 1 24 14.14z\" fill=\"#EA4335\"/>\n    </svg>\n    <div class=\"gradient-container\"><div class=\"gradient\"></div></div>\n  </div>\n  <div class=\"carousel\">\n<a class=\"chip\" href=\"https://www.google.com/search?q=real-world+business+analytics+case+studies+marketing+churn+retention&client=app-vertex-grounding&safesearch=active\">real-world business analytics case studies marketing churn retention</a>\n<a class=\"chip\" href=\"https://www.google.com/search?q=e-commerce+customer+segmentation+case+study+analytics&client=app-vertex-grounding&safesearch=active\">e-commerce customer segmentation case study analytics</a>\n<a class=\"chip\" href=\"https://www.google.com/search?q=supply+chain+optimization+analytics+case+study&client=app-vertex-grounding&safesearch=active\">supply chain optimization analytics case study</a>\n<a class=\"chip\" href=\"https://www.google.com/search?q=predictive+maintenance+manufacturing+case+study+analytics&client=app-vertex-grounding&safesearch=active\">predictive maintenance manufacturing case study analytics</a>\n<a class=\"chip\" href=\"https://www.google.com/search?q=retail+inventory+management+data+analytics+case+study&client=app-vertex-grounding&safesearch=active\">retail inventory management data analytics case study</a>\n  </div>\n</div>"
+      },
+      "recent_snapshot": [
+        {
+          "goal": "보스 레이드 콘텐츠별 실패 현상 및 성공률 편차를 측정하고, 교란 요인과 대안 설명을 비교하여 최적의 밸런스 조정 의사결정을 내립니다.",
+          "domain": "RPG 보스 레이드 숙련도별 교란 요인 및 실패 현상 조사 분석",
+          "format": "investigation",
+          "ambiguity": "advanced",
+          "situation": "0bc2968d71bd",
+          "structure": "avg:True:1|ratio:False:0|ratio:True:1|ratio:True:2",
+          "difficulty": "advanced",
+          "evaluation": "adaptive",
+          "quality_version": "task-quality-v1",
+          "required_judgment": "investigation"
+        },
+        {
+          "goal": "보스 레이드 콘텐츠별 실패 현상 및 성공률 편차를 측정하고, 교란 요인과 대안 설명을 비교하여 최적의 밸런스 조정 의사결정을 내립니다.",
+          "domain": "가상 RPG 보스 레이드 숙련도별 교란 요인 및 실패 현상 조사 분석",
+          "format": "investigation",
+          "ambiguity": "advanced",
+          "situation": "eb8ba345592e",
+          "structure": "avg:True:2|ratio:False:1|ratio:True:2|ratio:True:2",
+          "difficulty": "advanced",
+          "evaluation": "adaptive",
+          "quality_version": "task-quality-v1",
+          "required_judgment": "investigation"
+        },
+        {
+          "goal": "보스 레이드 콘텐츠별 성공률과 숙련도 그룹에 따른 소요 시간 편차를 측정하고 비교하여 밸런스 조정안을 검토합니다.",
+          "domain": "RPG 보스 레이드 성공률 및 소요시간 비교 분석",
+          "format": "investigation",
+          "ambiguity": "intermediate",
+          "situation": "4717d0e36b67",
+          "structure": "avg:True:1|ratio:True:1",
+          "difficulty": "intermediate",
+          "evaluation": "adaptive",
+          "quality_version": "task-quality-v1",
+          "required_judgment": "investigation"
+        },
+        {
+          "goal": "보스 레이드 콘텐츠의 성공률 편차에 영향을 주는 숙련도 및 장비 티어별 교란 요인을 분석하여 최적의 밸런스 조정 의사결정을 내립니다.",
+          "domain": "가상 RPG 보스 레이드 숙련도별 성공률 및 소요시간 교란 요인 분석",
+          "format": "investigation",
+          "ambiguity": "advanced",
+          "situation": "a79d429528fe",
+          "structure": "avg:True:1|ratio:False:0|ratio:True:1",
+          "difficulty": "advanced",
+          "evaluation": "adaptive",
+          "quality_version": "task-quality-v1",
+          "required_judgment": "investigation"
+        },
+        {
+          "goal": "특정 보스 레이드 콘텐츠의 성공률과 평균 소요 시간을 측정하고 운영 개선안을 도출합니다.",
+          "domain": "가상 RPG 보스 레이드 성공률 및 전투 소요 시간 측정 분석",
+          "format": "calculation",
+          "ambiguity": "beginner",
+          "situation": "ea3f3ebb8c18",
+          "structure": "avg:False:0|ratio:False:0",
+          "difficulty": "beginner",
+          "evaluation": "adaptive",
+          "quality_version": "task-quality-v1",
+          "required_judgment": "calculation"
+        }
+      ]
+    },
+    "operations": [
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "dd4a49e5-ab82-4b2a-b263-ead2c8ef39aa",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "85cc8824-79aa-446c-a80f-255880ea155f",
+        "started_at": "2026-10-06T03:46:43.300568Z",
+        "duration_ms": 36773,
+        "finished_at": "2026-10-06T03:47:20.074325Z",
+        "occurred_at": "2026-10-06T03:46:43.300568Z",
+        "input_tokens": 1092,
+        "operation_id": "06b88c53-7135-4702-80cc-d4ae41d93de3",
+        "model_version": "gemma-4-26b-a4b-it",
+        "output_tokens": 1482,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "case-search-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      },
+      {
+        "kind": "generation",
+        "domain": "adaptive",
+        "status": "failed",
+        "event_id": "2a38618f-ef02-4f08-a774-f1ca983105b9",
+        "task_kind": "auto",
+        "error_code": "validation_failed",
+        "event_type": "generation_started",
+        "request_id": "85cc8824-79aa-446c-a80f-255880ea155f",
+        "started_at": "2026-10-06T03:46:43.230411Z",
+        "duration_ms": 36883,
+        "finished_at": "2026-10-06T03:47:20.114235Z",
+        "occurred_at": "2026-10-06T03:46:43.230411Z",
+        "operation_id": "6237ee44-e517-48af-9745-c82f5f5768df",
+        "rules_version": "access-plan-v2",
+        "schema_version": "event-v2",
+        "requested_difficulty": "intermediate"
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "23f1ead2-401c-43b2-8477-1bc436d7f06d",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "85cc8824-79aa-446c-a80f-255880ea155f",
+        "started_at": "2026-10-06T03:50:43.613798Z",
+        "duration_ms": 35736,
+        "finished_at": "2026-10-06T03:51:19.350147Z",
+        "occurred_at": "2026-10-06T03:50:43.613798Z",
+        "input_tokens": 1168,
+        "operation_id": "38105ceb-a328-4e31-ac39-cb1d6d24c716",
+        "model_version": "gemma-4-26b-a4b-it",
+        "output_tokens": 1259,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "case-search-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "failed",
+        "event_id": "8dab42d2-7714-4e78-9c9e-534f27de7eec",
+        "error_code": "provider_failure",
+        "event_type": "ai_started",
+        "request_id": "85cc8824-79aa-446c-a80f-255880ea155f",
+        "started_at": "2026-10-06T03:51:19.386368Z",
+        "duration_ms": 92556,
+        "finished_at": "2026-10-06T03:52:51.942482Z",
+        "occurred_at": "2026-10-06T03:51:19.386368Z",
+        "input_tokens": null,
+        "operation_id": "8c74fca3-8cad-4fa4-aa64-34ae552e72d9",
+        "model_version": "gemma-4-26b-a4b-it",
+        "output_tokens": null,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "case-selection-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": {
+          "stage": "response",
+          "timeout": false,
+          "request_id": "6181556b-94bc-4a70-8e08-acba4e51c1cb",
+          "http_status": 200
+        },
+        "usage_missing_reason": "not_reported"
+      },
+      {
+        "kind": "generation",
+        "domain": "adaptive",
+        "status": "failed",
+        "event_id": "94a898bb-ec8a-436b-a9c3-ec0926462534",
+        "task_kind": "auto",
+        "error_code": "validation_failed",
+        "event_type": "generation_started",
+        "request_id": "85cc8824-79aa-446c-a80f-255880ea155f",
+        "started_at": "2026-10-06T03:50:43.569552Z",
+        "duration_ms": 128410,
+        "finished_at": "2026-10-06T03:52:51.979697Z",
+        "occurred_at": "2026-10-06T03:50:43.569552Z",
+        "operation_id": "218bf760-407c-419f-8fb0-e3d0b84350a2",
+        "rules_version": "access-plan-v2",
+        "schema_version": "event-v2",
+        "parent_operation_id": "6237ee44-e517-48af-9745-c82f5f5768df",
+        "requested_difficulty": "intermediate"
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "failed",
+        "event_id": "d6cf9464-e1a3-4770-8461-11e941023229",
+        "error_code": "provider_failure",
+        "event_type": "ai_started",
+        "request_id": "85cc8824-79aa-446c-a80f-255880ea155f",
+        "started_at": "2026-10-06T03:57:22.892135Z",
+        "duration_ms": 4542,
+        "finished_at": "2026-10-06T03:57:27.434176Z",
+        "occurred_at": "2026-10-06T03:57:22.892135Z",
+        "input_tokens": null,
+        "operation_id": "cf9a9db4-fd19-4b04-8128-3aa84ae8601c",
+        "model_version": "gemma-4-26b-a4b-it",
+        "output_tokens": null,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "case-selection-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": {
+          "stage": "http",
+          "timeout": false,
+          "request_id": "bb30fc60-07c1-4072-8535-a3e79c639848",
+          "http_status": 429
+        },
+        "usage_missing_reason": "not_reported"
+      },
+      {
+        "kind": "generation",
+        "domain": "adaptive",
+        "status": "failed",
+        "event_id": "b04eae2b-0751-4051-8823-0cd6232915af",
+        "task_kind": "auto",
+        "error_code": "validation_failed",
+        "event_type": "generation_started",
+        "request_id": "85cc8824-79aa-446c-a80f-255880ea155f",
+        "started_at": "2026-10-06T03:57:22.852704Z",
+        "duration_ms": 4646,
+        "finished_at": "2026-10-06T03:57:27.498979Z",
+        "occurred_at": "2026-10-06T03:57:22.852704Z",
+        "operation_id": "3d2a2019-5431-4765-80b2-cc77cf58be7c",
+        "rules_version": "access-plan-v2",
+        "schema_version": "event-v2",
+        "parent_operation_id": "218bf760-407c-419f-8fb0-e3d0b84350a2",
+        "requested_difficulty": "intermediate"
+      }
+    ]
+  },
+  {
+    "request": {
+      "body": {
+        "goal": null,
+        "domain": "auto",
+        "message": "실무에서 일어날만한 문제를 분석하고싶어",
+        "data_mode": "adaptive",
+        "sql_level": null,
+        "task_kind": "auto",
+        "difficulty": "advanced",
+        "request_id": "76e128a1-a65e-429a-9f7d-5a55d245fe4f",
+        "user_count": 200,
+        "time_condition": null,
+        "contract_version": "request-v2",
+        "recommendation_id": null,
+        "intentional_repeat": false
+      },
+      "error": "요청별 데이터 설계 호출을 완료하지 못했습니다. 입력을 유지했습니다.",
+      "phase": "adaptive-design-repair-v1",
+      "states": [
+        {
+          "at": "2026-10-06T03:47:20.189261Z",
+          "status": "accepted"
+        },
+        {
+          "at": "2026-10-06T03:47:20.255170Z",
+          "phase": "case-search-v1",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-06T03:47:54.324120Z",
+          "status": "failed"
+        },
+        {
+          "at": "2026-10-06T03:52:52.840466Z",
+          "phase": "case-search-v1",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-06T03:53:30.694410Z",
+          "phase": "case-selection-v1",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-06T03:55:03.456797Z",
+          "status": "failed"
+        },
+        {
+          "at": "2026-10-06T03:57:28.031520Z",
+          "phase": "case-selection-v1",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-06T03:57:49.035515Z",
+          "phase": "adaptive-design-v1",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-06T03:59:20.725320Z",
+          "phase": "adaptive-design-repair-v1",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-06T03:59:26.330820Z",
+          "status": "failed"
+        }
+      ],
+      "status": "failed",
+      "message": "실무에서 일어날만한 문제를 분석하고싶어",
+      "revision": 2,
+      "questions": [],
+      "attempt_id": null,
+      "created_at": "2026-10-06T03:47:20.189241Z",
+      "error_code": "api_rate_limited",
+      "request_id": "76e128a1-a65e-429a-9f7d-5a55d245fe4f",
+      "operation_id": "f6a514a3-e9a4-4a62-b533-b10012074745",
+      "retry_allowed": true,
+      "failure_detail": null,
+      "planning_calls": 6,
+      "failure_history": [
+        {
+          "at": "2026-10-06T03:47:54.324107Z",
+          "error": "실제 검색 질의를 확인하지 못해 출제하지 않았습니다.",
+          "error_code": "research_unverified",
+          "failure_detail": null,
+          "planning_calls": 1
+        },
+        {
+          "at": "2026-10-06T03:55:03.456782Z",
+          "error": "검색 근거에 맞는 실무 사례 후보를 구성하지 못했습니다. 요청을 보존했습니다.",
+          "error_code": "research_invalid",
+          "failure_detail": null,
+          "planning_calls": 3
+        },
+        {
+          "at": "2026-10-06T03:59:26.330807Z",
+          "error": "요청별 데이터 설계 호출을 완료하지 못했습니다. 입력을 유지했습니다.",
+          "error_code": "api_rate_limited",
+          "failure_detail": null,
+          "planning_calls": 6
+        }
+      ],
+      "contract_version": "request-v2",
+      "generation_attempts": 0,
+      "parent_operation_id": "1a666d96-6e2e-4274-943a-248c7b798c7b",
+      "recommendation_change": null
+    },
+    "diagnostics": {
+      "seed": 85568413,
+      "plan_id": "a638ed23-6904-4619-8004-a967171c1a12",
+      "source_case": {
+        "scope": "broad",
+        "topic": "핀테크 실시간 이상 거래 탐지(Fraud Detection)",
+        "queries": [
+          "real-world business analytics case studies marketing churn customer lifetime value",
+          "e-commerce supply chain optimization case study business analytics",
+          "fintech credit scoring fraud detection business analytics case study",
+          "manufacturing predictive maintenance business analytics case study"
+        ],
+        "sources": [
+          {
+            "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHiEtzYSDEri0hnuwv150v56IbVBiQijILbqspSqJ6JixeIsMliF0g4R6qjpdqUI0PI3xevMTX6KTI83_bbWNhGYrkqkVMH_vg4IRL3eHwOL0UBriAE5UfY9AODv9fyqG7wKder",
+            "title": "eightgen.ai",
+            "source_id": "source-3",
+            "supported_excerpts": [
+              "핀테크: 실시간 이상 거래 탐지(Fraud Detection)"
+            ]
+          },
+          {
+            "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFfsD39tsnNbFFIGIQl18jslXf1Hd6T1dLITMw3HnTvsWucPs-d5AwqZAJs_GhHTtsEXxL8G5Dju80VGgnIzvW5V5qvhJfsZoP_JB5CRVXR1SnNAIdipjoyP3WFqAN0ZXMTO2frHP0mSCuWT3hONIZ7I6zRzds=",
+            "title": "quirkybit.io",
+            "source_id": "source-4",
+            "supported_excerpts": [
+              "핀테크: 실시간 이상 거래 탐지(Fraud Detection)"
+            ]
+          }
+        ],
+        "version": "case-research-v1",
+        "decision": "이상 거래 탐지 알고리즘의 임계값을 조정하여 오탐률과 미탐률 사이의 균형을 결정합니다.",
+        "candidates": [
+          {
+            "topic": "이커머스 고객 생애 가치(CLV) 최적화",
+            "decision": "이탈 가능성이 높은 고가치 고객을 위한 맞춤형 리텐션 프로모션 예산을 편성합니다.",
+            "source_ids": [
+              "source-1",
+              "source-2"
+            ],
+            "novelty_reason": "최근 과제인 게임 밸런싱과 전혀 다른 이커머스 도메인의 고객 분석 문제를 다룹니다.",
+            "overlaps_recent": false,
+            "business_problem": "고객의 이탈 징후를 사전에 포착하고 고객 생애 가치를 극대화하기 위한 마케팅 자원 배분 전략이 필요합니다.",
+            "analysis_question": "고객 등급별 평균 구매 빈도와 이탈률의 관계를 분석하고, 이탈 위험이 높은 고가치 고객군의 비율을 산출하세요."
+          },
+          {
+            "topic": "핀테크 실시간 이상 거래 탐지(Fraud Detection)",
+            "decision": "이상 거래 탐지 알고리즘의 임계값을 조정하여 오탐률과 미탐률 사이의 균형을 결정합니다.",
+            "source_ids": [
+              "source-3",
+              "source-4"
+            ],
+            "novelty_reason": "금융 데이터의 패턴 분석을 통해 보안 및 리스크 관리 관점의 문제를 제시합니다.",
+            "overlaps_recent": false,
+            "business_problem": "금융 거래 과정에서 발생하는 부정 결제 및 이상 패턴을 실시간으로 감지하여 자산 손실을 방지해야 합니다.",
+            "analysis_question": "거래 유형별 이상 거래 발생 건수와 전체 거래 대비 이상 거래의 비율을 계산하고, 시간대별 평균 거래 금액 편차를 비교하세요."
+          },
+          {
+            "topic": "제조 설비 예지 보전(Predictive Maintenance)",
+            "decision": "데이터 기반의 예방 정비 스케줄을 확정하여 유지보수 비용과 생산성을 최적화합니다.",
+            "source_ids": [
+              "source-5",
+              "source-6",
+              "source-7",
+              "source-8"
+            ],
+            "novelty_reason": "물리적 장비의 센서 데이터를 다루는 제조 산업의 운영 효율화 문제를 포함합니다.",
+            "overlaps_recent": false,
+            "business_problem": "설비의 갑작스러운 고장으로 인한 가동 중단(Downtime)을 최소화하기 위해 센서 데이터를 기반으로 정비 시점을 결정해야 합니다.",
+            "analysis_question": "설비별 평균 가동 시간과 고장 전 센서 수치의 급격한 변화 빈도를 분석하여 계획되지 않은 중단 비율을 산출하세요."
+          }
+        ],
+        "searched_at": "2026-10-06T03:53:30.670331+00:00",
+        "business_problem": "금융 거래 과정에서 발생하는 부정 결제 및 이상 패턴을 실시간으로 감지하여 자산 손실을 방지해야 합니다.",
+        "selection_reason": "핀테크 이상 거래 탐지는 데이터의 복잡도가 높고 실무적 중요도가 크며 최근 과제와 도메인이 완전히 다릅니다.",
+        "analysis_question": "거래 유형별 이상 거래 발생 건수와 전체 거래 대비 이상 거래의 비율을 계산하고, 시간대별 평균 거래 금액 편차를 비교하세요.",
+        "search_suggestions": "<style>\n.container {\n  align-items: center;\n  border-radius: 8px;\n  display: flex;\n  font-family: Google Sans, Roboto, sans-serif;\n  font-size: 14px;\n  line-height: 20px;\n  padding: 8px 12px;\n}\n.chip {\n  display: inline-block;\n  border: solid 1px;\n  border-radius: 16px;\n  min-width: 14px;\n  padding: 5px 16px;\n  text-align: center;\n  user-select: none;\n  margin: 0 8px;\n  -webkit-tap-highlight-color: transparent;\n}\n.carousel {\n  overflow: auto;\n  scrollbar-width: none;\n  white-space: nowrap;\n  margin-right: -12px;\n}\n.headline {\n  display: flex;\n  margin-right: 4px;\n}\n.gradient-container {\n  position: relative;\n}\n.gradient {\n  position: absolute;\n  transform: translate(3px, -9px);\n  height: 36px;\n  width: 9px;\n}\n@media (prefers-color-scheme: light) {\n  .container {\n    background-color: #fafafa;\n    box-shadow: 0 0 0 1px #0000000f;\n  }\n  .headline-label {\n    color: #1f1f1f;\n  }\n  .chip {\n    background-color: #ffffff;\n    border-color: #d2d2d2;\n    color: #5e5e5e;\n    text-decoration: none;\n  }\n  .chip:hover {\n    background-color: #f2f2f2;\n  }\n  .chip:focus {\n    background-color: #f2f2f2;\n  }\n  .chip:active {\n    background-color: #d8d8d8;\n    border-color: #b6b6b6;\n  }\n  .logo-dark {\n    display: none;\n  }\n  .gradient {\n    background: linear-gradient(90deg, #fafafa 15%, #fafafa00 100%);\n  }\n}\n@media (prefers-color-scheme: dark) {\n  .container {\n    background-color: #1f1f1f;\n    box-shadow: 0 0 0 1px #ffffff26;\n  }\n  .headline-label {\n    color: #fff;\n  }\n  .chip {\n    background-color: #2c2c2c;\n    border-color: #3c4043;\n    color: #fff;\n    text-decoration: none;\n  }\n  .chip:hover {\n    background-color: #353536;\n  }\n  .chip:focus {\n    background-color: #353536;\n  }\n  .chip:active {\n    background-color: #464849;\n    border-color: #53575b;\n  }\n  .logo-light {\n    display: none;\n  }\n  .gradient {\n    background: linear-gradient(90deg, #1f1f1f 15%, #1f1f1f00 100%);\n  }\n}\n</style>\n<div class=\"container\">\n  <div class=\"headline\">\n    <svg class=\"logo-light\" width=\"18\" height=\"18\" viewBox=\"9 9 35 35\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n      <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M42.8622 27.0064C42.8622 25.7839 42.7525 24.6084 42.5487 23.4799H26.3109V30.1568H35.5897C35.1821 32.3041 33.9596 34.1222 32.1258 35.3448V39.6864H37.7213C40.9814 36.677 42.8622 32.2571 42.8622 27.0064V27.0064Z\" fill=\"#4285F4\"/>\n      <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M26.3109 43.8555C30.9659 43.8555 34.8687 42.3195 37.7213 39.6863L32.1258 35.3447C30.5898 36.3792 28.6306 37.0061 26.3109 37.0061C21.8282 37.0061 18.0195 33.9811 16.6559 29.906H10.9194V34.3573C13.7563 39.9841 19.5712 43.8555 26.3109 43.8555V43.8555Z\" fill=\"#34A853\"/>\n      <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M16.6559 29.8904C16.3111 28.8559 16.1074 27.7588 16.1074 26.6146C16.1074 25.4704 16.3111 24.3733 16.6559 23.3388V18.8875H10.9194C9.74388 21.2072 9.06992 23.8247 9.06992 26.6146C9.06992 29.4045 9.74388 32.022 10.9194 34.3417L15.3864 30.8621L16.6559 29.8904V29.8904Z\" fill=\"#FBBC05\"/>\n      <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M26.3109 16.2386C28.85 16.2386 31.107 17.1164 32.9095 18.8091L37.8466 13.8719C34.853 11.082 30.9659 9.3736 26.3109 9.3736C19.5712 9.3736 13.7563 13.245 10.9194 18.8875L16.6559 23.3388C18.0195 19.2636 21.8282 16.2386 26.3109 16.2386V16.2386Z\" fill=\"#EA4335\"/>\n    </svg>\n    <svg class=\"logo-dark\" width=\"18\" height=\"18\" viewBox=\"0 0 48 48\" xmlns=\"http://www.w3.org/2000/svg\">\n      <circle cx=\"24\" cy=\"23\" fill=\"#FFF\" r=\"22\"/>\n      <path d=\"M33.76 34.26c2.75-2.56 4.49-6.37 4.49-11.26 0-.89-.08-1.84-.29-3H24.01v5.99h8.03c-.4 2.02-1.5 3.56-3.07 4.56v.75l3.91 2.97h.88z\" fill=\"#4285F4\"/>\n      <path d=\"M15.58 25.77A8.845 8.845 0 0 0 24 31.86c1.92 0 3.62-.46 4.97-1.31l4.79 3.71C31.14 36.7 27.65 38 24 38c-5.93 0-11.01-3.4-13.45-8.36l.17-1.01 4.06-2.85h.8z\" fill=\"#34A853\"/>\n      <path d=\"M15.59 20.21a8.864 8.864 0 0 0 0 5.58l-5.03 3.86c-.98-2-1.53-4.25-1.53-6.64 0-2.39.55-4.64 1.53-6.64l1-.22 3.81 2.98.22 1.08z\" fill=\"#FBBC05\"/>\n      <path d=\"M24 14.14c2.11 0 4.02.75 5.52 1.98l4.36-4.36C31.22 9.43 27.81 8 24 8c-5.93 0-11.01 3.4-13.45 8.36l5.03 3.85A8.86 8.86 0 0 1 24 14.14z\" fill=\"#EA4335\"/>\n    </svg>\n    <div class=\"gradient-container\"><div class=\"gradient\"></div></div>\n  </div>\n  <div class=\"carousel\">\n<a class=\"chip\" href=\"https://www.google.com/search?q=real-world+business+analytics+case+studies+marketing+churn+customer+lifetime+value&client=app-vertex-grounding&safesearch=active\">real-world business analytics case studies marketing churn customer lifetime value</a>\n<a class=\"chip\" href=\"https://www.google.com/search?q=e-commerce+supply+chain+optimization+case+study+business+analytics&client=app-vertex-grounding&safesearch=active\">e-commerce supply chain optimization case study business analytics</a>\n<a class=\"chip\" href=\"https://www.google.com/search?q=fintech+credit+scoring+fraud+detection+business+analytics+case+study&client=app-vertex-grounding&safesearch=active\">fintech credit scoring fraud detection business analytics case study</a>\n<a class=\"chip\" href=\"https://www.google.com/search?q=manufacturing+predictive+maintenance+business+analytics+case+study&client=app-vertex-grounding&safesearch=active\">manufacturing predictive maintenance business analytics case study</a>\n  </div>\n</div>"
+      },
+      "case_research": {
+        "queries": [
+          "real-world business analytics case studies marketing churn customer lifetime value",
+          "e-commerce supply chain optimization case study business analytics",
+          "fintech credit scoring fraud detection business analytics case study",
+          "manufacturing predictive maintenance business analytics case study"
+        ],
+        "sources": [
+          {
+            "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFdHN0i3jERciH_u2imh9G95GOhV56uB2uvpRR_CgSNXddxhddPyh5uLzIQebWzX-vHqixEI5aduLpmpOxqRDz5cNShupG5brdI3d1doZj1bL_Jpgn4j2LHAbv0i6viYax691RSaT_Jgx4f8z_9RlA-jyAkX-R-p8FrjzoZxH70nd3WRg6-XDRL56mmKaR3dkwwh-JfZ1k6p4wB32Xiy3xMdKv4-S55g8ECSgo=",
+            "title": "medium.com",
+            "source_id": "source-1",
+            "supported_excerpts": [
+              "이커머스: 고객 생애 가치(CLV) 최적화 및 이탈 예측"
+            ]
+          },
+          {
+            "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEyPQu5wwC5howpG_jsjaFDGWbltxkX6CFpqEJIOGBBZg8QYYuEvcONTHPsVIVv6RsXU8irhwSJ0L_U5HqbsWIR4mpSUr-WUnh8-pwDoRFz7rb5CByI2zoe9--KyOmp9WbJg0cV__Z8LN8Nz9yUZQ13cvpcA9pYPlzYKPC2nYtz1yUptHxo",
+            "title": "barnraisersllc.com",
+            "source_id": "source-2",
+            "supported_excerpts": [
+              "이커머스: 고객 생애 가치(CLV) 최적화 및 이탈 예측"
+            ]
+          },
+          {
+            "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHiEtzYSDEri0hnuwv150v56IbVBiQijILbqspSqJ6JixeIsMliF0g4R6qjpdqUI0PI3xevMTX6KTI83_bbWNhGYrkqkVMH_vg4IRL3eHwOL0UBriAE5UfY9AODv9fyqG7wKder",
+            "title": "eightgen.ai",
+            "source_id": "source-3",
+            "supported_excerpts": [
+              "핀테크: 실시간 이상 거래 탐지(Fraud Detection)"
+            ]
+          },
+          {
+            "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFfsD39tsnNbFFIGIQl18jslXf1Hd6T1dLITMw3HnTvsWucPs-d5AwqZAJs_GhHTtsEXxL8G5Dju80VGgnIzvW5V5qvhJfsZoP_JB5CRVXR1SnNAIdipjoyP3WFqAN0ZXMTO2frHP0mSCuWT3hONIZ7I6zRzds=",
+            "title": "quirkybit.io",
+            "source_id": "source-4",
+            "supported_excerpts": [
+              "핀테크: 실시간 이상 거래 탐지(Fraud Detection)"
+            ]
+          },
+          {
+            "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQF-P5H3jJ-Hk1U0bFzJ98ZYwzB82H28a7NqrKgRYlvT8ANlnrKK4C049RoD40mQQ_ccPBcj5xR0-BFQhDZAoSDwpQ5caPEzW6UvRLyfbfPTB9YwHvbxyeEMhy6U4A9An0NPFfzCN4c0YEWhc02eFRmTtgo44H9fEGADOnqnB8AewfA4KyH39ZfDvVoL4ZmOer4P1CYiWeRCouY=",
+            "title": "imaintain.uk",
+            "source_id": "source-5",
+            "supported_excerpts": [
+              "제조: 설비 예지 보전(Predictive Maintenance)"
+            ]
+          },
+          {
+            "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQH_VdhP_RzdSrnaRPTeVrpBkhwLv9qp66p1wBqUyn_e_qlweYCf436Gys1Ft7hnhdCktLw-tKKUwI91A4I8OZ6bQgkBPFsz2pLOrQ6hdDMaQeHFsHAl9TrtMdvWRuwLEwDOWN5304TD7O4e2IKnZYw55cqYtqpOmLnTFJ3hWnWS_NNsy0aLDA==",
+            "title": "factored.ai",
+            "source_id": "source-6",
+            "supported_excerpts": [
+              "제조: 설비 예지 보전(Predictive Maintenance)",
+              "*   **실제 확인 사실**: 제조 현장에서는 센서 데이터를 활용하여 장비 고장 전 징후를 포착함으로써, 계획되지 않은 가동 중단(Unplanned Downtime)을 줄이고 유지보수 비용을 최적화합니다. [1.4.1, 1.4.4]"
+            ]
+          },
+          {
+            "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFDCJR-xiFrprrzTM6JpC2ZOZnudMEjlon___D1Ux0ymLDGSYZVooUfQO199PsV6arurcPwoipaPje92KTM-pf59ve5v9QsWg6VTMWEl-WWhZbQKOLjMU2PftTJN6vWy1RkYedirTmeBczjzCAO9aBlZKJfEQPS4Fqo2c3h_yBDHJSsJjAVvdAtV3pxjYndyhCI8VmZWq_Ia9n7WOc=",
+            "title": "mutuallyhuman.com",
+            "source_id": "source-7",
+            "supported_excerpts": [
+              "제조: 설비 예지 보전(Predictive Maintenance)"
+            ]
+          },
+          {
+            "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHtN62CEwGhOjtHc5QT9Ie06-GOZXkMVOkhago7iYfojs4SqnICWWLC81pqanU4TrLi9V9eIo6aBrFbKL-Fvd6KcOdto0dSD3EH4W0KnDSeCfAughCphh7vyQXUR0Yvec3NVrV4IvJ92SIVTuvqNdKxxz6kr4X_qgpBl8Qj2w0Sq-A3zh9tvAceXXoRr3E=",
+            "title": "ifactoryapp.com",
+            "source_id": "source-8",
+            "supported_excerpts": [
+              "제조: 설비 예지 보전(Predictive Maintenance)"
+            ]
+          }
+        ],
+        "version": "case-research-v1",
+        "searched_at": "2026-10-06T03:53:30.670331+00:00",
+        "search_suggestions": "<style>\n.container {\n  align-items: center;\n  border-radius: 8px;\n  display: flex;\n  font-family: Google Sans, Roboto, sans-serif;\n  font-size: 14px;\n  line-height: 20px;\n  padding: 8px 12px;\n}\n.chip {\n  display: inline-block;\n  border: solid 1px;\n  border-radius: 16px;\n  min-width: 14px;\n  padding: 5px 16px;\n  text-align: center;\n  user-select: none;\n  margin: 0 8px;\n  -webkit-tap-highlight-color: transparent;\n}\n.carousel {\n  overflow: auto;\n  scrollbar-width: none;\n  white-space: nowrap;\n  margin-right: -12px;\n}\n.headline {\n  display: flex;\n  margin-right: 4px;\n}\n.gradient-container {\n  position: relative;\n}\n.gradient {\n  position: absolute;\n  transform: translate(3px, -9px);\n  height: 36px;\n  width: 9px;\n}\n@media (prefers-color-scheme: light) {\n  .container {\n    background-color: #fafafa;\n    box-shadow: 0 0 0 1px #0000000f;\n  }\n  .headline-label {\n    color: #1f1f1f;\n  }\n  .chip {\n    background-color: #ffffff;\n    border-color: #d2d2d2;\n    color: #5e5e5e;\n    text-decoration: none;\n  }\n  .chip:hover {\n    background-color: #f2f2f2;\n  }\n  .chip:focus {\n    background-color: #f2f2f2;\n  }\n  .chip:active {\n    background-color: #d8d8d8;\n    border-color: #b6b6b6;\n  }\n  .logo-dark {\n    display: none;\n  }\n  .gradient {\n    background: linear-gradient(90deg, #fafafa 15%, #fafafa00 100%);\n  }\n}\n@media (prefers-color-scheme: dark) {\n  .container {\n    background-color: #1f1f1f;\n    box-shadow: 0 0 0 1px #ffffff26;\n  }\n  .headline-label {\n    color: #fff;\n  }\n  .chip {\n    background-color: #2c2c2c;\n    border-color: #3c4043;\n    color: #fff;\n    text-decoration: none;\n  }\n  .chip:hover {\n    background-color: #353536;\n  }\n  .chip:focus {\n    background-color: #353536;\n  }\n  .chip:active {\n    background-color: #464849;\n    border-color: #53575b;\n  }\n  .logo-light {\n    display: none;\n  }\n  .gradient {\n    background: linear-gradient(90deg, #1f1f1f 15%, #1f1f1f00 100%);\n  }\n}\n</style>\n<div class=\"container\">\n  <div class=\"headline\">\n    <svg class=\"logo-light\" width=\"18\" height=\"18\" viewBox=\"9 9 35 35\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n      <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M42.8622 27.0064C42.8622 25.7839 42.7525 24.6084 42.5487 23.4799H26.3109V30.1568H35.5897C35.1821 32.3041 33.9596 34.1222 32.1258 35.3448V39.6864H37.7213C40.9814 36.677 42.8622 32.2571 42.8622 27.0064V27.0064Z\" fill=\"#4285F4\"/>\n      <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M26.3109 43.8555C30.9659 43.8555 34.8687 42.3195 37.7213 39.6863L32.1258 35.3447C30.5898 36.3792 28.6306 37.0061 26.3109 37.0061C21.8282 37.0061 18.0195 33.9811 16.6559 29.906H10.9194V34.3573C13.7563 39.9841 19.5712 43.8555 26.3109 43.8555V43.8555Z\" fill=\"#34A853\"/>\n      <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M16.6559 29.8904C16.3111 28.8559 16.1074 27.7588 16.1074 26.6146C16.1074 25.4704 16.3111 24.3733 16.6559 23.3388V18.8875H10.9194C9.74388 21.2072 9.06992 23.8247 9.06992 26.6146C9.06992 29.4045 9.74388 32.022 10.9194 34.3417L15.3864 30.8621L16.6559 29.8904V29.8904Z\" fill=\"#FBBC05\"/>\n      <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M26.3109 16.2386C28.85 16.2386 31.107 17.1164 32.9095 18.8091L37.8466 13.8719C34.853 11.082 30.9659 9.3736 26.3109 9.3736C19.5712 9.3736 13.7563 13.245 10.9194 18.8875L16.6559 23.3388C18.0195 19.2636 21.8282 16.2386 26.3109 16.2386V16.2386Z\" fill=\"#EA4335\"/>\n    </svg>\n    <svg class=\"logo-dark\" width=\"18\" height=\"18\" viewBox=\"0 0 48 48\" xmlns=\"http://www.w3.org/2000/svg\">\n      <circle cx=\"24\" cy=\"23\" fill=\"#FFF\" r=\"22\"/>\n      <path d=\"M33.76 34.26c2.75-2.56 4.49-6.37 4.49-11.26 0-.89-.08-1.84-.29-3H24.01v5.99h8.03c-.4 2.02-1.5 3.56-3.07 4.56v.75l3.91 2.97h.88z\" fill=\"#4285F4\"/>\n      <path d=\"M15.58 25.77A8.845 8.845 0 0 0 24 31.86c1.92 0 3.62-.46 4.97-1.31l4.79 3.71C31.14 36.7 27.65 38 24 38c-5.93 0-11.01-3.4-13.45-8.36l.17-1.01 4.06-2.85h.8z\" fill=\"#34A853\"/>\n      <path d=\"M15.59 20.21a8.864 8.864 0 0 0 0 5.58l-5.03 3.86c-.98-2-1.53-4.25-1.53-6.64 0-2.39.55-4.64 1.53-6.64l1-.22 3.81 2.98.22 1.08z\" fill=\"#FBBC05\"/>\n      <path d=\"M24 14.14c2.11 0 4.02.75 5.52 1.98l4.36-4.36C31.22 9.43 27.81 8 24 8c-5.93 0-11.01 3.4-13.45 8.36l5.03 3.85A8.86 8.86 0 0 1 24 14.14z\" fill=\"#EA4335\"/>\n    </svg>\n    <div class=\"gradient-container\"><div class=\"gradient\"></div></div>\n  </div>\n  <div class=\"carousel\">\n<a class=\"chip\" href=\"https://www.google.com/search?q=real-world+business+analytics+case+studies+marketing+churn+customer+lifetime+value&client=app-vertex-grounding&safesearch=active\">real-world business analytics case studies marketing churn customer lifetime value</a>\n<a class=\"chip\" href=\"https://www.google.com/search?q=e-commerce+supply+chain+optimization+case+study+business+analytics&client=app-vertex-grounding&safesearch=active\">e-commerce supply chain optimization case study business analytics</a>\n<a class=\"chip\" href=\"https://www.google.com/search?q=fintech+credit+scoring+fraud+detection+business+analytics+case+study&client=app-vertex-grounding&safesearch=active\">fintech credit scoring fraud detection business analytics case study</a>\n<a class=\"chip\" href=\"https://www.google.com/search?q=manufacturing+predictive+maintenance+business+analytics+case+study&client=app-vertex-grounding&safesearch=active\">manufacturing predictive maintenance business analytics case study</a>\n  </div>\n</div>"
+      },
+      "schema_issues": [],
+      "schema_reviews": [
+        {
+          "issues": [
+            {
+              "type": "missing",
+              "message": "Field required",
+              "location": [
+                "reason"
+              ]
+            },
+            {
+              "type": "less_than_equal",
+              "message": "Input should be less than or equal to 500",
+              "location": [
+                "tables",
+                1,
+                "groups",
+                0,
+                "count"
+              ]
+            }
+          ],
+          "planning_calls": 5
+        },
+        {
+          "issues": [],
+          "planning_calls": 6
+        }
+      ],
+      "recent_snapshot": [
+        {
+          "goal": "보스 레이드 콘텐츠별 실패 현상 및 성공률 편차를 측정하고, 교란 요인과 대안 설명을 비교하여 최적의 밸런스 조정 의사결정을 내립니다.",
+          "domain": "RPG 보스 레이드 숙련도별 교란 요인 및 실패 현상 조사 분석",
+          "format": "investigation",
+          "ambiguity": "advanced",
+          "situation": "0bc2968d71bd",
+          "structure": "avg:True:1|ratio:False:0|ratio:True:1|ratio:True:2",
+          "difficulty": "advanced",
+          "evaluation": "adaptive",
+          "quality_version": "task-quality-v1",
+          "required_judgment": "investigation"
+        },
+        {
+          "goal": "보스 레이드 콘텐츠별 실패 현상 및 성공률 편차를 측정하고, 교란 요인과 대안 설명을 비교하여 최적의 밸런스 조정 의사결정을 내립니다.",
+          "domain": "가상 RPG 보스 레이드 숙련도별 교란 요인 및 실패 현상 조사 분석",
+          "format": "investigation",
+          "ambiguity": "advanced",
+          "situation": "eb8ba345592e",
+          "structure": "avg:True:2|ratio:False:1|ratio:True:2|ratio:True:2",
+          "difficulty": "advanced",
+          "evaluation": "adaptive",
+          "quality_version": "task-quality-v1",
+          "required_judgment": "investigation"
+        },
+        {
+          "goal": "보스 레이드 콘텐츠별 성공률과 숙련도 그룹에 따른 소요 시간 편차를 측정하고 비교하여 밸런스 조정안을 검토합니다.",
+          "domain": "RPG 보스 레이드 성공률 및 소요시간 비교 분석",
+          "format": "investigation",
+          "ambiguity": "intermediate",
+          "situation": "4717d0e36b67",
+          "structure": "avg:True:1|ratio:True:1",
+          "difficulty": "intermediate",
+          "evaluation": "adaptive",
+          "quality_version": "task-quality-v1",
+          "required_judgment": "investigation"
+        },
+        {
+          "goal": "보스 레이드 콘텐츠의 성공률 편차에 영향을 주는 숙련도 및 장비 티어별 교란 요인을 분석하여 최적의 밸런스 조정 의사결정을 내립니다.",
+          "domain": "가상 RPG 보스 레이드 숙련도별 성공률 및 소요시간 교란 요인 분석",
+          "format": "investigation",
+          "ambiguity": "advanced",
+          "situation": "a79d429528fe",
+          "structure": "avg:True:1|ratio:False:0|ratio:True:1",
+          "difficulty": "advanced",
+          "evaluation": "adaptive",
+          "quality_version": "task-quality-v1",
+          "required_judgment": "investigation"
+        },
+        {
+          "goal": "특정 보스 레이드 콘텐츠의 성공률과 평균 소요 시간을 측정하고 운영 개선안을 도출합니다.",
+          "domain": "가상 RPG 보스 레이드 성공률 및 전투 소요 시간 측정 분석",
+          "format": "calculation",
+          "ambiguity": "beginner",
+          "situation": "ea3f3ebb8c18",
+          "structure": "avg:False:0|ratio:False:0",
+          "difficulty": "beginner",
+          "evaluation": "adaptive",
+          "quality_version": "task-quality-v1",
+          "required_judgment": "calculation"
+        }
+      ]
+    },
+    "operations": [
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "5531dd4a-7da7-414a-a4ec-efc7d3413d88",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "76e128a1-a65e-429a-9f7d-5a55d245fe4f",
+        "started_at": "2026-10-06T03:47:20.269090Z",
+        "duration_ms": 34030,
+        "finished_at": "2026-10-06T03:47:54.299849Z",
+        "occurred_at": "2026-10-06T03:47:20.269090Z",
+        "input_tokens": 1092,
+        "operation_id": "09df1d5d-d7db-4ce0-b56a-2cc3ee7cb6b6",
+        "model_version": "gemma-4-26b-a4b-it",
+        "output_tokens": 1320,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "case-search-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      },
+      {
+        "kind": "generation",
+        "domain": "adaptive",
+        "status": "failed",
+        "event_id": "e286b832-af8a-4b28-aff7-d1e6304e3668",
+        "task_kind": "auto",
+        "error_code": "validation_failed",
+        "event_type": "generation_started",
+        "request_id": "76e128a1-a65e-429a-9f7d-5a55d245fe4f",
+        "started_at": "2026-10-06T03:47:20.220590Z",
+        "duration_ms": 34126,
+        "finished_at": "2026-10-06T03:47:54.347268Z",
+        "occurred_at": "2026-10-06T03:47:20.220590Z",
+        "operation_id": "19bc76b3-20ed-40d4-87ad-989012347236",
+        "rules_version": "access-plan-v2",
+        "schema_version": "event-v2",
+        "requested_difficulty": "advanced"
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "8f1ccfa2-0631-4bd8-96c5-80d41c81a2f7",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "76e128a1-a65e-429a-9f7d-5a55d245fe4f",
+        "started_at": "2026-10-06T03:52:52.853234Z",
+        "duration_ms": 37815,
+        "finished_at": "2026-10-06T03:53:30.668339Z",
+        "occurred_at": "2026-10-06T03:52:52.853234Z",
+        "input_tokens": 1168,
+        "operation_id": "825adbe6-ae15-447a-800a-a4844d4a9bc0",
+        "model_version": "gemma-4-26b-a4b-it",
+        "output_tokens": 1378,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "case-search-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "failed",
+        "event_id": "6da166ee-e80f-47f6-b984-3ed7a20f92e3",
+        "error_code": "provider_failure",
+        "event_type": "ai_started",
+        "request_id": "76e128a1-a65e-429a-9f7d-5a55d245fe4f",
+        "started_at": "2026-10-06T03:53:30.709417Z",
+        "duration_ms": 92727,
+        "finished_at": "2026-10-06T03:55:03.437315Z",
+        "occurred_at": "2026-10-06T03:53:30.709417Z",
+        "input_tokens": null,
+        "operation_id": "10d352d4-8b94-4a4e-abb8-e05d393c2168",
+        "model_version": "gemma-4-26b-a4b-it",
+        "output_tokens": null,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "case-selection-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": {
+          "stage": "response",
+          "timeout": false,
+          "request_id": "c6a9c439-f63d-4de8-8258-a111a7b756a8",
+          "http_status": 200
+        },
+        "usage_missing_reason": "not_reported"
+      },
+      {
+        "kind": "generation",
+        "domain": "adaptive",
+        "status": "failed",
+        "event_id": "2a19c5ab-edfd-4c24-9dd1-f248a7eabc3b",
+        "task_kind": "auto",
+        "error_code": "validation_failed",
+        "event_type": "generation_started",
+        "request_id": "76e128a1-a65e-429a-9f7d-5a55d245fe4f",
+        "started_at": "2026-10-06T03:52:52.820107Z",
+        "duration_ms": 130657,
+        "finished_at": "2026-10-06T03:55:03.477403Z",
+        "occurred_at": "2026-10-06T03:52:52.820107Z",
+        "operation_id": "1a666d96-6e2e-4274-943a-248c7b798c7b",
+        "rules_version": "access-plan-v2",
+        "schema_version": "event-v2",
+        "parent_operation_id": "19bc76b3-20ed-40d4-87ad-989012347236",
+        "requested_difficulty": "advanced"
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "794e8ef1-f226-41a2-bcb2-ddf7de261a80",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "76e128a1-a65e-429a-9f7d-5a55d245fe4f",
+        "started_at": "2026-10-06T03:57:28.050466Z",
+        "duration_ms": 20950,
+        "finished_at": "2026-10-06T03:57:49.001301Z",
+        "occurred_at": "2026-10-06T03:57:28.050466Z",
+        "input_tokens": 3334,
+        "operation_id": "d78fa9f4-5ba1-41e7-ae56-79208b603ef1",
+        "model_version": "gemma-4-26b-a4b-it",
+        "output_tokens": 706,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "case-selection-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "completed",
+        "event_id": "33a6d051-5106-46b9-901d-60d531343b8b",
+        "error_code": null,
+        "event_type": "ai_started",
+        "request_id": "76e128a1-a65e-429a-9f7d-5a55d245fe4f",
+        "started_at": "2026-10-06T03:57:49.052914Z",
+        "duration_ms": 91638,
+        "finished_at": "2026-10-06T03:59:20.691204Z",
+        "occurred_at": "2026-10-06T03:57:49.052914Z",
+        "input_tokens": 11133,
+        "operation_id": "e27a1dfa-bc7e-4a18-a32f-0bfdca5aad49",
+        "model_version": "gemma-4-26b-a4b-it",
+        "output_tokens": 4011,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": null,
+        "usage_missing_reason": null
+      },
+      {
+        "kind": "ai",
+        "domain": "adaptive",
+        "status": "failed",
+        "event_id": "72afed3d-5702-4f75-b415-c30cd62b478f",
+        "error_code": "provider_failure",
+        "event_type": "ai_started",
+        "request_id": "76e128a1-a65e-429a-9f7d-5a55d245fe4f",
+        "started_at": "2026-10-06T03:59:20.740674Z",
+        "duration_ms": 5554,
+        "finished_at": "2026-10-06T03:59:26.295590Z",
+        "occurred_at": "2026-10-06T03:59:20.740674Z",
+        "input_tokens": null,
+        "operation_id": "a08b33dc-087d-4cb8-b765-e5206c6386df",
+        "model_version": "gemma-4-26b-a4b-it",
+        "output_tokens": null,
+        "rules_version": "adaptive-recipe-v1",
+        "prompt_version": "adaptive-design-repair-v1",
+        "schema_version": "event-v2",
+        "provider_diagnostic": {
+          "stage": "http",
+          "timeout": false,
+          "request_id": "e25a5120-6571-440f-b913-3e5c89f2cf7c",
+          "http_status": 429
+        },
+        "usage_missing_reason": "not_reported"
+      },
+      {
+        "kind": "generation",
+        "domain": "adaptive",
+        "status": "failed",
+        "event_id": "dc5cb127-6caf-49df-89b0-e1d4b620e8cc",
+        "task_kind": "auto",
+        "error_code": "validation_failed",
+        "event_type": "generation_started",
+        "request_id": "76e128a1-a65e-429a-9f7d-5a55d245fe4f",
+        "started_at": "2026-10-06T03:57:28.000991Z",
+        "duration_ms": 118355,
+        "finished_at": "2026-10-06T03:59:26.356301Z",
+        "occurred_at": "2026-10-06T03:57:28.000991Z",
+        "operation_id": "f6a514a3-e9a4-4a62-b533-b10012074745",
+        "rules_version": "access-plan-v2",
+        "schema_version": "event-v2",
+        "parent_operation_id": "1a666d96-6e2e-4274-943a-248c7b798c7b",
+        "requested_difficulty": "advanced"
+      }
+    ]
+  }
+]

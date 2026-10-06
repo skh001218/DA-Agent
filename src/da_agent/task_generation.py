@@ -99,7 +99,7 @@ class TaskGeneration:
             value.update(status=status,**fields)
             if status == 'failed':
                 value.setdefault('failure_history', []).append({'at':now(), 'error_code':value.get('error_code'), 'error':value.get('error'), 'planning_calls':value['planning_calls'], 'failure_detail': value.get('failure_detail')})
-            value['states'].append({'status':status,'at':now()})
+            value['states'].append({'status':status,'at':now(),**({'phase':fields['phase']} if fields.get('phase') else {})})
             conn.execute('UPDATE training_requests SET payload=%s WHERE request_id=%s',(Jsonb(value),rid))
         self.training.event(event_type='request_state',operation_id=value['operation_id'],request_id=rid,status=status,rules_version='access-plan-v2',error_code=value.get('error_code'))
         return True
@@ -108,11 +108,11 @@ class TaskGeneration:
         from . import adaptive_tasks as adaptive, telemetry
         with self.store.connect() as conn:
             fixed=conn.execute('SELECT private FROM generation_jobs WHERE request_id=%s',(rid,)).fetchone()['private']
-        def call(messages, phase):
+        def call(messages, phase, handler=None):
             current=self.training.request(rid)
             if current['planning_calls'] >= adaptive.PLANNING_LIMIT:
                 raise DomainError('planning_limit','요청별 설계·적합성 검증 호출 상한에 도달했습니다.',422)
-            if not self.update(rid,'planning',planning_calls=current['planning_calls']+1):
+            if not self.update(rid,'planning',planning_calls=current['planning_calls']+1,phase=phase):
                 raise DomainError('cancelled','취소된 출제 요청입니다.',409)
             op=telemetry.begin(self.store,'ai',request_id=rid,call_limit=adaptive.PLANNING_LIMIT,domain='adaptive',rules_version=adaptive.VERSION,prompt_version=phase)
             try:
@@ -120,7 +120,7 @@ class TaskGeneration:
                     gap=max(0, float(os.getenv('QUALITY_CALL_INTERVAL_SECONDS','5')))
                     remaining=gap-(time.monotonic()-getattr(self,'adaptive_last_call_finished',0))
                     if remaining>0: time.sleep(min(remaining,10))
-                    result=self.training.auth.review(messages)
+                    result=(handler or self.training.auth.review)(messages)
                     self.adaptive_last_call_finished=time.monotonic()
             except Exception:
                 telemetry.finish(self.store,op,'failed',error_code='provider_failure',usage_missing_reason='failed_call')
@@ -128,12 +128,32 @@ class TaskGeneration:
             usage=result.get('usage') or {}
             telemetry.finish(self.store,op,'completed' if result.get('state')=='completed' else 'failed',error_code=None if result.get('state')=='completed' else 'provider_failure',model_version=result.get('model'),input_tokens=usage.get('input_tokens'),output_tokens=usage.get('output_tokens'),usage_missing_reason=None if usage else 'not_reported',provider_diagnostic=result.get('provider_diagnostic'))
             return result
+        from . import case_research
+        if 'recent_snapshot' not in fixed:
+            fixed['recent_snapshot'] = self.recent()
+            with self.store.connect() as conn:
+                conn.execute('UPDATE generation_jobs SET private=%s WHERE request_id=%s',(Jsonb(fixed),rid))
+        recent = fixed['recent_snapshot']
+        if not fixed.get('adaptive_recipe') and not fixed.get('source_case'):
+            researcher = getattr(self.training.auth,'research',None)
+            selector = getattr(self.training.auth,'select_case',None)
+            if not researcher or not selector:
+                raise DomainError('research_unavailable','현재 모델 연결에서 실무 사례 검색을 지원하지 않습니다. 검색 가능한 연결이 필요합니다.',422)
+            if not fixed.get('case_research'):
+                result = call(case_research.search_messages(data,recent),'case-search-v1',researcher)
+                fixed['case_research'] = case_research.grounded_sources(result)
+                with self.store.connect() as conn:
+                    conn.execute('UPDATE generation_jobs SET private=%s WHERE request_id=%s',(Jsonb(fixed),rid))
+            result = call(case_research.selection_messages(data,fixed['case_research'],recent),'case-selection-v1',selector)
+            fixed['source_case'] = case_research.select_case(result,fixed['case_research'],recent)
+            with self.store.connect() as conn:
+                conn.execute('UPDATE generation_jobs SET private=%s WHERE request_id=%s',(Jsonb(fixed),rid))
         if not fixed.get('adaptive_recipe') or not fixed.get('alignment'):
             def parse(result):
                 try:
                     recipe=adaptive.preflight(adaptive.parse_recipe(result),fixed['seed'],data)
                     from .task_quality import check_quality
-                    if recipe.status=='ready': check_quality(recipe,self.recent(),data.intentional_repeat)
+                    if recipe.status=='ready': check_quality(recipe,recent,data.intentional_repeat)
                     return recipe
                 except ValueError as exc:
                     error=DomainError('plan_invalid','업무 과제의 난이도·다양성 조건을 충족하지 못했습니다.',422)
@@ -145,7 +165,7 @@ class TaskGeneration:
                     with self.store.connect() as conn:
                         conn.execute('UPDATE generation_jobs SET private=%s WHERE request_id=%s',(Jsonb(fixed),rid))
                     raise
-            messages=adaptive.planning_messages(data,self.recent())
+            messages=adaptive.planning_messages(data,recent,fixed.get('source_case'))
             result={'state':'completed','text':json.dumps(fixed['adaptive_recipe'],ensure_ascii=False)} if fixed.get('adaptive_recipe') else call(messages,'adaptive-design-v1')
             for repair_number in range(3):
                 try:
@@ -176,7 +196,7 @@ class TaskGeneration:
         recipe=adaptive.Recipe.model_validate(fixed['adaptive_recipe'])
         if not fixed.get('alignment'):
             for review_number in range(2):
-                result = call(adaptive.alignment_messages(data,recipe,fixed['seed']),'adaptive-alignment-v1')
+                result = call(adaptive.alignment_messages(data,recipe,fixed['seed'],fixed.get('source_case')),'adaptive-alignment-v1')
                 try:
                     fixed['alignment']=adaptive.validate_alignment(result,quality_required=bool(recipe.business_case))
                     fixed.setdefault('alignment_reviews', []).append({'passed':True})
@@ -192,7 +212,7 @@ class TaskGeneration:
                     fixed['alignment_repair_used']=True
                     with self.store.connect() as conn:
                         conn.execute('UPDATE generation_jobs SET private=%s WHERE request_id=%s',(Jsonb(fixed),rid))
-                    messages=adaptive.planning_messages(data,self.recent())+[
+                    messages=adaptive.planning_messages(data,recent,fixed.get('source_case'))+[
                         {'role':'assistant','content':json.dumps(recipe.model_dump(),ensure_ascii=False)},
                         {'role':'user','content':'다음 검증 사유를 자료로 검토하고 원 요청의 주제·난이도·형식은 유지하면서 전체 JSON을 한 번 수정하세요. 필수 자료를 보강하거나 근거 없는 분석 요구를 제거하세요. 요약은 원본 derived_from에서 계산하고 시간·프로필 연결을 일관되게 만드세요. 검증 사유: '+json.dumps(issues,ensure_ascii=False)}]
                     correction=call(messages,'adaptive-alignment-repair-v1')
@@ -222,6 +242,11 @@ class TaskGeneration:
         try:
             package,public,private=adaptive.stage_adaptive(self.training.catalog.root,fixed['package_id'],recipe,fixed['seed'],fixed['plan_id'],fixed['plan_revision'])
             public['original_request']=data.message
+            if fixed.get('source_case'):
+                public['source_case']=case_research.public_case(fixed['source_case'])
+                public['semantic_signature']['source_topic']=fixed['source_case']['topic']
+                public['description']=public['description'].replace('실제 회사 사례를 인용한 것이 아닌 가상 업무 상황이며, 데이터는 연습용 합성 데이터입니다.','업무 상황과 데이터는 연습용 합성 조건입니다. 참고한 실제 공개 사례의 근거는 출처 영역에서 확인할 수 있습니다.')
+                public['description'] += '\n\n검색 출처의 공개 사실을 참고해 구성한 연습 문제입니다. 위 업무 배경·기간·데이터는 에이전트가 설정한 합성 조건이며, 실제 기업의 원본 데이터나 수치를 재현한 것이 아닙니다.'
             if not self.update(rid,'validating'):
                 telemetry.finish(self.store,validation_op,'cancelled')
                 return package,public,private
@@ -371,6 +396,11 @@ class TaskGeneration:
                 with self.store.connect() as conn:
                     fixed=conn.execute('SELECT private FROM generation_jobs WHERE request_id=%s',(rid,)).fetchone()['private']
                 retry_allowed=retry_allowed and (bool(fixed.get('alignment')) or (current['planning_calls']<limit-1 and not fixed.get('alignment_repair_used')))
+                if exc.code=='research_unavailable': retry_allowed=False
+                if exc.code=='research_repeated':
+                    fixed.pop('case_research',None)
+                    with self.store.connect() as conn:
+                        conn.execute('UPDATE generation_jobs SET private=%s WHERE request_id=%s',(Jsonb(fixed),rid))
             self.update(rid,'failed',error_code=exc.code,error=exc.message,retry_allowed=retry_allowed,failure_detail=failure_detail)
         except Exception:
             self.update(rid,'failed',error_code='generation_failed',error='출제 작업에 실패했습니다. 원 입력과 고정 계획을 보존했습니다.',retry_allowed=True,failure_detail=failure_detail)

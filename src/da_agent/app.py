@@ -20,18 +20,20 @@ from .store import Store
 from .sql_runner import SqlRunner
 from .packages import PackageCatalog
 from .api_provider import configured_provider
+from .auth import AuthService
 from .reviews import normalize_ai, normalize_review, review_report
 from .quality import initialize as initialize_quality, routes as quality_routes, pilot_event
 from .training import Training
 from . import learning_state, telemetry, assessments, metrics,quality_v2
 
 
-def create_app(settings=None, auth=None):
+def create_app(settings=None, auth=None, chatgpt_auth=None):
     settings = settings or Settings()
     store = Store(settings.records_dsn)
     runner = SqlRunner(settings)
     catalog = PackageCatalog(settings.packages_root)
     auth = auth or configured_provider()
+    chatgpt_auth = chatgpt_auth or (auth if isinstance(auth, AuthService) else AuthService())
     training = Training(store, runner, catalog, auth)
 
     @asynccontextmanager
@@ -59,6 +61,7 @@ def create_app(settings=None, auth=None):
     app = FastAPI(title="DA-Agent", lifespan=lifespan, docs_url=None, redoc_url=None)
     app.state.store, app.state.runner, app.state.auth = store, runner, auth
     app.state.training = training
+    app.state.chatgpt_auth = chatgpt_auth
     app.add_middleware(TrustedHostMiddleware, allowed_hosts=["localhost", "127.0.0.1", "testserver"])
 
     @app.middleware("http")
@@ -246,8 +249,38 @@ def create_app(settings=None, auth=None):
 
     @app.get("/auth/callback")
     def callback(code: str | None = None, state: str | None = None, client_id: str | None = None, error: str | None = None):
-        auth.callback(code=code, state=state, client_id=client_id, error=error)
+        chatgpt_auth.callback(code=code, state=state, client_id=client_id, error=error)
         return RedirectResponse("/?auth=returned", status_code=303)
+
+    @app.get("/api/chatgpt/status")
+    def chatgpt_status():
+        result = chatgpt_auth.status()
+        reason = result.get("reason")
+        message = chatgpt_message(reason)
+        return dict(result, message=message)
+
+    def chatgpt_message(reason):
+        messages = {
+            "invalid_authorization_state": "로그인 요청이 만료되었거나 일치하지 않습니다. 다시 로그인하세요.",
+            "authorization_denied": "로그인 또는 권한 승인이 취소되었습니다. 다시 로그인할 수 있습니다.",
+            "network_unavailable": "공식 인증 서버에 연결하지 못했습니다. 네트워크를 확인하세요.",
+            "auth_storage_key_required": "서버의 인증 저장소 암호화 키 설정을 확인하세요.",
+            "auth_storage_unavailable": "서버의 인증 저장소와 암호화 키를 확인하세요.",
+            "plan_permission_denied": "계정 또는 앱의 ChatGPT 플랜 사용 접근 권한을 확인하세요.",
+        }
+        return messages.get(reason) or (normalize_ai({"reason": reason})["error"]["message"] if reason else "")
+
+    @app.post("/api/chatgpt/start")
+    def chatgpt_start():
+        result = chatgpt_auth.start()
+        if not result.get("authorization_url"):
+            message = chatgpt_message(result.get("reason"))
+            raise DomainError("chatgpt_auth_unavailable", "ChatGPT 로그인을 시작할 수 없습니다. " + message, 503)
+        return result
+
+    @app.post("/api/chatgpt/disconnect")
+    def chatgpt_disconnect():
+        return chatgpt_auth.disconnect()
 
     @app.post("/api/auth/disconnect")
     def disconnect():
