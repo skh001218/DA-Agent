@@ -1,0 +1,8 @@
+FROM python:3.12.10-slim
+WORKDIR /app
+COPY requirements.lock.txt requirements-discord.txt ./
+RUN pip install --no-cache-dir -r requirements.lock.txt -r requirements-discord.txt
+COPY src ./src
+COPY scripts/run_discord_container.py ./scripts/run_discord_container.py
+ENV PYTHONPATH=/app/src PYTHONUNBUFFERED=1
+CMD ["python", "scripts/run_discord_container.py"]

@@ -1,0 +1,95 @@
+{
+  "model": "gemma-4-26b-a4b-it",
+  "passed": 14,
+  "total": 14,
+  "cases": [
+    {
+      "name": "ambiguous_rate",
+      "passed": true,
+      "artifact": "discord-gemma-before-minimal-2026-10-06.json",
+      "artifact_case": "ambiguous_rate"
+    },
+    {
+      "name": "signup_users",
+      "passed": true,
+      "artifact": "discord-gemma-before-minimal-2026-10-06.json",
+      "artifact_case": "signup_users"
+    },
+    {
+      "name": "attempt_events",
+      "passed": true,
+      "artifact": "discord-gemma-minimal-2026-10-06.json",
+      "artifact_case": "attempt_events"
+    },
+    {
+      "name": "cohort_completion",
+      "passed": true,
+      "artifact": "discord-gemma-minimal-2026-10-06.json",
+      "artifact_case": "cohort_completion"
+    },
+    {
+      "name": "exact_d7",
+      "passed": true,
+      "artifact": "discord-gemma-before-minimal-2026-10-06.json",
+      "artifact_case": "exact_d7"
+    },
+    {
+      "name": "weekly_return",
+      "passed": true,
+      "artifact": "discord-gemma-minimal-2026-10-06.json",
+      "artifact_case": "weekly_return"
+    },
+    {
+      "name": "unsupported_revenue",
+      "passed": true,
+      "artifact": "discord-gemma-minimal-2026-10-06.json",
+      "artifact_case": "unsupported_revenue"
+    },
+    {
+      "name": "valid_uncertainty",
+      "passed": true,
+      "artifact": "discord-gemma-positive-recheck-2026-10-06.json",
+      "artifact_case": "valid_uncertainty"
+    },
+    {
+      "name": "causal_core_error",
+      "passed": true,
+      "artifact": "discord-gemma-minimal-2026-10-06.json",
+      "artifact_case": "causal_core_error"
+    },
+    {
+      "name": "valid_hypothesis_revision",
+      "passed": true,
+      "artifact": "discord-gemma-positive-recheck-2026-10-06.json",
+      "artifact_case": "valid_hypothesis_revision"
+    },
+    {
+      "name": "system_failure_held",
+      "passed": true,
+      "artifact": "discord-gemma-minimal-2026-10-06.json",
+      "artifact_case": "system_failure_held"
+    },
+    {
+      "name": "live_service_roundtrip",
+      "passed": true,
+      "artifact": "discord-gemma-evaluation-recheck-2026-10-06.json",
+      "artifact_case": "live_submission_after_parser_fix"
+    },
+    {
+      "name": "persisted_live_clarification",
+      "passed": true,
+      "artifact": "discord-gemma-followups-2026-10-06.json",
+      "artifact_case": "persisted_live_clarification"
+    },
+    {
+      "name": "equivalent_report_style",
+      "passed": true,
+      "artifact": "discord-gemma-evaluation-recheck-2026-10-06.json",
+      "artifact_case": "real_response_style_revalidation"
+    }
+  ],
+  "style_check": "recorded real responses revalidated after parser correction",
+  "human_review": "pending",
+  "discord_live": "not_configured",
+  "earlier_failures_preserved": true
+}
