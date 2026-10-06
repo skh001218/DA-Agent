@@ -26,6 +26,7 @@ def task_intro(document):
         '/query로 새 조회를 요청하세요. 봇 질문에는 답장·멘션 또는 /answer로 답해주세요.',
         '분석 결과와 대응 제안은 /report로 작성하세요.',
         '/tip command:명령어로 사용법과 예시를 확인할 수 있습니다.',
+        '/question으로 모르는 용어를 물어보세요. 예: ads와 organic이 뭐야?',
         '/help로 도움을 받거나 데이터 사전·평가 기준·전체 명령을 확인할 수 있습니다.',
     ])
 
@@ -51,7 +52,7 @@ def reference_info(task, kind):
                       '인정하는 한계: ' + ' / '.join(task.get('accepted_limits', []))])
         return '\n'.join(lines)
     if kind == 'commands':
-        return '\n'.join(['전체 명령 안내', '/tip command:명령어 — 사용법과 예시 확인', '/training — 새 훈련 시작', '/query — 새 자연어 조회 요청', '/answer — 현재 봇 질문에 대한 답변',
+        return '\n'.join(['전체 명령 안내', '/tip command:명령어 — 사용법과 예시 확인', '/training — 새 훈련 시작', '/query — 새 자연어 조회 요청', '/answer — 현재 봇 질문에 대한 답변', '/question — 용어당 최대 3줄로 뜻 설명',
             '/help — 도움 요청 또는 데이터 사전·평가 기준·전체 명령 확인',
             '/sql — 저장된 조회의 실행 SQL 확인', '/evidence — 조회를 보고 근거로 선택',
             '/report — 보고 작성·수정 (append로 긴 보고 이어 쓰기)',
@@ -61,6 +62,7 @@ def reference_info(task, kind):
 
 
 COMMAND_TIPS = {
+    'question': ('본인의 과제 스레드에서 모르는 게임 분석 용어를 물어봅니다. 용어당 최대 3줄로 답하며 분석 상태를 유지합니다.', 'text: 질문 (필수). 최대 5개 용어·500자. 기본 용어는 API 없이 설명하고 그 밖의 질문은 일일 한도 내 모델 호출.', '/question text:ads와 organic이 뭐야?'),
     'training': ('새 비공개 과제 스레드에서 훈련을 시작합니다. 부모 텍스트 채널에서 사용하세요.', 'topic: 주제, difficulty: 난이도, help_level: 도움 수준 (모두 선택)', '/training difficulty:intermediate'),
     'query': ('새 조회를 요청합니다. 기존 확인 질문에 답할 때는 답장·멘션 또는 /answer를 사용하세요.', 'text: 조회 요청 (필수)', '/query text:두 주의 채널별 튜토리얼 3단계 완료율을 비교해줘'),
     'answer': ('현재 봇 질문에 이어서 답합니다. 조회 조건·분석 이유·보고 후속 질문에 사용할 수 있습니다.', 'text: 답변 (필수)', '/answer text:과제 기간의 신규 가입 고유 사용자를 분모로 사용해주세요'),

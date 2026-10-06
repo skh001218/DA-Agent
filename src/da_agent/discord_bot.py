@@ -234,7 +234,7 @@ def create_client(service, settings):
         callback.__annotations__["interaction"] = discord.Interaction
         tree.add_command(app_commands.Command(name=action, description=description, callback=callback))
 
-    for action, description in {"query": "새로운 자연어 조회 요청", "answer": "현재 봇 질문에 이어서 답변", "followup": "업무 담당자 후속 질문에 답변"}.items():
+    for action, description in {"query": "새로운 자연어 조회 요청", "answer": "현재 봇 질문에 이어서 답변", "question": "게임 분석 용어를 용어당 최대 3줄로 설명", "followup": "업무 담당자 후속 질문에 답변"}.items():
         register_text_action(action, description)
 
     @tree.command(name="report", description="보고 초안 작성·수정 또는 긴 보고 이어 쓰기")

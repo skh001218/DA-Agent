@@ -35,7 +35,7 @@ def safe_chunks(text, limit=1900):
 
 
 class DiscordTransport:
-    ACTIONS = {"query", "answer", "help", "report", "followup", "submit", "sql", "evidence", "end", "message"}
+    ACTIONS = {"query", "answer", "question", "help", "report", "followup", "submit", "sql", "evidence", "end", "message"}
 
     def __init__(self, service, gateway, guild_ids):
         self.service, self.gateway = service, gateway

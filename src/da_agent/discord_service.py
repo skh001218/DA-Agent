@@ -222,6 +222,14 @@ class DiscordTrainingService:
 
     def _apply(self, document, event_id, action, text, payload):
         from .discord_education import help_response, evaluate_report, growth_observation
+        if action == 'question':
+            from .discord_terms import explain_terms
+            provider = MeteredProvider(self.provider, self.store, document['owner_user_id'], self.daily_limit, document['telemetry'])
+            messages = explain_terms(text, document['task'], provider)
+            answer = '\n\n'.join(messages)
+            document['help_history'].append({'type': 'term_question', 'text': answer, 'at': timestamp()})
+            self._message(document, 'mentor', answer, event_id, 'term_question')
+            return messages
         if action in ('query', 'message', 'answer', 'help') and (is_dictionary_request(text) or payload.get('help_type') == 'data_dictionary'):
             return ['📚 데이터 사전 · 첨부한 표를 누르면 확대할 수 있습니다.']
         if action in ('sql', 'evidence'):
