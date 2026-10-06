@@ -63,7 +63,7 @@ def flow(monkeypatch):
     store = MemoryStore()
     service = DiscordTrainingService(store, NS(runner=Mock()), provider, settings,
         dataset_factory=lambda *args: {'schema_name': 'fixture'})
-    session = service.start('owner', 'guild', 'parent', 'start')
+    session = service.start('owner', 'guild', 'parent', 'start', practice='analysis')
     result = {'state': 'success', 'sql': 'SELECT 1', 'full_result': {'status': 'success',
         'execution_id': 'execution1', 'columns': ['rate'], 'rows': [[75]], 'result_complete': True}}
     execute = Mock(return_value=result)

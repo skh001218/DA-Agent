@@ -247,7 +247,7 @@ def test_optional_real_command_registration_without_login(tmp_path):
     settings = DiscordSettings("fake", (10,), "r", "a", "l", tmp_path / "key")
     async def check():
         client = create_client(Service(), settings)
-        assert {cmd.name for cmd in client.da_command_tree.get_commands()} == {"training", "resume", "query", "answer", "question", "help", "report", "followup", "submit", "sql", "evidence", "end", "tip", "history", "retry"}
+        assert {cmd.name for cmd in client.da_command_tree.get_commands()} == {"training", "resume", "query", "answer", "question", "help", "report", "followup", "submit", "sql", "evidence", "end", "tip", "history", "retry", "sqlrun"}
         assert not client.intents.message_content
         parameters=client.da_command_tree.get_command('training').parameters
         text=next(p for p in parameters if p.name=='text')

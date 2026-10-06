@@ -32,7 +32,7 @@ def main():
     store.initialize()
     service=DiscordTrainingService(store,DiscordQueryEngine(provider,SqlRunner(settings),settings),provider,settings)
     owner=uuid.uuid4().hex
-    session=service.start(owner,'test-guild','test-channel',uuid.uuid4().hex)
+    session=service.start(owner,'test-guild','test-channel',uuid.uuid4().hex, practice='analysis')
     sid=session['session_id']
     data={'model':provider.model,'cases':[],'human_review':'pending'}
     review=provider.review

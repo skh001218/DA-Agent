@@ -20,6 +20,9 @@ def submission_summary(entry):
 
 
 def build_submission(document, evaluation_id=None):
+    if document.get('practice') == 'sql':
+        from .discord_sql_practice import submission
+        return submission(document, evaluation_id)
     from .discord_transport import safe_chunks
     from .discord_education import growth_observation
     entries = document.get('evaluations', [])

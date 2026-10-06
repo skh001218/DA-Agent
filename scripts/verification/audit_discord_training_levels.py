@@ -53,7 +53,7 @@ def main():
     def event(): return uuid4().hex
     for level in ('beginner','intermediate','advanced'):
         owner = 'audit-' + level + '-' + event()
-        doc = service.start(owner, 'audit-local', 'audit-local', event(), difficulty=level)
+        doc = service.start(owner, 'audit-local', 'audit-local', event(), difficulty=level, practice='analysis')
         sid = doc['session_id']
         record = dict(task=doc['task'], session_id=sid, transcript=[], canonical=[], report=None)
         audit['levels'][level] = record

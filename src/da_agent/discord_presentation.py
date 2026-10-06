@@ -4,6 +4,14 @@ from datetime import date, timedelta
 
 def task_intro(document):
     task = document['task']
+    if document.get('practice') == 'sql':
+        return '\n'.join(['📌 SQL 연습 · ' + task['title'], task['objective'],
+            f"가입 기간: {task['period']['start']} 이상 ~ {task['period']['end']} 미만",
+            f"시간: UTC · 완료 관측 종료: {task['period']['observation_end']} 미만",
+            '데이터 버전: ' + document['data_version'],
+            '원본 SQL 노출: ' + document.get('sql_exposure', '미상'),
+            '제공된 sql 코드 블록을 복사해 작성하고 해당 메시지에 답장하세요. 최대 1,900자.',
+            '/help로 데이터 사전·평가 기준·개념 도움, /submit로 최종 평가를 요청하세요.'])
     if task.get('generation_version'):
         lines=['📌 '+task['title'],'',task['objective'],'',
             '관측 기간: '+task['period']['description'], '시간 기준: '+task['timezone'],
@@ -52,6 +60,8 @@ def reference_info(task, kind):
                           '컬럼: ' + ', '.join(f'{key}: {value}' for key, value in entry['columns'].items())])
         return '\n'.join(lines)
     if kind == 'evaluation_criteria':
+        if task.get('practice') == 'sql':
+            return 'SQL 평가 기준\n' + '\n'.join(c['name'] for c in task['sql_contract']['criteria']) + '\n판정: 충족 / 보완 필요 / 판정 보류. 총점·역량 등급은 제공하지 않습니다.\n동등 풀이를 검증 데이터의 전체 결과로 비교합니다. 0 분모·중복·기간 경계를 확인하세요.'
         from .discord_verification import POLICY
         rubric = task['rubric']
         lines = ['평가 기준']
@@ -70,6 +80,8 @@ def reference_info(task, kind):
             '시스템 보류는 학습자0점이 아닙니다. 근거를 확인한 뒤 /submit로 다시 평가할 수 있습니다.'])
         return '\n'.join(lines)
     if kind == 'commands':
+        if task.get('practice') == 'sql':
+            return 'SQL 연습 명령\nsql 코드 블록 답장 — 직접 SQL 실행·수정\n/sqlrun — 수신 제한 시 코드 블록 입력 대안\n/sql — 본인 실행 SQL 열람\n/submit — 최종 풀이 평가\n/help — 사전·평가 기준·도움, 첫 제출 후 kind:SQL 해설 공개\n/end · /resume · /history — 중단·재개·기록'
         return '\n'.join(['전체 명령 안내', '/tip command:명령어 — 사용법과 예시 확인', '/training — 새 훈련 시작', '/query — 새 자연어 조회 요청', '/answer — 현재 봇 질문에 대한 답변', '/question — 용어당 최대 3줄로 뜻 설명',
             '/help — 도움 요청 또는 데이터 사전·평가 기준·전체 명령 확인',
             '/sql — 저장된 조회의 실행 SQL 확인', '/evidence — 조회를 보고 근거로 선택',
@@ -81,8 +93,9 @@ def reference_info(task, kind):
 
 COMMAND_TIPS = {
     'question': ('본인의 과제 스레드에서 모르는 게임 분석 용어를 물어봅니다. 용어당 최대 3줄로 답하며 분석 상태를 유지합니다.', 'text: 질문 (필수). 최대 5개 용어·500자. 기본 용어는 API 없이 설명하고 그 밖의 질문은 일일 한도 내 모델 호출.', '/question text:ads와 organic이 뭐야?'),
-    'training': ('요청한 내용으로 문제·연습 자료를 생성합니다. 부모 텍스트 채널에서 사용하세요.', 'text: 연습할 내용 (필수, 1~4000자), difficulty: 난이도 (기본 중급), help_level: 도움 수준 (선택)', '/training text:튜토리얼 완료율 하락을 분석하고 싶어 difficulty:intermediate'),
+    'training': ('요청한 내용으로 문제·연습 자료를 생성합니다. 부모 텍스트 채널에서 사용하세요.', 'practice: SQL/분석 연습 (필수), text: 연습할 내용 (필수, 1~4000자; SQL은 튜토리얼 완료율 지원), difficulty: 난이도 (기본 중급), help_level: 도움 수준 (선택)', '/training practice:analysis text:튜토리얼 완료율 하락을 분석하고 싶어 difficulty:intermediate'),
     'retry': ('실패·중단된 출제를 저장된 계획으로 수동 재시도합니다. 재개만으로 모델을 호출하지 않습니다.', '과제 스레드에서 사용, 추가 입력 없음', '/retry'),
+    'sqlrun': ('SQL 연습에서 코드 블록 답장 대신 풀이를 실행합니다.', 'text: sql 코드 블록 (필수, 설명 포함 최대 1,900자)', '/sqlrun text:```sql\nSELECT ...\n```'),
     'query': ('새 조회를 요청합니다. 기존 확인 질문에 답할 때는 답장·멘션 또는 /answer를 사용하세요.', 'text: 조회 요청 (필수)', '/query text:두 주의 채널별 튜토리얼 3단계 완료율을 비교해줘'),
     'answer': ('현재 봇 질문에 이어서 답합니다. 조회 조건·분석 이유·보고 후속 질문에 사용할 수 있습니다.', 'text: 답변 (필수)', '/answer text:과제 기간의 신규 가입 고유 사용자를 분모로 사용해주세요'),
     'help': ('개념·분석 방향·중간 피드백 또는 참고 정보를 확인합니다.', 'text: 질문 (선택), kind: 개념/분석 방향/중간 검토/데이터 사전/평가 기준/전체 명령 (선택)', '/help kind:데이터 사전'),
@@ -90,7 +103,7 @@ COMMAND_TIPS = {
     'evidence': ('성공한 저장 조회를 보고 근거로 선택합니다. 보고 저장 전에 선택하세요.', 'execution_id: 조회 결과에 표시된 실행 ID (필수)', '/evidence execution_id:실행ID'),
     'report': ('보고를 작성하거나 수정합니다. 평가 완료 후에도 새 보고 버전을 저장할 수 있고 이전 보고·평가는 보존합니다.', 'text: 보고 내용 (필수), append: True면 최신 보고 뒤에 줄바꿈 후 추가. False 또는 생략하면 입력 내용만 저장. 첫 보고에서는 True여도 새로 작성합니다.', '/report text:분석 결과와 대응 제안…\n/report text:추가 검증과 한계… append:True\n내용을 모두 작성한 뒤 새 후속 질문에 답하고 /submit하세요.'),
     'followup': ('보고 작성 후 업무 담당자의 후속 질문에 답합니다. 답장·멘션 또는 /answer도 사용할 수 있습니다.', 'text: 답변 (필수)', '/followup text:채널별 비교와 로그 점검을 먼저 진행하겠습니다'),
-    'submit': ('최신 보고를 최종 제출하고 평가를 요청합니다. 먼저 보고를 작성하고 후속 질문에 답해야 합니다.', '추가 입력 없음', '/submit'),
+    'submit': ('분석 연습은 보고와 후속 답변 뒤 평가합니다. SQL 연습은 성공한 직접 풀이를 평가합니다.', 'execution_id: SQL 연습의 성공 실행 ID (선택). 생략 시 최신 시도; 최신 실패면 명시 선택 필요', '/submit\n/submit execution_id:실행ID'),
     'end': ('훈련을 중단하고 기록을 보존합니다. /resume으로 이어갈 수 있습니다.', '추가 입력 없음', '/end'),
     'resume': ('본인의 저장 과제를 불러옵니다. ID를 생략하면 같은 서버에서 최근 갱신된 과제를 선택합니다. 진행 과제는 재개·복구하고 완료 게시된 과제는 결과와 과거 대화 링크를 안내하며 보관·잠금을 유지합니다.', 'session_id: 특정 훈련 ID (선택)', '/resume\n/resume session_id:훈련ID'),
     'history': ('현재 서버의 본인 연습 기록을 5개씩 확인합니다. 생성일·상태·평가 점수·결과 링크와 재개 명령을 안내합니다.', 'page: 페이지 번호 (선택, 기본 1)', '/history\n/history page:2'),

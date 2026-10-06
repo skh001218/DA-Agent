@@ -1,5 +1,13 @@
 # Discord 봇 실행과 검증
 
+## SQL 연습 추가 — 현재 체크아웃 구현
+
+통합 명령 `/training`은 `practice`와 `text`가 필수다. 분석 연습은 text로 Gemma 출제를 요청한다. SQL 연습은 현재 `text:튜토리얼 신규 가입자 3단계 완료율`을 지원하며 다른 내용은 지원 범위를 안내하고 거부한다. `SQL 연습`을 선택하면 봇이 제공한 `sql` 코드 블록 틀을 복사해 작성하고, 그 메시지에 답장으로 보내 실행한다. 수정은 전체 SQL을 새 답장으로 제출한다. 메시지 편집은 자동 재실행하지 않는다. 메시지 내용 수신이 제한되면 봇 멘션을 포함해 답장하거나 `/sqlrun text:코드블록`을 사용한다. 설명 포함 최대 1,900자이며 빈 틀·여러 블록은 실행하지 않는다.
+
+성공 실행 후 `/submit`으로 항목별 평가를 받는다. 최신 실행이 실패했다면 `/submit execution_id:이전성공ID`로 명시 선택한다. `/help kind:SQL 해설 공개`는 첫 풀이 제출 이후만 가능하며 노출 이력을 남긴다. 분석 연습은 `practice:분석 연습`으로 기존 흐름을 사용한다. 기존 튜토리얼 완료 분석은 `practice:SQL 연습 text:튜토리얼 완료율 source_session_id:과제ID`로 연결한다. 텍스트로 생성한 분석 과제의 SQL 검산 계약은 아직 지원하지 않는다.
+
+현재 운영 Compose 경로는 `D:\Codex\DA-Agent`이며 이번 worktree의 변경을 배포하지 않았다. 아래의 과거 운영 검증은 새 SQL 연습의 실제 Discord 검증을 의미하지 않는다. 운영 반영 시 변경 코드로 이미지를 빌드하고 명령 동기화를 확인한 뒤 부모 채널에서 **SQL 연습 선택 → 코드 블록 답장 → 실행 결과 표시**를 직접 확인한다. 핵심 실제 흐름과 게시·재개가 확인되어야 Spec의 화면 항목을 완료로 갱신한다. [Spec035](../specs/035-discord-sql-practice-mode.md), [구현 검증 기록](../tests/reports/verification-spec035-2026-10-06.md).
+
 기존 웹 앱과 별도 프로세스·별도 DB에서 동작한다. 웹 라우트·정적 화면·기존 requirements는 변경하지 않는다. Discord 명령이 내부 Python 서비스를 호출하며 웹 API를 외부에 공개하지 않는다.
 
 ## 준비
@@ -48,11 +56,11 @@ JSON 형식 오류 진단이 필요하면 `DISCORD_JSON_DIAGNOSTICS_DIR`을 서�
 
 생성 자료와 공개 정의는 출제 전에 검산·고정한다. 임의 자연어 보고 수치 전체의 자동 검산은 미지원이며 미검산을 감점으로 만들지 않는다. 해당 정의·난이도·자료·모델·코드의 반복 평가 품질 검증이 없으면 점수는 보류하고 피드백을 제공한다.
 
-Compose에는 discord-generation 영구 볼륨을 추가했다. 배포 시 기존 기록·DB 볼륨을 보존하고 Gemma 키·모델 준비 → 이미지 빌드·재시작 → 서버 명령 동기화를 확인한다. 이번 작업은 운영 봇을 재시작하거나 명령을 동기화하지 않았다. [Spec035 검증 보고](../tests/reports/verification-spec035-2026-10-06.md)를 따른다.
+Compose에는 discord-generation 영구 볼륨을 추가했다. 배포 시 기존 기록·DB 볼륨을 보존하고 Gemma 키·모델 준비 → 이미지 빌드·재시작 → 서버 명령 동기화를 확인한다. 이번 작업은 운영 봇을 재시작하거나 명령을 동기화하지 않았다. [Spec036 검증 보고](../tests/reports/verification-spec036-2026-10-06.md)를 따른다.
 
 2026-10-06 현재 이 PC의 독립 Docker 실행 환경을 준비했고, 서버 1556888486919934064의 `#da-agent`(1556888698992468039)에 접근·권한 확인 및 10개 명령 등록을 마쳤다. 실행·중지 명령과 비밀 파일 배치는 [독립 실행 Spec](../specs/025-discord-isolated-runtime.md)에 기록했다. PC와 Docker가 실행되는 동안 봇이 동작한다. 일반 메시지 Intent는 꺼져 있으므로 아래 슬래시 명령을 사용한다.
 
-1. Spec035 코드 반영·명령 동기화 후에는 부모 채널에서 `/training text:튜토리얼 완료율 하락을 분석하고 싶어 difficulty:intermediate`를 실행한다. text는 필수이며 help_level 선택은 유지한다. 기존 이미지로 실행 중인 봇은 이전 topic 형식을 사용한다.
+1. Spec036 코드 반영·명령 동기화 후에는 부모 채널에서 `/training practice:analysis text:튜토리얼 완료율 하락을 분석하고 싶어 difficulty:intermediate`를 실행한다. text는 필수이며 help_level 선택은 유지한다. 기존 이미지로 실행 중인 봇은 이전 topic 형식을 사용한다.
 2. 최초 Interaction을 바로 지연 응답하고, 과제 준비 뒤 비공개 과제 스레드와 업무 안내를 보낸다.
 3. 스레드에서 `/query text:...`로 새 조회를 요청한다. 확인 질문에는 답장·봇 멘션 또는 `/answer text:...`로 답한다.
 4. `/help text:...`로 도움을 요청한다. `/sql execution_id:...`로 실제 실행 SQL을 보고 `/evidence execution_id:...`로 보고 근거를 선택한다. 이 두 명령이 버튼 대안이다.

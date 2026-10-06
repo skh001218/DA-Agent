@@ -19,7 +19,7 @@
 
 ## 계약
 
-- 후속 [Spec035](035-discord-text-task-generation.md)은 `/training text:<요청> difficulty:<난이도>`와 생성 상태·추가 질문·취소·수동 재시도 전달을 정의한다. 구현 전에는 기존 명령을 유지하며 이 문서의 완료 상태를 신규 text 출제 검증에 재사용하지 않는다.
+- 후속 [Spec036](036-discord-text-task-generation.md)은 `/training practice:analysis text:<요청> difficulty:<난이도>`와 생성 상태·추가 질문·취소·수동 재시도 전달을 정의한다. 구현 전에는 기존 명령을 유지하며 이 문서의 완료 상태를 신규 text 출제 검증에 재사용하지 않는다.
 
 - `/training`, `/resume`, `/query`, `/help`, `/report`, `/followup`, `/submit`, `/sql`, `/evidence`, `/end`. SQL 직접 작성 연습은 후속 범위이며 `/sql`은 성공 조회의 실제 SQL 열람 명령이다.
 - Interaction의 첫 작업은 ephemeral defer. DB·모델 작업은 `asyncio.to_thread`를 통해 이벤트 루프에서 분리한다.

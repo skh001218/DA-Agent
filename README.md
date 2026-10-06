@@ -2,13 +2,17 @@
 
 ## Discord 텍스트 요청 기반 출제
 
-`/training`의 고정 topic을 필수 text로 바꾸고 기존 adaptive 설계·합성 자료·DB 검산을 연결했다. 조회·교육·점수 보류, 추가 질문·취소·재시도·기존 기록 호환을 구현했다. [Spec035](specs/035-discord-text-task-generation.md)는 5/7개 완료(71.43%)다. 임시 DB·고정 모델 응답의 서비스와 검증용 화면 흐름을 확인했으며 실제 검색은 API429로 중단됐다. 운영 봇 반영·명령 동기화·실제 Discord 전달은 남아 있다. [검증 보고](tests/reports/verification-spec035-2026-10-06.md), [실행 설정](docs/discord-setup.md)을 참고한다.
+`/training`의 고정 topic을 필수 text로 바꾸고 기존 adaptive 설계·합성 자료·DB 검산을 연결했다. 조회·교육·점수 보류, 추가 질문·취소·재시도·기존 기록 호환을 구현했다. [Spec036](specs/036-discord-text-task-generation.md)는 5/7개 완료(71.43%)다. 임시 DB·고정 모델 응답의 서비스와 검증용 화면 흐름을 확인했으며 실제 Gemma 출제는 429·HTTP500으로 완성 검증에 실패했다. 운영 봇 반영·명령 동기화·실제 Discord 전달은 남아 있다. [검증 보고](tests/reports/verification-spec036-2026-10-06.md), [실행 설정](docs/discord-setup.md)을 참고한다.
 
 ## 평가 신뢰성·점수 보류 정책
 
 새 제출은 공개 기준·인용·중복 감점을 검사하고 필요한 경우 평가당 최대1회 수정·재검사합니다. 해결되지 않으면 점수를 보류하고 원인과 재시도 방법을 제공합니다. **개별 검사에 통과해도 해당 문제 정의·난이도·모델·평가 코드의 반복 품질 검사가 미통과면 점수를 보류하고 분석 피드백만 제공합니다.** 같은 보류 보고의 재제출은 검증 상태가 바뀌기 전까지 추가 모델 호출 없이 저장 피드백을 보여줍니다.
 
 수정 보고는 이전 기록을 보존하고 같은 근거·정책에서 해결·지속·새 오류·미확인을 비교합니다. 합계/비율 검산 등록과 고정 표본 반복 검사 절차를 마련했으며, 새 주제 출제 기능 자체는 후속 범위입니다. 현재 자동 회귀225개와 카드 화면을 확인했습니다. 실제 모델의 품질 승인과 운영 봇 배포는 완료로 표시하지 않습니다. [Spec033](specs/033-trustworthy-evaluation-quality-loop.md), [검증 보고](tests/reports/verification-spec033-2026-10-06.md), [유형 추가 절차](docs/evaluation-quality-workflow.md)를 참고하세요.
+
+## Discord SQL 직접 풀이
+
+SQL 직접 풀이도 현재 체크아웃에 구현했습니다. 새 `/training`의 필수 `practice`에서 SQL/분석을 선택하며, SQL은 제공된 `sql` 코드 블록을 채워 답장 → 실제 실행 → 수정·재제출 → `/submit` 항목별 평가로 진행합니다. 현재 지원 문제는 난이도별 튜토리얼 신규 가입자 3단계 완료율입니다. 실행 봇 반영·실제 Discord 검증은 남아 있습니다. [Spec035](specs/035-discord-sql-practice-mode.md)와 [검증 기록](tests/reports/verification-spec035-2026-10-06.md)을 참고하세요.
 
 ## Discord 평가 검산과 수정·재제출
 

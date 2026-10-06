@@ -1,4 +1,4 @@
-# Spec035 Discord 텍스트 요청 기반 문제 생성
+# Spec036 Discord 텍스트 요청 기반 문제 생성
 
 `/training`의 고정 `topic` 선택을 필수 `text` 요청으로 바꾼다. 사용자가 연습하고 싶은 내용과 난이도를 입력하면 기존 요청 기반 출제 기능으로 문제·합성 데이터·검산 기준을 준비하고, 검증된 결과를 Discord 훈련에 연결한다.
 
@@ -16,12 +16,12 @@
 | 요청 상태와 복구 | 완료 | 추가 질문·취소·수동 재시도·중복·재시작에서 소유권과 고정 계획 보존 | 비공개 checkpoint·상태 저장, 회귀 및 DB 재시작 후 복원 |
 | 데이터와 조회 연결 | 완료 | 생성 자료를 Discord 전용 DB에 적재하고 현재 과제의 공개 표만 조회·사전·SQL 열람 가능 | 임시 DB 적재·FK 그룹 평균·완전 결과 저장·쓰기 차단과 집계 컴파일러 회귀 |
 | 교육과 평가 연결 | 완료 | 생성 문제의 공개 조건·루브릭·검산 계약을 고정하고 코칭·제출·품질 보류에 사용 | 공개 요구사항 변환·튜토리얼 검산 분리·프로필 지문 보완, 보고·후속 답변·제출·총점 보류 확인. 임의 자연어 수치는 미검산 |
-| 자동 검증 | 완료 | 명령·상태·데이터·계약·소유권·기존 기록 회귀와 실제 DB 검증 통과 | verification-spec035-2026-10-06.md의 실행 범위·결과 참고 |
+| 자동 검증 | 완료 | 명령·상태·데이터·계약·소유권·기존 기록 회귀와 실제 DB 검증 통과 | verification-spec036-2026-10-06.md의 실행 범위·결과 참고 |
 | 실제 Discord 검증 | 차단 | text 입력부터 출제·조회·보고·제출·재개 및 실패 안내를 실제 화면에서 확인 | 실제 Gemma 검증에서 429·HTTP500 관측, 완성된 출제 미확인으로 운영 이미지·명령 미반영. 검증용 화면 성공은 실제 Discord 전달·모델 난이도 품질을 대체하지 않음 |
 
 기존 웹 기능의 구현이나 이 Spec 작성은 위 연결 작업의 완료로 계산하지 않는다. 구현 후 검증 전에는 `검증 대기`로 갱신한다.
 
-`TaskGeneration`의 웹 저장·작업 구조 전체를 복제하지 않고 `discord_generation.py`에 저장 어댑터를 두어 같은 adaptive·case_research·task_quality·stage_adaptive·권한/공개 함수를 재사용했다. 생성 파일은 Compose 영구 볼륨에 보존한다. [검증 보고](../tests/reports/verification-spec035-2026-10-06.md)에 DB·검증용 화면과 모델 실패를 구분했다.
+`TaskGeneration`의 웹 저장·작업 구조 전체를 복제하지 않고 `discord_generation.py`에 저장 어댑터를 두어 같은 adaptive·case_research·task_quality·stage_adaptive·권한/공개 함수를 재사용했다. 생성 파일은 Compose 영구 볼륨에 보존한다. [검증 보고](../tests/reports/verification-spec036-2026-10-06.md)에 DB·검증용 화면과 모델 실패를 구분했다.
 
 ## 목적과 현재 구현
 
@@ -29,11 +29,15 @@
 
 현재 `discord_bot.py`는 topic choices에 tutorial 하나를 등록한다. `DiscordTrainingService.start`는 tutorial 외 주제를 거부하고 `representative_task`로 고정 문제를 선택한다. 웹의 `RequestV2`는 message·difficulty·data_mode를 받고, `TaskGeneration.prepare_adaptive`는 사례 검색·선정, 설계·수정, 적합성 검토와 데이터 준비를 수행한다. 이 흐름을 공통 서비스 또는 어댑터로 재사용한다.
 
+## main SQL 연습 통합
+
+PR #27의 SQL 연습 Spec035와 번호가 겹쳐 이 문서를 Spec036으로 변경했다. 과거 검증 artifacts의 spec035 경로는 실행 당시 기록으로 보존한다. `/training`의 필수 practice 선택, `/sqlrun`, 실행 ID를 지정하는 `/submit`, SQL 코드 블록 답장과 기존 SQL 검산을 유지한다. 분석 연습의 text는 Gemma 출제로 연결한다. SQL 연습은 현재 튜토리얼 신규 가입자 3단계 완료율만 지원하며 다른 text 또는 생성 분석의 SQL 연결은 명시적으로 거부한다. 기존 튜토리얼 완료 분석의 SQL 연결은 유지한다.
+
 ## 명령 입력 계약
 
 ```text
-/training text:게임 내 재화가 급격히 늘어난 원인을 분석하는 문제를 만들어줘 difficulty:intermediate
-/training text:튜토리얼 완료율 하락을 분석하고 싶어 difficulty:beginner help_level:guided
+/training practice:analysis text:게임 내 재화가 급격히 늘어난 원인을 분석하는 문제를 만들어줘 difficulty:intermediate
+/training practice:analysis text:튜토리얼 완료율 하락을 분석하고 싶어 difficulty:beginner help_level:guided
 ```
 
 예시는 요청 형식이며 해당 주제의 생성 성공을 보장하지 않는다.
@@ -125,8 +129,8 @@ accepted·planning·needs_clarification·preparing_data·validating·ready·fail
 
 ## API 오류 재테스트 결과 (2026-10-06)
 
-사용자 요청에 따라 동일한 Gemma 모델·중급 요청을 실제 API로 다시 실행했다. 첫 응답의 데이터 그룹 행 수가 허용치 500개를 넘어서 수정 요청을 보냈고, 두 번째 응답에서 `provider_invalid_json`이 재현됐다. 2회 모두 Gemma를 사용했으며 모델 전환은 없었다. 출제·검산 완료 조건은 미충족이고 진행도는 5/7개 완료(71.43%)를 유지한다. [검증 보고의 API 실패 재테스트](../tests/reports/verification-spec035-2026-10-06.md)와 호출 기록에 상세 결과를 남겼다. 남은 작업은 수정 응답의 JSON 오류 진단·수정과 실제 출제 재검증, 운영 반영·Discord 전체 흐름·난이도별 품질 검증이다.
+사용자 요청에 따라 동일한 Gemma 모델·중급 요청을 실제 API로 다시 실행했다. 첫 응답의 데이터 그룹 행 수가 허용치 500개를 넘어서 수정 요청을 보냈고, 두 번째 응답에서 `provider_invalid_json`이 재현됐다. 2회 모두 Gemma를 사용했으며 모델 전환은 없었다. 출제·검산 완료 조건은 미충족이고 진행도는 5/7개 완료(71.43%)를 유지한다. [검증 보고의 API 실패 재테스트](../tests/reports/verification-spec036-2026-10-06.md)와 호출 기록에 상세 결과를 남겼다. 남은 작업은 수정 응답의 JSON 오류 진단·수정과 실제 출제 재검증, 운영 반영·Discord 전체 흐름·난이도별 품질 검증이다.
 
 ## 원문 진단으로 확인한 실패 원인 (2026-10-06)
 
-동일 조건 실제 호출의 수정 응답은 유효한 JSON 배열 `[{...}]`이었다. 단일 문제 객체 `{...}` 계약을 검사하는 코드가 배열을 거부했다. API는 HTTP200/STOP이며, JSON 구문 파싱은 성공했다. 현재 Gemma 요청은 responseJsonSchema를 제거하고 application/json MIME만 지정하므로 최상위 객체 형태를 강제하지 못한다. 실패 원문은 서버 전용 `.local`에 보관하고 공개 자료에는 자료형·길이·오류 정보만 기록했다. [진단 보고](../tests/reports/verification-spec035-2026-10-06.md)에 실행 근거·테스트 결과를 추가했다. 원인 확인과 진단 보완은 완료했으나 출제 계약 불일치 수정·실제 출제 검산·운영 Discord 검증이 남아 진행도 5/7(71.43%)는 유지한다.
+동일 조건 실제 호출의 수정 응답은 유효한 JSON 배열 `[{...}]`이었다. 단일 문제 객체 `{...}` 계약을 검사하는 코드가 배열을 거부했다. API는 HTTP200/STOP이며, JSON 구문 파싱은 성공했다. 현재 Gemma 요청은 responseJsonSchema를 제거하고 application/json MIME만 지정하므로 최상위 객체 형태를 강제하지 못한다. 실패 원문은 서버 전용 `.local`에 보관하고 공개 자료에는 자료형·길이·오류 정보만 기록했다. [진단 보고](../tests/reports/verification-spec036-2026-10-06.md)에 실행 근거·테스트 결과를 추가했다. 원인 확인과 진단 보완은 완료했으나 출제 계약 불일치 수정·실제 출제 검산·운영 Discord 검증이 남아 진행도 5/7(71.43%)는 유지한다.

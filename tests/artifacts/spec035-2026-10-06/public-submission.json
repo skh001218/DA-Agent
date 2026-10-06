@@ -1,0 +1,115 @@
+{
+  "session_id": "75926f1a-d77b-4854-aa59-7d540be6efce",
+  "evaluation_id": "496edf2a-d530-487c-b040-5a7586452e56",
+  "owner_user_id": "08cc1c3a50d44067b8d24cc1173f3cea",
+  "guild_id": "verification",
+  "completed": true,
+  "practice": "sql",
+  "post_name": "SQL 연습 · 75926f1a · v1",
+  "cards": [
+    {
+      "title": "SQL 연습 결과",
+      "description": "SQL · 신규 가입자 3단계 완료율\nSQL 평가 · 구문·실행: 충족 / 계산·출력: 충족 / 중복 처리: 충족 / 기간·관측: 충족 / 분모·누락: 충족\n준비된 검증 데이터 범위의 결과 비교이며 모든 SQL의 동치 증명·독립 역량·학습 효과 판정은 아닙니다.",
+      "score": null,
+      "held": false
+    },
+    {
+      "title": "문제",
+      "description": "신규 가입자의 튜토리얼 3단계 완료율을 가입 주차\\(1 또는 2\\)와 유입 채널별로 계산하는 SELECT를 직접 작성하세요. 완료율은 0\\~1 비율이며 분모 0은 NULL입니다. 도전하지 않은 가입자도 분모에 포함합니다. 완료 이벤트는 가입 기간 시작 이상, 관측 종료 미만\\(UTC\\)만 인정하고 재도전을 중복 집계하지 않습니다. 출력 열 이름과 순서: week, channel, denominator, numerator, completion\\_rate. 수와 비율은 숫자형, channel은 문자형입니다. week는 과제 시작일부터 7일 단위로 구분합니다. 중복과 기간 경계를 스스로 검산하세요."
+    },
+    {
+      "title": "제출 SQL",
+      "description": "WITH answer AS \\(SELECT \\(\\(u.signup\\_date - DATE '2026-09-01'\\) / 7 + 1\\) AS week, u.channel, COUNT\\(DISTINCT u.user\\_id\\) AS denominator, COUNT\\(DISTINCT c.user\\_id\\) AS numerator, COUNT\\(DISTINCT c.user\\_id\\)::numeric / NULLIF\\(COUNT\\(DISTINCT u.user\\_id\\), 0\\) AS completion\\_rate FROM users u LEFT JOIN \\(SELECT DISTINCT user\\_id FROM tutorial\\_attempts WHERE step=3 AND completed=true AND attempt\\_at \\>= '2026-09-01'::timestamptz AND attempt\\_at \\< '2026-10-01'::timestamptz\\) c ON c.user\\_id=u.user\\_id WHERE u.signup\\_date \\>= DATE '2026-09-01' AND u.signup\\_date \\< DATE '2026-09-15' GROUP BY 1,2\\) SELECT \\* FROM answer"
+    },
+    {
+      "title": "도움·정답 노출",
+      "description": "SQL 노출: 없음 확인\n평가 시점 도움 이력: 0"
+    },
+    {
+      "title": "다음 연습",
+      "description": "보완 항목을 수정해 전체 SQL을 새 답장으로 제출하세요. 모두 충족했다면 다른 문제에 적용하세요."
+    },
+    {
+      "title": "구문·실행 · 충족",
+      "description": "실제 읽기 전용 실행 성공\n선택한 제출 SQL의 실행과 고정 검증 데이터를 근거로 합니다. 실행 ID: ca1e29e9-b96c-42a2-a12d-781af6d17b91"
+    },
+    {
+      "title": "계산·출력 · 충족",
+      "description": "고정 검증 데이터의 전체 결과 비교\n선택한 제출 SQL의 실행과 고정 검증 데이터를 근거로 합니다. 실행 ID: ca1e29e9-b96c-42a2-a12d-781af6d17b91"
+    },
+    {
+      "title": "중복 처리 · 충족",
+      "description": "고정 검증 데이터의 전체 결과 비교\n선택한 제출 SQL의 실행과 고정 검증 데이터를 근거로 합니다. 실행 ID: ca1e29e9-b96c-42a2-a12d-781af6d17b91"
+    },
+    {
+      "title": "기간·관측 · 충족",
+      "description": "고정 검증 데이터의 전체 결과 비교\n선택한 제출 SQL의 실행과 고정 검증 데이터를 근거로 합니다. 실행 ID: ca1e29e9-b96c-42a2-a12d-781af6d17b91"
+    },
+    {
+      "title": "분모·누락 · 충족",
+      "description": "고정 검증 데이터의 전체 결과 비교\n선택한 제출 SQL의 실행과 고정 검증 데이터를 근거로 합니다. 실행 ID: ca1e29e9-b96c-42a2-a12d-781af6d17b91"
+    }
+  ],
+  "evidence_results": [
+    {
+      "execution_id": "ca1e29e9-b96c-42a2-a12d-781af6d17b91",
+      "columns": [
+        {
+          "name": "week",
+          "type": "int4"
+        },
+        {
+          "name": "channel",
+          "type": "text"
+        },
+        {
+          "name": "denominator",
+          "type": "int8"
+        },
+        {
+          "name": "numerator",
+          "type": "int8"
+        },
+        {
+          "name": "completion_rate",
+          "type": "numeric"
+        }
+      ],
+      "rows": [
+        [
+          1,
+          "ads",
+          5,
+          4,
+          "0.80000000000000000000"
+        ],
+        [
+          1,
+          "organic",
+          15,
+          12,
+          "0.80000000000000000000"
+        ],
+        [
+          2,
+          "ads",
+          15,
+          10,
+          "0.66666666666666666667"
+        ],
+        [
+          2,
+          "organic",
+          5,
+          4,
+          "0.80000000000000000000"
+        ]
+      ],
+      "total_row_count": 4,
+      "truncated": false,
+      "placement": "report",
+      "practice": "sql"
+    }
+  ],
+  "message_sources": []
+}

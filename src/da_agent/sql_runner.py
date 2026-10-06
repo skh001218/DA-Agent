@@ -95,6 +95,7 @@ class SqlRunner:
             check_query(text,allowed_tables)
             with psycopg.connect(self.settings.learner_dsn, connect_timeout=5, options="-c default_transaction_read_only=on") as conn:
                 conn.execute("SET TRANSACTION READ ONLY")
+                conn.execute("SET LOCAL TIME ZONE 'UTC'")
                 conn.execute(sql.SQL("SET LOCAL search_path TO {}, pg_catalog").format(sql.Identifier(schema_name)))
                 conn.execute("SELECT set_config('statement_timeout', %s, true)", (str(self.settings.query_timeout_ms),))
                 deadline = started + self.settings.query_timeout_ms / 1000

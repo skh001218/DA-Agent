@@ -51,11 +51,21 @@ class DiscordTrainingService:
     def list_sessions(self, user_id, guild_id):
         return self.store.list(user_id, guild_id)
 
-    def start(self, user_id, guild_id, channel_id, event_id, topic='tutorial', difficulty='intermediate', help_level=None, text=None):
+    def start(self, user_id, guild_id, channel_id, event_id, topic='tutorial', difficulty='intermediate', help_level=None, text=None, *, practice=None, source_session_id=None):
         # Internal legacy entry point remains for existing fixtures and records.
         # The public slash command requires text and never reaches this default.
-        if text is None:
-            return self._start_legacy(user_id,guild_id,channel_id,event_id,topic,difficulty,help_level)
+        if text is not None:
+            from .discord_generation import request
+            request(text, 'input-check', difficulty)
+            if practice not in {None, 'analysis', 'sql'}:
+                raise DomainError('practice', 'SQL 연습 또는 분석 연습을 선택하세요.')
+            if practice == 'sql' and not source_session_id and not (
+                '튜토리얼' in text and ('완료율' in text or '3단계' in text)):
+                raise DomainError('unsupported_scope', 'SQL 연습은 현재 튜토리얼 신규 가입자 3단계 완료율을 지원합니다. 다른 텍스트 요청은 분석 연습을 선택하세요.')
+            if source_session_id and practice != 'sql':
+                raise DomainError('practice', '완료 분석 연결은 SQL 연습에서만 사용하세요.')
+        if text is None or practice == 'sql':
+            return self._start_legacy(user_id,guild_id,channel_id,event_id,topic,difficulty,help_level,practice=practice,source_session_id=source_session_id)
         from .discord_generation import request, VERSION
         sid=record_id()
         data=request(text,sid,difficulty)
@@ -71,7 +81,7 @@ class DiscordTrainingService:
             return current
         level=help_level or ('guided' if difficulty=='beginner' else 'independent')
         document={'session_id':sid,'owner_user_id':str(user_id),'guild_id':str(guild_id),
-            'channel_id':str(channel_id),'thread_id':None,'state':'accepted','created_at':timestamp(),
+            'channel_id':str(channel_id),'thread_id':None,'state':'accepted','practice':'analysis','created_at':timestamp(),
             'difficulty':difficulty,'help_level':level,'schema_name':None,'data_version':None,
             'task':{'title':'문제 생성 요청','difficulty':difficulty},
             'generation':{'version':VERSION,'request_id':sid,'original_message':data.message,'message':data.message,
@@ -91,32 +101,76 @@ class DiscordTrainingService:
             result=doc
         return result
 
-    def _start_legacy(self, user_id, guild_id, channel_id, event_id, topic='tutorial', difficulty='intermediate', help_level=None):
+    def _start_legacy(self, user_id, guild_id, channel_id, event_id, topic='tutorial', difficulty='intermediate', help_level=None, *, practice=None, source_session_id=None):
         from .discord_education import representative_task, prepare_dataset
-        prior = self.store.claim_event(event_id, user_id, request={'action': 'start', 'topic': topic, 'difficulty': difficulty, 'guild_id': str(guild_id), 'channel_id': str(channel_id)})
+        if practice not in {'analysis', 'sql'}:
+            return {'state': 'failed', 'messages': ['practice에서 SQL 연습 또는 분석 연습을 반드시 선택하세요.']}
+        source = None
+        if source_session_id:
+            if practice != 'sql':
+                return {'state': 'failed', 'messages': ['완료 분석 연결은 SQL 연습에서만 사용하세요.']}
+            source = self.get_session(user_id, source_session_id)
+            if source.get('generation'):
+                return {'state':'failed','messages':['텍스트로 생성한 분석 과제의 SQL 검산 계약은 아직 지원하지 않습니다. 튜토리얼 완료율 SQL 연습을 새로 시작하세요.']}
+            if source['guild_id'] != str(guild_id) or source.get('practice', 'analysis') != 'analysis' or source['state'] != 'completed':
+                return {'state': 'failed', 'messages': ['본인·현재 서버의 완료 분석 과제만 연결할 수 있습니다.']}
+            if topic not in {source['task']['topic'], '튜토리얼'}:
+                return {'state': 'failed', 'messages': ['연결 분석과 요청 주제가 다릅니다.']}
+        prior = self.store.claim_event(event_id, user_id, request={'action': 'start', 'practice': practice, 'source_session_id': source_session_id, 'topic': topic, 'difficulty': difficulty, 'guild_id': str(guild_id), 'channel_id': str(channel_id)})
         if prior is not None:
             return self.get_session(user_id, prior['session']['session_id']) if 'session' in prior else prior
+        created_schemas = []
         try:
             if topic not in {'tutorial', '튜토리얼'}:
                 raise DomainError('unsupported_topic', '현재는 튜토리얼 완료율 분석만 지원합니다. /training의 주제에서 튜토리얼 완료율 분석을 선택하세요. 게임 내 재화 변동 분석은 아직 지원하지 않습니다.')
             past = self.store.list(user_id, guild_id)
             variant = 'followup' if any(s['state'] == 'completed' for s in past) else 'baseline'
             task = representative_task(topic=topic, difficulty=difficulty, variant=variant)
+            if source:
+                from copy import deepcopy
+                task = deepcopy(source['task'])
+                task['difficulty'] = difficulty
+                if difficulty not in {'beginner', 'intermediate', 'advanced'}:
+                    raise DomainError('difficulty', '지원하지 않는 난이도입니다.')
+            if practice == 'sql':
+                from .discord_sql_practice import make_task
+                task = make_task(task)
             if help_level is not None:
                 if help_level not in {'guided', 'independent'}:
                     raise DomainError('help_level', '도움 수준은 guided 또는 independent를 선택하세요.')
                 task['help_policy']['default_level'] = help_level
             dataset = (self.dataset_factory or prepare_dataset)(self.settings, task)
+            created_schemas.append(dataset['schema_name'])
             document = {'session_id': record_id(), 'owner_user_id': str(user_id), 'guild_id': str(guild_id),
-                'channel_id': str(channel_id), 'thread_id': None, 'state': 'analysis', 'created_at': timestamp(),
+                'channel_id': str(channel_id), 'thread_id': None, 'state': 'analysis', 'practice': practice, 'created_at': timestamp(),
                 'task': task, 'schema_name': dataset['schema_name'], 'data_version': dataset.get('data_version', task.get('data_version')),
                 'difficulty': difficulty, 'help_level': help_level or ('guided' if difficulty == 'beginner' else 'independent'),
                 'messages': [], 'queries': [], 'executions': [], 'reports': [], 'evaluations': [], 'help_history': [],
                 'telemetry': [], 'selected_evidence': [], 'pending_query': None, 'conditions': None, 'learning': []}
+            if practice == 'sql':
+                from .discord_sql_practice import CASES, validate_problem
+                checks = [{'case': 'main', 'schema_name': dataset['schema_name']}]
+                for case in CASES[1:]:
+                    private = (self.dataset_factory or prepare_dataset)(self.settings, {**task, 'sql_fixture': case})
+                    created_schemas.append(private['schema_name'])
+                    checks.append({'case': case, 'schema_name': private['schema_name']})
+                validate_problem(self.engine.runner, document['session_id'], task, checks)
+                document.update(sql_checks=checks, sql_attempts=[], sql_reply_targets={}, source_session_id=source_session_id,
+                    sql_exposure=('열람 확인' if any(h.get('type') == 'sql_view' for h in source.get('help_history', [])) else '미상') if source else '없음 확인')
             self._message(document, 'stakeholder', str(task.get('objective', '공개 과제 조건을 확인하고 분석을 시작하세요.')), 'start')
             self.store.create(document, event_id, {'session': document})
             return document
         except Exception as exc:
+            if created_schemas and not self.dataset_factory:
+                # Only newly provisioned schemas from THIS failed start are removed.
+                import psycopg
+                from psycopg import sql
+                try:
+                    with psycopg.connect(self.settings.admin_dsn) as conn:
+                        for schema in created_schemas:
+                            conn.execute(sql.SQL('DROP SCHEMA {} CASCADE').format(sql.Identifier(schema)))
+                except Exception:
+                    pass  # preserve a safe preparation error; never expose connection data
             response = {'messages': [exc.message if isinstance(exc, DomainError) else '과제 준비에 실패했습니다. Discord 전용 DB 설정과 지원 주제를 확인하고 새 요청으로 다시 시작하세요.'], 'state': 'failed'}
             self.store.finish_event(event_id, response)
             return response
@@ -141,7 +195,7 @@ class DiscordTrainingService:
         pages = (len(sessions) + 4) // 5
         if page > pages:
             return [f'총 {pages}페이지입니다. /history page:{pages}로 마지막 페이지를 확인하세요.']
-        lines = [f'내 분석 연습 기록 · {page}/{pages}페이지 · 총 {len(sessions)}개']
+        lines = [f'내 연습 기록 · {page}/{pages}페이지 · 총 {len(sessions)}개']
         states = {'analysis': '분석 중', 'reporting': '보고 작성', 'followup': '후속 답변',
                   'completed': '완료', 'stopped': '중단', 'interrupted': '중단'}
         for document in sessions[(page - 1) * 5:page * 5]:
@@ -151,11 +205,16 @@ class DiscordTrainingService:
             except (KeyError, ValueError, TypeError):
                 created = '날짜 미상'
             lines.extend(['', safe_chunks(title)[0] + f" · {created} · {states.get(document.get('state'), '상태 확인 필요')}"])
+            lines.append('SQL 연습' if document.get('practice') == 'sql' else '분석 연습')
             evaluations = document.get('evaluations', [])
             if evaluations:
                 entry = evaluations[-1]
                 result = entry['result']
-                lines.append('평가 보류' if result.get('held') else f"점수 {result.get('total', '미정')}/100")
+                if document.get('practice') == 'sql':
+                    from .discord_sql_practice import summary
+                    lines.append(summary(entry))
+                else:
+                    lines.append('평가 보류' if result.get('held') else f"점수 {result.get('total', '미정')}/100")
                 publication = document.get('result_publications', {}).get(entry['id'], {})
                 if publication.get('status') == 'published' and str(document['guild_id']).isdecimal() and str(publication.get('post_id')).isdecimal():
                     lines.append(f"[결과 보기](https://discord.com/channels/{document['guild_id']}/{publication['post_id']})")
@@ -172,6 +231,13 @@ class DiscordTrainingService:
                 question['discord_message_ids'] = list(dict.fromkeys(question.get('discord_message_ids', []) + message_ids))
                 if (document.get('pending_question') or {}).get('id') == question_id:
                     document['pending_question'] = question
+
+    def bind_sql_prompt(self, user_id, session_id, message_ids, execution_id=None):
+        with self.store.edit(user_id, session_id) as (document, conn):
+            if document.get('practice') != 'sql':
+                raise DomainError('practice', 'SQL 과제에서만 풀이 입력을 연결합니다.')
+            for message_id in message_ids:
+                document.setdefault('sql_reply_targets', {})[str(message_id)] = execution_id
 
     def _ask(self, document, kind, text, event_id, help_type=None):
         self._close_question(document, 'superseded')
@@ -238,6 +304,17 @@ class DiscordTrainingService:
             return {'session':document,'messages':[status_message(document)]}
         from .discord_presentation import task_intro
         messages = [task_intro(document)]
+        if document.get('practice') == 'sql':
+            from .discord_sql_practice import TEMPLATE, summary
+            from .discord_tables import dictionary_tables
+            messages.append(TEMPLATE)
+            if document.get('sql_attempts'):
+                attempt = document['sql_attempts'][-1]
+                messages.append('최근 SQL: ' + attempt['sql'] + '\n실행 ID: ' + attempt['execution_id'] + '\n상태: ' + attempt['result']['status'])
+            response = {'session': document, 'messages': messages, 'tables': dictionary_tables(document['task'], '')}
+            if document.get('evaluations'):
+                response['submission'] = build_submission(document)
+            return response
         if document['executions'] or document['reports'] or document['state'] != 'analysis':
             messages.append(f"상태 {document['state']} · 저장 조회 {len(document['executions'])} · 보고 {len(document['reports'])}")
         if document.get('pending_question'):
@@ -289,16 +366,24 @@ class DiscordTrainingService:
         with self.store.edit(user_id, session_id) as (document, conn):
             self._restore_legacy_question(document, event_id)
             self._message(document, 'user', text, event_id)['action'] = action
+            succeeded = True
             try:
                 messages = self._apply(document, event_id, action, text, payload or {})
             except DomainError as exc:
+                succeeded = False
                 messages = [exc.message]
                 document['telemetry'].append({'kind': 'action_error', 'code': exc.code, 'at': timestamp(), 'action': action})
             except Exception:
+                succeeded = False
                 messages = ['요청 처리에 실패했습니다. 저장 기록을 재개해 확인하고 새 요청으로 다시 시도하세요.']
                 document['telemetry'].append({'kind': 'action_error', 'code': 'internal', 'at': timestamp(), 'action': action})
             response = {'messages': messages, 'session': document}
-            if action == 'submit' and document.get('evaluations') and (document['evaluations'][-1].get('event_id') == str(event_id) or document['state'] == 'completed'):
+            if document.get('practice') == 'sql' and action == 'sqlrun' and document.get('sql_attempts') and document['sql_attempts'][-1]['event_id'] == str(event_id):
+                attempt = document['sql_attempts'][-1]
+                if attempt['result']['status'] == 'success':
+                    response['tables'] = [result_table(attempt)]
+                response['request_state'] = attempt['result']['status']
+            if succeeded and action == 'submit' and document.get('evaluations') and (document['evaluations'][-1].get('event_id') == str(event_id) or document['state'] == 'completed'):
                 response['submission'] = build_submission(document)
             if action in ('query', 'message', 'answer', 'help') and (is_dictionary_request(text) or (payload or {}).get('help_type') == 'data_dictionary'):
                 response['tables'] = dictionary_tables(document['task'], text)
@@ -356,6 +441,12 @@ class DiscordTrainingService:
 
     def _apply(self, document, event_id, action, text, payload):
         from .discord_education import help_response, evaluate_report, growth_observation
+        if document.get('practice') == 'sql' and action not in {'end', 'continue', 'question'}:
+            return self._apply_sql(document, event_id, action, text, payload)
+        if action == 'sqlrun' or action == 'submit' and payload.get('execution_id'):
+            raise DomainError('practice', '분석 연습에서는 /query와 기존 /submit을 사용하세요. 직접 SQL 실행은 SQL 연습에서 가능합니다.')
+        if action == 'help' and payload.get('help_type') == 'solution':
+            raise DomainError('practice', 'SQL 해설 공개는 SQL 연습의 첫 제출 이후에만 가능합니다.')
         if action == 'question':
             from .discord_terms import explain_terms
             provider = MeteredProvider(self.provider, self.store, document['owner_user_id'], self.daily_limit, document['telemetry'])
@@ -499,6 +590,76 @@ class DiscordTrainingService:
             document['evaluations'][-1]['growth'] = growth
             return [submission_summary(document['evaluations'][-1])]
         raise DomainError('action', '지원하지 않는 행동입니다. /query·/help·/report·/submit을 사용하세요.')
+
+    def _apply_sql(self, document, event_id, action, text, payload):
+        from .discord_sql_practice import extract_sql, run_full, evaluate, summary, reference_sql
+        if action == 'sql':
+            attempt = next((a for a in document['sql_attempts'] if a['execution_id'] == payload.get('execution_id')), None)
+            if not attempt:
+                raise DomainError('sql_missing', '이 SQL 과제의 실행 ID를 선택하세요.')
+            return [attempt['sql']]
+        if action == 'help':
+            from .discord_presentation import reference_info
+            kind = payload.get('help_type', 'concept_hint')
+            if kind == 'solution':
+                if not document['sql_attempts']:
+                    raise DomainError('solution_early', '먼저 본인의 SQL을 한 번 제출한 뒤 해설 공개를 요청하세요.')
+                document['sql_exposure'] = '열람 확인'
+                answer = reference_sql(document['task'])
+            else:
+                answer = reference_info(document['task'], kind)
+                if answer is None:
+                    answer = '공개 가입 기간과 완료 관측 기간, 고유 가입자 분모, 재도전 중복과 0 분모 처리를 확인하세요. 정답 전체는 자동 공개하지 않습니다.'
+            document['help_history'].append(dict(type=kind, text=answer, at=timestamp()))
+            return [answer]
+        if action in {'query', 'report', 'followup', 'evidence', 'answer', 'message'}:
+            return ['SQL 연습입니다. 제공된 sql 코드 블록에 풀이를 채워 문제·실행 결과에 답장하세요. 내용 수신이 제한되면 /sqlrun text:코드블록을 사용하세요.']
+        if document['state'] == 'stopped':
+            raise DomainError('state', '/resume으로 중단된 SQL 연습을 재개하세요.')
+        if action == 'sqlrun':
+            parent = payload.get('reply_to_message_id')
+            if parent and str(parent) not in document.get('sql_reply_targets', {}):
+                raise DomainError('sql_reply', '이 SQL 과제의 문제 또는 실행 결과 메시지에 답장하세요.')
+            source = extract_sql(text)
+            preview, full = run_full(self.engine.runner, document['session_id'], document['schema_name'], source)
+            attempt = dict(id=record_id(), event_id=str(event_id), sql=source, original_text=text,
+                execution_id=preview['execution_id'], result=preview, full_result=full, at=timestamp(),
+                reply_to_message_id=parent, parent_execution_id=document.get('sql_reply_targets', {}).get(str(parent)),
+                input_method='reply' if parent else 'slash')
+            document['sql_attempts'].append(attempt)
+            document['executions'].append(attempt)
+            document['state'] = 'analysis'
+            if preview['status'] != 'success':
+                code = preview['error']['code']
+                infrastructure = code == 'connection' or code.startswith('08') or code in {'57P01', '57P02', '57P03', '53300'}
+                advice = ('DB 연결 실패로 풀이 판정을 보류합니다. 연결 복구 후 동일 SQL을 다시 제출하세요.' if infrastructure else
+                          '실행 제한에 도달해 의미 판정을 보류합니다. 제한과 쿼리를 확인한 뒤 다시 제출하세요.' if preview['status'] == 'timeout' else
+                          '수정한 전체 SQL을 sql 코드 블록으로 다시 답장하세요.')
+                return ['SQL 실행: ' + preview['status'] + '\n' + preview['error']['message'] + '\n' + advice + ' 실행 ID: ' + attempt['execution_id']]
+            return ['SQL 실행 결과를 저장했습니다. 실행 ID: ' + attempt['execution_id'] +
+                '\n전체 수집: ' + ('완료' if full.get('result_complete') else '제한 도달 · 의미 판정 보류') +
+                '\n미리보기는 최대 10행이며 전체 결과와 구분합니다. /submit로 평가하거나 수정한 전체 SQL을 새 답장으로 제출하세요.']
+        if action == 'submit':
+            if not document['sql_attempts']:
+                raise DomainError('sql_missing', '먼저 직접 작성한 SQL을 실행하세요.')
+            ident = payload.get('execution_id')
+            attempt = next((a for a in document['sql_attempts'] if a['execution_id'] == ident), None) if ident else document['sql_attempts'][-1]
+            if not attempt or attempt['result']['status'] != 'success':
+                raise DomainError('sql_missing', '이 과제의 성공 실행 ID를 명시해 /submit하거나 최신 SQL을 수정·실행하세요.')
+            latest = document['evaluations'][-1] if document['evaluations'] else None
+            if (latest and latest['execution_id'] == attempt['execution_id'] and not latest['result']['held']
+                    and latest['result'].get('sql_exposure') == document.get('sql_exposure')
+                    and len(latest['result'].get('help_history', [])) == len(document['help_history'])):
+                document['state'] = 'completed'
+                return [summary(latest)]
+            result = evaluate(self.engine.runner, document['session_id'], document['task'], document['sql_checks'], attempt)
+            result.update(help_history=list(document['help_history']), sql_exposure=document.get('sql_exposure', '미상'))
+            entry = dict(id=record_id(), event_id=str(event_id), execution_id=attempt['execution_id'],
+                at=timestamp(), result=result, version=len(document['evaluations']) + 1)
+            document['evaluations'].append(entry)
+            document['state'] = 'analysis' if result['held'] else 'completed'
+            return [summary(entry), result['recommendation']]
+        raise DomainError('sql_action', 'SQL 연습에서는 코드 블록 답장, /help, /sql, /submit을 사용하세요.')
 
     def _query(self, document, event_id, text, new_query=False):
         from .discord_query import DiscordQueryEngine
