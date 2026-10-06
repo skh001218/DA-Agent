@@ -99,7 +99,16 @@ def create_client(service, settings):
             if str(channel.guild.id) not in transport.guild_ids:
                 raise DomainError("discord_guild_forbidden", "허용되지 않은 서버입니다.", 403)
             await self.validate_parent(channel.parent, user)
-            members = await channel.fetch_members()
+            # The creator is not necessarily a member of a newly created private
+            # thread. Restore/join before the members endpoint, which otherwise
+            # returns Missing Access even for the creating bot.
+            if channel.archived:
+                await channel.edit(archived=False, locked=False, invitable=False)
+            await channel.join()
+            try:
+                members = await channel.fetch_members()
+            except discord.Forbidden:
+                raise DomainError('discord_members_access', '스레드 참가자 조회가 차단됐습니다. 운영자가 Discord Developer Portal → Bot → Server Members Intent를 켜고 채널 접근 권한을 확인한 뒤 /resume 하세요.', 403) from None
             if not any(member.id == user.id for member in members):
                 raise DomainError("discord_membership", "과제 스레드 참가 상태를 확인하세요.", 403)
             for member in members:
@@ -109,8 +118,6 @@ def create_client(service, settings):
                 permissions = channel.parent.permissions_for(participant)
                 if not permissions.manage_threads and not permissions.administrator:
                     raise DomainError("discord_extra_member", "과제 스레드에 다른 일반 참가자가 있습니다. 운영자가 해당 참가자를 제거한 뒤 /resume 하세요.", 403)
-            if channel.archived:
-                await channel.edit(archived=False, locked=False, invitable=False)
 
         async def create_private_thread(self, parent, user, session_id):
             thread = await parent.create_thread(name=f"DA-{session_id[:12]}", type=discord.ChannelType.private_thread,

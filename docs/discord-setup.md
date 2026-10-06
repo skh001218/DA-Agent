@@ -12,6 +12,8 @@ python -m pip install -e . -r requirements-discord.txt
 
 Discord Developer Portal에서 Bot을 만들고 서버 설치에 `bot`, `applications.commands` scope를 사용한다. 실제 운영 서버와 참여자는 파일럿 전에 지정한다. 부모 텍스트 채널에서 봇에 채널 보기, 비공개 스레드 생성, 스레드 관리, 스레드 발언, 메시지 기록 읽기 권한을 준다. 참가자는 부모 채널 보기와 스레드 발언 권한이 필요하다. 봇의 관리자 권한은 필요하지 않다. 비공개 스레드는 초대 불가로 만들고 소유자만 추가한다. 서버 관리자 및 스레드 관리 권한자는 비공개 스레드에 접근할 수 있으므로 완전한 비밀 공간으로 안내하지 않는다.
 
+**필수:** Bot → Privileged Gateway Intents → **Server Members Intent**를 켜고 저장한다. 비공개 스레드 참가자 목록 REST 조회는 앱에 이 Intent가 허용돼 있어야 성공한다. Gateway의 전체 멤버 캐시를 켜는 것과는 별개이며 현재 봇은 REST로 소유자·다른 참가자를 검사한다. 꺼져 있으면 과제 데이터는 생성돼도 스레드 검증이 403 Missing Access로 실패한다.
+
 일반 대화를 사용하려면 Developer Portal의 Message Content Intent와 `DISCORD_MESSAGE_CONTENT=true`를 모두 활성화한다. 기본값은 false이며 `/query`, `/help`, `/report`, `/followup`으로 같은 입력을 보낼 수 있다. 스레드 밖·다른 봇·소유자 아닌 사용자의 일반 메시지는 자동 응답하지 않는다.
 
 ## 별도 환경변수

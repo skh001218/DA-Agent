@@ -250,7 +250,9 @@ def test_main_reaches_sdk_start_without_invalid_logging_configuration(tmp_path, 
 
 
 @pytest.mark.parametrize("privileged", [False, True])
-def test_sdk_gateway_rejects_additional_ordinary_member(tmp_path, monkeypatch, privileged):
+@pytest.mark.parametrize("archived", [False, True])
+@pytest.mark.parametrize("access_denied", [False, True])
+def test_sdk_gateway_rejects_additional_ordinary_member(tmp_path, monkeypatch, privileged, archived, access_denied):
     discord = pytest.importorskip("discord")
     permissions = NS(view_channel=True, create_private_threads=True, send_messages_in_threads=True,
                      manage_threads=True, read_message_history=True, administrator=False)
@@ -264,17 +266,29 @@ def test_sdk_gateway_rejects_additional_ordinary_member(tmp_path, monkeypatch, p
             return NS(**{**vars(permissions), "manage_threads": privileged}) if member.id == 2 else permissions
     class Thread:
         def __init__(self):
-            self.guild, self.parent, self.invitable, self.archived = guild, Parent(), False, False
+            self.guild, self.parent, self.invitable, self.archived = guild, Parent(), False, archived
+            self.joined = False
         def is_private(self):
             return True
+        async def join(self):
+            assert not self.archived
+            self.joined = True
+        async def edit(self, **kwargs):
+            self.archived = kwargs['archived']
         async def fetch_members(self):
+            assert self.joined and not self.archived
+            if access_denied:
+                raise discord.Forbidden(NS(status=403, reason='Forbidden'), {'code': 50001, 'message': 'Missing Access'})
             return [NS(id=1), NS(id=2), NS(id=99)]
     monkeypatch.setattr(discord, "Thread", Thread)
     monkeypatch.setattr(discord, "TextChannel", Parent)
     async def check():
         client = create_client(Service(), DiscordSettings("fake", (10,), "r", "a", "l", tmp_path / "key"))
         client._connection.user = NS(id=99)
-        if privileged:
+        if access_denied:
+            with pytest.raises(DomainError, match="Server Members Intent"):
+                await client.da_transport.gateway.validate_thread(Thread(), owner)
+        elif privileged:
             await client.da_transport.gateway.validate_thread(Thread(), owner)
         else:
             with pytest.raises(DomainError, match="다른 일반 참가자"):
