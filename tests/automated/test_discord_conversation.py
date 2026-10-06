@@ -72,7 +72,7 @@ def test_server_failure_preserves_answer_and_is_not_blame_on_user():
     assert '모델 서비스 오류' in messages[0] and '명시해' not in messages[0]
     assert doc['pending_query']['answers'] == [answer] and not runner.calls
     service._query(doc, '3', '같은 요청으로 재시도')
-    assert provider.contexts[-1]['pending_query']['answers'] == [answer]
+    assert provider.contexts[-1]['pending_query']['answers'] == [answer, '같은 요청으로 재시도']
     assert len(runner.calls) == 1
 
 

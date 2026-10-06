@@ -9,6 +9,7 @@ from .discord_results import build_submission, submission_summary
 
 
 REPORT_FIELDS = ('question', 'findings', 'hypothesis', 'alternatives', 'quality', 'limitations', 'action', 'next_checks')
+ANSWER_GUIDANCE = '\n이 메시지에 답장하거나 @DA-Agent로 답해주세요. 메시지를 읽을 수 없으면 /answer를 사용하세요. 새 조회는 /query로 시작하세요.'
 
 
 class MeteredProvider:
@@ -83,6 +84,67 @@ class DiscordTrainingService:
             document['thread_id'] = str(thread_id)
         return self.get_session(user_id, session_id)
 
+    def bind_question(self, user_id, session_id, question_id, message_ids):
+        with self.store.edit(user_id, session_id) as (document, conn):
+            question = next((q for q in document.get('questions', []) if q['id'] == question_id), None)
+            if question:
+                question['discord_message_ids'] = list(dict.fromkeys(question.get('discord_message_ids', []) + message_ids))
+                if (document.get('pending_question') or {}).get('id') == question_id:
+                    document['pending_question'] = question
+
+    def _ask(self, document, kind, text, event_id, help_type=None):
+        self._close_question(document, 'superseded')
+        text = text + ANSWER_GUIDANCE
+        question = {'id': record_id(), 'kind': kind, 'text': text, 'state': 'waiting',
+                    'discord_message_ids': [], 'at': timestamp()}
+        document.setdefault('questions', []).append(question)
+        document['pending_question'] = question
+        self._message(document, 'stakeholder' if kind == 'followup' else 'mentor', text, event_id, help_type)
+        return text
+
+    @staticmethod
+    def _close_question(document, state):
+        current = document.get('pending_question')
+        if current:
+            current['state'] = state
+            for question in document.get('questions', []):
+                if question['id'] == current['id']:
+                    question['state'] = state
+        document['pending_question'] = None
+
+    def _restore_legacy_question(self, document, event_id):
+        if 'questions' in document:
+            return
+        document['questions'] = []
+        pending = document.get('pending_query')
+        if pending:
+            self._ask(document, 'query_conditions', pending['plan'].get('question', '조회 조건을 알려주세요.'), event_id)
+        elif document['state'] == 'followup':
+            self._ask(document, 'followup', '제안한 대응의 우선순위와 추가 확인 방법을 설명해주세요.', event_id)
+        else:
+            latest = next((m for m in reversed(document['messages']) if m.get('role') != 'user' or m.get('text', '').strip()), None)
+            if latest and latest['role'] == 'mentor' and latest['text'].startswith('멘토: 이 비교를 선택한 이유'):
+                self._ask(document, 'analysis_reason', latest['text'], event_id)
+
+    def _answer(self, document, event_id, text, payload):
+        if not text.strip():
+            raise DomainError('answer_empty', '질문에 대한 답변 내용을 입력해주세요.')
+        question = document.get('pending_question')
+        reference = payload.get('reply_to_message_id')
+        if reference:
+            target = next((q for q in document.get('questions', []) if str(reference) in q.get('discord_message_ids', [])), None)
+            if not target or not question or target['id'] != question['id'] or target['state'] != 'waiting':
+                raise DomainError('answer_stale', '이 메시지는 현재 답변을 기다리는 질문이 아닙니다. 최신 질문에 답장하거나 /answer를 사용하세요.')
+        if not question:
+            raise DomainError('answer_missing', '현재 답변을 기다리는 질문이 없습니다. 새 조회는 /query로 요청하세요.')
+        if question['kind'] == 'query_conditions':
+            return self._query(document, event_id, text)
+        if question['kind'] == 'followup':
+            return self._apply(document, event_id, 'followup', text, {})
+        document.setdefault('analysis_answers', []).append({'question_id': question['id'], 'text': text, 'at': timestamp()})
+        self._close_question(document, 'answered')
+        return ['비교를 선택한 이유와 가설에 대한 답변을 기록했습니다. 추가 조회는 /query, 보고 작성은 /report로 진행하세요.']
+
     def resume(self, user_id, guild_id, session_id=None):
         sessions = self.list_sessions(user_id, guild_id)
         document = self.get_session(user_id, session_id) if session_id else (sessions[0] if sessions else None)
@@ -90,10 +152,13 @@ class DiscordTrainingService:
             return {'messages': ['재개할 훈련이 없습니다. /training으로 시작하세요.']}
         if document['guild_id'] != str(guild_id):
             raise DomainError('forbidden', '이 서버의 훈련만 재개할 수 있습니다.', 403)
-        tables = dictionary_tables(document['task'])
-        for table in tables:
-            table['after_message'] = 2
-        response = {'session': document, 'messages': format_task_intro(document), 'tables': tables}
+        from .discord_presentation import task_intro
+        messages = [task_intro(document)]
+        if document['executions'] or document['reports'] or document['state'] != 'analysis':
+            messages.append(f"상태 {document['state']} · 저장 조회 {len(document['executions'])} · 보고 {len(document['reports'])}")
+        if document.get('pending_question'):
+            messages.append(document['pending_question']['text'])
+        response = {'session': document, 'messages': messages}
         if document.get('evaluations'):
             response['submission'] = build_submission(document)
         return response
@@ -130,6 +195,7 @@ class DiscordTrainingService:
         if prior is not None:
             return prior
         with self.store.edit(user_id, session_id) as (document, conn):
+            self._restore_legacy_question(document, event_id)
             self._message(document, 'user', text, event_id)
             try:
                 messages = self._apply(document, event_id, action, text, payload or {})
@@ -142,13 +208,13 @@ class DiscordTrainingService:
             response = {'messages': messages, 'session': document}
             if action == 'submit' and document.get('evaluations') and (document['evaluations'][-1].get('event_id') == str(event_id) or document['state'] == 'completed'):
                 response['submission'] = build_submission(document)
-            if action in ('query', 'message', 'help') and is_dictionary_request(text):
+            if action in ('query', 'message', 'answer', 'help') and (is_dictionary_request(text) or (payload or {}).get('help_type') == 'data_dictionary'):
                 response['tables'] = dictionary_tables(document['task'], text)
             elif document['executions'] and document['queries'] and document['queries'][-1]['event_id'] == str(event_id):
                 execution = document['executions'][-1]
                 if execution['query_id'] == document['queries'][-1]['id']:
                     response['tables'] = [result_table(execution)]
-            if action in ('query', 'clarify', 'message') and document['queries'] and document['queries'][-1]['event_id'] == str(event_id):
+            if document['queries'] and document['queries'][-1]['event_id'] == str(event_id):
                 query = document['queries'][-1]
                 response['request_state'] = query.get('outcome', query['plan']).get('state', 'error')
             self.store.finish_event(event_id, response, conn)
@@ -156,6 +222,8 @@ class DiscordTrainingService:
 
     def _apply(self, document, event_id, action, text, payload):
         from .discord_education import help_response, evaluate_report, growth_observation
+        if action in ('query', 'message', 'answer', 'help') and (is_dictionary_request(text) or payload.get('help_type') == 'data_dictionary'):
+            return ['📚 데이터 사전 · 첨부한 표를 누르면 확대할 수 있습니다.']
         if action in ('sql', 'evidence'):
             execution = next((item for item in document['executions'] if item['execution_id'] == payload.get('execution_id', text.strip())), None)
             if not execution or execution['result']['status'] != 'success':
@@ -175,8 +243,11 @@ class DiscordTrainingService:
             if document['state'] == 'stopped':
                 document['state'] = document.get('previous_state', 'analysis')
             return ['저장된 기준으로 훈련을 이어갑니다.']
-        if action in ('query', 'message', 'help') and is_dictionary_request(text):
-            return ['📚 데이터 사전 · 첨부한 표를 누르면 확대할 수 있습니다.']
+        if action == 'help':
+            from .discord_presentation import reference_info
+            reference = reference_info(document['task'], payload.get('help_type'))
+            if reference is not None:
+                return [reference]
         if action == 'submit' and document['state'] == 'completed' and document.get('evaluations'):
             return [submission_summary(document['evaluations'][-1])]
         if document['state'] in ('completed', 'stopped'):
@@ -191,10 +262,16 @@ class DiscordTrainingService:
             document['help_history'].append({'type': kind, 'help_level': document['help_level'], 'before_message_id': document['messages'][-1]['id'], 'text': answer_text, 'at': timestamp()})
             self._message(document, 'mentor', answer_text, event_id, kind)
             return ['멘토: ' + answer_text]
-        if action in ('query', 'clarify', 'message'):
-            if action == 'message' and not document['pending_query'] and not any(word in text.lower() for word in ('보여', '조회', '계산', '비교', '알려', '알고', '완료율', '도전', '가입자', '재방문', 'count', 'rate', 'retention')):
-                return ['생각을 기록했습니다. 조회 요청은 /query, 도움은 /help, 보고는 /report로 진행할 수 있습니다.']
-            return self._query(document, event_id, text, new_query=payload.get('new_query', False))
+        if action in ('answer', 'clarify'):
+            return self._answer(document, event_id, text, payload)
+        if action == 'message':
+            if document.get('pending_question') or payload.get('reply_to_message_id'):
+                return self._answer(document, event_id, text, payload)
+            return ['현재 답변을 기다리는 질문이 없습니다. 새 조회는 /query, 보고는 /report로 요청하세요.']
+        if action == 'query':
+            document['pending_query'] = None
+            self._close_question(document, 'superseded')
+            return self._query(document, event_id, text)
         if action == 'report':
             content = payload.get('content') or {'report_text': text}
             if not isinstance(content, dict) or not any(isinstance(value, str) and value.strip() for value in content.values()):
@@ -206,13 +283,15 @@ class DiscordTrainingService:
                 'evidence_refs': list(document['selected_evidence']), 'at': timestamp()})
             document['state'] = 'followup'
             question = '업무 담당자: 공개 업무 목표를 기준으로 제안한 대응의 우선순위와 실행 뒤 확인할 지표를 설명해주세요. 불확실한 설명은 어떻게 추가 확인하겠습니까?'
-            self._message(document, 'stakeholder', question, event_id)
+            document['pending_query'] = None
+            question = self._ask(document, 'followup', question, event_id)
             return [f"보고 버전 {len(document['reports'])}을 저장했습니다.", question]
         if action == 'followup':
             if document['state'] != 'followup':
                 raise DomainError('state', '보고를 작성한 뒤 후속 질문에 답할 수 있습니다.')
             document['reports'][-1].setdefault('followup_answers', []).append({'text': text, 'message_id': document['messages'][-1]['id'], 'at': timestamp()})
             document['state'] = 'reporting'
+            self._close_question(document, 'answered')
             return ['후속 답변을 저장했습니다. 보고를 수정하거나 /submit로 평가를 요청하세요.']
         if action == 'submit':
             if not document['reports']:
@@ -243,53 +322,53 @@ class DiscordTrainingService:
 
     def _query(self, document, event_id, text, new_query=False):
         from .discord_query import DiscordQueryEngine
-        pending = document['pending_query']
         if new_query:
-            pending = None
             document['pending_query'] = None
+            self._close_question(document, 'superseded')
+        pending = document['pending_query']
         provider = MeteredProvider(self.provider, self.store, document['owner_user_id'], self.daily_limit, document['telemetry'])
         engine = DiscordQueryEngine(provider, self.engine.runner, self.settings)
         original = pending['text'] if pending else text
-        clarification = '\n'.join(pending.get('answers', []) + [text]) if pending else None
-        context = {'request': pending['text'], 'answers': pending.get('answers', []),
-                   'proposed_conditions': pending['plan'].get('proposed_conditions', {})} if pending else None
+        if pending:
+            pending.setdefault('answers', []).append(text)
+        clarification = '\n'.join(pending['answers']) if pending else None
+        context = {'request': original, 'question': pending['plan'].get('question'),
+                   'proposed_conditions': pending['plan'].get('proposed_conditions', {}),
+                   'answers': pending.get('answers', [])} if pending else None
         plan = engine.resolve(text, document['task'], previous_conditions=document['conditions'],
-            clarification=clarification, difficulty='beginner' if document['help_level'] == 'guided' else 'intermediate', pending_query=context)
+            clarification=clarification, pending_query=context,
+            difficulty='beginner' if document['help_level'] == 'guided' else 'intermediate')
         query = {'id': record_id(), 'original_text': original, 'user_answer': text if pending else None,
-            'submitted_text': text,
-            'plan': plan, 'event_id': str(event_id), 'at': timestamp()}
+            'submitted_text': text, 'plan': plan, 'event_id': str(event_id), 'at': timestamp()}
         document['queries'].append(query)
         if plan.get('replaces_pending'):
             query.update(original_text=text, user_answer=None)
+            original, pending = text, None
         if plan.get('state') == 'clarification':
-            if plan.get('replaces_pending'):
-                original, pending = text, None
-            document['pending_query'] = {'text': original, 'plan': plan, 'answers': pending.get('answers', []) + [text] if pending else []}
+            document['pending_query'] = {'text': original, 'plan': plan, 'answers': pending['answers'] if pending else []}
             answer = plan.get('question', '기간·분자·분모·집계를 확정해주세요.')
             if plan.get('options'):
                 answer += '\n선택지: ' + ' / '.join(str(option) for option in plan['options'])
             kind = plan.get('help_type', 'request_confirmation')
             if kind != 'request_confirmation':
                 document['help_history'].append({'type': kind, 'text': answer, 'at': timestamp()})
-            self._message(document, 'mentor', answer, event_id, kind)
+            answer = self._ask(document, 'query_conditions', answer, event_id, kind)
             return [answer]
         if plan.get('state') != 'ready':
             if plan.get('reason') == 'unsupported_query':
                 document['pending_query'] = None
+                self._close_question(document, 'superseded')
             elif pending:
-                # Keep the supplied clarification even if the upstream call fails.
-                document['pending_query'] = dict(pending, answers=pending.get('answers', []) + [text])
+                document['pending_query'] = dict(pending, answers=pending['answers'])
             if plan.get('reason') == 'usage_limit':
                 return ['오늘의 API 호출 한도에 도달했습니다. 기존 기록·SQL 열람·재개는 계속 사용할 수 있습니다.']
             if plan.get('reason') == 'api_rate_limited':
-                return ['Gemma API 호출 한도(429)에 도달했습니다. 조회를 실행하지 않았으며 기록은 보존됩니다. 잠시 뒤 새 요청으로 다시 시도하세요.']
-            if plan.get('reason') in {'api_unavailable', 'api_timeout', 'api_key_invalid', 'api_permission_denied',
-                                     'api_request_invalid', 'api_invalid_response', 'api_empty_response', 'api_content_blocked',
-                                     'response_incomplete', 'provider_unavailable', 'provider_invalid_json',
-                                     'provider_invalid_response', 'api_key_missing', 'model_unavailable'}:
-                return ['모델 서비스 오류로 조회를 실행하지 못했습니다. 요청 내용과 기존 기록은 보존했습니다. 잠시 뒤 /query로 다시 요청하세요. 새 조회로 바꾸려면 new_query를 켜세요.']
+                return ['Gemma API 호출 한도(429)에 도달했습니다. 답변과 조회 조건은 보존됩니다. 잠시 뒤 /answer로 이어서 답해주세요. 새 조회는 /query로 시작하세요.']
+            if plan.get('reason') in {'api_unavailable', 'api_timeout', 'api_key_invalid', 'api_permission_denied', 'api_request_invalid', 'api_invalid_response', 'api_empty_response', 'api_content_blocked', 'response_incomplete', 'provider_unavailable', 'provider_invalid_json', 'provider_invalid_response', 'api_key_missing', 'model_unavailable'}:
+                return ['모델 서비스 오류로 조회를 실행하지 못했습니다. 답변과 조회 조건은 보존됩니다. 잠시 뒤 /answer로 이어서 답해주세요. 새 조회는 /query로 시작하세요.']
             return [plan.get('message', '조회 조건을 해석할 수 없었습니다. 지원하는 지표와 기간을 명시해 다시 요청하세요.')]
         document['pending_query'] = None
+        self._close_question(document, 'answered')
         document['conditions'] = plan.get('conditions')
         outcome = engine.execute(document['session_id'], document['schema_name'], plan, document['task'])
         query['outcome'] = outcome
@@ -306,7 +385,7 @@ class DiscordTrainingService:
         if not document.get('direction_prompted'):
             document['direction_prompted'] = True
             question = '멘토: 이 비교를 선택한 이유와 검토할 가설을 설명해주세요. 어떤 결과가 나오면 가설을 수정하거나 기각하겠습니까? 이미 설명한 내용은 보고에도 연결할 수 있습니다.'
-            self._message(document, 'mentor', question, event_id, 'request_confirmation')
+            question = self._ask(document, 'analysis_reason', question, event_id, 'request_confirmation')
             messages.append(question)
         return messages
 

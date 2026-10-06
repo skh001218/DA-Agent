@@ -14,7 +14,7 @@ Discord Developer Portal에서 Bot을 만들고 서버 설치에 `bot`, `applica
 
 **필수:** Bot → Privileged Gateway Intents → **Server Members Intent**를 켜고 저장한다. 비공개 스레드 참가자 목록 REST 조회는 앱에 이 Intent가 허용돼 있어야 성공한다. Gateway의 전체 멤버 캐시를 켜는 것과는 별개이며 현재 봇은 REST로 소유자·다른 참가자를 검사한다. 꺼져 있으면 과제 데이터는 생성돼도 스레드 검증이 403 Missing Access로 실패한다.
 
-과제 스레드에서 **@DA-Agent를 선택해 멘션하고 질문·확인 답변을 보내면** 일반 대화로 처리한다. Message Content Intent가 꺼져 있어도 멘션 메시지는 수신한다. 멘션 없는 일반 메시지까지 처리하려면 Developer Portal의 Message Content Intent와 `DISCORD_MESSAGE_CONTENT=true`를 모두 활성화한다. 기본값은 false이며 내용이 비어 수신된 소유자 메시지에는 멘션 또는 /query 사용법을 안내한다. 스레드 밖·다른 봇·소유자 아닌 사용자의 메시지는 자동 응답하지 않는다. [공식 Message Content 설명](https://github.com/discord/discord-api-docs/blob/main/developers/events/gateway.mdx#message-content-intent)
+일반 대화를 사용하려면 Developer Portal의 Message Content Intent와 `DISCORD_MESSAGE_CONTENT=true`를 모두 활성화한다. 기본값은 false이며 `/query`, `/help`, `/report`, `/followup`으로 같은 입력을 보낼 수 있다. 스레드 밖·다른 봇·소유자 아닌 사용자의 일반 메시지는 자동 응답하지 않는다.
 
 ## 별도 환경변수
 
@@ -41,10 +41,11 @@ Discord 전용 기록 DB와 전용 데이터 DB를 먼저 준비한다. 관리�
 
 1. 부모 텍스트 채널에서 `/training topic:tutorial difficulty:intermediate`를 실행한다. 난이도와 별개로 `help_level`을 안내 포함/내 정의 먼저 중 선택할 수 있다.
 2. 최초 Interaction을 바로 지연 응답하고, 과제 준비 뒤 비공개 과제 스레드와 업무 안내를 보낸다.
-3. 스레드에서 `/query text:...` 또는 @DA-Agent 멘션으로 분석한다. 확인 질문 답변도 같은 방법으로 보낸다. 최신 요청이 다른 지표를 요구하면 새 조회로 전환하며, 명시적으로 초기화하려면 `/query text:... new_query:true`를 사용한다. “과제 기간”을 명시하면 공개 가입 기간을 연결한다. 미정인 조건만 질문하고, 미지원 조회와 모델 서비스 오류를 구분해 안내한다.
+3. 스레드에서 `/query text:...`로 새 조회를 요청한다. 확인 질문에는 답장·봇 멘션 또는 `/answer text:...`로 답한다.
 4. `/help text:...`로 도움을 요청한다. `/sql execution_id:...`로 실제 실행 SQL을 보고 `/evidence execution_id:...`로 보고 근거를 선택한다. 이 두 명령이 버튼 대안이다.
-5. `/report text:...`로 초안·수정본을 저장하고 긴 보고는 `/report text:... append:true`로 이어 쓴다. `/help kind:분석 방향` 또는 `kind:중간 검토`로 도움 종류를 선택할 수 있다. `/followup text:...`로 업무 담당자의 질문에 답한다. `/submit`으로 최종 제출한다.
-6. `/end`로 중단한다. `/resume session_id:...`로 재개하며 ID 생략 시 서비스가 자신의 최근 과제를 찾는다. 스레드 삭제 시 부모 채널에서 `/resume`을 실행하면 기록을 유지하고 새 비공개 공간에 연결한다. 접근 권한 오류는 기존 연결을 보존하고 운영자의 권한 수정을 안내한다.
+5. `/query text:...`는 새 조회를 시작한다. 봇 확인 질문에는 해당 메시지에 답장하거나 멤버 목록의 `@DA-Agent` 봇을 선택해 멘션과 함께 답한다. `/answer text:...`로도 현재 질문에 답할 수 있다. 내용 수신이 제한된 답장은 멘션 또는 `/answer` 사용 안내가 나온다. 과거 질문에 대한 답장은 최신 질문으로 안내하며 일반 채팅은 자동 조회하지 않는다.
+6. `/report text:...`로 초안·수정본을 저장하고 긴 보고는 `/report text:... append:true`로 이어 쓴다. `/help kind:분석 방향` 또는 `kind:중간 검토`로 도움 종류를 선택할 수 있다. `/help`의 `kind`에서 데이터 사전·평가 기준·전체 명령을 선택하면 질문 입력 없이 공개 자료를 확인할 수 있다. 첫 안내에는 업무 요청, 주별 가입 대상, UTC 관측 경계, 데이터의 필수 사실과 다음 행동만 표시한다. 보고 후속 질문에도 답장·멘션·`/answer` 또는 `/followup text:...`로 답할 수 있다. `/submit`으로 최종 제출한다.
+7. `/end`로 중단한다. `/resume session_id:...`로 재개하며 ID 생략 시 서비스가 자신의 최근 과제를 찾는다. 스레드 삭제 시 부모 채널에서 `/resume`을 실행하면 기록을 유지하고 새 비공개 공간에 연결한다. 접근 권한 오류는 기존 연결을 보존하고 운영자의 권한 수정을 안내한다.
 
 응답은 Discord 길이 제한보다 작은 1,900자 단위로 나눈다. 서비스·모델·사용자 문구는 Markdown을 이스케이프하고 모든 전송에 mentions 비활성화를 적용한다. 15분 이후 Interaction 토큰이 만료되면 이미 저장한 과제 스레드 응답과 `/resume`으로 확인한다. 원시 예외·접속 정보는 메시지에 포함하지 않는다.
 
@@ -56,13 +57,20 @@ Discord 전용 기록 DB와 전용 데이터 DB를 먼저 준비한다. 관리�
 
 공식 근거: [Discord Interaction 응답과 만료](https://docs.discord.com/developers/interactions/receiving-and-responding), [스레드 권한](https://docs.discord.com/developers/topics/threads), [discord.py 변경 기록](https://discordpy.readthedocs.io/en/stable/whats_new.html), [Interactions API](https://discordpy.readthedocs.io/en/stable/interactions/api.html).
 
+## 중단된 대기 응답 정리
+
+정상 요청은 원래 비공개 대기 응답을 완료 안내로 수정한다. 취소·종료·재시작 시 원래 응답을 “요청의 응답이 중단되었습니다”와 `/resume` 안내로 교체한다. 임시 응답 복구 정보는 전용 `discord-responses` Docker 볼륨에 보관하며 완료·복구·15분 만료 후 삭제한다. 단독 실행에서는 `.local/discord-responses`를 사용하고 `DISCORD_RESPONSE_DIRECTORY`로 경로를 지정할 수 있다. 이미 토큰이 만료된 과거 메시지와 기능 적용 전에 복구 정보를 저장하지 않은 응답은 수정할 수 없다. [구현·검증 기록](../specs/031-discord-interrupted-response.md).
+
+## 명령어 사용법 조회
+
+`/tip command:report`로 명령어의 목적·입력 옵션·사용 예시를 확인한다. `/tip command:/report`도 지원하며 `/tip`만 실행하면 전체 명령 목록을 보여준다. 허용된 서버에서 과제 없이 사용할 수 있고 본인에게만 응답한다. 분석 기록·질문 상태·모델 호출에 영향을 주지 않는다.
 
 ## 데이터 사전과 조회 표 (2026-10-06)
 
 데이터 사전과 성공 조회의 첫 10행을 한글 PNG 표로 첨부한다. 표를 누르면 Discord 미디어 뷰어에서 확대할 수 있다. 기호·공백으로 열을 정렬하지 않는다. 숫자는 오른쪽 정렬하고 NULL·빈 결과·표시 제한·불완전 수집을 구분한다. 계산 기준은 한글 목록으로, 실행 ID·SQL·근거 선택은 기존 명령으로 제공한다. 이미지 대체 설명도 포함한다.
 
 - `/query text:데이터 사전 보여줘`, `/help text:users 데이터 사전 알려줘`, `@DA-Agent 데이터 사전 보여줘`로 공개 사전을 조회한다. 모델·SQL을 호출하지 않으며 진행 중인 조회 확인 조건을 유지한다.
-- 자연어 SQL 조회가 성공하면 결과 표를 자동으로 첨부한다. `/training`과 `/resume`에도 사전 표를 제공한다.
+- 자연어 SQL 조회가 성공하면 결과 표를 자동으로 첨부한다. 첫 안내는 간결하게 표시한다. 사전 표는 `/help`의 데이터 사전 선택이나 사전 조회 요청으로 확인한다.
 - 봇에 파일 첨부(Attach Files) 권한이 필요하다. 첨부 실패 시 행별 목록으로 값을 제공하며 성공 조회를 다시 실행하지 않는다.
 - `requirements-discord.txt`에 Pillow를 포함하며 Dockerfile.discord에서 Noto CJK 글꼴을 설치한다. Windows는 맑은 고딕을 사용한다. 다른 실행 환경은 `DISCORD_TABLE_FONT`와 선택 사항인 `DISCORD_TABLE_BOLD_FONT`에 한글 글꼴 경로를 설정한다.
 

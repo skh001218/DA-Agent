@@ -280,7 +280,10 @@ class DiscordQueryEngine:
             if isinstance(conditions, dict):
                 # An explicit public-period reference is a user choice, not an inferred date.
                 references = [text]
-                old_metric = (pending_query or {}).get('proposed_conditions', {}).get('metric')
+                earlier = (pending_query or {}).get('proposed_conditions', {})
+                old_metric = earlier.get('metric')
+                if pending_query and parsed.get('replaces_pending') is not True and conditions.get('metric', old_metric) == old_metric:
+                    conditions = {**earlier, **conditions}
                 if pending_query and old_metric == conditions.get('metric') and parsed.get('replaces_pending') is not True:
                     references += [pending_query.get('request', '')] + pending_query.get('answers', [])
                 if any(marker in reference for reference in references if isinstance(reference, str)

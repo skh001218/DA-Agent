@@ -48,7 +48,7 @@ def test_result_preview_does_not_change_saved_evidence_or_hide_null_limits():
 
 def test_dictionary_request_needs_no_model_sql_and_keeps_pending_query():
     document = dict(task=representative_task(), state='completed', queries=[], executions=[],
-                    messages=[], telemetry=[], pending_query={'text': '완료율'}, session_id='s')
+                    messages=[], telemetry=[], pending_query={'text': '완료율', 'plan': {}}, questions=[], session_id='s')
     class Store:
         def get(self, *args): return document
         def claim_event(self, *args): return None
@@ -59,7 +59,7 @@ def test_dictionary_request_needs_no_model_sql_and_keeps_pending_query():
     service = DiscordTrainingService(store, None, None, NS())
     response = service.handle('owner', 's', 'event', 'query', text='users 데이터 사전 보여줘')
     assert len(response['tables']) == 1 and response['tables'][0]['title'].endswith('users')
-    assert document['pending_query'] == {'text': '완료율'} and not document['queries']
+    assert document['pending_query'] == {'text': '완료율', 'plan': {}} and not document['queries']
     assert 'request_state' not in response
     assert service.handle('owner', 's', 'event2', 'help', text='데이터 사전 알려줘')['tables']
     assert is_dictionary_request('데이터 사전 보여줘')
@@ -74,7 +74,7 @@ def test_attachment_failure_still_delivers_values_then_next_message():
     gateway = Gateway()
     transport = DiscordTransport(None, gateway, [1])
     table = dict(title='조회 결과', columns=['분모', '완료율'], rows=[[40, 75]], after_message=0)
-    asyncio.run(transport._emit(None, ['실행 성공', '후속 질문'], [table]))
+    asyncio.run(transport._emit(None, ['실행 성공', '후속 질문'], tables=[table]))
     assert gateway.sent[0] == '실행 성공' and gateway.sent[-1] == '후속 질문'
     assert '40' in gateway.sent[1] and '75' in gateway.sent[1]
 

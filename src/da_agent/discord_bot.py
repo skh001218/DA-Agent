@@ -1,5 +1,6 @@
 """Optional standalone bot. Importing the web app never imports this module."""
 import os
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -68,22 +69,23 @@ def create_client(service, settings):
     class Gateway:
         def __init__(self, client):
             self.client = client
-            self.message_content_enabled = settings.message_content
-
-        def message_text(self, message):
-            import re
-            return re.sub(rf'<@!?{self.client.user.id}>', '', message.content).strip()
+            from .discord_responses import DiscordResponses
+            self.responses = DiscordResponses(os.environ.get('DISCORD_RESPONSE_DIRECTORY', '.local/discord-responses'))
 
         async def defer(self, event):
-            await event.response.defer(ephemeral=True, thinking=True)
+            await self.responses.defer(event)
 
         async def reply(self, event, text):
-            if event.is_expired():
-                return  # permanent thread response already delivered; /resume restores state
-            await event.followup.send(text, ephemeral=True, allowed_mentions=discord.AllowedMentions.none())
+            await self.responses.reply(event, text, discord.AllowedMentions.none())
+
+        async def interrupt(self, event):
+            await self.responses.interrupt(event, discord.AllowedMentions.none())
+
+        def finish(self, event):
+            self.responses.finish(event.id)
 
         async def send(self, channel, text):
-            await channel.send(text, allowed_mentions=discord.AllowedMentions.none())
+            return await channel.send(text, allowed_mentions=discord.AllowedMentions.none())
 
         async def send_table(self, channel, table):
             import asyncio
@@ -94,6 +96,20 @@ def create_client(service, settings):
                 attachment = discord.File(BytesIO(page), filename=f'table-{index}.png',
                                           description=table_fallback(table)[:1024])
                 await channel.send(file=attachment, allowed_mentions=discord.AllowedMentions.none())
+
+        @property
+        def bot_user_id(self):
+            return self.client.user.id if self.client.user else None
+
+        @property
+        def message_content_enabled(self):
+            return settings.message_content
+
+        def message_text(self, message):
+            text = message.content
+            if self.bot_user_id:
+                text = re.sub(r'<@!?' + str(self.bot_user_id) + r'>', '', text)
+            return text.strip()
 
         async def publish_result(self, parent, user, submission, publication, save):
             from .discord_forum import ResultForumPublisher
@@ -164,10 +180,24 @@ def create_client(service, settings):
 
     class Client(discord.Client):
         async def setup_hook(self):
+            import asyncio
+            await transport.gateway.responses.recover()
+            self.response_maintenance = asyncio.create_task(transport.gateway.responses.maintenance())
             for guild_id in settings.guild_ids:
                 guild = discord.Object(id=guild_id)
                 tree.copy_global_to(guild=guild)
                 await tree.sync(guild=guild)
+
+        async def close(self):
+            import asyncio
+            maintenance = getattr(self, 'response_maintenance', None)
+            if maintenance is not None:
+                maintenance.cancel()
+                await asyncio.gather(maintenance, return_exceptions=True)
+            try:
+                await transport.gateway.responses.recover(include_active=True)
+            finally:
+                await super().close()
 
         async def on_message(self, message):
             await transport.message(message)
@@ -186,6 +216,12 @@ def create_client(service, settings):
     async def training(interaction: discord.Interaction, topic: str = "tutorial", difficulty: str = "intermediate", help_level: str | None = None):
         await transport.command(interaction, "training", topic=topic, difficulty=difficulty, help_level=help_level)
 
+    @tree.command(name="tip", description="명령어의 사용법과 예시 확인")
+    @app_commands.guild_only()
+    @app_commands.describe(command="확인할 명령어 이름 (예: report 또는 /report). 생략하면 목록")
+    async def tip(interaction: discord.Interaction, command: str = ''):
+        await transport.command(interaction, "tip", text=command)
+
     @tree.command(name="resume", description="자신의 과제를 재개하거나 삭제된 스레드를 복구")
     @app_commands.guild_only()
     async def resume(interaction: discord.Interaction, session_id: str | None = None):
@@ -198,11 +234,7 @@ def create_client(service, settings):
         callback.__annotations__["interaction"] = discord.Interaction
         tree.add_command(app_commands.Command(name=action, description=description, callback=callback))
 
-    @tree.command(name='query', description='조회 요청·확인 답변 (new_query로 이전 질문 초기화)')
-    async def query(interaction: discord.Interaction, text: str, new_query: bool = False):
-        await transport.command(interaction, 'query', text=text, payload={'new_query': new_query})
-
-    for action, description in {"followup": "업무 담당자 후속 질문에 답변"}.items():
+    for action, description in {"query": "새로운 자연어 조회 요청", "answer": "현재 봇 질문에 이어서 답변", "followup": "업무 담당자 후속 질문에 답변"}.items():
         register_text_action(action, description)
 
     @tree.command(name="report", description="보고 초안 작성·수정 또는 긴 보고 이어 쓰기")
@@ -210,8 +242,8 @@ def create_client(service, settings):
         await transport.command(interaction, 'report', text=text, payload={'append': append})
 
     @tree.command(name="help", description="개념·분석 방향·중간 피드백 도움 요청")
-    @app_commands.choices(kind=[app_commands.Choice(name='개념', value='concept_hint'), app_commands.Choice(name='분석 방향', value='analysis_direction_hint'), app_commands.Choice(name='중간 검토', value='intermediate_feedback')])
-    async def help_command(interaction: discord.Interaction, text: str, kind: str = 'concept_hint'):
+    @app_commands.choices(kind=[app_commands.Choice(name='개념', value='concept_hint'), app_commands.Choice(name='분석 방향', value='analysis_direction_hint'), app_commands.Choice(name='중간 검토', value='intermediate_feedback'), app_commands.Choice(name='데이터 사전', value='data_dictionary'), app_commands.Choice(name='평가 기준', value='evaluation_criteria'), app_commands.Choice(name='전체 명령', value='commands')])
+    async def help_command(interaction: discord.Interaction, text: str = '', kind: str = 'concept_hint'):
         await transport.command(interaction, 'help', text=text, payload={'help_type': kind})
 
     def register_action(action, description):
