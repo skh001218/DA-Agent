@@ -89,6 +89,14 @@ def test_start_acknowledges_before_permissions_creates_private_binding():
     assert gateway.sent[0][0] == 30
 
 
+def test_concurrent_starts_reuse_latest_thread_binding():
+    service, gateway, transport, event = setup()
+    async def both():
+        await asyncio.gather(transport.command(event, 'training'), transport.command(event, 'training'))
+    asyncio.run(both())
+    assert gateway.events.count('create') == 1
+
+
 def test_failed_start_creates_no_thread_or_binding():
     service, gateway, transport, event = setup()
     service.start = lambda *args, **kwargs: {"state": "failed", "messages": ["과제 준비 실패"]}

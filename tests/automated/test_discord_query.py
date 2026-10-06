@@ -205,8 +205,10 @@ def db():
             learner_dsn = os.getenv('DISCORD_TEST_LEARNER_DSN')
             if learner_dsn:
                 assert '/discord_test' in learner_dsn
-                conn.execute(sql.SQL('GRANT USAGE ON SCHEMA {} TO discord_education_learner').format(sql.Identifier(schema)))
-                conn.execute(sql.SQL('GRANT SELECT ON ALL TABLES IN SCHEMA {} TO discord_education_learner').format(sql.Identifier(schema)))
+                from psycopg.conninfo import conninfo_to_dict
+                learner_role = conninfo_to_dict(learner_dsn)['user']
+                conn.execute(sql.SQL('GRANT USAGE ON SCHEMA {} TO {}').format(sql.Identifier(schema), sql.Identifier(learner_role)))
+                conn.execute(sql.SQL('GRANT SELECT ON ALL TABLES IN SCHEMA {} TO {}').format(sql.Identifier(schema), sql.Identifier(learner_role)))
             conn.execute("INSERT INTO users VALUES ('a','2026-09-01','ad'), ('b','2026-09-02','ad'), ('c','2026-09-14','organic'), ('d','2026-09-15','organic'), ('e','2026-09-23','ad')")
             conn.execute("INSERT INTO tutorial_attempts VALUES ('a',3,true,'2026-09-02 10:00Z'), ('a',3,true,'2026-09-03 10:00Z'), ('b',3,false,'2026-09-04 10:00Z'), ('c',3,true,'2026-09-15 00:00Z'), ('b',2,true,'2026-09-03 10:00Z')")
             conn.execute("INSERT INTO sessions VALUES ('a','2026-08-26 00:00Z'), ('a','2026-08-27 00:00Z'), ('b','2026-08-28 00:00Z'), ('a','2026-09-08 00:00Z'), ('a','2026-09-08 12:00Z'), ('b','2026-09-08 12:00Z'), ('c','2026-09-21 00:00Z'), ('d','2026-09-22 00:00Z'), ('e','2026-09-30 00:00Z')")

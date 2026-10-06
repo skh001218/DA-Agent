@@ -146,8 +146,9 @@ def create_client(service, settings):
     @tree.command(name="training", description="비공개 분석 훈련 시작")
     @app_commands.guild_only()
     @app_commands.choices(difficulty=[app_commands.Choice(name="초급", value="beginner"), app_commands.Choice(name="중급", value="intermediate"), app_commands.Choice(name="고급", value="advanced")])
-    async def training(interaction: discord.Interaction, topic: str = "tutorial", difficulty: str = "intermediate"):
-        await transport.command(interaction, "training", topic=topic, difficulty=difficulty)
+    @app_commands.choices(help_level=[app_commands.Choice(name="안내 포함", value="guided"), app_commands.Choice(name="내 정의 먼저", value="independent")])
+    async def training(interaction: discord.Interaction, topic: str = "tutorial", difficulty: str = "intermediate", help_level: str | None = None):
+        await transport.command(interaction, "training", topic=topic, difficulty=difficulty, help_level=help_level)
 
     @tree.command(name="resume", description="자신의 과제를 재개하거나 삭제된 스레드를 복구")
     @app_commands.guild_only()
@@ -161,9 +162,17 @@ def create_client(service, settings):
         callback.__annotations__["interaction"] = discord.Interaction
         tree.add_command(app_commands.Command(name=action, description=description, callback=callback))
 
-    for action, description in {"query": "조회 요청 또는 확인 질문 답변", "help": "기록되는 멘토 도움 요청",
-                                "report": "보고 초안 작성·수정", "followup": "업무 담당자 후속 질문에 답변"}.items():
+    for action, description in {"query": "조회 요청 또는 확인 질문 답변", "followup": "업무 담당자 후속 질문에 답변"}.items():
         register_text_action(action, description)
+
+    @tree.command(name="report", description="보고 초안 작성·수정 또는 긴 보고 이어 쓰기")
+    async def report(interaction: discord.Interaction, text: str, append: bool = False):
+        await transport.command(interaction, 'report', text=text, payload={'append': append})
+
+    @tree.command(name="help", description="개념·분석 방향·중간 피드백 도움 요청")
+    @app_commands.choices(kind=[app_commands.Choice(name='개념', value='concept_hint'), app_commands.Choice(name='분석 방향', value='analysis_direction_hint'), app_commands.Choice(name='중간 검토', value='intermediate_feedback')])
+    async def help_command(interaction: discord.Interaction, text: str, kind: str = 'concept_hint'):
+        await transport.command(interaction, 'help', text=text, payload={'help_type': kind})
 
     def register_action(action, description):
         async def callback(interaction: discord.Interaction):

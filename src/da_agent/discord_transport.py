@@ -1,6 +1,7 @@
 """Discord-independent command orchestration; gateway supplies async Discord I/O."""
 import asyncio
 import re
+from weakref import WeakValueDictionary
 
 from .errors import DomainError
 
@@ -18,6 +19,7 @@ class DiscordTransport:
     def __init__(self, service, gateway, guild_ids):
         self.service, self.gateway = service, gateway
         self.guild_ids = {str(value) for value in guild_ids}
+        self._thread_locks = WeakValueDictionary()
         if not self.guild_ids:
             raise ValueError("Discord guild allowlist is required")
 
@@ -94,6 +96,14 @@ class DiscordTransport:
             await self.gateway.reply(event, safe_chunks(message)[0])
 
     async def _thread(self, event, session):
+        sid = session['session_id']
+        lock = self._thread_locks.setdefault(sid, asyncio.Lock())
+        async with lock:
+            # Replay/concurrent starts may carry an old pre-binding snapshot.
+            latest = await self._call('get_session', str(event.user.id), sid)
+            return await self._bound_thread(event, latest)
+
+    async def _bound_thread(self, event, session):
         if str(session.get("owner_user_id")) != str(event.user.id) or str(session.get("guild_id")) != str(event.guild.id):
             raise DomainError("discord_session_forbidden", "자신의 서버·과제만 재개할 수 있습니다.", 403)
         thread_id = session.get("thread_id")

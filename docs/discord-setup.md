@@ -7,7 +7,7 @@
 Python 3.12 이상과 기존 프로젝트 의존성을 준비한 **별도 가상환경**에서 추가 의존성을 설치한다.
 
 ```powershell
-python -m pip install -r requirements.txt -r requirements-discord.txt
+python -m pip install -e . -r requirements-discord.txt
 ```
 
 Discord Developer Portal에서 Bot을 만들고 서버 설치에 `bot`, `applications.commands` scope를 사용한다. 실제 운영 서버와 참여자는 파일럿 전에 지정한다. 부모 텍스트 채널에서 봇에 채널 보기, 비공개 스레드 생성, 스레드 관리, 스레드 발언, 메시지 기록 읽기 권한을 준다. 참가자는 부모 채널 보기와 스레드 발언 권한이 필요하다. 봇의 관리자 권한은 필요하지 않다. 비공개 스레드는 초대 불가로 만들고 소유자만 추가한다. 서버 관리자 및 스레드 관리 권한자는 비공개 스레드에 접근할 수 있으므로 완전한 비밀 공간으로 안내하지 않는다.
@@ -34,11 +34,11 @@ Discord 전용 기록 DB와 전용 데이터 DB를 먼저 준비한다. 관리�
 
 ## Discord 안의 흐름
 
-1. 부모 텍스트 채널에서 `/training topic:tutorial difficulty:intermediate`를 실행한다.
+1. 부모 텍스트 채널에서 `/training topic:tutorial difficulty:intermediate`를 실행한다. 난이도와 별개로 `help_level`을 안내 포함/내 정의 먼저 중 선택할 수 있다.
 2. 최초 Interaction을 바로 지연 응답하고, 과제 준비 뒤 비공개 과제 스레드와 업무 안내를 보낸다.
 3. 스레드에서 `/query text:...` 또는 일반 대화로 분석한다. 확인 질문 답변도 `/query`로 보낼 수 있다.
 4. `/help text:...`로 도움을 요청한다. `/sql execution_id:...`로 실제 실행 SQL을 보고 `/evidence execution_id:...`로 보고 근거를 선택한다. 이 두 명령이 버튼 대안이다.
-5. `/report text:...`로 초안·수정본을 저장하고 `/followup text:...`로 업무 담당자의 질문에 답한다. `/submit`으로 최종 제출한다.
+5. `/report text:...`로 초안·수정본을 저장하고 긴 보고는 `/report text:... append:true`로 이어 쓴다. `/help kind:분석 방향` 또는 `kind:중간 검토`로 도움 종류를 선택할 수 있다. `/followup text:...`로 업무 담당자의 질문에 답한다. `/submit`으로 최종 제출한다.
 6. `/end`로 중단한다. `/resume session_id:...`로 재개하며 ID 생략 시 서비스가 자신의 최근 과제를 찾는다. 스레드 삭제 시 부모 채널에서 `/resume`을 실행하면 기록을 유지하고 새 비공개 공간에 연결한다. 접근 권한 오류는 기존 연결을 보존하고 운영자의 권한 수정을 안내한다.
 
 응답은 Discord 길이 제한보다 작은 1,900자 단위로 나눈다. 서비스·모델·사용자 문구는 Markdown을 이스케이프하고 모든 전송에 mentions 비활성화를 적용한다. 15분 이후 Interaction 토큰이 만료되면 이미 저장한 과제 스레드 응답과 `/resume`으로 확인한다. 원시 예외·접속 정보는 메시지에 포함하지 않는다.
