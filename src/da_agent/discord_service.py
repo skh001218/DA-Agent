@@ -222,6 +222,14 @@ class DiscordTrainingService:
 
     def _apply(self, document, event_id, action, text, payload):
         from .discord_education import help_response, evaluate_report, growth_observation
+        if action == 'question':
+            from .discord_terms import explain_terms
+            provider = MeteredProvider(self.provider, self.store, document['owner_user_id'], self.daily_limit, document['telemetry'])
+            messages = explain_terms(text, document['task'], provider)
+            answer = '\n\n'.join(messages)
+            document['help_history'].append({'type': 'term_question', 'text': answer, 'at': timestamp()})
+            self._message(document, 'mentor', answer, event_id, 'term_question')
+            return messages
         if action in ('query', 'message', 'answer', 'help') and (is_dictionary_request(text) or payload.get('help_type') == 'data_dictionary'):
             return ['📚 데이터 사전 · 첨부한 표를 누르면 확대할 수 있습니다.']
         if action in ('sql', 'evidence'):
@@ -320,8 +328,11 @@ class DiscordTrainingService:
             return [submission_summary(document['evaluations'][-1])]
         raise DomainError('action', '지원하지 않는 행동입니다. /query·/help·/report·/submit을 사용하세요.')
 
-    def _query(self, document, event_id, text):
+    def _query(self, document, event_id, text, new_query=False):
         from .discord_query import DiscordQueryEngine
+        if new_query:
+            document['pending_query'] = None
+            self._close_question(document, 'superseded')
         pending = document['pending_query']
         provider = MeteredProvider(self.provider, self.store, document['owner_user_id'], self.daily_limit, document['telemetry'])
         engine = DiscordQueryEngine(provider, self.engine.runner, self.settings)
@@ -331,13 +342,16 @@ class DiscordTrainingService:
         clarification = '\n'.join(pending['answers']) if pending else None
         context = {'request': original, 'question': pending['plan'].get('question'),
                    'proposed_conditions': pending['plan'].get('proposed_conditions', {}),
-                   'answers': pending['answers']} if pending else None
+                   'answers': pending.get('answers', [])} if pending else None
         plan = engine.resolve(text, document['task'], previous_conditions=document['conditions'],
             clarification=clarification, pending_query=context,
             difficulty='beginner' if document['help_level'] == 'guided' else 'intermediate')
         query = {'id': record_id(), 'original_text': original, 'user_answer': text if pending else None,
-            'plan': plan, 'event_id': str(event_id), 'at': timestamp()}
+            'submitted_text': text, 'plan': plan, 'event_id': str(event_id), 'at': timestamp()}
         document['queries'].append(query)
+        if plan.get('replaces_pending'):
+            query.update(original_text=text, user_answer=None)
+            original, pending = text, None
         if plan.get('state') == 'clarification':
             document['pending_query'] = {'text': original, 'plan': plan, 'answers': pending['answers'] if pending else []}
             answer = plan.get('question', '기간·분자·분모·집계를 확정해주세요.')
@@ -349,12 +363,17 @@ class DiscordTrainingService:
             answer = self._ask(document, 'query_conditions', answer, event_id, kind)
             return [answer]
         if plan.get('state') != 'ready':
+            if plan.get('reason') == 'unsupported_query':
+                document['pending_query'] = None
+                self._close_question(document, 'superseded')
+            elif pending:
+                document['pending_query'] = dict(pending, answers=pending['answers'])
             if plan.get('reason') == 'usage_limit':
                 return ['오늘의 API 호출 한도에 도달했습니다. 기존 기록·SQL 열람·재개는 계속 사용할 수 있습니다.']
             if plan.get('reason') == 'api_rate_limited':
                 return ['Gemma API 호출 한도(429)에 도달했습니다. 답변과 조회 조건은 보존됩니다. 잠시 뒤 /answer로 이어서 답해주세요. 새 조회는 /query로 시작하세요.']
-            if plan.get('reason') in {'api_unavailable', 'provider_unavailable', 'provider_invalid_response'}:
-                return ['조회 해석 서비스 오류로 실행하지 못했습니다. 답변과 조회 조건은 보존됩니다. 잠시 뒤 다시 시도하세요.']
+            if plan.get('reason') in {'api_unavailable', 'api_timeout', 'api_key_invalid', 'api_permission_denied', 'api_request_invalid', 'api_invalid_response', 'api_empty_response', 'api_content_blocked', 'response_incomplete', 'provider_unavailable', 'provider_invalid_json', 'provider_invalid_response', 'api_key_missing', 'model_unavailable'}:
+                return ['모델 서비스 오류로 조회를 실행하지 못했습니다. 답변과 조회 조건은 보존됩니다. 잠시 뒤 /answer로 이어서 답해주세요. 새 조회는 /query로 시작하세요.']
             return [plan.get('message', '조회 조건을 해석할 수 없었습니다. 지원하는 지표와 기간을 명시해 다시 요청하세요.')]
         document['pending_query'] = None
         self._close_question(document, 'answered')
@@ -377,6 +396,61 @@ class DiscordTrainingService:
             question = self._ask(document, 'analysis_reason', question, event_id, 'request_confirmation')
             messages.append(question)
         return messages
+
+
+def format_task_intro(document):
+    """Render public conditions as readable sections without revealing private task data."""
+    task = document['task']
+    period = task.get('period', {})
+    state = {'analysis': '분석 중', 'followup': '후속 답변 대기', 'reporting': '보고 작성 중',
+             'completed': '완료', 'stopped': '중단', 'interrupted': '중단'}.get(document['state'], document['state'])
+    status = '\n'.join([
+        '📌 ' + task.get('title', '분석 훈련'),
+        f"상태: {state} · 저장 조회: {len(document['executions'])}개 · 보고: {len(document['reports'])}개",
+        f"훈련 ID: {document['session_id']}",
+    ])
+    brief = '\n'.join([
+        '🎯 업무 담당자 · 공개 과제와 평가 조건', task.get('objective', ''), '',
+        '기간과 비교 대상',
+        f"• 가입 기간: {period.get('start', '미정')}부터 {period.get('end', '미정')}까지"
+        + (' (종료일 제외)' if period.get('end_exclusive') else ' (종료일 포함)'),
+        f"• 시간 기준: {task.get('timezone', '미정')}",
+        f"• 관측 종료: {period.get('observation_end', '미정')}",
+    ])
+    data = ['📚 데이터 사전']
+    for name, table in task.get('dictionary', {}).items():
+        data.extend(['', f"{name} — 한 행: {table.get('unit', '미정')}", table.get('description', ''),
+                     '컬럼과 자료형은 아래 첨부 표에서 확인하세요.'])
+    quality = ['🔎 신뢰성 확인과 해석 한계', task.get('quality_information', {}).get('collection', ''),
+               '필수 점검: ' + task.get('quality_information', {}).get('required_check', '')]
+    quality.extend('• ' + limit for limit in task.get('accepted_limits', []))
+    rubric = task.get('rubric', {})
+    assessment = ['📋 평가 기준']
+    for criterion in rubric.get('criteria', []):
+        assessment.extend(['', f"{criterion['name']} ({criterion['weight']}%)",
+                           '필수: ' + criterion['required'], '핵심 오류: ' + criterion['core_error'],
+                           '추가 검증: ' + criterion['advanced']])
+    assessment.extend(['', '등급: ' + ' / '.join(f'{grade} = {meaning}' for grade, meaning in rubric.get('grades', {}).items()),
+                       f"통과 기준: {rubric.get('passing_grade', '미정')}등급 · 기준 버전: {rubric.get('version', '미정')}",
+                       '점수에 반영하지 않음: ' + ', '.join(rubric.get('non_scoring', []))])
+    if rubric.get('no_duplicate_penalty'):
+        assessment.append('같은 오류는 중복 감점하지 않습니다.')
+    policy = task.get('help_policy', {})
+    commands = ['▶ 이 문제를 이어가는 방법', '이 과제 스레드 안에서 아래 명령을 사용하세요.', '',
+                '1. /query — 조회 요청·확인 답변 (new_query를 켜면 이전 질문 초기화)',
+                '2. /help — 개념·분석 방향·중간 피드백 요청',
+                '3. /sql — 실행 SQL 확인 · /evidence — 조회를 보고 근거로 선택',
+                '4. /report — 보고 작성·수정 (append로 긴 보고 이어 쓰기)',
+                '5. /followup — 업무 담당자의 후속 질문에 답변',
+                '6. /submit — 최종 제출과 평가', '',
+                '/end — 중단·기록 보존 · /resume — 저장한 문제 재개',
+                '지원 주제: 튜토리얼 완료율 분석',
+                '기본 도움: ' + {'independent': '내 정의 먼저', 'guided': '안내 포함'}.get(policy.get('default_level'), '미정'),
+                '도움 유형: ' + ', '.join({'clarification': '정의 확인', 'concept': '개념', 'direction': '분석 방향', 'feedback': '피드백'}.get(kind, kind) for kind in policy.get('types', []))]
+    if policy.get('record_before_after'):
+        commands.append('도움받기 전후의 답변을 기록합니다.')
+    commands.append('대화로 질문·확인 답변을 보내려면 @DA-Agent를 선택해 멘션하세요. 일반 메시지 수신이 꺼져 있어도 멘션한 내용은 처리합니다.')
+    return [status, brief, '\n'.join(data), '\n'.join(quality), '\n'.join(assessment), '\n'.join(commands)]
 
 
 def format_result(execution, settings):

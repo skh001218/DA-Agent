@@ -69,14 +69,20 @@ def create_client(service, settings):
     class Gateway:
         def __init__(self, client):
             self.client = client
+            from .discord_responses import DiscordResponses
+            self.responses = DiscordResponses(os.environ.get('DISCORD_RESPONSE_DIRECTORY', '.local/discord-responses'))
 
         async def defer(self, event):
-            await event.response.defer(ephemeral=True, thinking=True)
+            await self.responses.defer(event)
 
         async def reply(self, event, text):
-            if event.is_expired():
-                return  # permanent thread response already delivered; /resume restores state
-            await event.followup.send(text, ephemeral=True, allowed_mentions=discord.AllowedMentions.none())
+            await self.responses.reply(event, text, discord.AllowedMentions.none())
+
+        async def interrupt(self, event):
+            await self.responses.interrupt(event, discord.AllowedMentions.none())
+
+        def finish(self, event):
+            self.responses.finish(event.id)
 
         async def send(self, channel, text):
             return await channel.send(text, allowed_mentions=discord.AllowedMentions.none())
@@ -176,10 +182,24 @@ def create_client(service, settings):
         async def setup_hook(self):
             from .discord_pdf_view import ResultPDFView
             self.add_view(ResultPDFView(settings.guild_ids))
+            import asyncio
+            await transport.gateway.responses.recover()
+            self.response_maintenance = asyncio.create_task(transport.gateway.responses.maintenance())
             for guild_id in settings.guild_ids:
                 guild = discord.Object(id=guild_id)
                 tree.copy_global_to(guild=guild)
                 await tree.sync(guild=guild)
+
+        async def close(self):
+            import asyncio
+            maintenance = getattr(self, 'response_maintenance', None)
+            if maintenance is not None:
+                maintenance.cancel()
+                await asyncio.gather(maintenance, return_exceptions=True)
+            try:
+                await transport.gateway.responses.recover(include_active=True)
+            finally:
+                await super().close()
 
         async def on_message(self, message):
             await transport.message(message)
@@ -216,7 +236,7 @@ def create_client(service, settings):
         callback.__annotations__["interaction"] = discord.Interaction
         tree.add_command(app_commands.Command(name=action, description=description, callback=callback))
 
-    for action, description in {"query": "새로운 자연어 조회 요청", "answer": "현재 봇 질문에 이어서 답변", "followup": "업무 담당자 후속 질문에 답변"}.items():
+    for action, description in {"query": "새로운 자연어 조회 요청", "answer": "현재 봇 질문에 이어서 답변", "question": "게임 분석 용어를 용어당 최대 3줄로 설명", "followup": "업무 담당자 후속 질문에 답변"}.items():
         register_text_action(action, description)
 
     @tree.command(name="report", description="보고 초안 작성·수정 또는 긴 보고 이어 쓰기")

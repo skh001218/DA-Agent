@@ -4,15 +4,15 @@
 
 - 진행도: 3/4개 완료 (75%)
 - 마지막 갱신일: 2026-10-06 (Asia/Seoul)
-- 남은 작업: 실제 Gemini 의미 평가, 대표 과제·표본 사람 검토, 실제 Discord 교육 흐름 확인
-- 차단 사유: 현재 Gemini API 사용 제한. 실제 Discord 서버·참여자 미설정.
+- 남은 작업: 대표 과제·실 Gemma 평가 표본의 사람 검토, 단독 사용의 교육 흐름·비교 가능한 도움 전 성장 관측
+- 차단 사유: 실제 모델 표본·서버 연결은 후속 검증 완료. 교육·성장 사람 검토 미확인.
 
 | 작업 | 상태 | 완료 조건 | 관련 코드 / 검증 결과 |
 | --- | --- | --- | --- |
 | 공개 대표 과제·격리 데이터 계약 | 완료 | 세 테이블, 중복·대안 비교 가능한 고정 데이터, 웹 DB 적재 차단, 읽기 전용 확인 | discord_education.py representative_task/prepare_dataset; 격리 PostgreSQL SELECT 가능·DELETE 차단 검증 |
 | 도움·후속 질문·무보조 관측 계약 | 완료 | 도움 유형·전 답변 기록, 공통 기준·난이도·새 과제·사람 비교 승인 조건 확인 | help_response/stakeholder_followup/growth_observation; 자동 표본 통과 |
 | 분석 모드 평가 연결·계약 검증 | 완료 | 공개 5개 항목 배점 100, 근거 ID 검증, 공급자 실패 보류, SQL/문장 길이 점수 없음 | evaluate_report; Gemini review 인터페이스 가짜 공급자 표본 통과 |
-| 교육 타당성·실제 Discord 검증 | 검증 대기 | 실제 모델·사람 표본 검토 및 Discord 도움·보고·수정·성장 흐름 확인 | API 실제 호출 없음; 사람 검토 pending 유지 |
+| 교육 타당성·실제 Discord 검증 | 검증 대기 | 실제 모델·사람 표본 검토 및 Discord 도움·보고·수정·성장 흐름 확인 | Spec024의 실 Gemma 표본 완료. 실제 한 계정 시작·조회·중단/재개 화면도 확인(verification-discord-prd-live-2026-10-06.md). 사람 검토·성장 비교 승인 pending 유지 |
 
 ## 범위와 웹 분리
 
