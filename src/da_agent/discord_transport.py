@@ -35,7 +35,7 @@ def safe_chunks(text, limit=1900):
 
 
 class DiscordTransport:
-    ACTIONS = {"query", "answer", "question", "help", "report", "followup", "submit", "sql", "evidence", "end", "message"}
+    ACTIONS = {"query", "answer", "question", "help", "report", "followup", "submit", "sql", "evidence", "end", "message", "retry"}
 
     def __init__(self, service, gateway, guild_ids):
         self.service, self.gateway = service, gateway
@@ -109,15 +109,19 @@ class DiscordTransport:
             if action == "training":
                 await self.gateway.validate_parent(event.channel, event.user)
                 session = await self._call("start", owner, guild, str(event.channel.id), event_id,
-                                           topic=topic, difficulty=difficulty, help_level=help_level)
+                                           text=text, difficulty=difficulty, help_level=help_level)
                 if not session.get("session_id"):
                     for message in session.get("messages", ["과제 준비에 실패했습니다. 다시 시작하세요."]):
                         for chunk in safe_chunks(message):
                             await self.gateway.reply(event, chunk)
                     return
                 channel = await self._thread(event, session)
+                if session.get('generation',{}).get('status')=='accepted':
+                    await self._emit(channel,['출제 요청을 저장했습니다. 문제와 자료를 생성·검증하고 있습니다. /end로 취소할 수 있습니다.'])
+                    session=await self._call('generate',owner,session['session_id'])
                 response = await self._call("resume", owner, guild, session["session_id"])
                 await self._emit(channel, response.get("messages", []), response.get('session'), response.get('tables', []))
+                await self._generation_ui(channel,event.user,response.get('session',{}))
                 await self.gateway.reply(event, f"과제 공간: <#{channel.id}>. 서버 관리자와 스레드 관리 권한자는 접근할 수 있습니다.")
                 return
             if action == "resume":
@@ -142,10 +146,11 @@ class DiscordTransport:
                         await self._publish_result(event, channel, submission, parent=parent)
                         return
                 channel = await self._thread(event, session)
-                if session.get("state") in {"stopped", "interrupted"}:
+                if (not session.get('generation') or session['generation']['status']=='ready') and session.get("state") in {"stopped", "interrupted"}:
                     await self._call("handle", owner, session["session_id"], event_id, "continue")
                     response = await self._call("resume", owner, guild, session["session_id"])
                 await self._emit(channel, response.get("messages", []), response.get('session'), response.get('tables', []))
+                await self._generation_ui(channel,event.user,response.get('session',{}))
                 if response.get('submission'):
                     await self._publish_result(event, channel, response['submission'])
                     return
@@ -159,6 +164,7 @@ class DiscordTransport:
                 await self.gateway.reply(event, '완료된 과제입니다. /resume으로 결과·대화를 열람하거나 /history로 연습 기록을 확인하세요. 보고 수정은 /report로 시작하세요.')
                 return
             response = await self._call("handle", owner, session["session_id"], event_id, action, text=text, payload=payload)
+            await self._generation_ui(event.channel,event.user,response.get('session',{}))
             if revising_completed:
                 if response.get('session', {}).get('state') == 'completed':
                     for message in response.get('messages', []):
@@ -188,6 +194,13 @@ class DiscordTransport:
         finally:
             if hasattr(self.gateway, 'finish'):
                 self.gateway.finish(event)
+
+    async def _generation_ui(self,channel,user,session):
+        if not session.get('generation'): return
+        if session['generation']['status']=='ready' and hasattr(self.gateway,'rename_generated_thread'):
+            await self.gateway.rename_generated_thread(channel,user,session)
+        if hasattr(self.gateway,'generation_controls'):
+            await self.gateway.generation_controls(channel,session)
 
     async def _publish_result(self, event, channel, submission, *, parent=None):
         owner, sid, eid = str(event.user.id), submission['session_id'], submission['evaluation_id']
@@ -298,5 +311,6 @@ class DiscordTransport:
                                         str(message.id), "answer", text=text,
                                         payload={'reply_to_message_id': str(reply_id) if reply_id else None})
             await self._emit(message.channel, response.get("messages", []), response.get('session'), response.get('tables', []))
+            await self._generation_ui(message.channel,message.author,response.get('session',{}))
         except Exception:
             await self._emit(message.channel, ["처리하지 못했습니다. 기록을 보존했습니다. /resume 으로 재개하세요."])

@@ -1,0 +1,40 @@
+{
+  "owner": "spec035-843875c5e93f4c6eb5a4865400f233b0",
+  "session_id": "ee493806-a40d-41af-89bb-dab0a32e3a73",
+  "state": "failed",
+  "generation": {
+    "error": "모델 호출에 실패해 출제를 보류했습니다. 호출 제한·모델 연결을 확인하고 수동 재시도하세요.",
+    "phase": "adaptive-design",
+    "states": [
+      {
+        "at": "2026-10-06T13:17:03.868186+00:00",
+        "status": "planning"
+      },
+      {
+        "at": "2026-10-06T13:18:08.163558+00:00",
+        "status": "planning"
+      },
+      {
+        "status": "failed",
+        "at": "2026-10-06T13:19:17.512022+00:00"
+      }
+    ],
+    "status": "failed",
+    "message": "반복 행동 계정의 활동량과 정상 반례를 비교하고 싶어",
+    "version": "discord-generation-v1",
+    "revision": 0,
+    "questions": [],
+    "run_token": "8fd2b51b-15b3-4690-b98f-9da9dab49b9f",
+    "request_id": "ee493806-a40d-41af-89bb-dab0a32e3a73",
+    "planning_calls": 2,
+    "original_message": "반복 행동 계정의 활동량과 정상 반례를 비교하고 싶어",
+    "requested_difficulty": "intermediate",
+    "requested_help_level": null,
+    "error_code": "provider_invalid_json"
+  },
+  "task": {
+    "title": "문제 생성 요청",
+    "difficulty": "intermediate"
+  },
+  "live_model": true
+}

@@ -51,7 +51,47 @@ class DiscordTrainingService:
     def list_sessions(self, user_id, guild_id):
         return self.store.list(user_id, guild_id)
 
-    def start(self, user_id, guild_id, channel_id, event_id, topic='tutorial', difficulty='intermediate', help_level=None):
+    def start(self, user_id, guild_id, channel_id, event_id, topic='tutorial', difficulty='intermediate', help_level=None, text=None):
+        # Internal legacy entry point remains for existing fixtures and records.
+        # The public slash command requires text and never reaches this default.
+        if text is None:
+            return self._start_legacy(user_id,guild_id,channel_id,event_id,topic,difficulty,help_level)
+        from .discord_generation import request, VERSION
+        sid=record_id()
+        data=request(text,sid,difficulty)
+        if help_level is not None and help_level not in {'guided','independent'}:
+            raise DomainError('help_level','도움 수준은 guided 또는 independent를 선택하세요.')
+        prior=self.store.claim_event(event_id,user_id,request={'action':'generate','text':data.message,
+            'difficulty':difficulty,'help_level':help_level,'guild_id':str(guild_id),'channel_id':str(channel_id)})
+        if prior is not None:
+            if 'session' not in prior: return prior
+            current=self.get_session(user_id,prior['session']['session_id'])
+            if current['generation']['original_message']!=data.message or current['generation'].get('requested_difficulty')!=difficulty or current['guild_id']!=str(guild_id) or current['channel_id']!=str(channel_id) or current['generation'].get('requested_help_level')!=help_level:
+                raise DomainError('idempotency_conflict','같은 요청 ID에 다른 출제 내용이 있습니다.',409)
+            return current
+        level=help_level or ('guided' if difficulty=='beginner' else 'independent')
+        document={'session_id':sid,'owner_user_id':str(user_id),'guild_id':str(guild_id),
+            'channel_id':str(channel_id),'thread_id':None,'state':'accepted','created_at':timestamp(),
+            'difficulty':difficulty,'help_level':level,'schema_name':None,'data_version':None,
+            'task':{'title':'문제 생성 요청','difficulty':difficulty},
+            'generation':{'version':VERSION,'request_id':sid,'original_message':data.message,'message':data.message,
+                'status':'accepted','revision':0,'planning_calls':0,'requested_difficulty':difficulty,'requested_help_level':help_level,'questions':[]},
+            'messages':[],'queries':[],'executions':[],'reports':[],'evaluations':[],'help_history':[],
+            'telemetry':[],'selected_evidence':[],'pending_query':None,'conditions':None,'learning':[]}
+        self.store.create(document,event_id,{'session':document})
+        return document
+
+    def generate(self,user_id,session_id,retry=False):
+        from .discord_generation import DiscordGeneration
+        result=DiscordGeneration(self).run(user_id,session_id,retry=retry)
+        if result['generation']['status']=='needs_clarification':
+            with self.store.edit(user_id,session_id) as (doc,_):
+                if not doc.get('pending_question'):
+                    self._ask(doc,'generation_conditions','\n'.join(doc['generation']['questions']),'generation')
+            result=doc
+        return result
+
+    def _start_legacy(self, user_id, guild_id, channel_id, event_id, topic='tutorial', difficulty='intermediate', help_level=None):
         from .discord_education import representative_task, prepare_dataset
         prior = self.store.claim_event(event_id, user_id, request={'action': 'start', 'topic': topic, 'difficulty': difficulty, 'guild_id': str(guild_id), 'channel_id': str(channel_id)})
         if prior is not None:
@@ -193,6 +233,9 @@ class DiscordTrainingService:
             return {'messages': ['재개할 훈련이 없습니다. /training으로 시작하세요.']}
         if document['guild_id'] != str(guild_id):
             raise DomainError('forbidden', '이 서버의 훈련만 재개할 수 있습니다.', 403)
+        if document.get('generation') and document['generation']['status']!='ready':
+            from .discord_generation import status_message
+            return {'session':document,'messages':[status_message(document)]}
         from .discord_presentation import task_intro
         messages = [task_intro(document)]
         if document['executions'] or document['reports'] or document['state'] != 'analysis':
@@ -235,6 +278,14 @@ class DiscordTrainingService:
         prior = self.store.claim_event(event_id, user_id, session_id, {'action': action, 'text': text, 'payload': payload or {}})
         if prior is not None:
             return prior
+        current=self.get_session(user_id,session_id)
+        if current.get('generation') and current['generation']['status']!='ready':
+            try:
+                return self._generation_action(user_id,session_id,event_id,action,text,payload or {})
+            except DomainError as exc:
+                response={'session':self.get_session(user_id,session_id),'messages':[exc.message]}
+                self.store.finish_event(event_id,response)
+                return response
         with self.store.edit(user_id, session_id) as (document, conn):
             self._restore_legacy_question(document, event_id)
             self._message(document, 'user', text, event_id)['action'] = action
@@ -259,6 +310,48 @@ class DiscordTrainingService:
                 query = document['queries'][-1]
                 response['request_state'] = query.get('outcome', query['plan']).get('state', 'error')
             self.store.finish_event(event_id, response, conn)
+        return response
+
+    def _generation_action(self,owner,sid,event_id,action,text,payload):
+        from .discord_generation import ACTIVE, request, status_message
+        run=False
+        clear_job=False
+        with self.store.edit(owner,sid) as (doc,_):
+            g=doc['generation']
+            if action=='end':
+                g.update(status='cancelled',error=None)
+                doc['state']='cancelled'
+            elif action=='retry' and g['status'] in {'accepted','failed','interrupted'}:
+                run=True
+            elif action in {'answer','message'} and g['status']=='needs_clarification':
+                if not isinstance(text,str) or not text.strip(): raise DomainError('answer_empty','출제 조건에 대한 답변을 입력하세요.')
+                question=doc.get('pending_question')
+                reference=payload.get('reply_to_message_id')
+                if reference and (not question or str(reference) not in question.get('discord_message_ids',[])):
+                    raise DomainError('answer_stale','현재 출제 확인 질문에 답장하세요.')
+                message=g['message']+'\n추가 답변: '+text.strip()
+                request(message,sid,doc['difficulty'])
+                mentions=[value for word,value in (('초급','beginner'),('중급','intermediate'),('고급','advanced')) if word in text]
+                if len(mentions)==1: doc['difficulty']=mentions[0]
+                g.update(message=message,status='accepted',revision=g['revision']+1,questions=[])
+                doc['state']='accepted'; doc['pending_question']=None
+                clear_job=True
+                self._message(doc,'user',text,event_id)
+                run=True
+            else:
+                response={'session':doc,'messages':[status_message(doc)]}
+        if clear_job:
+            job=self.store.generation_job(owner,sid)
+            for key in ('recipe','alignment','source_case','research'): job.pop(key,None)
+            self.store.save_generation_job(owner,sid,job)
+        if run:
+            doc=self.generate(owner,sid,retry=action=='retry')
+        if doc['generation']['status']=='needs_clarification':
+            with self.store.edit(owner,sid) as (doc,_):
+                if not doc.get('pending_question'):
+                    self._ask(doc,'generation_conditions','\n'.join(doc['generation']['questions']),event_id)
+        response=self.resume(owner,doc['guild_id'],sid)
+        self.store.finish_event(event_id,response)
         return response
 
     def _apply(self, document, event_id, action, text, payload):
@@ -414,7 +507,11 @@ class DiscordTrainingService:
             self._close_question(document, 'superseded')
         pending = document['pending_query']
         provider = MeteredProvider(self.provider, self.store, document['owner_user_id'], self.daily_limit, document['telemetry'])
-        engine = DiscordQueryEngine(provider, self.engine.runner, self.settings)
+        if document['task'].get('generation_version'):
+            from .discord_generated_query import GeneratedQueryEngine
+            engine=GeneratedQueryEngine(provider,self.engine.runner,self.settings)
+        else:
+            engine = DiscordQueryEngine(provider, self.engine.runner, self.settings)
         original = pending['text'] if pending else text
         if pending:
             pending.setdefault('answers', []).append(text)

@@ -25,6 +25,7 @@ class DiscordSettings:
     daily_call_limit: int = 30
     llm_model: str = 'gemma-4-26b-a4b-it'
     quality_profiles_directory: str = '.local/evaluation-quality'
+    generation_directory: str = '.local/discord-generation'
 
     @classmethod
     def from_env(cls, env=None):
@@ -58,7 +59,8 @@ class DiscordSettings:
         return cls(env[names[0]], guilds, *dsns, key_file,
                    message_content=env.get("DISCORD_MESSAGE_CONTENT", "false").lower() == "true",
                    daily_call_limit=daily_limit, llm_model=model,
-                   quality_profiles_directory=env.get('DISCORD_QUALITY_PROFILES_DIR','.local/evaluation-quality'))
+                   quality_profiles_directory=env.get('DISCORD_QUALITY_PROFILES_DIR','.local/evaluation-quality'),
+                   generation_directory=env.get('DISCORD_GENERATION_DIRECTORY','.local/discord-generation'))
 
 
 def create_client(service, settings):
@@ -88,6 +90,17 @@ def create_client(service, settings):
 
         async def send(self, channel, text):
             return await channel.send(text, allowed_mentions=discord.AllowedMentions.none())
+
+        async def generation_controls(self,channel,session):
+            if session.get('generation',{}).get('status') not in {'accepted','failed','interrupted'}: return
+            view=discord.ui.View(timeout=None)
+            view.add_item(discord.ui.Button(label='출제 재시도',custom_id='generation-retry:'+session['session_id']))
+            await channel.send('저장된 요청으로 수동 재시도합니다. 남은 API 한도가 적용됩니다.',view=view)
+
+        async def rename_generated_thread(self,channel,user,session):
+            await self.validate_thread(channel,user)
+            named=await transport._call('reserve_thread_name',str(user.id),session['session_id'])
+            if channel.name!=named['thread_name']: await channel.edit(name=named['thread_name'])
 
         async def send_table(self, channel, table):
             import asyncio
@@ -213,6 +226,11 @@ def create_client(service, settings):
         async def on_message(self, message):
             await transport.message(message)
 
+        async def on_interaction(self,interaction):
+            custom_id=(interaction.data or {}).get('custom_id','')
+            if custom_id.startswith('generation-retry:'):
+                await transport.command(interaction,'retry',session_id=custom_id.split(':',1)[1])
+
     intents = discord.Intents.default()
     intents.message_content = settings.message_content
     client = Client(intents=intents, allowed_mentions=discord.AllowedMentions.none())
@@ -221,11 +239,11 @@ def create_client(service, settings):
 
     @tree.command(name="training", description="비공개 분석 훈련 시작")
     @app_commands.guild_only()
-    @app_commands.choices(topic=[app_commands.Choice(name="튜토리얼 완료율 분석", value="tutorial")])
+    @app_commands.describe(text='연습할 분석 내용과 목표를 입력하세요 (1~4000자)')
     @app_commands.choices(difficulty=[app_commands.Choice(name="초급", value="beginner"), app_commands.Choice(name="중급", value="intermediate"), app_commands.Choice(name="고급", value="advanced")])
     @app_commands.choices(help_level=[app_commands.Choice(name="안내 포함", value="guided"), app_commands.Choice(name="내 정의 먼저", value="independent")])
-    async def training(interaction: discord.Interaction, topic: str = "tutorial", difficulty: str = "intermediate", help_level: str | None = None):
-        await transport.command(interaction, "training", topic=topic, difficulty=difficulty, help_level=help_level)
+    async def training(interaction: discord.Interaction, text: str, difficulty: str = "intermediate", help_level: str | None = None):
+        await transport.command(interaction, "training", text=text, difficulty=difficulty, help_level=help_level)
 
     @tree.command(name="tip", description="명령어의 사용법과 예시 확인")
     @app_commands.guild_only()
@@ -268,7 +286,7 @@ def create_client(service, settings):
         callback.__annotations__["interaction"] = discord.Interaction
         tree.add_command(app_commands.Command(name=action, description=description, callback=callback))
 
-    for action, description in {"submit": "최종 보고 제출과 평가", "end": "훈련 중단·기록 보존"}.items():
+    for action, description in {"submit": "최종 보고 제출과 평가", "end": "훈련 중단·기록 보존", "retry":"실패·중단된 출제 수동 재시도"}.items():
         register_action(action, description)
 
     def register_execution(action, description):

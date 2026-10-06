@@ -4,21 +4,21 @@ import json
 import os
 from pathlib import Path
 from .evaluation_quality import fingerprint, quality_gate
+from .discord_task_contract import PUBLIC_TASK_KEYS
 
 
 def code_hashes():
     root=Path(__file__).parent
     names={'evaluation_quality.py','evaluation_metrics.py','evaluation_registry.py',
-           'discord_education.py','discord_verification.py','discord_provider.py','api_provider.py'}
+           'discord_education.py','discord_verification.py','discord_provider.py','api_provider.py',
+           'discord_task_contract.py'}
     import hashlib
     return {name:hashlib.sha256((root/name).read_bytes()).hexdigest() for name in sorted(names)}
 
 
 def task_key(task):
     # Public definitions, including difficulty/help, can affect model judgments.
-    keys=('task_id','topic','version','data_version','difficulty','schema','dictionary',
-          'objective','period','metrics','timezone','rubric','help_policy','arithmetic_contract')
-    return fingerprint({k:task.get(k) for k in keys})
+    return fingerprint({k:task.get(k) for k in PUBLIC_TASK_KEYS})
 
 
 class QualityRegistry:

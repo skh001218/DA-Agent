@@ -1,0 +1,75 @@
+{
+  "session_id": "8232e036-a1a5-4c85-9fc3-e0a0f71bfe3b",
+  "error_code": "provider_invalid_json",
+  "calls": [
+    {
+      "at": "2026-10-06T13:22:25.328188+00:00",
+      "model": "gemma-4-26b-a4b-it",
+      "phase": "adaptive-design",
+      "state": "completed",
+      "usage": {
+        "input_tokens": 6152,
+        "total_tokens": 9185,
+        "output_tokens": 3033
+      },
+      "reason": null
+    },
+    {
+      "at": "2026-10-06T13:23:31.050476+00:00",
+      "model": "gemma-4-26b-a4b-it",
+      "phase": "adaptive-design",
+      "state": "error",
+      "usage": {
+        "input_tokens": 8528,
+        "total_tokens": 11546,
+        "output_tokens": 3018
+      },
+      "reason": "provider_invalid_json",
+      "json_diagnostic": {
+        "kind": "not_object",
+        "message": "Object required",
+        "characters": 9070,
+        "body_sha256": "5ac464bc8377b93fe667f2675fc50d00e47fc7265c83692d4816f04740f9e977",
+        "parsed_type": "list",
+        "diagnostic_id": "bc50f5f99f75430ab9c6101e5e710353",
+        "fence_removed": false
+      }
+    }
+  ],
+  "design_errors": [
+    [
+      {
+        "type": "less_than_equal",
+        "message": "Input should be less than or equal to 500",
+        "location": [
+          "tables",
+          1,
+          "groups",
+          0,
+          "count"
+        ]
+      }
+    ]
+  ],
+  "response_shape": {
+    "root_type": "list",
+    "item_count": 1,
+    "item_types": [
+      "dict"
+    ]
+  },
+  "transport": {
+    "generation_config": {
+      "maxOutputTokens": 8192,
+      "responseMimeType": "application/json",
+      "thinkingConfig": {
+        "thinkingLevel": "minimal"
+      }
+    },
+    "http_status": 200,
+    "finish_reason": "STOP",
+    "part_count": 2
+  },
+  "private_response_id": "bc50f5f99f75430ab9c6101e5e710353",
+  "raw_response_exported": false
+}

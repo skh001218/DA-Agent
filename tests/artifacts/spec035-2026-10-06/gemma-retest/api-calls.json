@@ -1,0 +1,57 @@
+{
+  "session_id": "ee493806-a40d-41af-89bb-dab0a32e3a73",
+  "model": "gemma-4-26b-a4b-it",
+  "request": "반복 행동 계정의 활동량과 정상 반례를 비교하고 싶어",
+  "difficulty": "intermediate",
+  "state": "failed",
+  "error_code": "provider_invalid_json",
+  "calls": [
+    {
+      "at": "2026-10-06T13:17:03.908109+00:00",
+      "model": "gemma-4-26b-a4b-it",
+      "phase": "adaptive-design",
+      "state": "completed",
+      "usage": {
+        "input_tokens": 6152,
+        "total_tokens": 9093,
+        "output_tokens": 2941
+      },
+      "reason": null
+    },
+    {
+      "at": "2026-10-06T13:18:08.179591+00:00",
+      "model": "gemma-4-26b-a4b-it",
+      "phase": "adaptive-design",
+      "state": "error",
+      "usage": {
+        "input_tokens": 8487,
+        "total_tokens": 11671,
+        "output_tokens": 3184
+      },
+      "reason": "provider_invalid_json"
+    }
+  ],
+  "design_errors": [
+    [
+      {
+        "type": "less_than_equal",
+        "message": "Input should be less than or equal to 500",
+        "location": [
+          "tables",
+          1,
+          "groups",
+          0,
+          "count"
+        ]
+      }
+    ]
+  ],
+  "failures": [
+    {
+      "at": "2026-10-06T13:19:17.475490+00:00",
+      "code": "provider_invalid_json",
+      "issues": []
+    }
+  ],
+  "production_changed": false
+}

@@ -1,0 +1,44 @@
+{
+  "owner": "spec035-00ca4c4f6f694c6ca5f55cc5d8e3b0ff",
+  "session_id": "12add9dc-e49f-4f16-adca-3f978dbe366b",
+  "state": "failed",
+  "generation": {
+    "error": "요청별 데이터 설계가 생성·검증 규칙을 충족하지 않아 출제하지 않았습니다.",
+    "phase": "adaptive-design",
+    "states": [
+      {
+        "at": "2026-10-06T13:50:19.060086+00:00",
+        "status": "planning"
+      },
+      {
+        "at": "2026-10-06T13:51:27.594184+00:00",
+        "status": "planning"
+      },
+      {
+        "at": "2026-10-06T13:52:37.042751+00:00",
+        "status": "planning"
+      },
+      {
+        "status": "failed",
+        "at": "2026-10-06T13:53:46.337028+00:00"
+      }
+    ],
+    "status": "failed",
+    "message": "반복 행동 계정의 활동량과 정상 반례를 비교하고 싶어",
+    "version": "discord-generation-v1",
+    "revision": 0,
+    "questions": [],
+    "run_token": "bb9dfd94-c0d9-421b-9e56-2ddc0fc33840",
+    "error_code": "plan_invalid",
+    "request_id": "12add9dc-e49f-4f16-adca-3f978dbe366b",
+    "planning_calls": 3,
+    "original_message": "반복 행동 계정의 활동량과 정상 반례를 비교하고 싶어",
+    "requested_difficulty": "intermediate",
+    "requested_help_level": null
+  },
+  "task": {
+    "title": "문제 생성 요청",
+    "difficulty": "intermediate"
+  },
+  "live_model": true
+}

@@ -1,5 +1,9 @@
 # PRD-v2 구현 Spec 안내
 
+## Discord 텍스트 요청 기반 출제 계획 (2026-10-06)
+
+[Spec035](035-discord-text-task-generation.md)은 `/training`의 고정 topic을 필수 text로 바꾸고 기존 adaptive 출제를 연결한다. 코드·임시 DB·고정 모델 응답의 검증용 화면 흐름을 확인해 5/7개 완료(71.43%)다. 실제 검색 API429로 모델 검증이 중단됐으며 운영 반영·명령 동기화·실제 Discord 전달은 남아 있다. 실행 봇은 기존 topic 형식을 유지한다. [검증 보고](../tests/reports/verification-spec035-2026-10-06.md)를 따른다.
+
 ## 평가 신뢰성 공통 검증 흐름 (2026-10-06)
 
 [Spec033](033-trustworthy-evaluation-quality-loop.md)은 공개 기준·인용·중복 감점 검증, 평가당 최대1회 수정, 여섯 표본×세 번 반복 검사, 유형 검증 미통과 시 점수 보류·분석 피드백, 수정 오류 비교와 새 지표 등록 절차를 다룬다. 코드/자동·화면 검증과 실제 모델 품질 승인은 구분한다. 최신 진행도는 Spec 상단과 [검증 보고](../tests/reports/verification-spec033-2026-10-06.md)를 따른다.

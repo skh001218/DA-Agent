@@ -77,6 +77,19 @@ def test_analysis_impossible_and_goal_mismatch_are_not_published():
         with pytest.raises(DomainError): validate_alignment({'state':'completed','text':json.dumps(result)})
 
 
+def test_empty_diagnostic_feedback_identifies_actual_sample_and_condition():
+    from da_agent.adaptive_tasks import preflight
+    value=bot_recipe()
+    value['metrics'][1]['conditions'][0]['value']=100000
+    with pytest.raises(DomainError) as caught:
+        preflight(Recipe.model_validate(value),2)
+    issue=caught.value.validation_issues[0]
+    assert issue['type']=='data_dependency'
+    assert '"sample_rows": 60' in issue['message']
+    assert '"matching_rows": 0' in issue['message']
+    assert '100000' in issue['message'] and 'normal counterexamples' in issue['message']
+
+
 def test_entity_sequence_uses_actual_previous_event_time():
     value=bot_recipe()
     value['tables'][1]['columns'].append({'name':'event_at','description':'계정별 순서대로 생성한 이벤트 시각',

@@ -50,3 +50,5 @@
 - tests/artifacts/spec033-2026-10-06/: fixtures.json, all-tests.xml, repeated-live.json, final-pinned.json, replayed-final.json, screen.json, preview.html, failure-preview.html, revision-detail.png, provider-failure.png
 - 진행도 변경 이유: 구현·자동 테스트·카드 동작과 실제 반복 검사 실패 처리 및 기록을 확인한6개 작업을 완료했다. **100%는 평가 모델의 의미 품질 승인이나 운영 배포 완료를 뜻하지 않는다.** 실제 원시 회차의 코드와 이후 공급자 실패 진단/안내 수정 코드는 해시를 구분했다. 저장 응답의 최신 코드 재검증은 새 반복 검사로 세지 않는다.
 - 후속 점검 변경: 유형 승인 재사용의 공개 정의 누락을 읽기 전용 실행으로 재현해 반복 품질 검사 작업을 재개방했다. 현재5/6이며 이전6/6 기록은 해당 누락 발견 전 상태다. 제품 코드 수정이나 새 모델 호출은 이번 후속 검토에서 하지 않았다.
+
+- Spec035 구현에서 평가 입력·프로필의 공개 필드를 discord_task_contract.PUBLIC_TASK_KEYS로 통합해 제목·accepted_limits·valid_paths·quality_information 누락을 보완했다. 변경 지문 회귀를 통과했으며 [Spec035 검증](../tests/reports/verification-spec035-2026-10-06.md)에 기록했다. 이전 실제 반복 검사 실패는 유지하고 새 실제 평가 반복·운영 반영은 수행하지 않았으므로 이 Spec의 반복 품질 검사 완료 수는 올리지 않는다.

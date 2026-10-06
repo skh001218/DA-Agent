@@ -1,5 +1,9 @@
 # DA-Agent — 데이터 분석 훈련 에이전트
 
+## Discord 텍스트 요청 기반 출제
+
+`/training`의 고정 topic을 필수 text로 바꾸고 기존 adaptive 설계·합성 자료·DB 검산을 연결했다. 조회·교육·점수 보류, 추가 질문·취소·재시도·기존 기록 호환을 구현했다. [Spec035](specs/035-discord-text-task-generation.md)는 5/7개 완료(71.43%)다. 임시 DB·고정 모델 응답의 서비스와 검증용 화면 흐름을 확인했으며 실제 검색은 API429로 중단됐다. 운영 봇 반영·명령 동기화·실제 Discord 전달은 남아 있다. [검증 보고](tests/reports/verification-spec035-2026-10-06.md), [실행 설정](docs/discord-setup.md)을 참고한다.
+
 ## 평가 신뢰성·점수 보류 정책
 
 새 제출은 공개 기준·인용·중복 감점을 검사하고 필요한 경우 평가당 최대1회 수정·재검사합니다. 해결되지 않으면 점수를 보류하고 원인과 재시도 방법을 제공합니다. **개별 검사에 통과해도 해당 문제 정의·난이도·모델·평가 코드의 반복 품질 검사가 미통과면 점수를 보류하고 분석 피드백만 제공합니다.** 같은 보류 보고의 재제출은 검증 상태가 바뀌기 전까지 추가 모델 호출 없이 저장 피드백을 보여줍니다.
@@ -129,3 +133,5 @@ Discord 봇은 `/submit`으로 DA-Result 포럼에 게시할 때 공개 분석 �
 [Spec 019](specs/019-source-backed-task-generation.md)과 [검증 기록](tests/reports/verification-source-generation-2026-10-06.md)에 구현 및 실제 검색의 할당량 제한을 기록했습니다. 기존에 완료한 과제는 그대로 재개할 수 있습니다.
 
 현재 로컬 연결은 검색·출제 모두 `gemma-4-26b-a4b-it`를 사용합니다. Gemma는 최소 추론 설정과 JSON 응답 후 서버 스키마 검증을 사용합니다. 실제 검색은 성공했지만 세 난이도 출제는 설계 오류·후속 호출 429로 실패하여 안정적인 출제/품질 승인은 대기입니다. [Gemma 검증 기록](tests/reports/verification-gemma-generation-2026-10-06.md)을 참고하세요. 실행 프로젝트의 `.local/gemma-worktree.override.json`은 변경된 worktree 소스를 빌드 대상으로 지정합니다.
+
+Discord 텍스트 출제는 `DISCORD_MODEL`의 Gemma API(기본 `gemma-4-26b-a4b-it`)로 요청·난이도에서 가상 분석 문제를 직접 설계·검토합니다. Discord에서는 별도 Gemini 검색 모델을 사용하지 않습니다. 웹의 검색 기반 출제와 설정은 유지합니다.

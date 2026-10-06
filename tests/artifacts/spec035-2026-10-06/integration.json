@@ -1,0 +1,366 @@
+{
+  "owner": "spec035-447aea1d46324b04becf90a4b298eb39",
+  "session_id": "cb8eb8ee-9434-4ed3-bdfa-6ce6a895df71",
+  "state": "analysis",
+  "generation": {
+    "error": null,
+    "phase": "adaptive-alignment",
+    "states": [
+      {
+        "at": "2026-10-06T12:11:08.340573+00:00",
+        "status": "planning"
+      },
+      {
+        "at": "2026-10-06T12:11:08.501131+00:00",
+        "status": "planning"
+      },
+      {
+        "at": "2026-10-06T12:11:08.676583+00:00",
+        "status": "preparing_data"
+      },
+      {
+        "at": "2026-10-06T12:11:08.864574+00:00",
+        "status": "validating"
+      }
+    ],
+    "status": "ready",
+    "message": "반복 행동 계정의 활동량과 정상 반례를 비교하고 싶어",
+    "version": "discord-generation-v1",
+    "revision": 0,
+    "questions": [],
+    "run_token": "45ad7a0a-6fa1-4599-b2e9-5f0a02fc5b3e",
+    "request_id": "cb8eb8ee-9434-4ed3-bdfa-6ce6a895df71",
+    "planning_calls": 2,
+    "original_message": "반복 행동 계정의 활동량과 정상 반례를 비교하고 싶어",
+    "requested_help_level": null,
+    "package_id": "discord-generated-68612a5f6a65b81469af6cc5"
+  },
+  "task": {
+    "generation_version": "discord-generation-v1",
+    "task_id": "discord-generated-68612a5f6a65b81469af6cc5",
+    "version": "adaptive-plan-v1",
+    "data_version": "discord-generated-68612a5f6a65b81469af6cc5-data",
+    "title": "반복 행동 이용자 조사",
+    "topic": "비정상 이용자",
+    "difficulty": "intermediate",
+    "objective": "운영팀은 반복 행동을 하는 계정의 조사를 요청했습니다. 2026-09-01 하루 활동 요약으로 의심 기준을 정하고, 활동량이 많은 정상 이용자 가능성과 구분하세요. 확정 제재를 위한 추가 근거도 제안하세요.\n\n업무 배경: 게임 운영팀은 하루 활동 집계에서 반복 행동 계정을 조사하려 합니다.\n\n관측된 문제: 동일한 하루 관측에서 활동량과 간격 변동성이 다른 계정이 나타납니다.\n\n관측 기간: 2026-09-01 하루\n\n판단할 업무 결정: 추가 조사의 우선순위와 필요한 증거를 판단합니다.\n\n분석 과제:\n- 활동량과 간격 변동성으로 계정을 비교하세요.\n- 정상 고빈도 이용자와 오탐 가능성을 설명하세요.\n- 추가 확인할 근거와 조사 우선순위를 제안하세요.\n\n에이전트가 설정한 연습 조건:\n- 하루 계정 활동 집계와 플랫폼을 제공하는 가상 업무입니다.\n\n실제 회사 사례를 인용한 것이 아닌 가상 업무 상황이며, 데이터는 연습용 합성 데이터입니다.\n\n이 과제의 데이터는 요청에 맞춰 생성한 연습용 합성 데이터입니다.",
+    "schema": {
+      "accounts": {
+        "account_id": "bigint",
+        "platform": "text"
+      },
+      "activity_daily": {
+        "activity_id": "bigint",
+        "account_id": "bigint",
+        "actions": "bigint",
+        "interval_cv": "double precision"
+      }
+    },
+    "dictionary": {
+      "accounts": {
+        "unit": "계정별 1행",
+        "columns": {
+          "account_id": "bigint",
+          "platform": "text"
+        },
+        "description": "account_id: 계정 식별자 / platform: 플랫폼"
+      },
+      "activity_daily": {
+        "unit": "계정별 하루 활동 요약",
+        "columns": {
+          "activity_id": "bigint",
+          "account_id": "bigint",
+          "actions": "bigint",
+          "interval_cv": "double precision"
+        },
+        "description": "activity_id: 활동 요약 식별자 / account_id: accounts의 계정 기본키 참조 / actions: 하루 수행 행동 수 / interval_cv: 행동 간격의 변동계수"
+      }
+    },
+    "relationships": [
+      {
+        "table": "activity_daily",
+        "column": "account_id",
+        "target_table": "accounts",
+        "target_column": "account_id"
+      }
+    ],
+    "timezone": "Asia/Seoul",
+    "period": {
+      "start": null,
+      "end": null,
+      "observation_end": "2026-10-06T12:11:08.729455+00:00",
+      "description": "2026-09-01 하루"
+    },
+    "metrics": {
+      "platform_actions": {
+        "description": "avg",
+        "table": "activity_daily",
+        "column": "actions",
+        "operation": "avg",
+        "group_by": [
+          "accounts.platform"
+        ],
+        "conditions": [],
+        "denominator_conditions": [],
+        "joins": [
+          {
+            "table": "accounts",
+            "source_column": "account_id"
+          }
+        ]
+      }
+    },
+    "quality_information": {
+      "collection": "요청별 합성 자료 · 자동 검증 통과 · 사람 품질 검토 전",
+      "required_check": "공개 자료의 단위·중복·관측 조건 점검",
+      "verification_scope": "저장 조회 값은 근거로 사용하지만 임의 자연어 주장의 자동 검산은 미지원"
+    },
+    "accepted_limits": [
+      "하루 집계만으로 부정행위를 확정할 수 없음",
+      "관계 미확인·판단 유보·추가 관측도 타당한 결론으로 인정"
+    ],
+    "valid_paths": [
+      "활동량과 간격 변동성으로 계정을 비교하세요.",
+      "정상 고빈도 이용자와 오탐 가능성을 설명하세요.",
+      "추가 확인할 근거와 조사 우선순위를 제안하세요."
+    ],
+    "rubric": {
+      "version": "discord-generation-v1",
+      "passing_grade": 3,
+      "weights_total": 100,
+      "criteria": [
+        {
+          "id": "problem_definition",
+          "name": "문제 정의",
+          "weight": 20,
+          "required": "비정상 이용자 의심 패턴과 정상 반례 비교; 대상·기간·단위를 공개 조건과 연결",
+          "core_error": "요청과 다른 대상·기간으로 결론 확정",
+          "advanced": "추가 검증과 한계를 실제 근거로 설명"
+        },
+        {
+          "id": "metric_design",
+          "name": "지표·비교 설계",
+          "weight": 25,
+          "required": "활동량과 간격 변동성으로 계정을 비교하세요.",
+          "core_error": "분모·단위·비교 조건을 혼동해 결론 확정",
+          "advanced": "추가 검증과 한계를 실제 근거로 설명"
+        },
+        {
+          "id": "hypothesis_review",
+          "name": "가설·대안 검토",
+          "weight": 20,
+          "required": "확인한 사실과 가설을 구분하고 타당한 대안 또는 미확인을 설명",
+          "core_error": "반례를 무시하고 비공개 원인 맞히기로 가설 확정",
+          "advanced": "추가 검증과 한계를 실제 근거로 설명"
+        },
+        {
+          "id": "evidence_interpretation",
+          "name": "근거 해석",
+          "weight": 20,
+          "required": "저장 실행을 인용해 활동량과 간격 변동성으로 계정을 비교하세요.; 관측 차이로 인과를 단정하지 않음",
+          "core_error": "근거 없는 수치·인과 확정",
+          "advanced": "추가 검증과 한계를 실제 근거로 설명"
+        },
+        {
+          "id": "decision_limits",
+          "name": "한계·의사결정",
+          "weight": 15,
+          "required": "추가 확인할 근거와 조사 우선순위를 제안하세요.; 정상 고빈도 이용자와 오탐 가능성을 설명하세요.",
+          "core_error": "관측하지 못한 조치 효과를 확정",
+          "advanced": "추가 검증과 한계를 실제 근거로 설명"
+        }
+      ],
+      "grades": {
+        "0": "내용 없음",
+        "1": "확인된 핵심 오류",
+        "2": "필수 조건 누락",
+        "3": "필수 조건 충족",
+        "4": "추가 근거·한계 검토"
+      },
+      "non_scoring": [
+        "SQL 작성 역량",
+        "문장 길이",
+        "조회 횟수"
+      ],
+      "no_duplicate_penalty": true
+    },
+    "help_policy": {
+      "default_level": "independent",
+      "types": [
+        "clarification",
+        "concept",
+        "direction",
+        "feedback"
+      ]
+    },
+    "source_case": {
+      "topic": "반복 행동",
+      "sources": []
+    },
+    "semantic_signature": {
+      "domain": "비정상 이용자",
+      "goal": "비정상 이용자 의심 패턴과 정상 반례 비교",
+      "required_judgment": "investigation",
+      "format": "investigation",
+      "situation": "7e6de7dd1bef",
+      "ambiguity": "intermediate",
+      "evaluation": "adaptive",
+      "quality_version": "task-quality-v1",
+      "difficulty": "intermediate",
+      "structure": "avg:True:1"
+    }
+  },
+  "live_model": false,
+  "query": {
+    "id": "5f36efa2-c0ac-4b95-a61a-dbea21232aad",
+    "execution_id": "5f36efa2-c0ac-4b95-a61a-dbea21232aad",
+    "status": "success",
+    "sql": "SELECT \"accounts\".\"platform\" AS \"accounts__platform\", AVG(\"activity_daily\".\"actions\") AS \"value\" FROM \"activity_daily\" JOIN \"accounts\" ON \"activity_daily\".\"account_id\" = \"accounts\".\"account_id\" GROUP BY \"accounts\".\"platform\"",
+    "result": {
+      "execution_id": "5f36efa2-c0ac-4b95-a61a-dbea21232aad",
+      "status": "success",
+      "executed_at": "2026-10-06T12:11:09.082516Z",
+      "columns": [
+        {
+          "name": "accounts__platform",
+          "type": "text"
+        },
+        {
+          "name": "value",
+          "type": "numeric"
+        }
+      ],
+      "rows": [
+        [
+          "pc",
+          "509.5312500000000000"
+        ],
+        [
+          "mobile",
+          "655.8571428571428571"
+        ]
+      ],
+      "preview_row_count": 2,
+      "total_row_count": 2,
+      "result_complete": true,
+      "truncated": false,
+      "error": null,
+      "expires_in_seconds": 600,
+      "duration_ms": 32
+    },
+    "conditions": {
+      "table": "activity_daily",
+      "operation": "avg",
+      "column": "actions",
+      "joins": [
+        {
+          "table": "accounts",
+          "source_column": "account_id"
+        }
+      ],
+      "group_by": [
+        "accounts.platform"
+      ]
+    },
+    "query_id": "2575d9ce-e386-46ce-bfb4-7ce543999011",
+    "data_version": "discord-generated-68612a5f6a65b81469af6cc5-data",
+    "at": "2026-10-06T12:11:09.115736+00:00"
+  },
+  "submission": {
+    "rubric_version": "discord-generation-v1",
+    "criteria": [
+      {
+        "id": "problem_definition",
+        "grade": 3,
+        "reason": "저장 근거와 공개 조건을 연결",
+        "improvement": "추가 관측의 범위를 구체화",
+        "evidence_refs": [
+          "report:1"
+        ],
+        "deductions": []
+      },
+      {
+        "id": "metric_design",
+        "grade": 3,
+        "reason": "저장 근거와 공개 조건을 연결",
+        "improvement": "추가 관측의 범위를 구체화",
+        "evidence_refs": [
+          "report:1"
+        ],
+        "deductions": []
+      },
+      {
+        "id": "hypothesis_review",
+        "grade": 3,
+        "reason": "저장 근거와 공개 조건을 연결",
+        "improvement": "추가 관측의 범위를 구체화",
+        "evidence_refs": [
+          "report:1"
+        ],
+        "deductions": []
+      },
+      {
+        "id": "evidence_interpretation",
+        "grade": 3,
+        "reason": "저장 근거와 공개 조건을 연결",
+        "improvement": "추가 관측의 범위를 구체화",
+        "evidence_refs": [
+          "report:1"
+        ],
+        "deductions": []
+      },
+      {
+        "id": "decision_limits",
+        "grade": 3,
+        "reason": "저장 근거와 공개 조건을 연결",
+        "improvement": "추가 관측의 범위를 구체화",
+        "evidence_refs": [
+          "report:1"
+        ],
+        "deductions": []
+      }
+    ],
+    "total": null,
+    "held": true,
+    "arithmetic_verification": {
+      "version": "generated-evidence-v1",
+      "status": "unverified",
+      "scope": "생성 과제의 임의 자연어 수치 주장은 자동 검산하지 않습니다.",
+      "checks": [],
+      "errors": [],
+      "notes": [
+        {
+          "reason": "공개 조회의 실제 저장 결과를 평가 근거로 제공하며 미검산을 학습자 오류로 만들지 않습니다."
+        }
+      ]
+    },
+    "quality_validation": {
+      "version": "evaluation-quality-v1",
+      "status": "passed",
+      "contract_fingerprint": "3777d7c1dffe35747e8191aa4707bdadc0002dca7174235011b31bda7f62ed53",
+      "issues": [],
+      "scope": "감점의 공개 기준·인용·중복·확인된 산술 오류 연결 검사. 임의의 의미적 진실 전체 검증은 아님"
+    },
+    "help_history": [],
+    "recommendation": {
+      "practice_criteria": [],
+      "evidence": [],
+      "unobserved": []
+    },
+    "human_review": "pending",
+    "quality_profile": {
+      "status": "held",
+      "profile_id": "17312d5a9218d3a865fa4db36b4f51afe38216975c1bc7e02e76fed883f227d3",
+      "reasons": [
+        "이 문제 정의·난이도·모델·코드에 맞는 반복 품질 검증 기록이 없거나 읽을 수 없습니다."
+      ],
+      "scope": "등록된 문제 유형의 반복 품질 검사",
+      "human_review": "pending"
+    },
+    "candidate_total": 75.0,
+    "profile_score_hold": true,
+    "reason": "문제 유형의 반복 품질 검증이 아직 통과하지 않아 점수를 보류합니다. 분석 피드백과 검산 결과는 보존했습니다. 검증 통과 후 /submit로 다시 평가하세요."
+  },
+  "restart_restored": true,
+  "learner_write_blocked": true
+}

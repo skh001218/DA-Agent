@@ -7,6 +7,7 @@ import json
 import os
 from urllib.parse import urlparse
 from uuid import uuid4
+from .discord_task_contract import PUBLIC_TASK_KEYS
 
 CRITERIA = (
     ("problem_definition", "문제 정의", 20, "업무 목표, 대상, 기간과 질문 연결", "주간 재방문율을 D7으로 해석"),
@@ -130,6 +131,9 @@ def help_response(task, text, help_level="concept"):
         "direction": "주별 비교, 유입 채널별 비교, 재도전 중복 점검이 가능한 후보입니다. 어떤 비교가 자신의 가설을 약화시킬 수 있는지 선택하고 이유를 설명해보세요.",
         "feedback": "현재 보고의 주장마다 실행 근거를 연결했는지 확인하세요. 사실과 가능한 설명을 나누고, 관측만으로 인과를 확정할 수 없는 부분과 후속 확인을 적어보세요.",
     }
+    if task.get('generation_version'):
+        responses.update(concept='공개 데이터 사전의 한 행 단위와 고유 대상을 구분하세요. 비율은 분자·분모·관측 조건을 먼저 정하세요.',
+            direction='공개 업무 목표와 자료를 기준으로 가설을 반박할 수 있는 비교를 선택하세요. 가능한 질문: '+' / '.join(task.get('valid_paths',[])[:3]))
     return {"role": "mentor", "type": help_level, "level": task["help_policy"]["default_level"], "text": responses[help_level],
             "help_before": text, "is_hint": help_level != "clarification", "criteria": [i for i, *_ in CRITERIA] if help_level != "clarification" else [], "source": "public_task"}
 
@@ -145,8 +149,7 @@ def _held(task, reason, help_history):
 
 def evaluate_report(provider, task, report, messages, executions, help_history, _repaired=False):
     """Semantic provider judgment, validated against immutable public criterion/evidence IDs."""
-    public_keys = ("task_id", "title", "topic", "version", "data_version", "difficulty", "schema", "dictionary", "objective", "period", "metrics", "timezone", "rubric", "help_policy", "quality_information", "valid_paths", "accepted_limits", "arithmetic_contract")
-    public = {k: deepcopy(task[k]) for k in public_keys if k in task}
+    public = {k: deepcopy(task[k]) for k in PUBLIC_TASK_KEYS if k in task}
     from .discord_verification import verify_report, apply_verification, POLICY
     verification = verify_report(task, report, executions)
     from .evaluation_metrics import verify_declared_metrics
