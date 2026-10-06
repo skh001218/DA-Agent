@@ -6,6 +6,52 @@ import pytest
 from da_agent.api_provider import GeminiProvider, configured_provider
 
 
+@pytest.fixture(autouse=True)
+def isolate_gemini_environment(monkeypatch):
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+
+
+def test_environment_key_overrides_file_without_exposure(tmp_path, monkeypatch):
+    requests = []
+    monkeypatch.setenv("GEMINI_API_KEY", "  env-test-secret  ")
+    def handler(request):
+        requests.append(request)
+        return httpx.Response(200, json=completed())
+    value = provider(tmp_path, handler)
+    assert value.review([{'role': 'user', 'content': 'test'}])["state"] == "completed"
+    assert requests[0].headers["x-goog-api-key"] == "env-test-secret"
+    assert "env-test-secret" not in json.dumps(value.status())
+    assert value.status()["inference_verified"]
+    monkeypatch.setenv("GEMINI_API_KEY", "another-env-secret")
+    assert not value.status()["inference_verified"]
+
+
+@pytest.mark.parametrize("environment_key", ["", "   "])
+def test_empty_environment_key_uses_file(tmp_path, monkeypatch, environment_key):
+    monkeypatch.setenv("GEMINI_API_KEY", environment_key)
+    requests = []
+    def handler(request):
+        requests.append(request)
+        return httpx.Response(200, json=completed())
+    value = provider(tmp_path, handler)
+    assert value.review([])["state"] == "completed"
+    assert requests[0].headers["x-goog-api-key"] == "sk-test-secret"
+
+
+def test_invalid_environment_key_does_not_retry_file(tmp_path, monkeypatch):
+    monkeypatch.setenv("GEMINI_API_KEY", "invalid-env-secret")
+    requests = []
+    def handler(request):
+        requests.append(request)
+        return httpx.Response(401, json={"error": {"message": "invalid-env-secret"}})
+    value = provider(tmp_path, handler)
+    result = value.review([])
+    assert result["reason"] == "api_key_invalid"
+    assert len(requests) == 1
+    assert requests[0].headers["x-goog-api-key"] == "invalid-env-secret"
+    assert "invalid-env-secret" not in json.dumps(result)
+
+
 def provider(tmp_path, handler):
     key = tmp_path / "key"
     key.write_text("sk-test-secret", encoding="utf-8")

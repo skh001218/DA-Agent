@@ -1,5 +1,13 @@
 # ChatGPT 인증 설정과 확인
 
+## Gemini와 병행하는 로그인 연결 확인 (2026-10-06)
+
+훈련 화면 상단의 **Continue with ChatGPT**를 누르면 공식 로그인 창이 열린다. 로그인과 플랜 사용 권한 승인을 마친 뒤 원래 훈련 창으로 돌아오면 로그인 여부와 플랜 권한 상태가 갱신된다. Gemini 설정과 훈련 공급자는 유지된다. 이 버튼은 모델 호출을 실행하지 않으며 실제 AI 응답을 확인했다는 의미도 아니다.
+
+별도 `/api/chatgpt/status`, `/api/chatgpt/start`, `/api/chatgpt/disconnect` 경로가 ChatGPT AuthService를 사용한다. `/auth/callback`도 해당 서비스로 전달된다. 기존 `/api/auth/status`는 훈련 공급자 상태를 계속 반환한다. 로그인·상태 조회는 API 키가 필요하지 않다. 토큰은 서버의 기존 암호화 인증 볼륨에 저장되며 화면과 기록 DB에는 포함하지 않는다. 이 앱은 단일 사용자 로컬 프로토타입으로, 다중 사용자 웹 서비스용 세션 격리는 이번 범위에 포함하지 않는다.
+
+사용자가 확인할 동작: [훈련 화면](http://127.0.0.1:8087)에서 버튼을 눌러 로그인·승인 후 돌아왔을 때 **ChatGPT 로그인됨 · 플랜 사용 권한 연결됨**이 표시되는지 확인한다. 계정 승인·권한은 실제 결과에 따라 달라질 수 있다. 초기 로그인 시 공식 규격은 [OpenAI 등록과 로그인 문서](https://developers.openai.com/siwc/token-sharing-open-source/sign-in)를 따른다.
+
 2026-10-03 공식 OpenAI Docs에서 로컬 오픈소스 앱의 Sign in with ChatGPT 플랜 사용 경로를 확인했다. 초기 등록은 `dynamic_agent_client`를 사용하며 브라우저 콜백이 반환한 **issued client_id**로 토큰을 교환한다. API 키·client secret은 이 경로에 필요하지 않다. Codex 인증 파일과 ChatGPT 비공개 backend-api는 사용하지 않는다.
 
 ## 서버 설정

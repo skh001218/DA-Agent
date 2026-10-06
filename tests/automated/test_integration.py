@@ -3,6 +3,7 @@ import os
 import time
 import uuid
 import json
+from pathlib import Path
 
 import pytest
 
@@ -34,7 +35,7 @@ def client():
                     conn.execute(f"DELETE FROM {table} WHERE attempt_id=%s", (attempt,))
 
 
-def begin(client, version="v1"):
+def begin(client, version="v2"):
     response = client.post("/api/attempts", json={"package_id": "training-001", "release_version": version, "problem_id": "problem-001"})
     assert response.status_code == 200, response.text
     value = response.json()
@@ -84,8 +85,11 @@ def test_selective_save_resume_reports_and_ai_failure(client):
 
 
 def test_access_bounds_expiration_and_cross_attempt(client):
-    a, b = begin(client), begin(client, "v2")
-    assert client.get(f"/api/attempts/{a['attempt_id']}").json()["release_version"] == "v1"
+    # Fresh installations contain v2 only. Retain legacy version isolation
+    # coverage when the original v1 package is available; never regenerate it.
+    version = "v1" if Path("packages/training-001/v1").exists() else "v2"
+    a, b = begin(client, version), begin(client, "v2")
+    assert client.get(f"/api/attempts/{a['attempt_id']}").json()["release_version"] == version
     assert b["release_version"] == "v2"
     for query in ("DELETE FROM users", "SELECT * FROM pg_authid", "SELECT pg_read_file('/etc/passwd')", "SELECT set_config('search_path','public',false)", "SELECT * FROM public.users"):
         assert execute(client, a["attempt_id"], query)["status"] == "blocked"
@@ -120,7 +124,7 @@ def test_static_errors_and_local_boundary(client):
     assert client.get("/").status_code == 200
     assert client.get("/static/app.js").status_code == 200
     assert client.get("/packages/training-001/v1/private/manifest.json").status_code == 404
-    assert client.post("/api/attempts", json={"package_id": "training-001", "release_version": "v1", "problem_id": "missing"}).status_code == 404
+    assert client.post("/api/attempts", json={"package_id": "training-001", "release_version": "v2", "problem_id": "missing"}).status_code == 404
     assert client.post("/api/attempts", json={}, headers={"Origin": "https://other.test"}).status_code == 403
     assert client.post("/api/attempts", data="sql_secret").status_code == 415
 

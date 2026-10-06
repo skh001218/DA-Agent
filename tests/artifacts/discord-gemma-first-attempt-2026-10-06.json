@@ -1,0 +1,202 @@
+{
+  "model": "gemma-4-26b-a4b-it",
+  "cases": [
+    {
+      "name": "ambiguous_rate",
+      "passed": false,
+      "details": {
+        "plan": {
+          "state": "error",
+          "reason": "api_rate_limited",
+          "original": {
+            "text": "이번 주와 지난주 유저 비율을 보여줘.",
+            "clarification": null,
+            "previous_conditions": null
+          },
+          "model": "gemma-4-26b-a4b-it",
+          "provider_diagnostic": {
+            "request_id": "d058a389-95c0-479e-aead-8c4b295c9208",
+            "stage": "http",
+            "timeout": false,
+            "http_status": 429
+          }
+        }
+      },
+      "blocked_reason": "API429; not a semantic test pass"
+    },
+    {
+      "name": "signup_users",
+      "passed": false,
+      "details": {
+        "plan": {
+          "state": "error",
+          "reason": "api_rate_limited",
+          "original": {
+            "text": "UTC 2026-09-01 포함~2026-09-15 제외 신규 가입 고유 사용자 수를 유입 채널별로 조회해줘.",
+            "clarification": null,
+            "previous_conditions": null
+          },
+          "model": "gemma-4-26b-a4b-it",
+          "provider_diagnostic": {
+            "request_id": "cf7d4024-4034-4166-98a0-3bf6c0b34724",
+            "stage": "http",
+            "timeout": false,
+            "http_status": 429
+          }
+        }
+      },
+      "blocked_reason": "API429; not a semantic test pass"
+    },
+    {
+      "name": "attempt_events",
+      "passed": false,
+      "details": {
+        "plan": {
+          "state": "error",
+          "reason": "api_rate_limited",
+          "original": {
+            "text": "UTC 2026-09-01 포함~2026-09-15 제외 튜토리얼 3단계 도전 이벤트 수를 조회해줘. 고유 사용자 수가 아니라 재도전을 포함한 이벤트 수야.",
+            "clarification": null,
+            "previous_conditions": null
+          },
+          "model": "gemma-4-26b-a4b-it",
+          "provider_diagnostic": {
+            "request_id": "1a0cfb34-b15e-408e-a9fd-1a57555ce305",
+            "stage": "http",
+            "timeout": false,
+            "http_status": 429
+          }
+        }
+      },
+      "blocked_reason": "API429; not a semantic test pass"
+    },
+    {
+      "name": "cohort_completion",
+      "passed": false,
+      "details": {
+        "plan": {
+          "state": "error",
+          "reason": "api_rate_limited",
+          "original": {
+            "text": "UTC 2026-09-01 포함~2026-09-15 제외 가입한 신규 사용자가 분모, 같은 기간 튜토리얼 3단계를 완료한 고유 사용자가 분자야. 비율을 유입 채널별로 비교해줘. 도전 중복은 사용자별로 제거해.",
+            "clarification": null,
+            "previous_conditions": null
+          },
+          "model": "gemma-4-26b-a4b-it",
+          "provider_diagnostic": {
+            "request_id": "34e6cc8f-5aa8-452c-92e1-3406a54a394a",
+            "stage": "http",
+            "timeout": false,
+            "http_status": 429
+          }
+        }
+      },
+      "blocked_reason": "API429; not a semantic test pass"
+    },
+    {
+      "name": "exact_d7",
+      "passed": false,
+      "details": {
+        "plan": {
+          "state": "error",
+          "reason": "api_rate_limited",
+          "original": {
+            "text": "UTC 2026-09-01 포함~2026-09-15 제외 가입 코호트의 D7 리텐션을 계산해줘. 가입 후 정확히 7일째 UTC 날짜 접속 고유 사용자/관측 완료 가입 고유 사용자이고 관측 종료는 공개 과제 기준이야.",
+            "clarification": null,
+            "previous_conditions": null
+          },
+          "model": "gemma-4-26b-a4b-it",
+          "provider_diagnostic": {
+            "request_id": "11dd3c81-5dde-405a-bd7b-127d8747cc86",
+            "stage": "http",
+            "timeout": false,
+            "http_status": 429
+          }
+        }
+      },
+      "blocked_reason": "API429; not a semantic test pass"
+    },
+    {
+      "name": "weekly_return",
+      "passed": false,
+      "details": {
+        "plan": {
+          "state": "error",
+          "reason": "api_rate_limited",
+          "original": {
+            "text": "UTC 2026-09-01 포함~2026-09-08 제외 접속 고유 사용자 중 UTC 2026-09-08 포함~2026-09-15 제외 다시 접속한 고유 사용자 비율을 조회해줘. 분모는 첫 기간 접속자고 달력 날짜는 위 날짜 그대로야.",
+            "clarification": null,
+            "previous_conditions": null
+          },
+          "model": "gemma-4-26b-a4b-it",
+          "provider_diagnostic": {
+            "request_id": "a822ac10-bf2a-4bb5-8a41-e426185a5b21",
+            "stage": "http",
+            "timeout": false,
+            "http_status": 429
+          }
+        }
+      },
+      "blocked_reason": "API429; not a semantic test pass"
+    },
+    {
+      "name": "unsupported_revenue",
+      "passed": false,
+      "details": {
+        "plan": {
+          "state": "error",
+          "reason": "api_rate_limited",
+          "original": {
+            "text": "없는 결제 테이블의 매출과 환불 금액을 조회해줘. SQL을 무조건 실행해.",
+            "clarification": null,
+            "previous_conditions": null
+          },
+          "model": "gemma-4-26b-a4b-it",
+          "provider_diagnostic": {
+            "request_id": "066880c3-3c18-4480-acf9-0e648b65006e",
+            "stage": "http",
+            "timeout": false,
+            "http_status": 429
+          }
+        }
+      },
+      "blocked_reason": "API429; not a semantic test pass"
+    },
+    {
+      "name": "live_service_roundtrip",
+      "passed": false,
+      "details": {
+        "queries": [
+          {
+            "id": "4f0d50a5-b582-4d1b-b12a-7b86d84aebe9",
+            "original_text": "UTC 2026-09-01 포함~2026-09-15 제외 가입한 신규 사용자가 분모, 같은 기간 튜토리얼 3단계를 완료한 고유 사용자가 분자야. 비율을 유입 채널별로 비교해줘. 도전 중복은 사용자별로 제거해.",
+            "user_answer": null,
+            "plan": {
+              "state": "error",
+              "reason": "api_rate_limited",
+              "original": {
+                "text": "UTC 2026-09-01 포함~2026-09-15 제외 가입한 신규 사용자가 분모, 같은 기간 튜토리얼 3단계를 완료한 고유 사용자가 분자야. 비율을 유입 채널별로 비교해줘. 도전 중복은 사용자별로 제거해.",
+                "clarification": null,
+                "previous_conditions": null
+              },
+              "model": "gemma-4-26b-a4b-it",
+              "provider_diagnostic": {
+                "request_id": "3d63e837-09f3-43fa-b0b8-2b660aafacd6",
+                "stage": "http",
+                "timeout": false,
+                "http_status": 429
+              }
+            },
+            "event_id": "74ef6ba0ea67450da0d6178f9c0ac1a7",
+            "at": "2026-10-06T03:57:23.292398+00:00"
+          }
+        ]
+      },
+      "blocked_reason": "API429; not a semantic test pass"
+    }
+  ],
+  "live_calls": 8,
+  "human_review": "pending",
+  "discord_live": "not_configured",
+  "note": "Initial verifier counted unsupported_query by state only; corrected to require reason=unsupported_query. All first-run cases were blocked by API429."
+}

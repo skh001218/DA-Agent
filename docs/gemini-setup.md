@@ -4,6 +4,19 @@
 
 ## 키 설정
 
+프로젝트 루트 `.env`에 다음 항목을 넣어 설정할 수도 있다. 실제 키는 로컬 파일에만 입력한다.
+
+```dotenv
+DA_LLM_PROVIDER=gemini
+GEMINI_API_KEY=발급받은_키
+```
+
+Docker Compose는 `.env`의 값을 앱 환경변수로 전달한다. `GEMINI_API_KEY`가 비어 있지 않으면 키 파일보다 우선 사용하며, 비어 있으면 기존 `.local/gemini_api.key`를 사용한다. 환경변수 키의 인증이 실패해도 다른 키로 자동 전환하지 않는다. `.env` 수정 후 `docker compose up -d --build --force-recreate app`으로 적용한다. Python을 직접 실행하는 경우 `.env`는 자동으로 읽지 않으므로 실행 환경에 변수를 설정하거나 기존 키 파일을 사용한다.
+
+기존 숨김 입력 도구 `scripts/setup_api.py`를 실행하면 새 키를 파일에 저장하고 `.env`의 `GEMINI_API_KEY`를 비워 새 파일을 사용하도록 한다.
+
+`.env`는 Git과 Docker 이미지에서 제외한다. `docker compose config`나 컨테이너 환경 전체 출력에는 키가 포함될 수 있으므로 해당 출력을 공유하지 않는다.
+
 [Google AI Studio](https://aistudio.google.com/apikey)에서 Gemini API 키를 발급한다. 무료 티어로 시험하려면 해당 프로젝트의 결제 연결 여부와 실제 사용 한도를 AI Studio에서 확인한다. 코드가 키만 보고 무료/유료 프로젝트인지 판별할 수는 없다.
 
 프로젝트 루트의 사용자 터미널에서 실행한다. 입력은 화면에 표시되지 않는다. 키는 명령 인자나 채팅에 넣지 않는다.
