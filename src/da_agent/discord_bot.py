@@ -174,6 +174,8 @@ def create_client(service, settings):
 
     class Client(discord.Client):
         async def setup_hook(self):
+            from .discord_pdf_view import ResultPDFView
+            self.add_view(ResultPDFView(settings.guild_ids))
             for guild_id in settings.guild_ids:
                 guild = discord.Object(id=guild_id)
                 tree.copy_global_to(guild=guild)
