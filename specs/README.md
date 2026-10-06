@@ -1,5 +1,9 @@
 # PRD-v2 구현 Spec 안내
 
+## Discord 연습 유형과 SQL 직접 풀이 (2026-10-06)
+
+[Spec035](035-discord-sql-practice-mode.md)은 `/training`의 필수 SQL/분석 선택, 제공된 `sql` 코드 블록을 채운 답장 제출, 실제 SQL 실행·오류 수정·재제출, SQL 전용 평가와 완료 분석 연결을 다룬다. 코드·격리 DB 검증을 마쳤으며 4/8개 완료(50%)다. 실제 Discord 선택·입력·결과 화면은 검증 대기이며 실행 봇에는 아직 반영하지 않았다. [검증 기록](../tests/reports/verification-spec035-2026-10-06.md).
+
 ## 평가 신뢰성 공통 검증 흐름 (2026-10-06)
 
 [Spec033](033-trustworthy-evaluation-quality-loop.md)은 공개 기준·인용·중복 감점 검증, 평가당 최대1회 수정, 여섯 표본×세 번 반복 검사, 유형 검증 미통과 시 점수 보류·분석 피드백, 수정 오류 비교와 새 지표 등록 절차를 다룬다. 코드/자동·화면 검증과 실제 모델 품질 승인은 구분한다. 최신 진행도는 Spec 상단과 [검증 보고](../tests/reports/verification-spec033-2026-10-06.md)를 따른다.

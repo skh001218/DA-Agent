@@ -54,7 +54,7 @@ def flow():
     engine = DiscordQueryEngine(provider, SqlRunner(settings), settings)
     service = DiscordTrainingService(store, engine, provider, settings, quality_registry=ScriptedQualityRegistry())
     owner = uuid.uuid4().hex
-    session = service.start(owner, 'guild', 'parent', uuid.uuid4().hex)
+    session = service.start(owner, 'guild', 'parent', uuid.uuid4().hex, practice='analysis')
     assert session.get('state') == 'analysis', session
     yield service, provider, owner, session
     import psycopg
@@ -104,7 +104,7 @@ def test_actual_query_clarification_evidence_report_evaluation_restart(flow):
     assert restored['reports'][0]['evidence_refs'] == [qid]
     assert restored['telemetry'][0]['cost'] is None
     assert restored['queries'][1]['original_text'] == '비율을 보여줘'
-    next_session = service.start(owner, 'guild', 'parent', uuid.uuid4().hex)
+    next_session = service.start(owner, 'guild', 'parent', uuid.uuid4().hex, practice='analysis')
     assert next_session['task']['variant'] == 'followup'
 
 
@@ -126,7 +126,7 @@ def test_model_failure_preserves_report_and_no_false_evaluation(flow):
 
 def test_beginner_confirmation_records_assistance(flow):
     service, provider, owner, session = flow
-    beginner = service.start(owner, 'guild', 'parent', uuid.uuid4().hex, difficulty='beginner')
+    beginner = service.start(owner, 'guild', 'parent', uuid.uuid4().hex, difficulty='beginner', practice='analysis')
     result = event(service, owner, beginner['session_id'], 'query', '비율을 보여줘')
     assert result['session']['help_history'][0]['type'] == 'concept_hint'
     assert '선택지' in result['messages'][0]

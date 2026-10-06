@@ -6,6 +6,10 @@
 
 수정 보고는 이전 기록을 보존하고 같은 근거·정책에서 해결·지속·새 오류·미확인을 비교합니다. 합계/비율 검산 등록과 고정 표본 반복 검사 절차를 마련했으며, 새 주제 출제 기능 자체는 후속 범위입니다. 현재 자동 회귀225개와 카드 화면을 확인했습니다. 실제 모델의 품질 승인과 운영 봇 배포는 완료로 표시하지 않습니다. [Spec033](specs/033-trustworthy-evaluation-quality-loop.md), [검증 보고](tests/reports/verification-spec033-2026-10-06.md), [유형 추가 절차](docs/evaluation-quality-workflow.md)를 참고하세요.
 
+## Discord SQL 직접 풀이
+
+SQL 직접 풀이도 현재 체크아웃에 구현했습니다. 새 `/training`의 필수 `practice`에서 SQL/분석을 선택하며, SQL은 제공된 `sql` 코드 블록을 채워 답장 → 실제 실행 → 수정·재제출 → `/submit` 항목별 평가로 진행합니다. 현재 지원 문제는 난이도별 튜토리얼 신규 가입자 3단계 완료율입니다. 실행 봇 반영·실제 Discord 검증은 남아 있습니다. [Spec035](specs/035-discord-sql-practice-mode.md)와 [검증 기록](tests/reports/verification-spec035-2026-10-06.md)을 참고하세요.
+
 ## Discord 평가 검산과 수정·재제출
 
 완료한 보고도 `/report text:수정한 분석…`으로 새 버전을 저장하고, 새 후속 질문에 `/followup` 또는 `/answer`로 답한 뒤 `/submit`할 수 있습니다. 이전 보고·평가는 보존하며 새 결과에는 항목별 변화와 검산 오류 수 비교를 표시합니다. 동일 완료 제출은 저장된 평가를 재사용합니다.

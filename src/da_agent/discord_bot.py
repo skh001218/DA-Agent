@@ -94,10 +94,13 @@ def create_client(service, settings):
             from io import BytesIO
             from .discord_tables import render_table_png, table_fallback
             pages = await asyncio.to_thread(render_table_png, table)
+            message_ids = []
             for index, page in enumerate(pages, 1):
                 attachment = discord.File(BytesIO(page), filename=f'table-{index}.png',
                                           description=table_fallback(table)[:1024])
-                await channel.send(file=attachment, allowed_mentions=discord.AllowedMentions.none())
+                sent = await channel.send(file=attachment, allowed_mentions=discord.AllowedMentions.none())
+                message_ids.append(str(sent.id))
+            return message_ids
 
         @property
         def bot_user_id(self):
@@ -219,13 +222,14 @@ def create_client(service, settings):
     tree = app_commands.CommandTree(client)
     transport = DiscordTransport(service, Gateway(client), settings.guild_ids)
 
-    @tree.command(name="training", description="비공개 분석 훈련 시작")
+    @tree.command(name="training", description="SQL 또는 분석 연습을 선택해 비공개 훈련 시작")
     @app_commands.guild_only()
+    @app_commands.choices(practice=[app_commands.Choice(name="SQL 연습", value="sql"), app_commands.Choice(name="분석 연습", value="analysis")])
     @app_commands.choices(topic=[app_commands.Choice(name="튜토리얼 완료율 분석", value="tutorial")])
     @app_commands.choices(difficulty=[app_commands.Choice(name="초급", value="beginner"), app_commands.Choice(name="중급", value="intermediate"), app_commands.Choice(name="고급", value="advanced")])
     @app_commands.choices(help_level=[app_commands.Choice(name="안내 포함", value="guided"), app_commands.Choice(name="내 정의 먼저", value="independent")])
-    async def training(interaction: discord.Interaction, topic: str = "tutorial", difficulty: str = "intermediate", help_level: str | None = None):
-        await transport.command(interaction, "training", topic=topic, difficulty=difficulty, help_level=help_level)
+    async def training(interaction: discord.Interaction, practice: str, topic: str = "tutorial", difficulty: str = "intermediate", help_level: str | None = None, source_session_id: str | None = None):
+        await transport.command(interaction, "training", topic=topic, difficulty=difficulty, help_level=help_level, practice=practice, source_session_id=source_session_id)
 
     @tree.command(name="tip", description="명령어의 사용법과 예시 확인")
     @app_commands.guild_only()
@@ -250,7 +254,7 @@ def create_client(service, settings):
         callback.__annotations__["interaction"] = discord.Interaction
         tree.add_command(app_commands.Command(name=action, description=description, callback=callback))
 
-    for action, description in {"query": "새로운 자연어 조회 요청", "answer": "현재 봇 질문에 이어서 답변", "question": "게임 분석 용어를 용어당 최대 3줄로 설명", "followup": "업무 담당자 후속 질문에 답변"}.items():
+    for action, description in {"sqlrun": "SQL 연습의 sql 코드 블록을 직접 실행", "query": "새로운 자연어 조회 요청", "answer": "현재 봇 질문에 이어서 답변", "question": "게임 분석 용어를 용어당 최대 3줄로 설명", "followup": "업무 담당자 후속 질문에 답변"}.items():
         register_text_action(action, description)
 
     @tree.command(name="report", description="보고 초안 작성·수정 또는 긴 보고 이어 쓰기")
@@ -258,7 +262,7 @@ def create_client(service, settings):
         await transport.command(interaction, 'report', text=text, payload={'append': append})
 
     @tree.command(name="help", description="개념·분석 방향·중간 피드백 도움 요청")
-    @app_commands.choices(kind=[app_commands.Choice(name='개념', value='concept_hint'), app_commands.Choice(name='분석 방향', value='analysis_direction_hint'), app_commands.Choice(name='중간 검토', value='intermediate_feedback'), app_commands.Choice(name='데이터 사전', value='data_dictionary'), app_commands.Choice(name='평가 기준', value='evaluation_criteria'), app_commands.Choice(name='전체 명령', value='commands')])
+    @app_commands.choices(kind=[app_commands.Choice(name='개념', value='concept_hint'), app_commands.Choice(name='분석 방향', value='analysis_direction_hint'), app_commands.Choice(name='중간 검토', value='intermediate_feedback'), app_commands.Choice(name='데이터 사전', value='data_dictionary'), app_commands.Choice(name='평가 기준', value='evaluation_criteria'), app_commands.Choice(name='전체 명령', value='commands'), app_commands.Choice(name='SQL 해설 공개', value='solution')])
     async def help_command(interaction: discord.Interaction, text: str = '', kind: str = 'concept_hint'):
         await transport.command(interaction, 'help', text=text, payload={'help_type': kind})
 
@@ -268,7 +272,11 @@ def create_client(service, settings):
         callback.__annotations__["interaction"] = discord.Interaction
         tree.add_command(app_commands.Command(name=action, description=description, callback=callback))
 
-    for action, description in {"submit": "최종 보고 제출과 평가", "end": "훈련 중단·기록 보존"}.items():
+    @tree.command(name="submit", description="분석 보고 또는 SQL 풀이의 최종 평가")
+    async def submit(interaction: discord.Interaction, execution_id: str | None = None):
+        await transport.command(interaction, 'submit', payload={'execution_id': execution_id} if execution_id else {})
+
+    for action, description in {"end": "훈련 중단·기록 보존"}.items():
         register_action(action, description)
 
     def register_execution(action, description):

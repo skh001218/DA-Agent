@@ -42,7 +42,7 @@ def main():
     provider.review = review
     service = DiscordTrainingService(store, DiscordQueryEngine(provider,SqlRunner(settings),settings),provider,settings)
     owner, event = 'spec032-'+uuid4().hex, lambda:uuid4().hex
-    doc = service.start(owner,'verification','verification',event(),difficulty='advanced')
+    doc = service.start(owner,'verification','verification',event(),difficulty='advanced', practice='analysis')
     sid = doc['session_id']
     transcript=[]
     def handle(action,text='',payload=None):

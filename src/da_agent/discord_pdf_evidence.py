@@ -33,7 +33,7 @@ def evidence_flowables(evidence, number, font, heading, caption):
     metric_title = '튜토리얼 완료율'
     if tutorial and conditions.get('step') is not None:
         metric_title = f"튜토리얼 {conditions['step']}단계 완료율"
-    title = f"조회 결과 {number} · " + (metric_title if tutorial else '선택한 분석 근거')
+    title = f"조회 결과 {number} · " + ('제출 SQL의 실행 결과' if evidence.get('practice') == 'sql' else metric_title if tutorial else '선택한 분석 근거')
     scope = []
     if conditions.get('start') and conditions.get('end'):
         scope.append(f"가입 기간: {conditions['start']} 이상, {conditions['end']} 미만")
