@@ -32,3 +32,7 @@
 ## 근거
 
 [Discord 공식 Interaction 문서](https://github.com/discord/discord-api-docs/blob/main/developers/interactions/receiving-and-responding.mdx)
+
+## PR 충돌 해결 검증 (2026-10-06)
+
+최신 main 기능을 유지하며 병합 충돌을 해결했다. 전체 회귀는 411개 통과·65개 생략. 실제 Discord 대기 표시 검증은 기존 검증 대기 상태를 유지한다. 상세: [검증 보고서](../tests/reports/discord-interrupted-response-2026-10-06.md).

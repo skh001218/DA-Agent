@@ -1,2 +1,3 @@
 # Optional bot runtime; existing web requirements remain unchanged.
 discord.py==2.7.1
+Pillow==12.3.0

@@ -179,14 +179,16 @@ def test_unrelated_natural_message_is_silent(owner, private, bot):
     assert not gateway.sent
 
 
-def test_owner_natural_message_uses_service_message_action():
+def test_owner_reply_uses_service_answer_action():
     service, gateway, transport, event = setup(channel=30)
     service.session["thread_id"] = "30"
-    message = NS(id=101, author=event.user, guild=event.guild, channel=event.channel, content="가설을 수정할게요")
+    message = NS(id=101, author=event.user, guild=event.guild, channel=event.channel,
+                 content="가설을 수정할게요", reference=NS(message_id=99))
     asyncio.run(transport.message(message))
     call = next(call for call in service.calls if call[0] == "handle")
-    assert call[1] == ("1", "s1", "101", "message")
+    assert call[1] == ("1", "s1", "101", "answer")
     assert call[2]["text"] == message.content
+    assert call[2]['payload']['reply_to_message_id'] == '99'
 
 
 def test_internal_errors_never_leak_secrets():
@@ -220,7 +222,7 @@ def test_optional_real_command_registration_without_login(tmp_path):
     settings = DiscordSettings("fake", (10,), "r", "a", "l", tmp_path / "key")
     async def check():
         client = create_client(Service(), settings)
-        assert {cmd.name for cmd in client.da_command_tree.get_commands()} == {"training", "resume", "query", "help", "report", "followup", "submit", "sql", "evidence", "end"}
+        assert {cmd.name for cmd in client.da_command_tree.get_commands()} == {"training", "resume", "query", "answer", "help", "report", "followup", "submit", "sql", "evidence", "end", "tip"}
         assert not client.intents.message_content
         topic = next(p for p in client.da_command_tree.get_command('training').parameters if p.name == 'topic')
         assert [(choice.name, choice.value) for choice in topic.choices] == [('튜토리얼 완료율 분석', 'tutorial')]

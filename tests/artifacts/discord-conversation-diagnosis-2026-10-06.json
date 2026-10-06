@@ -1,0 +1,22 @@
+{
+  "mentor_answer_routed_as_new_query": {
+    "request": "광고 유입 비중 변화가 원인일 수 있다고 생각했기 때문입니다.",
+    "clarification": null,
+    "saved_user_answer": null
+  },
+  "clarification_model_input_keys": [
+    "clarification",
+    "condition_keys",
+    "contract_version",
+    "difficulty",
+    "pending_query",
+    "previous_conditions",
+    "public_task",
+    "request"
+  ],
+  "answer_after_failed_interpretation": {
+    "pending_answers": [],
+    "next_clarification": "기간은 9월 1일부터 15일 미만입니다.",
+    "pending_context_forwarded_to_engine": false
+  }
+}
