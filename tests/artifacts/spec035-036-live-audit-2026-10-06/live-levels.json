@@ -1,0 +1,402 @@
+[
+  {
+    "request": "튜토리얼 완료율 하락을 분석하고 싶어",
+    "difficulty": "beginner",
+    "help_level": "independent",
+    "session_id": "f3184d0a-b12f-4c16-a2a6-826c536a3f54",
+    "state": "failed",
+    "generation": {
+      "error": "모델 호출에 실패해 출제를 보류했습니다. 호출 제한·모델 연결을 확인하고 수동 재시도하세요.",
+      "phase": "adaptive-design",
+      "states": [
+        {
+          "at": "2026-10-06T14:17:51.040171+00:00",
+          "status": "planning"
+        },
+        {
+          "status": "failed",
+          "at": "2026-10-06T14:17:52.003998+00:00"
+        }
+      ],
+      "status": "failed",
+      "message": "튜토리얼 완료율 하락을 분석하고 싶어",
+      "version": "discord-generation-v1",
+      "revision": 0,
+      "questions": [],
+      "run_token": "ebca238e-abe0-4c92-83b4-3a51e7c77b49",
+      "error_code": "api_unavailable",
+      "request_id": "f3184d0a-b12f-4c16-a2a6-826c536a3f54",
+      "planning_calls": 1,
+      "original_message": "튜토리얼 완료율 하락을 분석하고 싶어",
+      "requested_difficulty": "beginner",
+      "requested_help_level": "independent"
+    },
+    "public_task": {
+      "title": "문제 생성 요청",
+      "difficulty": "beginner"
+    },
+    "calls": [
+      {
+        "phase": "adaptive-design",
+        "state": "error",
+        "model": "gemma-4-26b-a4b-it",
+        "reason": "api_unavailable",
+        "usage": null,
+        "provider_diagnostic": {
+          "stage": "http",
+          "timeout": false,
+          "request_id": "0cadcba5-dae5-4af5-a5d1-6a86389fbe5c",
+          "http_status": 500
+        }
+      }
+    ],
+    "validation_failures": [
+      {
+        "at": "2026-10-06T14:17:51.974527+00:00",
+        "code": "api_unavailable",
+        "issues": []
+      }
+    ],
+    "rejected_design_issues": []
+  },
+  {
+    "request": "튜토리얼 완료율 하락을 분석하고 싶어",
+    "difficulty": "intermediate",
+    "help_level": "independent",
+    "session_id": "e4735f36-4989-473b-9398-04ff15e33f5a",
+    "state": "failed",
+    "generation": {
+      "error": "모델 호출에 실패해 출제를 보류했습니다. 호출 제한·모델 연결을 확인하고 수동 재시도하세요.",
+      "phase": "adaptive-design",
+      "states": [
+        {
+          "at": "2026-10-06T14:17:52.143263+00:00",
+          "status": "planning"
+        },
+        {
+          "status": "failed",
+          "at": "2026-10-06T14:17:53.003993+00:00"
+        }
+      ],
+      "status": "failed",
+      "message": "튜토리얼 완료율 하락을 분석하고 싶어",
+      "version": "discord-generation-v1",
+      "revision": 0,
+      "questions": [],
+      "run_token": "c5bc429a-788c-4a43-9e56-0a583d5ef80d",
+      "error_code": "api_unavailable",
+      "request_id": "e4735f36-4989-473b-9398-04ff15e33f5a",
+      "planning_calls": 1,
+      "original_message": "튜토리얼 완료율 하락을 분석하고 싶어",
+      "requested_difficulty": "intermediate",
+      "requested_help_level": "independent"
+    },
+    "public_task": {
+      "title": "문제 생성 요청",
+      "difficulty": "intermediate"
+    },
+    "calls": [
+      {
+        "phase": "adaptive-design",
+        "state": "error",
+        "model": "gemma-4-26b-a4b-it",
+        "reason": "api_unavailable",
+        "usage": null,
+        "provider_diagnostic": {
+          "stage": "http",
+          "timeout": false,
+          "request_id": "b84d1048-e741-49cb-8c27-4978e0dfde21",
+          "http_status": 500
+        }
+      }
+    ],
+    "validation_failures": [
+      {
+        "at": "2026-10-06T14:17:52.950689+00:00",
+        "code": "api_unavailable",
+        "issues": []
+      }
+    ],
+    "rejected_design_issues": []
+  },
+  {
+    "request": "튜토리얼 완료율 하락을 분석하고 싶어",
+    "difficulty": "advanced",
+    "help_level": "independent",
+    "session_id": "a9a77a96-5ac8-491b-b985-82ff68c6fc32",
+    "state": "failed",
+    "generation": {
+      "error": "모델 호출에 실패해 출제를 보류했습니다. 호출 제한·모델 연결을 확인하고 수동 재시도하세요.",
+      "phase": "adaptive-design",
+      "states": [
+        {
+          "at": "2026-10-06T14:17:53.117808+00:00",
+          "status": "planning"
+        },
+        {
+          "status": "failed",
+          "at": "2026-10-06T14:17:53.698413+00:00"
+        }
+      ],
+      "status": "failed",
+      "message": "튜토리얼 완료율 하락을 분석하고 싶어",
+      "version": "discord-generation-v1",
+      "revision": 0,
+      "questions": [],
+      "run_token": "5364a766-00c0-4cc3-af28-f9faa4f0556e",
+      "error_code": "api_rate_limited",
+      "request_id": "a9a77a96-5ac8-491b-b985-82ff68c6fc32",
+      "planning_calls": 1,
+      "original_message": "튜토리얼 완료율 하락을 분석하고 싶어",
+      "requested_difficulty": "advanced",
+      "requested_help_level": "independent"
+    },
+    "public_task": {
+      "title": "문제 생성 요청",
+      "difficulty": "advanced"
+    },
+    "calls": [
+      {
+        "phase": "adaptive-design",
+        "state": "error",
+        "model": "gemma-4-26b-a4b-it",
+        "reason": "api_rate_limited",
+        "usage": null,
+        "provider_diagnostic": {
+          "stage": "http",
+          "timeout": false,
+          "request_id": "f59bdc74-8d82-4585-89da-cf473a76ee6d",
+          "http_status": 429
+        },
+        "quota_diagnostic": [
+          {
+            "retry_delay": "7s"
+          },
+          {
+            "quotaId": "GenerateContentInputTokensPerModelPerMinute-FreeTier",
+            "quotaValue": "16000",
+            "quotaMetric": "generativelanguage.googleapis.com/generate_content_free_tier_input_token_count"
+          }
+        ]
+      }
+    ],
+    "validation_failures": [
+      {
+        "at": "2026-10-06T14:17:53.669238+00:00",
+        "code": "api_rate_limited",
+        "issues": []
+      }
+    ],
+    "rejected_design_issues": []
+  },
+  {
+    "request": "반복 행동 계정의 활동량과 정상 반례를 비교하고 싶어",
+    "difficulty": "beginner",
+    "help_level": "independent",
+    "session_id": "923e5a4b-8cb6-43af-a3c0-ccbf5cefdffb",
+    "state": "failed",
+    "generation": {
+      "error": "모델 호출에 실패해 출제를 보류했습니다. 호출 제한·모델 연결을 확인하고 수동 재시도하세요.",
+      "phase": "adaptive-design",
+      "states": [
+        {
+          "at": "2026-10-06T14:17:53.807673+00:00",
+          "status": "planning"
+        },
+        {
+          "status": "failed",
+          "at": "2026-10-06T14:17:54.378798+00:00"
+        }
+      ],
+      "status": "failed",
+      "message": "반복 행동 계정의 활동량과 정상 반례를 비교하고 싶어",
+      "version": "discord-generation-v1",
+      "revision": 0,
+      "questions": [],
+      "run_token": "e69fa6e9-6c02-4dc7-841c-4a3184d352c7",
+      "error_code": "api_rate_limited",
+      "request_id": "923e5a4b-8cb6-43af-a3c0-ccbf5cefdffb",
+      "planning_calls": 1,
+      "original_message": "반복 행동 계정의 활동량과 정상 반례를 비교하고 싶어",
+      "requested_difficulty": "beginner",
+      "requested_help_level": "independent"
+    },
+    "public_task": {
+      "title": "문제 생성 요청",
+      "difficulty": "beginner"
+    },
+    "calls": [
+      {
+        "phase": "adaptive-design",
+        "state": "error",
+        "model": "gemma-4-26b-a4b-it",
+        "reason": "api_rate_limited",
+        "usage": null,
+        "provider_diagnostic": {
+          "stage": "http",
+          "timeout": false,
+          "request_id": "ded5c387-fb9c-4c70-b85d-a9be45c1717e",
+          "http_status": 429
+        },
+        "quota_diagnostic": [
+          {
+            "retry_delay": "6s"
+          },
+          {
+            "quotaId": "GenerateContentInputTokensPerModelPerMinute-FreeTier",
+            "quotaValue": "16000",
+            "quotaMetric": "generativelanguage.googleapis.com/generate_content_free_tier_input_token_count"
+          }
+        ]
+      }
+    ],
+    "validation_failures": [
+      {
+        "at": "2026-10-06T14:17:54.349658+00:00",
+        "code": "api_rate_limited",
+        "issues": []
+      }
+    ],
+    "rejected_design_issues": []
+  },
+  {
+    "request": "반복 행동 계정의 활동량과 정상 반례를 비교하고 싶어",
+    "difficulty": "intermediate",
+    "help_level": "independent",
+    "session_id": "aefc5381-0c5f-4b30-80b4-1afc273e335f",
+    "state": "failed",
+    "generation": {
+      "error": "모델 호출에 실패해 출제를 보류했습니다. 호출 제한·모델 연결을 확인하고 수동 재시도하세요.",
+      "phase": "adaptive-design",
+      "states": [
+        {
+          "at": "2026-10-06T14:17:54.508089+00:00",
+          "status": "planning"
+        },
+        {
+          "status": "failed",
+          "at": "2026-10-06T14:17:54.909705+00:00"
+        }
+      ],
+      "status": "failed",
+      "message": "반복 행동 계정의 활동량과 정상 반례를 비교하고 싶어",
+      "version": "discord-generation-v1",
+      "revision": 0,
+      "questions": [],
+      "run_token": "06aff5ac-fccb-467c-b954-fee45c1d7afb",
+      "error_code": "api_rate_limited",
+      "request_id": "aefc5381-0c5f-4b30-80b4-1afc273e335f",
+      "planning_calls": 1,
+      "original_message": "반복 행동 계정의 활동량과 정상 반례를 비교하고 싶어",
+      "requested_difficulty": "intermediate",
+      "requested_help_level": "independent"
+    },
+    "public_task": {
+      "title": "문제 생성 요청",
+      "difficulty": "intermediate"
+    },
+    "calls": [
+      {
+        "phase": "adaptive-design",
+        "state": "error",
+        "model": "gemma-4-26b-a4b-it",
+        "reason": "api_rate_limited",
+        "usage": null,
+        "provider_diagnostic": {
+          "stage": "http",
+          "timeout": false,
+          "request_id": "8ddf3364-cae9-4f37-a4af-22ba98852469",
+          "http_status": 429
+        },
+        "quota_diagnostic": [
+          {
+            "retry_delay": "5s"
+          },
+          {
+            "quotaId": "GenerateContentInputTokensPerModelPerMinute-FreeTier",
+            "quotaValue": "16000",
+            "quotaMetric": "generativelanguage.googleapis.com/generate_content_free_tier_input_token_count"
+          }
+        ]
+      }
+    ],
+    "validation_failures": [
+      {
+        "at": "2026-10-06T14:17:54.879844+00:00",
+        "code": "api_rate_limited",
+        "issues": []
+      }
+    ],
+    "rejected_design_issues": []
+  },
+  {
+    "request": "반복 행동 계정의 활동량과 정상 반례를 비교하고 싶어",
+    "difficulty": "advanced",
+    "help_level": "independent",
+    "session_id": "85cfb1c4-c051-49d6-8898-8d1c7a5fe764",
+    "state": "failed",
+    "generation": {
+      "error": "모델 호출에 실패해 출제를 보류했습니다. 호출 제한·모델 연결을 확인하고 수동 재시도하세요.",
+      "phase": "adaptive-design",
+      "states": [
+        {
+          "at": "2026-10-06T14:17:55.026261+00:00",
+          "status": "planning"
+        },
+        {
+          "status": "failed",
+          "at": "2026-10-06T14:17:55.452512+00:00"
+        }
+      ],
+      "status": "failed",
+      "message": "반복 행동 계정의 활동량과 정상 반례를 비교하고 싶어",
+      "version": "discord-generation-v1",
+      "revision": 0,
+      "questions": [],
+      "run_token": "c838753e-3e2b-4f05-aad6-73143d2a0cc7",
+      "error_code": "api_rate_limited",
+      "request_id": "85cfb1c4-c051-49d6-8898-8d1c7a5fe764",
+      "planning_calls": 1,
+      "original_message": "반복 행동 계정의 활동량과 정상 반례를 비교하고 싶어",
+      "requested_difficulty": "advanced",
+      "requested_help_level": "independent"
+    },
+    "public_task": {
+      "title": "문제 생성 요청",
+      "difficulty": "advanced"
+    },
+    "calls": [
+      {
+        "phase": "adaptive-design",
+        "state": "error",
+        "model": "gemma-4-26b-a4b-it",
+        "reason": "api_rate_limited",
+        "usage": null,
+        "provider_diagnostic": {
+          "stage": "http",
+          "timeout": false,
+          "request_id": "274a7f78-9d9f-47f9-9584-36269975801f",
+          "http_status": 429
+        },
+        "quota_diagnostic": [
+          {
+            "retry_delay": "5s"
+          },
+          {
+            "quotaId": "GenerateContentInputTokensPerModelPerMinute-FreeTier",
+            "quotaValue": "16000",
+            "quotaMetric": "generativelanguage.googleapis.com/generate_content_free_tier_input_token_count"
+          }
+        ]
+      }
+    ],
+    "validation_failures": [
+      {
+        "at": "2026-10-06T14:17:55.420986+00:00",
+        "code": "api_rate_limited",
+        "issues": []
+      }
+    ],
+    "rejected_design_issues": []
+  }
+]

@@ -1,0 +1,10 @@
+{
+  "cosmetic_advanced_accepted": true,
+  "intermediate_metric_structure": "avg:True:1",
+  "advanced_metric_structure": "avg:True:1",
+  "analysis_without_practice_state": "accepted",
+  "unsupported_sql_text": {
+    "state": "analysis",
+    "objective": "신규 가입자의 튜토리얼 3단계 완료율을 유입 채널별로 계산하는 SELECT를 직접 작성하세요. 완료율은 0~1 비율이며 분모 0은 NULL입니다. 도전하지 않은 가입자도 분모에 포함합니다. 완료 이벤트는 가입 기간 시작 이상, 관측 종료 미만(UTC)만 인정하고 재도전을 중복 집계하지 않습니다. 출력 열 이름과 순서: channel, denominator, numerator, completion_rate. 수와 비율은 숫자형, channel은 문자형입니다."
+  }
+}

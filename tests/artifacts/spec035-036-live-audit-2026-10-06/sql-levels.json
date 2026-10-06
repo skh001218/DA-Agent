@@ -1,0 +1,521 @@
+[
+  {
+    "difficulty": "beginner",
+    "help_level": "independent",
+    "objective": "신규 가입자의 튜토리얼 3단계 완료율을 전체를 한 행으로 계산하는 SELECT를 직접 작성하세요. 완료율은 0~1 비율이며 분모 0은 NULL입니다. 도전하지 않은 가입자도 분모에 포함합니다. 완료 이벤트는 가입 기간 시작 이상, 관측 종료 미만(UTC)만 인정하고 재도전을 중복 집계하지 않습니다. 출력 열 이름과 순서: denominator, numerator, completion_rate. 수와 비율은 숫자형, channel은 문자형입니다. denominator는 전체 가입자 수, numerator는 완료한 가입자 수입니다. 나눗셈의 정수 절삭을 주의하세요.",
+    "contract": {
+      "version": "sql-tutorial-v1",
+      "columns": [
+        "denominator",
+        "numerator",
+        "completion_rate"
+      ],
+      "tolerance": "0.000001",
+      "ordering": "unordered",
+      "numerator": "관측 기간 안에 3단계를 완료한 고유 신규 가입자",
+      "denominator": "과제 가입 기간의 모든 고유 신규 가입자 (도전하지 않은 가입자 포함)",
+      "empty": "전체 집계 분모 0은 NULL 비율. 그룹 집계는 가입자가 있는 그룹만 출력.",
+      "criteria": [
+        {
+          "id": "syntax",
+          "name": "구문·실행"
+        },
+        {
+          "id": "calculation",
+          "name": "계산·출력"
+        },
+        {
+          "id": "duplicates",
+          "name": "중복 처리"
+        },
+        {
+          "id": "period",
+          "name": "기간·관측"
+        },
+        {
+          "id": "denominator",
+          "name": "분모·누락"
+        }
+      ]
+    },
+    "main_data_hash": "e660a4eabab7d6d989d441222dedb91af3842ed18187e01666a215772386c640",
+    "result": {
+      "execution_id": "9b3538eb-2baf-4e18-8e3e-ccf8d767caa3",
+      "status": "success",
+      "executed_at": "2026-10-06T14:17:49.421235Z",
+      "columns": [
+        {
+          "name": "denominator",
+          "type": "int8"
+        },
+        {
+          "name": "numerator",
+          "type": "int8"
+        },
+        {
+          "name": "completion_rate",
+          "type": "numeric"
+        }
+      ],
+      "rows": [
+        [
+          40,
+          30,
+          "0.75000000000000000000"
+        ]
+      ],
+      "preview_row_count": 1,
+      "total_row_count": 1,
+      "result_complete": true,
+      "truncated": false,
+      "error": null,
+      "expires_in_seconds": 600,
+      "duration_ms": 16
+    },
+    "evaluation": {
+      "practice": "sql",
+      "rubric_version": "sql-tutorial-v1",
+      "held": false,
+      "reason": null,
+      "total": null,
+      "criteria": [
+        {
+          "id": "syntax",
+          "name": "구문·실행",
+          "status": "충족",
+          "reason": "실제 읽기 전용 실행 성공",
+          "evidence_refs": [
+            "execution:9b3538eb-2baf-4e18-8e3e-ccf8d767caa3"
+          ]
+        },
+        {
+          "id": "calculation",
+          "name": "계산·출력",
+          "status": "충족",
+          "reason": "고정 검증 데이터의 전체 결과 비교",
+          "evidence_refs": [
+            "execution:9b3538eb-2baf-4e18-8e3e-ccf8d767caa3"
+          ]
+        },
+        {
+          "id": "duplicates",
+          "name": "중복 처리",
+          "status": "충족",
+          "reason": "고정 검증 데이터의 전체 결과 비교",
+          "evidence_refs": [
+            "execution:9b3538eb-2baf-4e18-8e3e-ccf8d767caa3"
+          ]
+        },
+        {
+          "id": "period",
+          "name": "기간·관측",
+          "status": "충족",
+          "reason": "고정 검증 데이터의 전체 결과 비교",
+          "evidence_refs": [
+            "execution:9b3538eb-2baf-4e18-8e3e-ccf8d767caa3"
+          ]
+        },
+        {
+          "id": "denominator",
+          "name": "분모·누락",
+          "status": "충족",
+          "reason": "고정 검증 데이터의 전체 결과 비교",
+          "evidence_refs": [
+            "execution:9b3538eb-2baf-4e18-8e3e-ccf8d767caa3"
+          ]
+        }
+      ],
+      "checks": [
+        {
+          "case": "main",
+          "complete": true,
+          "matched": true
+        },
+        {
+          "case": "duplicates",
+          "complete": true,
+          "matched": true
+        },
+        {
+          "case": "period",
+          "complete": true,
+          "matched": true
+        },
+        {
+          "case": "denominator",
+          "complete": true,
+          "matched": true
+        }
+      ],
+      "human_review": "pending",
+      "limitation": "준비된 검증 데이터 범위의 결과 비교이며 모든 SQL의 동치 증명·독립 역량·학습 효과 판정은 아닙니다.",
+      "recommendation": "보완 항목을 수정해 전체 SQL을 새 답장으로 제출하세요. 모두 충족했다면 다른 문제에 적용하세요.",
+      "help_history": [],
+      "sql_exposure": "없음 확인"
+    },
+    "completed": true,
+    "attempt_count": 1,
+    "no_written_explanation": true
+  },
+  {
+    "difficulty": "intermediate",
+    "help_level": "independent",
+    "objective": "신규 가입자의 튜토리얼 3단계 완료율을 유입 채널별로 계산하는 SELECT를 직접 작성하세요. 완료율은 0~1 비율이며 분모 0은 NULL입니다. 도전하지 않은 가입자도 분모에 포함합니다. 완료 이벤트는 가입 기간 시작 이상, 관측 종료 미만(UTC)만 인정하고 재도전을 중복 집계하지 않습니다. 출력 열 이름과 순서: channel, denominator, numerator, completion_rate. 수와 비율은 숫자형, channel은 문자형입니다.",
+    "contract": {
+      "version": "sql-tutorial-v1",
+      "columns": [
+        "channel",
+        "denominator",
+        "numerator",
+        "completion_rate"
+      ],
+      "tolerance": "0.000001",
+      "ordering": "unordered",
+      "numerator": "관측 기간 안에 3단계를 완료한 고유 신규 가입자",
+      "denominator": "과제 가입 기간의 모든 고유 신규 가입자 (도전하지 않은 가입자 포함)",
+      "empty": "전체 집계 분모 0은 NULL 비율. 그룹 집계는 가입자가 있는 그룹만 출력.",
+      "criteria": [
+        {
+          "id": "syntax",
+          "name": "구문·실행"
+        },
+        {
+          "id": "calculation",
+          "name": "계산·출력"
+        },
+        {
+          "id": "duplicates",
+          "name": "중복 처리"
+        },
+        {
+          "id": "period",
+          "name": "기간·관측"
+        },
+        {
+          "id": "denominator",
+          "name": "분모·누락"
+        }
+      ]
+    },
+    "main_data_hash": "e660a4eabab7d6d989d441222dedb91af3842ed18187e01666a215772386c640",
+    "result": {
+      "execution_id": "213ee4ba-6c3e-43b0-b05c-2f81dbb3b670",
+      "status": "success",
+      "executed_at": "2026-10-06T14:17:49.865219Z",
+      "columns": [
+        {
+          "name": "channel",
+          "type": "text"
+        },
+        {
+          "name": "denominator",
+          "type": "int8"
+        },
+        {
+          "name": "numerator",
+          "type": "int8"
+        },
+        {
+          "name": "completion_rate",
+          "type": "numeric"
+        }
+      ],
+      "rows": [
+        [
+          "ads",
+          20,
+          14,
+          "0.70000000000000000000"
+        ],
+        [
+          "organic",
+          20,
+          16,
+          "0.80000000000000000000"
+        ]
+      ],
+      "preview_row_count": 2,
+      "total_row_count": 2,
+      "result_complete": true,
+      "truncated": false,
+      "error": null,
+      "expires_in_seconds": 600,
+      "duration_ms": 15
+    },
+    "evaluation": {
+      "practice": "sql",
+      "rubric_version": "sql-tutorial-v1",
+      "held": false,
+      "reason": null,
+      "total": null,
+      "criteria": [
+        {
+          "id": "syntax",
+          "name": "구문·실행",
+          "status": "충족",
+          "reason": "실제 읽기 전용 실행 성공",
+          "evidence_refs": [
+            "execution:213ee4ba-6c3e-43b0-b05c-2f81dbb3b670"
+          ]
+        },
+        {
+          "id": "calculation",
+          "name": "계산·출력",
+          "status": "충족",
+          "reason": "고정 검증 데이터의 전체 결과 비교",
+          "evidence_refs": [
+            "execution:213ee4ba-6c3e-43b0-b05c-2f81dbb3b670"
+          ]
+        },
+        {
+          "id": "duplicates",
+          "name": "중복 처리",
+          "status": "충족",
+          "reason": "고정 검증 데이터의 전체 결과 비교",
+          "evidence_refs": [
+            "execution:213ee4ba-6c3e-43b0-b05c-2f81dbb3b670"
+          ]
+        },
+        {
+          "id": "period",
+          "name": "기간·관측",
+          "status": "충족",
+          "reason": "고정 검증 데이터의 전체 결과 비교",
+          "evidence_refs": [
+            "execution:213ee4ba-6c3e-43b0-b05c-2f81dbb3b670"
+          ]
+        },
+        {
+          "id": "denominator",
+          "name": "분모·누락",
+          "status": "충족",
+          "reason": "고정 검증 데이터의 전체 결과 비교",
+          "evidence_refs": [
+            "execution:213ee4ba-6c3e-43b0-b05c-2f81dbb3b670"
+          ]
+        }
+      ],
+      "checks": [
+        {
+          "case": "main",
+          "complete": true,
+          "matched": true
+        },
+        {
+          "case": "duplicates",
+          "complete": true,
+          "matched": true
+        },
+        {
+          "case": "period",
+          "complete": true,
+          "matched": true
+        },
+        {
+          "case": "denominator",
+          "complete": true,
+          "matched": true
+        }
+      ],
+      "human_review": "pending",
+      "limitation": "준비된 검증 데이터 범위의 결과 비교이며 모든 SQL의 동치 증명·독립 역량·학습 효과 판정은 아닙니다.",
+      "recommendation": "보완 항목을 수정해 전체 SQL을 새 답장으로 제출하세요. 모두 충족했다면 다른 문제에 적용하세요.",
+      "help_history": [],
+      "sql_exposure": "없음 확인"
+    },
+    "completed": true,
+    "attempt_count": 1,
+    "no_written_explanation": true
+  },
+  {
+    "difficulty": "advanced",
+    "help_level": "independent",
+    "objective": "신규 가입자의 튜토리얼 3단계 완료율을 가입 주차(1 또는 2)와 유입 채널별로 계산하는 SELECT를 직접 작성하세요. 완료율은 0~1 비율이며 분모 0은 NULL입니다. 도전하지 않은 가입자도 분모에 포함합니다. 완료 이벤트는 가입 기간 시작 이상, 관측 종료 미만(UTC)만 인정하고 재도전을 중복 집계하지 않습니다. 출력 열 이름과 순서: week, channel, denominator, numerator, completion_rate. 수와 비율은 숫자형, channel은 문자형입니다. week는 과제 시작일부터 7일 단위로 구분합니다. 중복과 기간 경계를 스스로 검산하세요.",
+    "contract": {
+      "version": "sql-tutorial-v1",
+      "columns": [
+        "week",
+        "channel",
+        "denominator",
+        "numerator",
+        "completion_rate"
+      ],
+      "tolerance": "0.000001",
+      "ordering": "unordered",
+      "numerator": "관측 기간 안에 3단계를 완료한 고유 신규 가입자",
+      "denominator": "과제 가입 기간의 모든 고유 신규 가입자 (도전하지 않은 가입자 포함)",
+      "empty": "전체 집계 분모 0은 NULL 비율. 그룹 집계는 가입자가 있는 그룹만 출력.",
+      "criteria": [
+        {
+          "id": "syntax",
+          "name": "구문·실행"
+        },
+        {
+          "id": "calculation",
+          "name": "계산·출력"
+        },
+        {
+          "id": "duplicates",
+          "name": "중복 처리"
+        },
+        {
+          "id": "period",
+          "name": "기간·관측"
+        },
+        {
+          "id": "denominator",
+          "name": "분모·누락"
+        }
+      ]
+    },
+    "main_data_hash": "e660a4eabab7d6d989d441222dedb91af3842ed18187e01666a215772386c640",
+    "result": {
+      "execution_id": "a7a3500e-f4fe-4612-9061-683e3480bdf9",
+      "status": "success",
+      "executed_at": "2026-10-06T14:17:50.272461Z",
+      "columns": [
+        {
+          "name": "week",
+          "type": "int4"
+        },
+        {
+          "name": "channel",
+          "type": "text"
+        },
+        {
+          "name": "denominator",
+          "type": "int8"
+        },
+        {
+          "name": "numerator",
+          "type": "int8"
+        },
+        {
+          "name": "completion_rate",
+          "type": "numeric"
+        }
+      ],
+      "rows": [
+        [
+          1,
+          "ads",
+          5,
+          4,
+          "0.80000000000000000000"
+        ],
+        [
+          1,
+          "organic",
+          15,
+          12,
+          "0.80000000000000000000"
+        ],
+        [
+          2,
+          "ads",
+          15,
+          10,
+          "0.66666666666666666667"
+        ],
+        [
+          2,
+          "organic",
+          5,
+          4,
+          "0.80000000000000000000"
+        ]
+      ],
+      "preview_row_count": 4,
+      "total_row_count": 4,
+      "result_complete": true,
+      "truncated": false,
+      "error": null,
+      "expires_in_seconds": 600,
+      "duration_ms": 15
+    },
+    "evaluation": {
+      "practice": "sql",
+      "rubric_version": "sql-tutorial-v1",
+      "held": false,
+      "reason": null,
+      "total": null,
+      "criteria": [
+        {
+          "id": "syntax",
+          "name": "구문·실행",
+          "status": "충족",
+          "reason": "실제 읽기 전용 실행 성공",
+          "evidence_refs": [
+            "execution:a7a3500e-f4fe-4612-9061-683e3480bdf9"
+          ]
+        },
+        {
+          "id": "calculation",
+          "name": "계산·출력",
+          "status": "충족",
+          "reason": "고정 검증 데이터의 전체 결과 비교",
+          "evidence_refs": [
+            "execution:a7a3500e-f4fe-4612-9061-683e3480bdf9"
+          ]
+        },
+        {
+          "id": "duplicates",
+          "name": "중복 처리",
+          "status": "충족",
+          "reason": "고정 검증 데이터의 전체 결과 비교",
+          "evidence_refs": [
+            "execution:a7a3500e-f4fe-4612-9061-683e3480bdf9"
+          ]
+        },
+        {
+          "id": "period",
+          "name": "기간·관측",
+          "status": "충족",
+          "reason": "고정 검증 데이터의 전체 결과 비교",
+          "evidence_refs": [
+            "execution:a7a3500e-f4fe-4612-9061-683e3480bdf9"
+          ]
+        },
+        {
+          "id": "denominator",
+          "name": "분모·누락",
+          "status": "충족",
+          "reason": "고정 검증 데이터의 전체 결과 비교",
+          "evidence_refs": [
+            "execution:a7a3500e-f4fe-4612-9061-683e3480bdf9"
+          ]
+        }
+      ],
+      "checks": [
+        {
+          "case": "main",
+          "complete": true,
+          "matched": true
+        },
+        {
+          "case": "duplicates",
+          "complete": true,
+          "matched": true
+        },
+        {
+          "case": "period",
+          "complete": true,
+          "matched": true
+        },
+        {
+          "case": "denominator",
+          "complete": true,
+          "matched": true
+        }
+      ],
+      "human_review": "pending",
+      "limitation": "준비된 검증 데이터 범위의 결과 비교이며 모든 SQL의 동치 증명·독립 역량·학습 효과 판정은 아닙니다.",
+      "recommendation": "보완 항목을 수정해 전체 SQL을 새 답장으로 제출하세요. 모두 충족했다면 다른 문제에 적용하세요.",
+      "help_history": [],
+      "sql_exposure": "없음 확인"
+    },
+    "completed": true,
+    "attempt_count": 1,
+    "no_written_explanation": true
+  }
+]
