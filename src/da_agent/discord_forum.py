@@ -1,5 +1,9 @@
 """Discord forum publishing with durable progress and marker-based recovery."""
+import asyncio
+from io import BytesIO
+
 from .discord_results import card_marker, legacy_card_marker
+from .discord_pdf import pdf_filename, render_submission_pdf
 from .errors import DomainError
 
 
@@ -35,8 +39,8 @@ class ResultForumPublisher:
                 default_layout=discord.ForumLayoutType.list_view,
                 reason='사용자 요청: 최종 제출 결과를 정리할 DA-Result 포럼')
         bot = forum.permissions_for(guild.me)
-        if not all(getattr(bot, name, False) for name in ('view_channel', 'send_messages', 'send_messages_in_threads', 'embed_links', 'read_message_history')):
-            raise DomainError('result_post_permission', 'DA-Result에서 봇의 채널 보기·게시글 만들기·스레드 발언·링크 삽입·기록 읽기 권한을 확인한 뒤 /submit하세요.')
+        if not all(getattr(bot, name, False) for name in ('view_channel', 'send_messages', 'send_messages_in_threads', 'embed_links', 'read_message_history', 'attach_files')):
+            raise DomainError('result_post_permission', 'DA-Result에서 봇의 채널 보기·게시글 만들기·스레드 발언·링크 삽입·기록 읽기·파일 첨부 권한을 확인한 뒤 /submit하세요.')
         owner = forum.permissions_for(user)
         if not owner.view_channel or not owner.read_message_history:
             raise DomainError('result_owner_permission', '본인이 DA-Result 결과를 읽을 수 없습니다. 운영자가 채널 접근 권한을 확인한 뒤 /submit하세요.')
@@ -56,7 +60,20 @@ class ResultForumPublisher:
 
     async def publish(self, parent, user, submission, publication, save):
         import discord
+        from .discord_pdf_view import ResultPDFView
         forum = await self.forum(parent, user)
+        filename = pdf_filename(submission)
+
+        async def pdf_file():
+            try:
+                data = await asyncio.to_thread(render_submission_pdf, submission)
+            except DomainError:
+                raise
+            except Exception as exc:
+                raise DomainError('result_pdf_generation', 'PDF 생성에 실패했습니다. 평가 기록은 보존했습니다. /resume으로 다시 시도하세요.') from exc
+            if len(data) > forum.guild.filesize_limit:
+                raise DomainError('result_pdf_size', 'PDF가 서버 파일 첨부 한도를 초과했습니다. 운영자가 업로드 한도를 확인한 뒤 /resume하세요.')
+            return discord.File(BytesIO(data), filename=filename)
         if publication.get('post_id'):
             try:
                 thread = await self.client.fetch_channel(int(publication['post_id']))
@@ -74,24 +91,45 @@ class ResultForumPublisher:
                     tags = [tag for tag in forum.available_tags if not tag.moderated or forum.permissions_for(forum.guild.me).manage_threads][:1]
                     if not tags:
                         raise DomainError('result_tag_required', 'DA-Result는 태그가 필수입니다. 봇이 적용할 수 있는 태그를 준비한 뒤 /submit하세요.')
+                file = await pdf_file()
                 await save(status='creating', forum_id=str(forum.id))
                 try:
                     created = await forum.create_thread(name=submission['post_name'], embed=self.embed(submission, 0, user),
+                        file=file, view=ResultPDFView([forum.guild.id]),
                         allowed_mentions=discord.AllowedMentions.none(), applied_tags=tags,
                         reason='저장된 최종 제출·평가 결과 게시')
                     thread = created.thread
                 except discord.HTTPException as exc:
                     await save(status='failed' if 400 <= exc.status < 500 else 'uncertain')
                     raise
+                finally:
+                    file.close()
         await save(status='partial', forum_id=str(forum.id), post_id=str(thread.id))
         if thread.archived:
             await thread.edit(archived=False)
+        starter = await thread.fetch_message(thread.id)
+        if (starter.author.id != self.client.user.id
+                or not any(e.footer.text in {card_marker(submission, 0), legacy_card_marker(submission, 0)}
+                           for e in starter.embeds)):
+            raise DomainError('result_post_author', '결과 게시글 작성자와 제출 연결을 확인하세요.')
+        if not any(a.filename == filename for a in starter.attachments):
+            file = await pdf_file()
+            try:
+                await starter.edit(attachments=[*starter.attachments, file],
+                                   view=ResultPDFView([forum.guild.id]),
+                                   allowed_mentions=discord.AllowedMentions.none())
+            finally:
+                file.close()
+        else:
+            await starter.edit(view=ResultPDFView([forum.guild.id]))
         present = set()
         async for message in thread.history(limit=None):
             if message.author.id == self.client.user.id:
                 present.update(e.footer.text for e in message.embeds)
                 for index in range(len(submission['cards'])):
-                    if any(e.footer.text == legacy_card_marker(submission, index) for e in message.embeds):
+                    if any(e.footer.text == legacy_card_marker(submission, index) or
+                           (e.footer.text == card_marker(submission, index) and index == 0)
+                           for e in message.embeds):
                         await message.edit(embed=self.embed(submission, index, user), allowed_mentions=discord.AllowedMentions.none())
                         present.add(card_marker(submission, index))
         for index in range(len(submission['cards'])):

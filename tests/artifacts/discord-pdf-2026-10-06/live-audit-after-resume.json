@@ -1,0 +1,23 @@
+{
+  "session_id": "c60e3d9f-9179-490d-8956-5a3eac24bfb3",
+  "state": "completed",
+  "executions": 1,
+  "reports": 1,
+  "evaluations": 1,
+  "publication": null,
+  "result_publications": {
+    "82f33262-9c48-4c5f-b707-845638bdac24": {
+      "status": "published",
+      "post_id": "1556931093222002710",
+      "forum_id": "1556918941576724581",
+      "error_code": null,
+      "updated_at": "2026-10-06T07:35:03.431169+00:00"
+    }
+  },
+  "messages": 10,
+  "attachment_ids": [
+    "1556931093536448543"
+  ],
+  "pdf_bytes": 76413,
+  "post_url": "https://discord.com/channels/1556888486919934064/1556931093222002710"
+}

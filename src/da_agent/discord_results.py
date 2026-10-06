@@ -1,5 +1,6 @@
 """Readable, public-only submission cards; no model call or score rewriting."""
 import hashlib
+from copy import deepcopy
 from datetime import datetime, timezone
 from .errors import DomainError
 
@@ -37,24 +38,29 @@ def build_submission(document, evaluation_id=None):
         for index, chunk in enumerate(safe_chunks(body), 1):
             cards.append(dict(title=title if index == 1 else f'{title} · 이어서 {index}', description=chunk))
 
-    source = f"https://discord.com/channels/{document['guild_id']}/{document['thread_id']}"
     submitted_at = datetime.fromisoformat(entry['at']).astimezone(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
     add('제출 결과 요약', '\n'.join([
         task.get('title', '분석 훈련'), submission_summary(entry),
         f"보고 버전: {report['version']} · 제출 시각 (UTC): {submitted_at}",
+        f"과제 ID: {document['session_id']}",
         '업무 목표: ' + task.get('objective', ''),
         '평가는 공개 기준에 따른 모델 판정이며 학습 효과를 확정하지 않습니다.',
         '이 게시글은 DA-Result 채널에 접근할 수 있는 회원에게 공개됩니다.',
     ]))
-    cards[0]['source_url'] = source
     cards[0]['score'] = result.get('total')
     cards[0]['held'] = bool(result.get('held'))
     for key, value in report.get('content', {}).items():
         if isinstance(value, str) and value.strip():
+            start = len(cards)
             add(REPORT_LABELS.get(key, '보고서 · ' + str(key)), value)
+            for card in cards[start:]:
+                card['pdf_kind'] = 'report'
     answers = report.get('followup_answers', [])
     if answers:
+        start = len(cards)
         add('업무 담당자 후속 질문에 대한 답변', '\n\n'.join(f"답변 {i}\n{a.get('text', '')}" for i, a in enumerate(answers, 1)))
+        for card in cards[start:]:
+            card['pdf_kind'] = 'followup'
     profile=result.get('quality_profile')
     if profile:
         lines=['문제 유형 반복 검증: '+('통과' if profile['status']=='eligible' else '미통과 · 점수 보류'),
@@ -131,6 +137,7 @@ def build_submission(document, evaluation_id=None):
             action = '지원하는 검산 범위의 오류 수정은 확인했습니다. 분석의 적용 한계와 다음 확인 계획을 검토하세요.'
         lines.append('다음 행동: ' + action)
         add('수정 내용 피드백', '\n'.join(lines))
+
     for row in result.get('criteria', []):
         criterion = criteria.get(row['id'], {'name': row['id'], 'weight': 0})
         grade = row.get('grade')
@@ -140,12 +147,18 @@ def build_submission(document, evaluation_id=None):
             improvement='공급자 상태를 확인한 뒤 다시 평가하세요. 공급자 실패를 학습자 근거 부족으로 감점하지 않습니다.'
         body = ['평가 근거', str(row.get('reason') or row.get('held_reason') or result.get('reason') or '근거 확인 필요'),
                 '', '다음 개선 행동', improvement]
+        pdf_chunks = safe_chunks('\n'.join(body))
+
         if row.get('evidence_refs'):
             body.extend(['', '인용한 근거'])
             for ref in row['evidence_refs']:
                 kind, _, ident = ref.partition(':')
                 body.append({'report': '제출 보고서 버전', 'execution': '저장 조회 ID', 'message': '과제 대화 ID'}.get(kind, kind) + ': ' + ident)
+        start = len(cards)
         add(f"{criterion['name']} · {status} · 비중 {criterion['weight']}%", '\n'.join(body))
+        for chunk_index, card in enumerate(cards[start:]):
+            card['pdf_description'] = pdf_chunks[chunk_index] if chunk_index < len(pdf_chunks) else ''
+        cards[-1]['pdf_evidence_refs'] = list(dict.fromkeys(row.get('evidence_refs', [])))
     weak = (result.get('recommendation') or {})
     if isinstance(weak, dict):
         names = [criteria[k]['name'] for k in weak.get('practice_criteria', []) if k in criteria]
@@ -163,9 +176,45 @@ def build_submission(document, evaluation_id=None):
         body.append(f"{criteria.get(key, {}).get('name', key)}: {values['baseline']} → {values['followup']} (변화 {values['delta']:+d})")
     add('학습 관측과 판단 한계', '\n'.join(body))
     name = f"{task.get('title', '분석 훈련')} · v{report['version']} · {document['session_id'][:8]}-{entry['id'][:8]}"
+    # Export only successful results selected as evidence for this report version.
+    # SQL, unrelated queries and private task/source records stay in the session.
+    selected = set(report.get('evidence_refs', []))
+    cited = {ref.partition(':')[2] for row in result.get('criteria', [])
+             for ref in row.get('evidence_refs', []) if ref.startswith('execution:')}
+    evidence_results = []
+    for execution in document.get('executions', []):
+        ident = execution.get('execution_id', execution.get('id'))
+        stored = execution.get('result', {})
+        if ident not in selected | cited or stored.get('status') != 'success':
+            continue
+        evidence_results.append(dict(
+            execution_id=ident,
+            placement='report' if ident in selected else 'evaluation',
+            columns=[{key: deepcopy(col[key]) for key in ('name', 'type') if key in col}
+                     if isinstance(col, dict) else str(col) for col in stored.get('columns', [])],
+            rows=deepcopy(stored.get('rows', [])),
+            truncated=bool(stored.get('truncated')), total_row_count=stored.get('total_row_count'),
+            conditions={key: deepcopy(value) for key, value in execution.get('conditions', {}).items()
+                        if key in {'metric', 'group_by', 'start', 'end', 'event_start', 'event_end',
+                                   'timezone', 'step', 'unit', 'numerator', 'denominator'}},
+        ))
+    cited_messages = {ref.partition(':')[2] for row in result.get('criteria', [])
+                      for ref in row.get('evidence_refs', []) if ref.startswith('message:')}
+    message_sources = []
+    for message in document.get('messages', []):
+        if message.get('id') not in cited_messages or message.get('role') not in {'user', 'stakeholder'}:
+            continue
+        answer_number = next((i for i, answer in enumerate(answers, 1)
+                              if answer.get('message_id') == message['id']), None)
+        location = ('followup' if answer_number else
+                    'summary' if message.get('text') == task.get('objective') else 'quote')
+        message_sources.append(dict(id=message['id'], text=message.get('text', ''),
+                                    location=location, answer_number=answer_number))
     return dict(evaluation_id=entry['id'], report_id=report['id'], report_version=report['version'],
                 session_id=document['session_id'], guild_id=document['guild_id'], owner_user_id=document['owner_user_id'],
-                post_name=name[:100], cards=cards)
+                thread_id=document.get('thread_id'), completed=document.get('state') == 'completed' and not result.get('held'),
+                post_name=name[:100], cards=cards, evidence_results=evidence_results,
+                message_sources=message_sources)
 
 
 def card_marker(submission, index):

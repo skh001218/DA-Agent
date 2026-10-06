@@ -135,7 +135,7 @@ def create_client(service, settings):
             if not owner.view_channel or not owner.send_messages_in_threads:
                 raise DomainError("discord_owner_permissions", "부모 채널 보기·스레드 발언 권한이 필요합니다.", 403)
 
-        async def validate_thread(self, channel, user):
+        async def validate_thread(self, channel, user, *, reopen=True):
             if not self.is_private_thread(channel) or channel.invitable:
                 raise DomainError("discord_private_required", "비공개·초대 불가 스레드가 필요합니다.", 403)
             if str(channel.guild.id) not in transport.guild_ids:
@@ -144,9 +144,10 @@ def create_client(service, settings):
             # The creator is not necessarily a member of a newly created private
             # thread. Restore/join before the members endpoint, which otherwise
             # returns Missing Access even for the creating bot.
-            if channel.archived:
+            if channel.archived and reopen:
                 await channel.edit(archived=False, locked=False, invitable=False)
-            await channel.join()
+            if reopen:
+                await channel.join()
             try:
                 members = await channel.fetch_members()
             except discord.Forbidden:
@@ -161,8 +162,8 @@ def create_client(service, settings):
                 if not permissions.manage_threads and not permissions.administrator:
                     raise DomainError("discord_extra_member", "과제 스레드에 다른 일반 참가자가 있습니다. 운영자가 해당 참가자를 제거한 뒤 /resume 하세요.", 403)
 
-        async def create_private_thread(self, parent, user, session_id):
-            thread = await parent.create_thread(name=f"DA-{session_id[:12]}", type=discord.ChannelType.private_thread,
+        async def create_private_thread(self, parent, user, session_id, *, name):
+            thread = await parent.create_thread(name=name, type=discord.ChannelType.private_thread,
                                                 invitable=False, auto_archive_duration=1440)
             try:
                 await thread.add_user(user)
@@ -180,8 +181,16 @@ def create_client(service, settings):
             except discord.Forbidden:
                 raise DomainError("discord_access_denied", "원래 과제 스레드에 접근할 수 없습니다. 운영자에게 부모 채널·스레드 권한과 참가 상태 복구를 요청한 뒤 부모 채널에서 /resume 하세요. 삭제된 스레드는 새 비공개 공간으로 복구됩니다.", 403)
 
+        async def archive_task_thread(self, channel, user):
+            await self.validate_thread(channel, user, reopen=False)
+            if not channel.archived or not channel.locked:
+                await channel.edit(archived=True, locked=True, invitable=False,
+                                   reason='최종 보고서·평가 게시 완료 후 과제 기록 보관')
+
     class Client(discord.Client):
         async def setup_hook(self):
+            from .discord_pdf_view import ResultPDFView
+            self.add_view(ResultPDFView(settings.guild_ids))
             import asyncio
             await transport.gateway.responses.recover()
             self.response_maintenance = asyncio.create_task(transport.gateway.responses.maintenance())
@@ -224,10 +233,15 @@ def create_client(service, settings):
     async def tip(interaction: discord.Interaction, command: str = ''):
         await transport.command(interaction, "tip", text=command)
 
-    @tree.command(name="resume", description="자신의 과제를 재개하거나 삭제된 스레드를 복구")
+    @tree.command(name="resume", description="진행 과제 재개 또는 완료 과제 결과·대화 열람")
     @app_commands.guild_only()
     async def resume(interaction: discord.Interaction, session_id: str | None = None):
         await transport.command(interaction, "resume", session_id=session_id)
+
+    @tree.command(name="history", description="본인의 분석 연습 기록과 결과 링크 확인")
+    @app_commands.guild_only()
+    async def history(interaction: discord.Interaction, page: app_commands.Range[int, 1, 1000000] = 1):
+        await transport.command(interaction, 'history', payload={'page': page})
 
     # Slash alternatives work without the privileged Message Content Intent.
     def register_text_action(action, description):
@@ -236,7 +250,7 @@ def create_client(service, settings):
         callback.__annotations__["interaction"] = discord.Interaction
         tree.add_command(app_commands.Command(name=action, description=description, callback=callback))
 
-    for action, description in {"query": "새로운 자연어 조회 요청", "answer": "현재 봇 질문에 이어서 답변", "followup": "업무 담당자 후속 질문에 답변"}.items():
+    for action, description in {"query": "새로운 자연어 조회 요청", "answer": "현재 봇 질문에 이어서 답변", "question": "게임 분석 용어를 용어당 최대 3줄로 설명", "followup": "업무 담당자 후속 질문에 답변"}.items():
         register_text_action(action, description)
 
     @tree.command(name="report", description="보고 초안 작성·수정 또는 긴 보고 이어 쓰기")

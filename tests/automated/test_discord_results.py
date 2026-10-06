@@ -146,17 +146,23 @@ def test_profile_hold_does_not_claim_missing_learner_evidence_or_failed_response
 
 def setup_forum(monkeypatch, exists=True):
     permissions = NS(view_channel=True, read_message_history=True, embed_links=True,
-                     send_messages=True, send_messages_in_threads=True, manage_channels=True, manage_threads=True)
+                     send_messages=True, send_messages_in_threads=True, manage_channels=True, manage_threads=True, attach_files=True)
     user = NS(id=1, display_name='참가자')
     bot = NS(id=2)
     posts = []
     class Message:
-        def __init__(self, embed): self.author, self.embeds = bot, [embed]
-        async def edit(self, **kwargs): self.embeds = [kwargs['embed']]
+        def __init__(self, embed, file=None, view=None):
+            self.author, self.embeds = bot, [embed]
+            self.attachments = [NS(filename=file.filename)] if file else []
+            self.view = view
+        async def edit(self, **kwargs):
+            if 'embed' in kwargs: self.embeds = [kwargs['embed']]
+            if 'attachments' in kwargs: self.attachments = [NS(filename=a.filename) for a in kwargs['attachments']]
+            if 'view' in kwargs: self.view = kwargs['view']
     class Thread:
-        def __init__(self, name, embed, parent):
+        def __init__(self, name, embed, parent, file=None, view=None):
             self.id, self.name, self.parent_id, self.archived = len(posts) + 10, name, parent, False
-            self.messages = [Message(embed)]
+            self.messages = [Message(embed, file, view)]
             self.fail_send = False
         async def fetch_message(self, ident): return self.messages[0]
         async def history(self, **kwargs):
@@ -177,7 +183,7 @@ def setup_forum(monkeypatch, exists=True):
             for thread in posts:
                 if thread.archived: yield thread
         async def create_thread(self, **kwargs):
-            thread = Thread(kwargs['name'], kwargs['embed'], self.id)
+            thread = Thread(kwargs['name'], kwargs['embed'], self.id, kwargs.get('file'), kwargs.get('view'))
             posts.append(thread)
             return NS(thread=thread)
     async def active_threads(): return [t for t in posts if not t.archived]
@@ -189,7 +195,7 @@ def setup_forum(monkeypatch, exists=True):
         forum = Forum(name)
         channels.append(forum)
         return forum
-    guild = NS(id='guild', me=bot, fetch_channels=fetch_channels, active_threads=active_threads, create_forum=create_forum)
+    guild = NS(id='guild', me=bot, fetch_channels=fetch_channels, active_threads=active_threads, create_forum=create_forum, filesize_limit=10 * 1024 * 1024)
     if exists: channels.append(Forum())
     parent = NS(guild=guild, category=NS(id=7), overwrites={'role': 'same permissions'}, permissions_for=lambda user: permissions)
     async def fetch_channel(ident): return next(t for t in posts if t.id == ident)
@@ -275,6 +281,7 @@ def test_transport_failed_publication_preserves_evaluation_and_falls_back_readab
         async def publish_result(self, *args): raise DomainError('permissions', '포럼 발언 권한을 확인하세요.')
         async def send(self, channel, text): self.messages.append(text)
         async def send_result_card(self, channel, sub, index, user): self.cards.append(sub['cards'][index])
+        async def reply(self, event, text): self.messages.append(text)
     gateway = Gateway()
     transport = DiscordTransport(service, gateway, ['guild'])
     event = NS(user=NS(id='owner'), guild=NS(id='guild'))
@@ -282,3 +289,72 @@ def test_transport_failed_publication_preserves_evaluation_and_falls_back_readab
     assert '제출·평가 기록은 저장' in gateway.messages[0]
     assert gateway.cards and doc['evaluations'] == original
     assert service.result_publication('owner', 'session', 'evaluation')['error_code'] == 'permissions'
+
+
+@pytest.mark.parametrize('failure', [None, 'publish', 'notice', 'archive', 'held'])
+def test_archive_only_after_complete_publication_and_destination_notice(failure):
+    doc = document()
+    if failure == 'held':
+        doc['state'] = 'reporting'
+        doc['evaluations'][0]['result']['held'] = True
+    original = deepcopy(doc['evaluations'])
+    service = DiscordTrainingService(Store(doc), None, None, NS())
+    parent, channel = NS(id='parent'), NS(id='source', parent=NS(id='parent'))
+    calls = []
+    class Gateway:
+        async def publish_result(self, parent, user, sub, journal, save):
+            calls.append('publish')
+            if failure == 'publish': raise ConnectionError()
+            await save(status='published', post_id='post', forum_id='forum')
+            return 'https://discord.com/channels/guild/post'
+        async def send(self, target, text):
+            calls.append('notice' if target.id == 'parent' else 'fallback')
+            if failure == 'notice': raise ConnectionError()
+        async def reply(self, event, text):
+            calls.append('reply')
+            if failure == 'reply' and calls.count('reply') == 1: raise ConnectionError()
+        async def send_result_card(self, *args): pass
+        async def archive_task_thread(self, target, user):
+            calls.append('archive')
+            if failure == 'archive': raise ConnectionError()
+            target.archived = target.locked = True
+    transport = DiscordTransport(service, Gateway(), ['guild'])
+    event = NS(user=NS(id='owner'), guild=NS(id='guild'))
+    asyncio.run(transport._publish_result(event, channel, build_submission(doc)))
+    if failure in (None, 'archive'):
+        assert calls[:4] == ['publish', 'fallback', 'notice', 'archive']
+    else:
+        assert 'archive' not in calls
+    if failure in ('notice', 'archive'):
+        assert service.result_publication('owner', 'session', 'evaluation')['status'] == 'published'
+    assert doc['evaluations'] == original
+
+
+def test_resume_deleted_completed_thread_reuses_forum_without_creating_task_thread():
+    doc = document()
+    doc.update(guild_id='10', owner_user_id='1', channel_id='20', thread_id='30')
+    service = DiscordTrainingService(Store(doc), None, None, NS())
+    service.save_result_publication('1', 'session', 'evaluation', status='published', post_id='40', forum_id='50')
+    calls = []
+    class Gateway:
+        async def defer(self, event): pass
+        async def fetch_channel(self, ident):
+            calls.append(('fetch', ident))
+            return NS(id=20) if ident == 20 else None
+        async def validate_parent(self, *args): pass
+        async def publish_result(self, parent, user, sub, journal, save):
+            assert journal['post_id'] == '40'
+            return 'https://discord.com/channels/10/40'
+        async def reply(self, event, text): calls.append(('reply', text))
+        async def create_private_thread(self, *args): raise AssertionError('Must not recreate')
+    event = NS(id=100, user=NS(id=1), guild=NS(id=10), channel=NS(id=20))
+    asyncio.run(DiscordTransport(service, Gateway(), ['10']).command(event, 'resume', session_id='session'))
+    assert calls[:2] == [('fetch', 30), ('fetch', 20)]
+    assert '/10/40' in calls[-1][1] and '다시 만들지' in calls[-1][1]
+    assert doc['thread_id'] == '30' and len(doc['evaluations']) == 1
+
+
+def test_results_use_saved_task_id_instead_of_deleted_thread_link():
+    submission = build_submission(document())
+    assert '과제 ID: session' in submission['cards'][0]['description']
+    assert not any(c.get('source_url') for c in submission['cards'])

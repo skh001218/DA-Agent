@@ -21,6 +21,11 @@ class Service:
         self.calls.append(("bind", (user, session, thread)))
         self.session["thread_id"] = thread
 
+    def reserve_thread_name(self, user, session):
+        from da_agent.discord_thread_titles import reserve_title
+        reserve_title(self.session, [])
+        return dict(self.session)
+
     def resume(self, *args):
         return {"session": dict(self.session), "messages": ["업무 담당자: 준비됨"]}
 
@@ -57,13 +62,14 @@ class Gateway:
         if self.denied:
             raise DomainError("denied", "권한 부족", 403)
 
-    async def validate_thread(self, channel, user):
+    async def validate_thread(self, channel, user, **kwargs):
         self.events.append("thread")
         if self.denied or not channel.private:
             raise DomainError("denied", "권한 부족", 403)
 
-    async def create_private_thread(self, *args):
+    async def create_private_thread(self, *args, **kwargs):
         self.events.append("create")
+        self.thread.name = kwargs['name']
         return self.thread
 
     async def fetch_channel(self, *args):
@@ -241,7 +247,7 @@ def test_optional_real_command_registration_without_login(tmp_path):
     settings = DiscordSettings("fake", (10,), "r", "a", "l", tmp_path / "key")
     async def check():
         client = create_client(Service(), settings)
-        assert {cmd.name for cmd in client.da_command_tree.get_commands()} == {"training", "resume", "query", "answer", "help", "report", "followup", "submit", "sql", "evidence", "end", "tip"}
+        assert {cmd.name for cmd in client.da_command_tree.get_commands()} == {"training", "resume", "query", "answer", "question", "help", "report", "followup", "submit", "sql", "evidence", "end", "tip", "history"}
         assert not client.intents.message_content
         topic = next(p for p in client.da_command_tree.get_command('training').parameters if p.name == 'topic')
         assert [(choice.name, choice.value) for choice in topic.choices] == [('튜토리얼 완료율 분석', 'tutorial')]
