@@ -68,14 +68,20 @@ def create_client(service, settings):
     class Gateway:
         def __init__(self, client):
             self.client = client
+            from .discord_responses import DiscordResponses
+            self.responses = DiscordResponses(os.environ.get('DISCORD_RESPONSE_DIRECTORY', '.local/discord-responses'))
 
         async def defer(self, event):
-            await event.response.defer(ephemeral=True, thinking=True)
+            await self.responses.defer(event)
 
         async def reply(self, event, text):
-            if event.is_expired():
-                return  # permanent thread response already delivered; /resume restores state
-            await event.followup.send(text, ephemeral=True, allowed_mentions=discord.AllowedMentions.none())
+            await self.responses.reply(event, text, discord.AllowedMentions.none())
+
+        async def interrupt(self, event):
+            await self.responses.interrupt(event, discord.AllowedMentions.none())
+
+        def finish(self, event):
+            self.responses.finish(event.id)
 
         async def send(self, channel, text):
             await channel.send(text, allowed_mentions=discord.AllowedMentions.none())
@@ -140,10 +146,24 @@ def create_client(service, settings):
 
     class Client(discord.Client):
         async def setup_hook(self):
+            import asyncio
+            await transport.gateway.responses.recover()
+            self.response_maintenance = asyncio.create_task(transport.gateway.responses.maintenance())
             for guild_id in settings.guild_ids:
                 guild = discord.Object(id=guild_id)
                 tree.copy_global_to(guild=guild)
                 await tree.sync(guild=guild)
+
+        async def close(self):
+            import asyncio
+            maintenance = getattr(self, 'response_maintenance', None)
+            if maintenance is not None:
+                maintenance.cancel()
+                await asyncio.gather(maintenance, return_exceptions=True)
+            try:
+                await transport.gateway.responses.recover(include_active=True)
+            finally:
+                await super().close()
 
         async def on_message(self, message):
             if settings.message_content:

@@ -55,3 +55,7 @@ Discord 전용 기록 DB와 전용 데이터 DB를 먼저 준비한다. 관리�
 실제 서버에서 사용자 A가 `/training`을 실행한 뒤 비공개 스레드의 업무 안내를 확인하는 것이 첫 화면 확인 행동이다. 이후 A의 조회→도움→보고→후속 답변→제출, 사용자 B의 분리와 조작 차단, 봇 재시작·보관·삭제·권한 부족·Intent 비활성 흐름을 확인하고 `tests/reports/`에 남겨야 한다. 실제 서버 검증 및 사람의 교육 품질 승인이 끝나기 전에는 출시 완료로 표시하지 않는다.
 
 공식 근거: [Discord Interaction 응답과 만료](https://docs.discord.com/developers/interactions/receiving-and-responding), [스레드 권한](https://docs.discord.com/developers/topics/threads), [discord.py 변경 기록](https://discordpy.readthedocs.io/en/stable/whats_new.html), [Interactions API](https://discordpy.readthedocs.io/en/stable/interactions/api.html).
+
+## 중단된 대기 응답 정리
+
+정상 요청은 원래 비공개 대기 응답을 완료 안내로 수정한다. 취소·종료·재시작 시 원래 응답을 “요청의 응답이 중단되었습니다”와 `/resume` 안내로 교체한다. 임시 응답 복구 정보는 전용 `discord-responses` Docker 볼륨에 보관하며 완료·복구·15분 만료 후 삭제한다. 단독 실행에서는 `.local/discord-responses`를 사용하고 `DISCORD_RESPONSE_DIRECTORY`로 경로를 지정할 수 있다. 이미 토큰이 만료된 과거 메시지와 기능 적용 전에 복구 정보를 저장하지 않은 응답은 수정할 수 없다. [구현·검증 기록](../specs/031-discord-interrupted-response.md).

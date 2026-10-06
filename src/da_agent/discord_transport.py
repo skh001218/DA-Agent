@@ -52,8 +52,8 @@ class DiscordTransport:
     async def command(self, event, action, *, session_id=None, text="", payload=None,
                       topic="tutorial", difficulty="intermediate", help_level=None):
         # First operation is the acknowledgement; model/DB work never precedes it.
-        await self.gateway.defer(event)
         try:
+            await self.gateway.defer(event)
             self._guild(event)
             owner, guild, event_id = str(event.user.id), str(event.guild.id), str(event.id)
             if action == "training":
@@ -90,10 +90,17 @@ class DiscordTransport:
             response = await self._call("handle", owner, session["session_id"], event_id, action, text=text, payload=payload)
             await self._emit(event.channel, response.get("messages", []))
             await self.gateway.reply(event, "요청을 처리했습니다. 과제 스레드의 응답을 확인하세요.")
+        except asyncio.CancelledError:
+            if hasattr(self.gateway, 'interrupt'):
+                await asyncio.shield(self.gateway.interrupt(event))
+            raise
         except Exception as exc:
             # Do not expose exception strings: HTTP/DB errors can include credentials.
             message = exc.message if isinstance(exc, DomainError) else "처리하지 못했습니다. 기록은 보존됩니다. 권한·연결 상태를 확인한 뒤 /resume 으로 재개하세요."
             await self.gateway.reply(event, safe_chunks(message)[0])
+        finally:
+            if hasattr(self.gateway, 'finish'):
+                self.gateway.finish(event)
 
     async def _thread(self, event, session):
         sid = session['session_id']
