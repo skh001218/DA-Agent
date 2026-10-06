@@ -19,6 +19,26 @@ function renderProblemMetadata(problem) {
     container.append(detail);
   }
   if (problem.original_request) container.append(el('p', `내 요청: ${problem.original_request}`, 'prose'));
+  if (problem.source_case) {
+    const research = problem.source_case;
+    const detail = el('details'); detail.append(el('summary','참고한 실무 사례와 출처'));
+    detail.append(el('p',`선정 주제: ${research.topic}`),el('p',research.business_problem,'prose'),
+      el('p',`선정 이유: ${research.selection_reason}`,'prose'),el('p',`검색 확인: ${kst(research.searched_at)}`,'muted'));
+    for (const source of research.sources || []) {
+      let url; try {url=new URL(source.url);} catch {continue;}
+      if (url.protocol!=='https:' || url.username || url.password) continue;
+      const link=el('a',source.title); link.href=url.href; link.target='_blank'; link.rel='noopener noreferrer'; detail.append(link);
+      for(const fact of source.supported_excerpts || []) detail.append(el('p',fact,'prose'));
+    }
+    detail.append(el('p','출처 문장은 공개 사례의 검색 인용 근거입니다. 문제의 업무 설정·수치·데이터는 연습용 합성 조건이며 실무 전체를 대표하는 사례가 아닙니다.','muted'));
+    if (research.search_suggestions) {
+      const frame=el('iframe'); frame.title='검색 제공자의 관련 검색';
+      frame.setAttribute('sandbox','allow-popups allow-popups-to-escape-sandbox'); frame.style.width='100%'; frame.style.border='0';
+      frame.srcdoc='<meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;">'+research.search_suggestions;
+      detail.append(frame);
+    }
+    container.append(detail);
+  }
   if (problem.evaluation_status) container.append(el('p', problem.evaluation_status, 'muted'));
   if (problem.goal) container.append(el('p', `학습 목표: ${problem.goal}`, 'prose'));
   if ((problem.required_judgments || problem.completion_conditions)?.length) {container.append(el('h3','기대 제출물·완료 조건'));for(const text of problem.required_judgments || problem.completion_conditions)container.append(el('p',text,'prose'));}

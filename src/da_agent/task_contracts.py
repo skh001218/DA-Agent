@@ -39,6 +39,7 @@ class Interpretation(Contract):
     reason: str = Field(min_length=1,max_length=1000)
 
 class PublicTaskV2(PublicTask):
+    source_case: dict | None = None
     business_case: BusinessCase | None = None
     quality_version: str | None = None
     original_request: str | None = Field(default=None,max_length=4000)

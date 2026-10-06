@@ -1,0 +1,52 @@
+{
+  "request_text": "실무에서 일어날만한 문제를 분석하고싶어",
+  "samples": [
+    {
+      "level": "beginner",
+      "request_id": "3a5d6845-f9e8-40d3-bde7-95ace0b2aba9",
+      "state": {
+        "error": "검색 API의 사용 한도에 도달해 실무 사례를 확인하지 못했습니다. API 할당량을 확인한 뒤 같은 요청을 다시 시도하세요.",
+        "phase": "case-search-v1",
+        "states": [
+          {
+            "at": "2026-10-06T02:19:00.501195Z",
+            "status": "accepted"
+          },
+          {
+            "at": "2026-10-06T02:19:00.588387Z",
+            "phase": "case-search-v1",
+            "status": "planning"
+          },
+          {
+            "at": "2026-10-06T02:19:00.948367Z",
+            "status": "failed"
+          }
+        ],
+        "status": "failed",
+        "message": "실무에서 일어날만한 문제를 분석하고싶어",
+        "revision": 0,
+        "questions": [],
+        "attempt_id": null,
+        "created_at": "2026-10-06T02:19:00.501184Z",
+        "error_code": "research_failed",
+        "request_id": "3a5d6845-f9e8-40d3-bde7-95ace0b2aba9",
+        "operation_id": "42600b79-c7e8-4dcf-a640-86b2f54c8b62",
+        "retry_allowed": true,
+        "failure_detail": null,
+        "planning_calls": 1,
+        "failure_history": [
+          {
+            "at": "2026-10-06T02:19:00.948351Z",
+            "error": "검색 API의 사용 한도에 도달해 실무 사례를 확인하지 못했습니다. API 할당량을 확인한 뒤 같은 요청을 다시 시도하세요.",
+            "error_code": "research_failed",
+            "failure_detail": null,
+            "planning_calls": 1
+          }
+        ],
+        "contract_version": "request-v2",
+        "generation_attempts": 0,
+        "recommendation_change": null
+      }
+    }
+  ]
+}

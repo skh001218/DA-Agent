@@ -1,0 +1,282 @@
+[
+  {
+    "level": "beginner",
+    "request_id": "f1a60980-4d9b-443d-ada5-ef295a386e4f",
+    "state": {
+      "error": "요청별 데이터 설계 호출을 완료하지 못했습니다. 입력을 유지했습니다.",
+      "phase": "adaptive-design-repair-v1",
+      "states": [
+        {
+          "at": "2026-10-06T03:46:12.356513Z",
+          "status": "accepted"
+        },
+        {
+          "at": "2026-10-06T03:46:12.493723Z",
+          "phase": "case-search-v1",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-06T03:46:42.309628Z",
+          "status": "failed"
+        },
+        {
+          "at": "2026-10-06T03:48:29.901371Z",
+          "phase": "case-search-v1",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-06T03:49:10.753391Z",
+          "phase": "case-selection-v1",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-06T03:50:43.167773Z",
+          "status": "failed"
+        },
+        {
+          "at": "2026-10-06T03:55:31.399304Z",
+          "phase": "case-selection-v1",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-06T03:55:45.625343Z",
+          "phase": "adaptive-design-v1",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-06T03:56:30.468978Z",
+          "phase": "adaptive-design-repair-v1",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-06T03:57:16.512934Z",
+          "phase": "adaptive-design-repair-v1",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-06T03:57:22.103630Z",
+          "status": "failed"
+        }
+      ],
+      "status": "failed",
+      "message": "실무에서 일어날만한 문제를 분석하고싶어",
+      "revision": 2,
+      "questions": [],
+      "attempt_id": null,
+      "created_at": "2026-10-06T03:46:12.356470Z",
+      "error_code": "api_rate_limited",
+      "request_id": "f1a60980-4d9b-443d-ada5-ef295a386e4f",
+      "operation_id": "33e8c916-824e-4a32-bde8-c65abc0fb707",
+      "retry_allowed": false,
+      "failure_detail": null,
+      "planning_calls": 7,
+      "failure_history": [
+        {
+          "at": "2026-10-06T03:46:42.309614Z",
+          "error": "실제 검색 질의를 확인하지 못해 출제하지 않았습니다.",
+          "error_code": "research_unverified",
+          "failure_detail": null,
+          "planning_calls": 1
+        },
+        {
+          "at": "2026-10-06T03:50:43.167756Z",
+          "error": "검색 근거에 맞는 실무 사례 후보를 구성하지 못했습니다. 요청을 보존했습니다.",
+          "error_code": "research_invalid",
+          "failure_detail": null,
+          "planning_calls": 3
+        },
+        {
+          "at": "2026-10-06T03:57:22.103616Z",
+          "error": "요청별 데이터 설계 호출을 완료하지 못했습니다. 입력을 유지했습니다.",
+          "error_code": "api_rate_limited",
+          "failure_detail": null,
+          "planning_calls": 7
+        }
+      ],
+      "contract_version": "request-v2",
+      "generation_attempts": 0,
+      "parent_operation_id": "a7aa23c4-d3ad-4213-9563-a9d8ef929d75",
+      "recommendation_change": null
+    }
+  },
+  {
+    "level": "intermediate",
+    "request_id": "85cc8824-79aa-446c-a80f-255880ea155f",
+    "state": {
+      "error": "검색 근거에 맞는 실무 사례 후보를 구성하지 못했습니다. 요청을 보존했습니다.",
+      "phase": "case-selection-v1",
+      "states": [
+        {
+          "at": "2026-10-06T03:46:43.194447Z",
+          "status": "accepted"
+        },
+        {
+          "at": "2026-10-06T03:46:43.279255Z",
+          "phase": "case-search-v1",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-06T03:47:20.093422Z",
+          "status": "failed"
+        },
+        {
+          "at": "2026-10-06T03:50:43.594539Z",
+          "phase": "case-search-v1",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-06T03:51:19.372168Z",
+          "phase": "case-selection-v1",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-06T03:52:51.961054Z",
+          "status": "failed"
+        },
+        {
+          "at": "2026-10-06T03:57:22.876890Z",
+          "phase": "case-selection-v1",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-06T03:57:27.466354Z",
+          "status": "failed"
+        }
+      ],
+      "status": "failed",
+      "message": "실무에서 일어날만한 문제를 분석하고싶어",
+      "revision": 2,
+      "questions": [],
+      "attempt_id": null,
+      "created_at": "2026-10-06T03:46:43.194425Z",
+      "error_code": "research_invalid",
+      "request_id": "85cc8824-79aa-446c-a80f-255880ea155f",
+      "operation_id": "3d2a2019-5431-4765-80b2-cc77cf58be7c",
+      "retry_allowed": true,
+      "failure_detail": null,
+      "planning_calls": 4,
+      "failure_history": [
+        {
+          "at": "2026-10-06T03:47:20.093409Z",
+          "error": "실제 검색 질의를 확인하지 못해 출제하지 않았습니다.",
+          "error_code": "research_unverified",
+          "failure_detail": null,
+          "planning_calls": 1
+        },
+        {
+          "at": "2026-10-06T03:52:51.961041Z",
+          "error": "검색 근거에 맞는 실무 사례 후보를 구성하지 못했습니다. 요청을 보존했습니다.",
+          "error_code": "research_invalid",
+          "failure_detail": null,
+          "planning_calls": 3
+        },
+        {
+          "at": "2026-10-06T03:57:27.466339Z",
+          "error": "검색 근거에 맞는 실무 사례 후보를 구성하지 못했습니다. 요청을 보존했습니다.",
+          "error_code": "research_invalid",
+          "failure_detail": null,
+          "planning_calls": 4
+        }
+      ],
+      "contract_version": "request-v2",
+      "generation_attempts": 0,
+      "parent_operation_id": "218bf760-407c-419f-8fb0-e3d0b84350a2",
+      "recommendation_change": null
+    }
+  },
+  {
+    "level": "advanced",
+    "request_id": "76e128a1-a65e-429a-9f7d-5a55d245fe4f",
+    "state": {
+      "error": "요청별 데이터 설계 호출을 완료하지 못했습니다. 입력을 유지했습니다.",
+      "phase": "adaptive-design-repair-v1",
+      "states": [
+        {
+          "at": "2026-10-06T03:47:20.189261Z",
+          "status": "accepted"
+        },
+        {
+          "at": "2026-10-06T03:47:20.255170Z",
+          "phase": "case-search-v1",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-06T03:47:54.324120Z",
+          "status": "failed"
+        },
+        {
+          "at": "2026-10-06T03:52:52.840466Z",
+          "phase": "case-search-v1",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-06T03:53:30.694410Z",
+          "phase": "case-selection-v1",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-06T03:55:03.456797Z",
+          "status": "failed"
+        },
+        {
+          "at": "2026-10-06T03:57:28.031520Z",
+          "phase": "case-selection-v1",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-06T03:57:49.035515Z",
+          "phase": "adaptive-design-v1",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-06T03:59:20.725320Z",
+          "phase": "adaptive-design-repair-v1",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-06T03:59:26.330820Z",
+          "status": "failed"
+        }
+      ],
+      "status": "failed",
+      "message": "실무에서 일어날만한 문제를 분석하고싶어",
+      "revision": 2,
+      "questions": [],
+      "attempt_id": null,
+      "created_at": "2026-10-06T03:47:20.189241Z",
+      "error_code": "api_rate_limited",
+      "request_id": "76e128a1-a65e-429a-9f7d-5a55d245fe4f",
+      "operation_id": "f6a514a3-e9a4-4a62-b533-b10012074745",
+      "retry_allowed": true,
+      "failure_detail": null,
+      "planning_calls": 6,
+      "failure_history": [
+        {
+          "at": "2026-10-06T03:47:54.324107Z",
+          "error": "실제 검색 질의를 확인하지 못해 출제하지 않았습니다.",
+          "error_code": "research_unverified",
+          "failure_detail": null,
+          "planning_calls": 1
+        },
+        {
+          "at": "2026-10-06T03:55:03.456782Z",
+          "error": "검색 근거에 맞는 실무 사례 후보를 구성하지 못했습니다. 요청을 보존했습니다.",
+          "error_code": "research_invalid",
+          "failure_detail": null,
+          "planning_calls": 3
+        },
+        {
+          "at": "2026-10-06T03:59:26.330807Z",
+          "error": "요청별 데이터 설계 호출을 완료하지 못했습니다. 입력을 유지했습니다.",
+          "error_code": "api_rate_limited",
+          "failure_detail": null,
+          "planning_calls": 6
+        }
+      ],
+      "contract_version": "request-v2",
+      "generation_attempts": 0,
+      "parent_operation_id": "1a666d96-6e2e-4274-943a-248c7b798c7b",
+      "recommendation_change": null
+    }
+  }
+]

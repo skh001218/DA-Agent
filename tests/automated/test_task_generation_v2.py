@@ -119,6 +119,12 @@ def test_interpretation_missing_fields_and_provider_reasons():
 
 
 class StructuredProvider:
+    def research(self, messages):
+        from test_case_research import research_result
+        return research_result()
+    def select_case(self, messages):
+        from test_case_research import selection_result
+        return selection_result()
     def __init__(self):
         self.calls = 0
         self.clarify_once = False

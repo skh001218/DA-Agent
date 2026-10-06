@@ -36,11 +36,12 @@ class GeminiProvider:
         key = self._key()
         configured = bool(key)
         verified = configured and self.verified_key == hashlib.sha256(key.encode()).digest()
+        label = 'Gemma API' if self.model.startswith('gemma-') else 'Gemini API'
         return {"state": "ready" if configured else "unavailable", "provider": "gemini",
                 "configured": configured, "connected": configured,
                 "inference_verified": verified, "model": self.model,
                 "reason": self.last_error if configured else "api_key_missing",
-                "message": ("Gemini API · 실제 호출 확인됨" if verified else "Gemini API · 키 설정됨 · 실제 호출 검증 전") if configured else "Gemini API · API 키 설정 필요"}
+                "message": (f"{label} · 실제 호출 확인됨" if verified else f"{label} · 키 설정됨 · 실제 호출 검증 전") if configured else f"{label} · API 키 설정 필요"}
 
     def _error(self, response):
         try:
@@ -60,7 +61,16 @@ class GeminiProvider:
             result['provider_diagnostic'] = diagnostic
         return result
 
-    def review(self, messages, model=None):
+    def research(self, messages):
+        selected = os.getenv('GEMINI_SEARCH_MODEL') or self.model
+        result = self.review(messages, model=selected, use_search=True)
+        result['model'] = selected
+        return result
+
+    def select_case(self, messages):
+        return self.review(messages)
+
+    def review(self, messages, model=None, *, use_search=False):
         with self.lock:
             key = self._key()
             if not key:
@@ -74,6 +84,8 @@ class GeminiProvider:
                 contents = [{"role": "model" if message["role"] == "assistant" else "user", "parts": [{"text": message["content"]}]} for message in messages if message["role"] not in {"developer", "system"}]
                 body = {"contents": contents, "systemInstruction": {"parts": system},
                         "generationConfig": {"maxOutputTokens": 4096}, "store": False}
+                if use_search:
+                    body['tools'] = [{'googleSearch': {}}]
                 # Application-owned adaptive design/validation envelopes need JSON
                 # syntax enforced by the provider, with semantic checks on the server.
                 envelope = None
@@ -94,6 +106,9 @@ class GeminiProvider:
                             if isinstance(value,list): return [provider_schema(v) for v in value]
                             return value
                         body['generationConfig']['responseJsonSchema']=provider_schema(envelope['schema'])
+                if isinstance(envelope,dict) and envelope.get('case_selection_version')=='case-selection-v1':
+                    body['generationConfig'].update(responseMimeType='application/json',
+                        responseJsonSchema=envelope['schema'])
                 if isinstance(envelope, dict) and envelope.get('contract_version') == 'coaching-v2' and isinstance(envelope.get('sources'), list):
                     from .coaching import coaching_schema
                     body['generationConfig']['responseMimeType'] = 'application/json'
@@ -109,6 +124,13 @@ class GeminiProvider:
                     body['generationConfig']['maxOutputTokens'] = 8192
                 if selected == "gemini-3.8-flash":
                     body["generationConfig"]["thinkingConfig"] = {"thinkingLevel": "low"}
+                if selected.startswith('gemma-4-'):
+                    body['generationConfig']['thinkingConfig'] = {'thinkingLevel': 'minimal'}
+                    # Gemma's constrained decoder can fail to finish large nested
+                    # schemas. The schema remains in the prompt and application
+                    # validation remains authoritative; retain JSON output mode.
+                    if isinstance(envelope,dict) and isinstance(envelope.get('schema'),dict):
+                        body['generationConfig'].pop('responseJsonSchema',None)
                 response = self.http.post("https://generativelanguage.googleapis.com/v1beta/models/" + selected + ":generateContent",
                     headers={"x-goog-api-key": key}, json=body)
                 if response.status_code >= 400:
@@ -131,6 +153,8 @@ class GeminiProvider:
                 metadata = data.get('usageMetadata') or {}
                 usage = {key: metadata.get(source) for key, source in {'input_tokens': 'promptTokenCount', 'output_tokens': 'candidatesTokenCount', 'total_tokens': 'totalTokenCount'}.items()}
                 result = {"state": "completed", "text": text, "model": selected}
+                if use_search:
+                    result['grounding'] = candidate.get('groundingMetadata') or {}
                 if metadata:
                     result['usage'] = usage
                 return result

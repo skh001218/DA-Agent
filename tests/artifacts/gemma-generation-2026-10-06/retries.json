@@ -1,0 +1,140 @@
+[
+  {
+    "level": "intermediate",
+    "request_id": "85cc8824-79aa-446c-a80f-255880ea155f",
+    "state": {
+      "error": "검색 근거에 맞는 실무 사례 후보를 구성하지 못했습니다. 요청을 보존했습니다.",
+      "phase": "case-selection-v1",
+      "states": [
+        {
+          "at": "2026-10-06T03:46:43.194447Z",
+          "status": "accepted"
+        },
+        {
+          "at": "2026-10-06T03:46:43.279255Z",
+          "phase": "case-search-v1",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-06T03:47:20.093422Z",
+          "status": "failed"
+        },
+        {
+          "at": "2026-10-06T03:50:43.594539Z",
+          "phase": "case-search-v1",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-06T03:51:19.372168Z",
+          "phase": "case-selection-v1",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-06T03:52:51.961054Z",
+          "status": "failed"
+        }
+      ],
+      "status": "failed",
+      "message": "실무에서 일어날만한 문제를 분석하고싶어",
+      "revision": 1,
+      "questions": [],
+      "attempt_id": null,
+      "created_at": "2026-10-06T03:46:43.194425Z",
+      "error_code": "research_invalid",
+      "request_id": "85cc8824-79aa-446c-a80f-255880ea155f",
+      "operation_id": "218bf760-407c-419f-8fb0-e3d0b84350a2",
+      "retry_allowed": true,
+      "failure_detail": null,
+      "planning_calls": 3,
+      "failure_history": [
+        {
+          "at": "2026-10-06T03:47:20.093409Z",
+          "error": "실제 검색 질의를 확인하지 못해 출제하지 않았습니다.",
+          "error_code": "research_unverified",
+          "failure_detail": null,
+          "planning_calls": 1
+        },
+        {
+          "at": "2026-10-06T03:52:51.961041Z",
+          "error": "검색 근거에 맞는 실무 사례 후보를 구성하지 못했습니다. 요청을 보존했습니다.",
+          "error_code": "research_invalid",
+          "failure_detail": null,
+          "planning_calls": 3
+        }
+      ],
+      "contract_version": "request-v2",
+      "generation_attempts": 0,
+      "parent_operation_id": "6237ee44-e517-48af-9745-c82f5f5768df",
+      "recommendation_change": null
+    }
+  },
+  {
+    "level": "advanced",
+    "request_id": "76e128a1-a65e-429a-9f7d-5a55d245fe4f",
+    "state": {
+      "error": "검색 근거에 맞는 실무 사례 후보를 구성하지 못했습니다. 요청을 보존했습니다.",
+      "phase": "case-selection-v1",
+      "states": [
+        {
+          "at": "2026-10-06T03:47:20.189261Z",
+          "status": "accepted"
+        },
+        {
+          "at": "2026-10-06T03:47:20.255170Z",
+          "phase": "case-search-v1",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-06T03:47:54.324120Z",
+          "status": "failed"
+        },
+        {
+          "at": "2026-10-06T03:52:52.840466Z",
+          "phase": "case-search-v1",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-06T03:53:30.694410Z",
+          "phase": "case-selection-v1",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-06T03:55:03.456797Z",
+          "status": "failed"
+        }
+      ],
+      "status": "failed",
+      "message": "실무에서 일어날만한 문제를 분석하고싶어",
+      "revision": 1,
+      "questions": [],
+      "attempt_id": null,
+      "created_at": "2026-10-06T03:47:20.189241Z",
+      "error_code": "research_invalid",
+      "request_id": "76e128a1-a65e-429a-9f7d-5a55d245fe4f",
+      "operation_id": "1a666d96-6e2e-4274-943a-248c7b798c7b",
+      "retry_allowed": true,
+      "failure_detail": null,
+      "planning_calls": 3,
+      "failure_history": [
+        {
+          "at": "2026-10-06T03:47:54.324107Z",
+          "error": "실제 검색 질의를 확인하지 못해 출제하지 않았습니다.",
+          "error_code": "research_unverified",
+          "failure_detail": null,
+          "planning_calls": 1
+        },
+        {
+          "at": "2026-10-06T03:55:03.456782Z",
+          "error": "검색 근거에 맞는 실무 사례 후보를 구성하지 못했습니다. 요청을 보존했습니다.",
+          "error_code": "research_invalid",
+          "failure_detail": null,
+          "planning_calls": 3
+        }
+      ],
+      "contract_version": "request-v2",
+      "generation_attempts": 0,
+      "parent_operation_id": "19bc76b3-20ed-40d4-87ad-989012347236",
+      "recommendation_change": null
+    }
+  }
+]

@@ -102,3 +102,11 @@ DA-Agent/
 비정상 이용자 분석과 재화 분석의 실제 출제·SQL·저장·재개·코칭/리뷰 결과는 [검증 기록](tests/reports/verification-adaptive-2026-10-05.md), 구현 범위와 한계는 [Spec 014](specs/014-request-specific-synthetic-data.md)에 있습니다. 자동 검증을 통과한 연습용 합성 데이터이며 사람의 의미적 품질 승인과 구분합니다.
 
 요청별 생성의 원본 기반 요약·이벤트 시간·날짜 집계와 제한된 자동 설계 수정, 실패 이력·재시도 처리 개선은 [Spec 015](specs/015-adaptive-generation-repair.md)를 참고하세요.
+
+2026-10-06부터 새 요청별 출제는 **공개 실무 사례 검색 → 근거 확인 → 사례 후보 비교 → 난이도별 합성 문제 구성 → PostgreSQL 검산** 순서로 진행합니다. 광범위한 요청은 최소 3개 업무 주제 후보를 비교하고 최근 5개 과제와 다른 주제를 우선합니다. 이력은 중복 회피용이며 사용자 선호 분야로 간주하지 않습니다. 명시한 분야·주제는 유지합니다.
+
+과제의 ‘참고한 실무 사례와 출처’에서 검색 인용, 링크, 검색 시각, 선정 이유를 확인할 수 있습니다. 공개 사례와 연습용 업무 설정·기간·합성 수치는 구분합니다. 실제 검색 질의와 출처에 연결된 근거가 없으면 출제하지 않습니다. Gemini Google Search 연결이 필요하며 `GEMINI_SEARCH_MODEL`을 선택적으로 지정할 수 있습니다(빈 값이면 `GEMINI_MODEL` 사용). 검색·선정 2회를 포함한 요청당 출제 호출 상한은 8회입니다.
+
+[Spec 019](specs/019-source-backed-task-generation.md)과 [검증 기록](tests/reports/verification-source-generation-2026-10-06.md)에 구현 및 실제 검색의 할당량 제한을 기록했습니다. 기존에 완료한 과제는 그대로 재개할 수 있습니다.
+
+현재 로컬 연결은 검색·출제 모두 `gemma-4-26b-a4b-it`를 사용합니다. Gemma는 최소 추론 설정과 JSON 응답 후 서버 스키마 검증을 사용합니다. 실제 검색은 성공했지만 세 난이도 출제는 설계 오류·후속 호출 429로 실패하여 안정적인 출제/품질 승인은 대기입니다. [Gemma 검증 기록](tests/reports/verification-gemma-generation-2026-10-06.md)을 참고하세요. 실행 프로젝트의 `.local/gemma-worktree.override.json`은 변경된 worktree 소스를 빌드 대상으로 지정합니다.

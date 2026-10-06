@@ -1,0 +1,40 @@
+[
+  {
+    "model": "gemma-4-26b-a4b-it",
+    "google_search": false,
+    "http_status": 200,
+    "text": "OK.",
+    "error": null,
+    "usage": {
+      "promptTokenCount": 4,
+      "candidatesTokenCount": 2,
+      "totalTokenCount": 6,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 4
+        }
+      ],
+      "serviceTier": "standard"
+    }
+  },
+  {
+    "model": "gemma-4-26b-a4b-it",
+    "google_search": true,
+    "http_status": 200,
+    "text": "OK.",
+    "error": null,
+    "usage": {
+      "promptTokenCount": 4,
+      "candidatesTokenCount": 2,
+      "totalTokenCount": 6,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 4
+        }
+      ],
+      "serviceTier": "standard"
+    }
+  }
+]
