@@ -3,13 +3,23 @@ import discord
 
 
 class ResultPDFView(discord.ui.View):
-    def __init__(self, guild_ids):
+    def __init__(self, guild_ids, *, include_detail=True):
         super().__init__(timeout=None)
         self.guild_ids = {str(g) for g in guild_ids}
+        if not include_detail:
+            self.remove_item(self.detail)
 
     @discord.ui.button(label='PDF 다운로드', style=discord.ButtonStyle.primary,
                        custom_id='da-result:pdf:v1')
     async def download(self, interaction, button):
+        await self._download(interaction, summary=True)
+
+    @discord.ui.button(label='상세 원문 PDF', style=discord.ButtonStyle.secondary,
+                       custom_id='da-result:pdf:detail:v1')
+    async def detail(self, interaction, button):
+        await self._download(interaction, summary=False)
+
+    async def _download(self, interaction, *, summary):
         await interaction.response.defer(ephemeral=True, thinking=True)
         try:
             channel = interaction.channel
@@ -26,8 +36,11 @@ class ResultPDFView(discord.ui.View):
             if message.author.id != interaction.client.user.id:
                 await interaction.followup.send('봇이 게시한 결과에서 다운로드하세요.', ephemeral=True)
                 return
-            attachment = next((a for a in message.attachments
-                               if a.filename.startswith('analysis-') and a.filename.endswith('.pdf')), None)
+            pdfs = [a for a in message.attachments
+                    if a.filename.startswith('analysis-') and a.filename.endswith('.pdf')]
+            full = next((a for a in pdfs if not a.filename.startswith('analysis-summary-')), None)
+            attachment = (next((a for a in reversed(pdfs) if a.filename.startswith('analysis-summary-')), full)
+                          if summary else full)
             if attachment is None:
                 await interaction.followup.send('PDF 첨부가 없습니다. 과제에서 /resume으로 복구하세요.', ephemeral=True)
                 return
