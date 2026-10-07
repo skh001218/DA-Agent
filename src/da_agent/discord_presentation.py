@@ -1,5 +1,67 @@
 """Concise task introduction and on-demand public reference information."""
 from datetime import date, timedelta
+from string import Template
+
+
+BASIC_PROBLEM_TEMPLATE = Template('''📌 $title
+난이도: $difficulty · 연습 유형: 데이터 분석
+
+배경
+$background
+
+🎯 해야 할 일
+$questions
+
+데이터와 조건
+$conditions
+
+📝 제출할 내용
+결론 · 저장 조회 근거 · 가능한 설명과 한계 · 대응 또는 추가 확인 제안
+
+시작하기
+/query로 데이터를 조회하세요.
+/help로 데이터 사전·평가 기준을 확인하세요.
+/report로 보고를 작성하고 후속 질문에 답한 뒤 /submit로 제출하세요.$sources''')
+
+
+def generated_task_intro(task):
+    """Render saved public facts without model calls or additional analysis hints."""
+    sections = task.get('intro_sections') or {}
+    background = [sections.get('background') or task['objective']]
+    background.extend(sections.get('context', []))
+    if sections.get('decision'):
+        background.append('판단할 업무 결정: ' + sections['decision'])
+    questions = []
+    judgments = sections.get('judgments', [])
+    for index, question in enumerate(sections.get('questions', [])):
+        questions.append(f'{index + 1}. {question}')
+        if index < len(judgments) and judgments[index]:
+            questions.extend('   ' + line for line in judgments[index].splitlines())
+    if not questions:
+        # Older saved tasks keep the full public request; valid_paths can be
+        # coaching hints in legacy tasks and must not become mandatory steps.
+        questions.append('위 업무 요청에 따라 분석하세요.')
+    period = task['period']
+    conditions = ['• 관측 기간: ' + period['description'], '• 시간 기준: ' + task['timezone']]
+    if period.get('observation_end'):
+        conditions.append('• 자료 관측 종료: ' + period['observation_end'] + ' 미만')
+    dictionary = task.get('dictionary', {})
+    for name in task['schema']:
+        unit = dictionary.get(name, {}).get('unit')
+        conditions.append('• 제공 표: ' + name + (' — 한 행: ' + unit if unit else ''))
+    conditions.extend('• 연습 조건: ' + condition for condition in sections.get('conditions', []))
+    conditions.extend('• 한계: ' + limit for limit in task.get('accepted_limits', []))
+    quality = task['quality_information']
+    conditions.extend(['• 자료 안내: ' + quality['collection'], '• 검산 범위: ' + quality['verification_scope']])
+    source = task.get('source_case') or {}
+    if source.get('version') == 'discord-synthetic-v1':
+        conditions.append('• 선택한 모델이 요청에 맞춰 만든 가상 분석 문제입니다. 실제 사례 검색은 수행하지 않았습니다.')
+    sources = ['사례 출처: ' + item.get('title', '') + ' ' + item.get('url', '')
+               for item in source.get('sources', [])]
+    difficulty = {'beginner':'초급', 'intermediate':'중급', 'advanced':'고급'}.get(task.get('difficulty'), '미상')
+    return BASIC_PROBLEM_TEMPLATE.substitute(title=task['title'], difficulty=difficulty,
+        background='\n'.join(background), questions='\n'.join(questions), conditions='\n'.join(conditions),
+        sources=('\n\n' + '\n'.join(sources)) if sources else '')
 
 
 def task_intro(document):
@@ -13,18 +75,7 @@ def task_intro(document):
             '제공된 sql 코드 블록을 복사해 작성하고 해당 메시지에 답장하세요. 최대 1,900자.',
             '/help로 데이터 사전·평가 기준·개념 도움, /submit로 최종 평가를 요청하세요.'])
     if task.get('generation_version'):
-        lines=['📌 '+task['title'],'',task['objective'],'',
-            '관측 기간: '+task['period']['description'], '시간 기준: '+task['timezone'],
-            '공개 표: '+', '.join(task['schema']),task['quality_information']['collection'],
-            '검산 범위: '+task['quality_information']['verification_scope'],
-            '/query로 자연어 조회, /help로 데이터 사전·평가 기준을 확인하세요.',
-            '/report로 보고를 작성하고 후속 질문에 답한 뒤 /submit로 제출하세요.']
-        source=task.get('source_case') or {}
-        if source.get('version') == 'discord-synthetic-v1':
-            lines.append('선택한 모델이 요청에 맞춰 만든 가상 분석 문제입니다. 실제 사례 검색은 수행하지 않았습니다.')
-        for item in source.get('sources',[]):
-            lines.append('사례 출처: '+item.get('title','')+' '+item.get('url',''))
-        return '\n'.join(lines)
+        return generated_task_intro(task)
     period = task['period']
     start = date.fromisoformat(period['start'])
     end = date.fromisoformat(period['end'])
