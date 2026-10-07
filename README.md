@@ -120,7 +120,7 @@ DA-Agent/
 ## 요청에 맞춘 데이터와 시험 과제
 ## Discord 포럼 분석 결과 PDF
 
-Discord 봇은 `/submit`으로 DA-Result 포럼에 게시할 때 분석 결과를 **3쪽 학습형 PDF**(요약·분석 근거·평가 피드백)와 **상세 원문 PDF**로 첫 카드에 첨부합니다. `PDF 다운로드` 버튼은 3쪽 결과를, `상세 원문 PDF` 버튼은 전체 보고·표·평가 근거를 개인 응답으로 제공합니다. 표시된 파일을 Discord 기본 다운로드로 저장하세요. 기존 글은 과제에서 `/resume session_id:...`을 실행하면 같은 게시글에 새 요약이 추가되며 기존 원문은 보존됩니다. SQL 연습은 기존 전체 PDF 형식을 사용합니다. [Spec 055](specs/055-discord-concise-result-pdf-template.md)에서 템플릿과 검증 범위를 확인할 수 있습니다.
+Discord 봇은 `/submit`으로 DA-Result 포럼에 게시할 때 분석 결과를 **3쪽 학습형 PDF**(요약·분석 근거·평가 피드백)와 **상세 원문 PDF**로 첫 카드에 첨부합니다. `PDF 다운로드` 버튼은 3쪽 결과를, `상세 원문 PDF` 버튼은 전체 보고·표·평가 근거를 개인 응답으로 제공합니다. 표시된 파일을 Discord 기본 다운로드로 저장하세요. 기존 글은 과제에서 `/resume session_id:...`을 실행하면 같은 게시글에 새 요약이 추가되며 기존 원문은 보존됩니다. SQL 연습은 기존 전체 PDF 형식을 사용합니다. [Spec 056](specs/056-discord-concise-result-pdf-template.md)에서 템플릿과 검증 범위를 확인할 수 있습니다.
 
 봇에 **파일 첨부** 권한이 필요합니다. `requirements-discord.txt`를 설치하고 봇을 재시작해야 합니다. Docker 이미지는 NanumGothic TTF를 설치하며 Windows에서는 맑은 고딕을 사용합니다. 다른 TTF는 `DISCORD_PDF_FONT` 환경 변수로 지정할 수 있습니다. [Spec 038](specs/038-discord-result-pdf.md)과 [실제 검증 기록](tests/reports/discord-pdf-live-verification-2026-10-06.md)에 과제 시작부터 게시·PDF 저장과 봇 재시작·재개 확인을 기록했습니다.
 

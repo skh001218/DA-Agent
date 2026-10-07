@@ -7,7 +7,7 @@
 
 ## 결과물과 구성
 
-- `template/discord-result-summary.md`: 구역별 작성 규칙·분량·원문 보존 원칙.
+- `template/discord-result-pdf-summary.md`: 구역별 작성 규칙·분량·원문 보존 원칙.
 - `template/discord-result-summary.example.json`: 실제 제출 원문과 저장 조회를 편집한 요약 입력.
 - `scripts/preview_result_pdf.py`: 입력을 3쪽 PDF로 생성. 새로운 모델 호출이나 SQL 실행 없음.
 - `output/pdf/concise-result-preview.pdf`: 최종 시안.

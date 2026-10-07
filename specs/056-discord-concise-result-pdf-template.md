@@ -9,7 +9,7 @@
 
 | 작업 | 상태 | 완료 조건 | 관련 코드 / 검증 결과 |
 | --- | --- | --- | --- |
-| 요약 템플릿 | 완료 | 핵심 결론·표·개선 행동·평가 상태의 분량 규칙 정의 | `template/discord-result-summary.md`, 예제 JSON |
+| 요약 템플릿 | 완료 | 핵심 결론·표·개선 행동·평가 상태의 분량 규칙 정의 | `template/discord-result-pdf-summary.md`, 예제 JSON |
 | 로컬 시안 생성기 | 완료 | 명시적으로 작성한 요약 입력을 한글 3쪽 PDF로 생성 | `scripts/preview_result_pdf.py`, `output/pdf/concise-result-preview.pdf` |
 | 실제 PDF 검증 | 완료 | 실제 제출 기반 수치 일치, 3쪽 유지, 모든 페이지 시각 확인 | 관련 테스트 20개 통과, `tests/reports/concise-result-template-2026-10-07.md` |
 | 운영용 발췌 생성 | 완료 | 저장된 공개 문장·수치만 사용해 3쪽 생성, 생략 범위 표시 | `discord_pdf_summary.py`, 실제 E2E 보고서 회귀 테스트 |
