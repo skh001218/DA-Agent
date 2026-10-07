@@ -35,6 +35,26 @@ def test_ci_requires_all_latest_successful_github_action_checks():
     assert not release.approved_checks(valid + [dict(valid[0], id=100, status='in_progress', conclusion=None)])
 
 
+def test_ci_reuses_existing_git_login_without_prompt_or_output(monkeypatch, capsys):
+    def credential(*args, **kwargs):
+        assert args[0] == ['git', 'credential', 'fill']
+        assert kwargs['env']['GIT_TERMINAL_PROMPT'] == '0'
+        assert kwargs['env']['GCM_INTERACTIVE'] == 'Never'
+        assert kwargs['capture_output'] is True
+        return subprocess.CompletedProcess(args[0], 0, 'password=fixture-secret\n', '')
+    monkeypatch.setattr(release.subprocess, 'run', credential)
+    assert release.ci_headers()['Authorization'] == 'Bearer fixture-secret'
+    assert capsys.readouterr().out == ''
+
+
+def test_ci_without_git_login_can_read_public_checks_but_fails_closed(monkeypatch):
+    monkeypatch.setattr(release.subprocess, 'run', lambda *a, **k: subprocess.CompletedProcess(a, 1, '', 'unavailable'))
+    assert 'Authorization' not in release.ci_headers()
+    monkeypatch.setattr(release, 'urlopen', lambda *a, **k: (_ for _ in ()).throw(OSError('API unavailable')))
+    with pytest.raises(release.DeploymentError, match='Could not verify GitHub CI'):
+        release.require_ci('skh001218/DA-Agent', 'a' * 40)
+
+
 def test_main_gate_rejects_unmerged_feature_commit(tmp_path, monkeypatch):
     def git(*args):
         return subprocess.check_output(['git', *args], cwd=tmp_path).decode().strip()

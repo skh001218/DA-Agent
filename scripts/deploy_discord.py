@@ -50,9 +50,26 @@ def approved_checks(checks):
                and latest[name]['conclusion'] == 'success' for name in REQUIRED_CHECKS)
 
 
+def ci_headers():
+    headers = {'Accept': 'application/vnd.github+json', 'User-Agent': 'DA-Agent-release'}
+    # Reuse the existing Git login in memory. Never prompt for a new login or
+    # persist/print credentials; unauthenticated public reads remain supported.
+    try:
+        result = subprocess.run(['git', 'credential', 'fill'],
+            input='protocol=https\nhost=github.com\n\n', capture_output=True,
+            text=True, encoding='utf-8', timeout=10,
+            env={**os.environ, 'GIT_TERMINAL_PROMPT': '0', 'GCM_INTERACTIVE': 'Never'})
+        credential = dict(line.split('=', 1) for line in result.stdout.splitlines() if '=' in line)
+        if result.returncode == 0 and credential.get('password'):
+            headers['Authorization'] = 'Bearer ' + credential['password']
+    except (OSError, subprocess.TimeoutExpired):
+        pass
+    return headers
+
+
 def require_ci(repository, revision):
     url = f'https://api.github.com/repos/{repository}/commits/{revision}/check-runs?per_page=100'
-    request = Request(url, headers={'Accept': 'application/vnd.github+json', 'User-Agent': 'DA-Agent-release'})
+    request = Request(url, headers=ci_headers())
     try:
         with urlopen(request, timeout=30) as response:
             checks = json.load(response)['check_runs']
