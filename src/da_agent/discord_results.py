@@ -24,6 +24,7 @@ def build_submission(document, evaluation_id=None):
         from .discord_sql_practice import submission
         return submission(document, evaluation_id)
     from .discord_transport import safe_chunks
+    from .discord_result_summary import analysis_summary
     from .discord_education import growth_observation
     entries = document.get('evaluations', [])
     entry = next((e for e in entries if e['id'] == evaluation_id), None) if evaluation_id else (entries[-1] if entries else None)
@@ -223,7 +224,7 @@ def build_submission(document, evaluation_id=None):
                     'period': {key: deepcopy(value) for key, value in task.get('period', {}).items()
                                if key in {'start', 'end', 'description'}},
                     'timezone': task.get('timezone', ''),
-                })
+                }, forum_summary=analysis_summary(task, report, result))
 
 
 def card_marker(submission, index):
