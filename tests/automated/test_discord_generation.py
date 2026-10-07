@@ -232,7 +232,7 @@ def test_gemma_fixed_recipe_retry_does_not_redesign(generated_service):
 
 def test_manual_retry_reuses_rejected_recipe_and_current_validation_feedback(generated_service):
     service, session, stage = generated_service
-    bad = bot_recipe(); bad['tables'][0]['groups'][0]['count'] = 501
+    bad = bot_recipe(); bad['tables'][0]['groups'][0]['count'] = 2001
     bad_response = {'state':'completed','text':json.dumps(bad)}
     service.provider.review.side_effect = [bad_response]*3
     failed = service.generate('owner',session['session_id'])
@@ -248,7 +248,7 @@ def test_manual_retry_reuses_rejected_recipe_and_current_validation_feedback(gen
     messages = service.provider.review.call_args_list[3].args[0]
     assert messages[-2]['role'] == 'assistant'
     assert json.loads(messages[-2]['content']) == json.loads(bad_response['text'])
-    assert 'count' in messages[-1]['content'] and '500' in messages[-1]['content']
+    assert 'count' in messages[-1]['content'] and '2000' in messages[-1]['content']
     assert service.store.calls == 5
 
 

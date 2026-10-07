@@ -42,10 +42,10 @@ def test_repeated_errors_keep_one_latest_draft_and_all_private_history(generated
 def test_repair_feedback_is_specific_and_does_not_accumulate():
     data=request('계정 활동 비교','sid','intermediate')
     base=planning_messages(data,[])
-    bad=bot_recipe(); bad['tables'][0]['groups'][0]['count']=501
-    m=repair_messages(base,json.dumps(bad),[{'location':['tables',0,'groups',0,'count'],'type':'less_than_equal','message':'count <= 500'}])
+    bad=bot_recipe(); bad['tables'][0]['groups'][0]['count']=2001
+    m=repair_messages(base,json.dumps(bad),[{'location':['tables',0,'groups',0,'count'],'type':'less_than_equal','message':'count <= 2000'}])
     feedback=json.loads(m[-1]['content'])
-    assert '500' in feedback['instruction']
+    assert '2000' in feedback['instruction']
     assert 'ratio의 명시적인 분자' not in feedback['instruction']
     assert base==planning_messages(data,[])
     assert json.loads(m[-2]['content'])==bad
@@ -99,7 +99,7 @@ def test_compact_schema_keeps_constraints_and_property_names():
     assert set(compact['properties'])==set(schema['properties'])
     assert compact['properties']['title']['minLength']==1
     assert compact['properties']['description']['maxLength']==3000
-    assert compact['$defs']['Group']['properties']['count']['maximum']==500
+    assert compact['$defs']['Group']['properties']['count']['maximum']==2000
     assert compact['required']==schema['required']
     for name in schema['$defs']:
         assert set(compact['$defs'][name].get('properties',{}))==set(schema['$defs'][name].get('properties',{}))
