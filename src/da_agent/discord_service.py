@@ -91,9 +91,9 @@ class DiscordTrainingService:
         self.store.create(document,event_id,{'session':document})
         return document
 
-    def generate(self,user_id,session_id,retry=False):
+    def generate(self,user_id,session_id,retry=False,*,progress=None):
         from .discord_generation import DiscordGeneration
-        result=DiscordGeneration(self).run(user_id,session_id,retry=retry)
+        result=DiscordGeneration(self,progress).run(user_id,session_id,retry=retry)
         if result['generation']['status']=='needs_clarification':
             with self.store.edit(user_id,session_id) as (doc,_):
                 if not doc.get('pending_question'):
@@ -349,7 +349,7 @@ class DiscordTrainingService:
         document['messages'].append(item)
         return item
 
-    def handle(self, user_id, session_id, event_id, action, text='', payload=None):
+    def handle(self, user_id, session_id, event_id, action, text='', payload=None, *, progress=None):
         # Ownership is checked before any event lookup, query, model call or state write.
         self.get_session(user_id, session_id)
         prior = self.store.claim_event(event_id, user_id, session_id, {'action': action, 'text': text, 'payload': payload or {}})
@@ -358,7 +358,7 @@ class DiscordTrainingService:
         current=self.get_session(user_id,session_id)
         if current.get('generation') and current['generation']['status']!='ready':
             try:
-                return self._generation_action(user_id,session_id,event_id,action,text,payload or {})
+                return self._generation_action(user_id,session_id,event_id,action,text,payload or {},progress=progress)
             except DomainError as exc:
                 response={'session':self.get_session(user_id,session_id),'messages':[exc.message]}
                 self.store.finish_event(event_id,response)
@@ -397,7 +397,7 @@ class DiscordTrainingService:
             self.store.finish_event(event_id, response, conn)
         return response
 
-    def _generation_action(self,owner,sid,event_id,action,text,payload):
+    def _generation_action(self,owner,sid,event_id,action,text,payload,*,progress=None):
         from .discord_generation import ACTIVE, request, status_message
         run=False
         clear_job=False
@@ -430,7 +430,8 @@ class DiscordTrainingService:
             for key in ('recipe','alignment','source_case','research'): job.pop(key,None)
             self.store.save_generation_job(owner,sid,job)
         if run:
-            doc=self.generate(owner,sid,retry=action=='retry')
+            options = {'progress': progress} if progress is not None else {}
+            doc=self.generate(owner,sid,retry=action=='retry',**options)
         if doc['generation']['status']=='needs_clarification':
             with self.store.edit(owner,sid) as (doc,_):
                 if not doc.get('pending_question'):

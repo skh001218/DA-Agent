@@ -42,11 +42,82 @@ class DiscordTransport:
         self.guild_ids = {str(value) for value in guild_ids}
         self._thread_locks = WeakValueDictionary()
         self._result_locks = WeakValueDictionary()
+        self._generation_displays = {}
         if not self.guild_ids:
             raise ValueError("Discord guild allowlist is required")
 
     async def _call(self, name, *args, **kwargs):
         return await asyncio.to_thread(getattr(self.service, name), *args, **kwargs)
+
+    async def _generation_call(self, channel, name, *args, **kwargs):
+        if not hasattr(self.gateway, 'edit_progress'):
+            return await self._call(name, *args, **kwargs)
+        from .discord_progress import progress_message, snapshot
+        loop = asyncio.get_running_loop()
+        queue = asyncio.Queue()
+        sid = args[1]
+        accepting = True
+        message = None
+        previous = None
+        latest = {'status': 'planning', 'completed_steps': 0}
+        disabled = False
+        terminal = False
+        lock = asyncio.Lock()
+
+        def notify(progress):
+            if accepting and not loop.is_closed():
+                loop.call_soon_threadsafe(queue.put_nowait, progress)
+
+        async def update(progress):
+            nonlocal message, previous, latest, disabled, terminal
+            async with lock:
+                if disabled or terminal:
+                    return
+                text = progress_message(progress)
+                if text == previous:
+                    return
+                latest = snapshot(progress)
+                terminal = progress['status'] in {'ready', 'failed', 'cancelled', 'interrupted', 'needs_clarification'}
+                try:
+                    if message is None:
+                        message = await self.gateway.send(channel, text)
+                        self._generation_displays[sid] = update
+                    else:
+                        await self.gateway.edit_progress(message, text)
+                    previous = text
+                except Exception:
+                    disabled = True  # Keep normal result/error delivery independent.
+
+        async def consume():
+            while True:
+                progress = await queue.get()
+                if progress is None:
+                    return
+                await update(progress)
+
+        consumer = asyncio.create_task(consume())
+        try:
+            return await self._call(name, *args, **kwargs, progress=notify)
+        except asyncio.CancelledError:
+            queue.put_nowait({**latest, 'status': 'interrupted'})
+            raise
+        except Exception:
+            queue.put_nowait({**latest, 'status': 'failed'})
+            raise
+        finally:
+            accepting = False
+            # Thread-safe callbacks already scheduled must enter the queue first.
+            await asyncio.sleep(0)
+            queue.put_nowait(None)
+            await consumer
+            if self._generation_displays.get(sid) is update:
+                self._generation_displays.pop(sid, None)
+
+    async def _handle(self, channel, session, *args, **kwargs):
+        generation = session.get('generation')
+        if generation and generation['status'] != 'ready' and args[3] in {'retry', 'answer', 'message'}:
+            return await self._generation_call(channel, 'handle', *args, **kwargs)
+        return await self._call('handle', *args, **kwargs)
 
     def _guild(self, event):
         if not event.guild or str(event.guild.id) not in self.guild_ids:
@@ -133,8 +204,7 @@ class DiscordTransport:
                     return
                 channel = await self._thread(event, session)
                 if session.get('generation',{}).get('status')=='accepted':
-                    await self._emit(channel,['출제 요청을 저장했습니다. 문제와 자료를 생성·검증하고 있습니다. /end로 취소할 수 있습니다.'])
-                    session=await self._call('generate',owner,session['session_id'])
+                    session=await self._generation_call(channel,'generate',owner,session['session_id'])
                 response = await self._call("resume", owner, guild, session["session_id"])
                 await self._emit(channel, response.get("messages", []), response.get('session'), response.get('tables', []))
                 await self._generation_ui(channel,event.user,response.get('session',{}))
@@ -180,7 +250,7 @@ class DiscordTransport:
             if session.get('state') == 'completed' and action not in {'submit', 'report', 'sqlrun', 'sql', 'help'}:
                 await self.gateway.reply(event, '완료된 과제입니다. /resume으로 결과·대화를 열람하거나 /history로 연습 기록을 확인하세요. 보고 수정은 /report로 시작하세요.')
                 return
-            response = await self._call("handle", owner, session["session_id"], event_id, action, text=text, payload=payload)
+            response = await self._handle(event.channel, session, owner, session["session_id"], event_id, action, text=text, payload=payload)
             await self._generation_ui(event.channel,event.user,response.get('session',{}))
             if session.get('state') == 'completed' and action in {'sql', 'help'}:
                 for message in response.get('messages', []):
@@ -219,6 +289,10 @@ class DiscordTransport:
 
     async def _generation_ui(self,channel,user,session):
         if not session.get('generation'): return
+        display = self._generation_displays.get(session.get('session_id'))
+        if display and session['generation']['status'] == 'cancelled':
+            from .discord_progress import snapshot
+            await display(snapshot(session['generation']))
         if session['generation']['status']=='ready' and hasattr(self.gateway,'rename_generated_thread'):
             await self.gateway.rename_generated_thread(channel,user,session)
         if hasattr(self.gateway,'generation_controls'):
@@ -350,7 +424,7 @@ class DiscordTransport:
                 await self._emit(message.channel, ['답장 내용을 읽을 수 없습니다. @DA-Agent 봇 계정을 선택해 멘션과 함께 답하거나 /answer를 사용하세요. 새 조회는 /query로 요청하세요.'])
             return
         try:
-            response = await self._call("handle", str(message.author.id), session["session_id"],
+            response = await self._handle(message.channel, session, str(message.author.id), session["session_id"],
                                         str(message.id), "answer", text=text,
                                         payload={'reply_to_message_id': str(reply_id) if reply_id else None})
             await self._emit(message.channel, response.get("messages", []), response.get('session'), response.get('tables', []))

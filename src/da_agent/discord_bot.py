@@ -111,6 +111,9 @@ def create_client(service, settings):
         async def send(self, channel, text):
             return await channel.send(text, allowed_mentions=discord.AllowedMentions.none())
 
+        async def edit_progress(self, message, text):
+            await message.edit(content=text, allowed_mentions=discord.AllowedMentions.none())
+
         async def generation_controls(self,channel,session):
             if session.get('generation',{}).get('status') not in {'accepted','failed','interrupted'}: return
             if session['generation'].get('error_code') in {'api_input_budget','planning_limit','api_key_missing','api_key_invalid','model_unavailable','codex_cli_unavailable','codex_login_required','codex_request_invalid'}: return
