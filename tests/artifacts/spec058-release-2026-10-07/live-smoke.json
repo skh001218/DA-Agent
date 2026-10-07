@@ -1,0 +1,218 @@
+{
+  "session_id": "02b2a7c7-8b98-45c5-ae7e-7bce44529353",
+  "thread_id": "1557314182880301086",
+  "state": "completed",
+  "difficulty": "intermediate",
+  "practice": "sql",
+  "generation": {
+    "status": "ready",
+    "phase": "adaptive-alignment",
+    "planning_calls": 2,
+    "error_code": null,
+    "error": null
+  },
+  "title": "SQL · 유입 채널별 D7 리텐션 계산",
+  "metric": {
+    "name": "d7_retention",
+    "joins": [
+      {
+        "table": "user_profiles",
+        "source_column": "user_observations.user_id"
+      }
+    ],
+    "table": "user_observations",
+    "column": null,
+    "purpose": "analysis",
+    "group_by": [
+      "user_profiles.channel"
+    ],
+    "operation": "ratio",
+    "conditions": [
+      {
+        "value": 1,
+        "column": "user_observations.d7_returned",
+        "operator": "eq"
+      }
+    ],
+    "denominator_conditions": [
+      {
+        "value": 7,
+        "column": "user_observations.observed_days",
+        "operator": "gte"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "execution_id": "820006c7-c63f-4dc8-b426-c29e9d8c112d",
+      "sql": "SELECT p.channel AS user_profiles__channel,\n       COUNT(*) AS denominator,\n       COUNT(CASE WHEN o.d7_returned = 1 THEN 1 END) AS numerator,\n       COUNT(CASE WHEN o.d7_returned = 1 THEN 1 END)::numeric\n         / NULLIF(COUNT(*), 0) AS d7_retention\nFROM user_observations AS o\nJOIN user_profiles AS p ON p.user_id = o.user_id\nWHERE o.observed_days >= 7\nGROUP BY p.channel;",
+      "result": {
+        "rows": [
+          [
+            "paid",
+            80,
+            40,
+            "0.50000000000000000000"
+          ],
+          [
+            "organic",
+            80,
+            40,
+            "0.50000000000000000000"
+          ]
+        ],
+        "error": null,
+        "status": "success",
+        "columns": [
+          {
+            "name": "user_profiles__channel",
+            "type": "text"
+          },
+          {
+            "name": "denominator",
+            "type": "int8"
+          },
+          {
+            "name": "numerator",
+            "type": "int8"
+          },
+          {
+            "name": "d7_retention",
+            "type": "numeric"
+          }
+        ],
+        "truncated": false,
+        "duration_ms": 15,
+        "executed_at": "2026-10-07T08:53:19.108340Z",
+        "execution_id": "820006c7-c63f-4dc8-b426-c29e9d8c112d",
+        "result_complete": true,
+        "total_row_count": 2,
+        "preview_row_count": 2,
+        "expires_in_seconds": 600
+      },
+      "full_result": {
+        "rows": [
+          [
+            "paid",
+            80,
+            40,
+            "0.50000000000000000000"
+          ],
+          [
+            "organic",
+            80,
+            40,
+            "0.50000000000000000000"
+          ]
+        ],
+        "error": null,
+        "status": "success",
+        "columns": [
+          {
+            "name": "user_profiles__channel",
+            "type": "text"
+          },
+          {
+            "name": "denominator",
+            "type": "int8"
+          },
+          {
+            "name": "numerator",
+            "type": "int8"
+          },
+          {
+            "name": "d7_retention",
+            "type": "numeric"
+          }
+        ],
+        "truncated": false,
+        "duration_ms": 15,
+        "executed_at": "2026-10-07T08:53:19.108340Z",
+        "execution_id": "820006c7-c63f-4dc8-b426-c29e9d8c112d",
+        "result_complete": true,
+        "total_row_count": 2,
+        "preview_row_count": 2,
+        "expires_in_seconds": 600
+      }
+    }
+  ],
+  "evaluations": [
+    {
+      "id": "d3550c5c-a317-4ef5-a53b-32fe7add22a6",
+      "result": {
+        "held": false,
+        "total": null,
+        "checks": [
+          {
+            "case": "main",
+            "matched": true,
+            "complete": true
+          },
+          {
+            "case": "variation_1",
+            "matched": true,
+            "complete": true
+          },
+          {
+            "case": "variation_2",
+            "matched": true,
+            "complete": true
+          },
+          {
+            "case": "empty",
+            "matched": true,
+            "complete": true
+          }
+        ],
+        "reason": null,
+        "criteria": [
+          {
+            "id": "syntax",
+            "name": "구문·실행",
+            "reason": "실제 읽기 전용 실행 성공",
+            "status": "충족",
+            "evidence_refs": [
+              "execution:820006c7-c63f-4dc8-b426-c29e9d8c112d"
+            ]
+          },
+          {
+            "id": "calculation",
+            "name": "계산·출력",
+            "reason": "고정 검증 데이터의 전체 결과 비교",
+            "status": "충족",
+            "evidence_refs": [
+              "execution:820006c7-c63f-4dc8-b426-c29e9d8c112d"
+            ]
+          },
+          {
+            "id": "robustness",
+            "name": "다른 표본·빈 데이터",
+            "reason": "고정 검증 데이터의 전체 결과 비교",
+            "status": "충족",
+            "evidence_refs": [
+              "execution:820006c7-c63f-4dc8-b426-c29e9d8c112d"
+            ]
+          }
+        ],
+        "practice": "sql",
+        "limitation": "준비된 검증 데이터 범위의 결과 비교이며 모든 SQL의 동치 증명·독립 역량·학습 효과 판정은 아닙니다.",
+        "help_history": [],
+        "human_review": "pending",
+        "sql_exposure": "없음 확인",
+        "recommendation": "보완 항목을 수정해 전체 SQL과 필요한 검산 설명을 새 답장으로 제출하세요. 모두 충족했다면 다른 문제에 적용하세요.",
+        "rubric_version": "sql-generated-v1"
+      }
+    }
+  ],
+  "submissions": [],
+  "discord_confirmation": {
+    "result_post_url": "https://discord.com/channels/1556888486919934064/1557314994562015275",
+    "training_thread_url": "https://discord.com/channels/1556888486919934064/1557314182880301086",
+    "resume_same_post": true,
+    "evaluation_count_after_resume": 1,
+    "planning_calls_after_resume": 2,
+    "pdf_attachment_visible": true,
+    "pdf_name": "analysis-51df511bc71304d8735e.pdf",
+    "screenshot": "discord-result.png"
+  }
+}
