@@ -7,7 +7,7 @@ import pytest
 
 from da_agent.adaptive_tasks import Recipe
 from da_agent.discord_generation import task_from_recipe
-from da_agent.discord_presentation import task_intro
+from da_agent.discord_presentation import task_intro, reference_info
 from da_agent.discord_transport import DiscordTransport, safe_chunks
 from da_agent.evaluation_registry import task_key
 from test_adaptive_tasks import bot_recipe
@@ -28,6 +28,7 @@ def test_basic_intro_preserves_public_questions_and_conditions(difficulty, label
     before = deepcopy(doc)
     profile = task_key(task)
     rendered = task_intro(doc)
+    details = reference_info(task, 'task_details')
     recipe = Recipe.model_validate(bot_recipe())
     assert f'난이도: {label}' in rendered
     for index, requirement in enumerate(recipe.business_case.requirements, 1):
@@ -36,10 +37,11 @@ def test_basic_intro_preserves_public_questions_and_conditions(difficulty, label
                   recipe.business_case.decision, *recipe.business_case.agent_assumptions,
                   *task['accepted_limits'], task['period']['description'], task['timezone'],
                   task['quality_information']['collection'], task['quality_information']['verification_scope']]:
-        assert value in rendered
-    assert task['period']['observation_end'] + ' 미만' in rendered
+        assert value in details
+    assert '9/1 하루' in rendered
+    assert '9/2 00:00 미만' in rendered
     for name, entry in task['dictionary'].items():
-        assert name + ' — 한 행: ' + entry['unit'] in rendered
+        assert name + ' — ' + entry['unit'] in rendered
     assert '가상 분석 문제' in rendered and '실제 사례 검색은 수행하지 않았습니다' in rendered
     assert 'regular_activity_rows' not in rendered and '1000' not in rendered
     assert doc == before and task_key(task) == profile
@@ -55,9 +57,10 @@ def test_explicit_judgment_rules_survive_structured_projection():
     task = task_from_recipe(recipe, public(), {}, 'independent')
     rendered = task_intro({'task':task})
     judgment = recipe.business_case.requirements[0].judgment
-    assert judgment.method in rendered
-    assert judgment.control_columns[0] in rendered
-    assert judgment.decision_rule in rendered and judgment.accepted_limit in rendered
+    details = reference_info(task, 'task_details')
+    assert '문제 원문' in rendered and judgment.method not in rendered
+    assert judgment.control_columns[0] in details
+    assert judgment.decision_rule in details and judgment.accepted_limit in details
 
 
 def test_older_generated_tasks_keep_full_request_without_turning_hints_into_steps():
@@ -79,14 +82,14 @@ def test_older_generated_tasks_keep_full_request_without_turning_hints_into_step
 
 def test_long_intro_transport_preserves_all_content_and_blocks_mentions():
     doc = sample_document()
-    doc['task']['intro_sections']['background'] = '@everyone **업무 요청** ' * 220
+    doc['task']['intro_sections']['questions'] = [f'{index}번 @everyone **업무 요청** ' * 22 for index in range(6)]
     original = task_intro(doc)
     chunks = safe_chunks(original)
     assert len(chunks) > 1 and all(len(chunk) <= 1900 for chunk in chunks)
     assert all('@everyone' not in chunk for chunk in chunks)
     assert '/submit' in chunks[-1]
     for question in doc['task']['intro_sections']['questions']:
-        assert question in ''.join(chunks)
+        assert safe_chunks(question, limit=10000)[0] in ''.join(chunks)
     sent = []
 
     async def send(channel, text):

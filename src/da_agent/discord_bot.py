@@ -301,7 +301,7 @@ def create_client(service, settings):
         await transport.command(interaction, 'report', text=text, payload={'append': append})
 
     @tree.command(name="help", description="개념·분석 방향·중간 피드백 도움 요청")
-    @app_commands.choices(kind=[app_commands.Choice(name='개념', value='concept_hint'), app_commands.Choice(name='분석 방향', value='analysis_direction_hint'), app_commands.Choice(name='중간 검토', value='intermediate_feedback'), app_commands.Choice(name='데이터 사전', value='data_dictionary'), app_commands.Choice(name='평가 기준', value='evaluation_criteria'), app_commands.Choice(name='전체 명령', value='commands'), app_commands.Choice(name='SQL 해설 공개', value='solution')])
+    @app_commands.choices(kind=[app_commands.Choice(name='문제 원문', value='task_details'), app_commands.Choice(name='개념', value='concept_hint'), app_commands.Choice(name='분석 방향', value='analysis_direction_hint'), app_commands.Choice(name='중간 검토', value='intermediate_feedback'), app_commands.Choice(name='데이터 사전', value='data_dictionary'), app_commands.Choice(name='평가 기준', value='evaluation_criteria'), app_commands.Choice(name='전체 명령', value='commands'), app_commands.Choice(name='SQL 해설 공개', value='solution')])
     async def help_command(interaction: discord.Interaction, text: str = '', kind: str = 'concept_hint'):
         await transport.command(interaction, 'help', text=text, payload={'help_type': kind})
 
