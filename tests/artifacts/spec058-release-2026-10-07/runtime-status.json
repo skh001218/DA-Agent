@@ -1,0 +1,10 @@
+{
+  "container": "da-agent-discord-bot-1",
+  "running": true,
+  "image_id": "sha256:a3c467a821c486feaa67f450daf49b79a64ef01d93228e68236f676a4379305b",
+  "revision": "08494bac4393780a4c22c1c2f31e5e6b6d49d94f",
+  "source_ref": "refs/heads/main",
+  "llm_provider": "codex_cli",
+  "daily_call_limit": 0,
+  "files_verified": 87
+}
