@@ -24,6 +24,7 @@ def build_submission(document, evaluation_id=None):
         from .discord_sql_practice import submission
         return submission(document, evaluation_id)
     from .discord_transport import safe_chunks
+    from .discord_result_summary import analysis_summary
     from .discord_education import growth_observation
     entries = document.get('evaluations', [])
     entry = next((e for e in entries if e['id'] == evaluation_id), None) if evaluation_id else (entries[-1] if entries else None)
@@ -217,7 +218,7 @@ def build_submission(document, evaluation_id=None):
                 session_id=document['session_id'], guild_id=document['guild_id'], owner_user_id=document['owner_user_id'],
                 thread_id=document.get('thread_id'), completed=document.get('state') == 'completed' and not result.get('held'),
                 post_name=name[:100], cards=cards, evidence_results=evidence_results,
-                message_sources=message_sources)
+                message_sources=message_sources, forum_summary=analysis_summary(task, report, result))
 
 
 def card_marker(submission, index):

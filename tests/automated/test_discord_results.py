@@ -212,7 +212,7 @@ def setup_forum(monkeypatch, exists=True):
     return ResultForumPublisher(client), parent, user, permissions, posts, created
 
 
-def test_short_result_including_many_sections_is_entirely_in_one_starter(monkeypatch):
+def test_many_full_sections_use_one_compact_starter_and_same_pdf(monkeypatch):
     publisher, parent, user, _, posts, _ = setup_forum(monkeypatch)
     doc = document()
     doc['reports'][0]['content'] = {'report_text': '짧은 보고서 원문'}
@@ -229,9 +229,10 @@ def test_short_result_including_many_sections_is_entirely_in_one_starter(monkeyp
     assert len(posts) == len(posts[0].messages) == 1
     embeds = posts[0].messages[0].embeds
     text = '\n'.join(e.description for e in embeds)
-    assert all(c['title'] in text or c['title'] == embeds[0].title for c in sub['cards'])
-    assert all(c['description'] in text for c in sub['cards'])
-    assert '본문 한도' not in text
+    assert len(embeds) == 1 and len(embeds[0].description) <= 900
+    assert '짧은 보고서 원문' in text and '**평가**' in text
+    assert '추가 평가 14' not in text
+    assert len(posts[0].messages[0].attachments) == 1
     assert embeds[0].fields[0].value.endswith('/source)')
     assert len(embeds) <= 10 and sum(len(e) for e in embeds) <= 6000
     assert sub == before and journal['status'] == 'published'
@@ -248,8 +249,9 @@ def test_overflow_previews_keep_evaluation_and_fit_actual_embed_budget(monkeypat
     text = '\n'.join(e.description for e in embeds)
     assert len(embeds) <= 10 and sum(len(e) for e in embeds) <= 6000
     assert all(len(e.description) <= 4096 for e in embeds)
-    assert 'PDF 다운로드' in text and 'None/100' not in text
-    assert all(c['name'] in text for c in doc['task']['rubric']['criteria'])
+    assert len(embeds) == 1 and len(embeds[0].description) <= 900
+    assert '**평가**' in text and 'None/100' not in text
+    assert len(sub['cards']) > 1
     if held: assert '평가 보류' in text
 
 
@@ -262,10 +264,7 @@ def test_inline_budget_boundary_and_extremely_many_sections(monkeypatch):
         embeds = publisher.post_embeds(sub, user)
         assert sum(len(e) for e in embeds) <= 6000
         assert all(len(e.description) <= 4096 for e in embeds)
-        if size <= 1500:
-            assert ''.join(e.description for e in embeds[1:]).endswith('가' * size)
-        if size >= 3500:
-            assert '전체 제출·평가' in embeds[1].description
+        assert len(embeds) == 1 and len(embeds[0].description) <= 900
         assert embed_bytes(embeds) <= MAX_EMBED_BYTES
     sub['cards'].extend(dict(title='평가' + str(i) + '가' * 200, description='근거' * 900) for i in range(100))
     embeds = publisher.post_embeds(sub, user)
@@ -281,8 +280,8 @@ def test_multibyte_forum_payload_is_previewed_without_altering_full_pdf_cards(mo
     embeds = publisher.post_embeds(sub, user)
     assert embed_bytes(embeds) <= MAX_EMBED_BYTES
     assert sum(len(e) for e in embeds) <= 6000
-    assert 'PDF 다운로드' in '\n'.join(e.description for e in embeds)
-    assert all(f'평가 근거 {i}' in '\n'.join(e.description for e in embeds) for i in range(10))
+    assert len(embeds) == 1 and len(embeds[0].description) <= 900
+    assert len(sub['cards']) == 11
     assert sub == before
 
 
@@ -320,8 +319,9 @@ def test_existing_forum_reused_or_created_with_matching_parent_permissions(monke
         await publisher.publish(parent, user, sub, journal, save)
         assert len(posts) == 1 and len(posts[0].messages) == count == 1
         text = '\n'.join(e.description for e in posts[0].messages[0].embeds)
-        assert '전체 제출·평가' in text and 'PDF 다운로드' in text
-        assert all(c['name'] in text for c in document()['task']['rubric']['criteria'])
+        assert '**평가**' in text and '75/100' in text
+        assert len(posts[0].messages[0].embeds) == 1
+        assert len(posts[0].messages[0].attachments) == 1
     asyncio.run(run())
     assert journal['status'] == 'published'
     assert bool(created) != exists
@@ -379,7 +379,8 @@ def test_legacy_post_is_consolidated_without_duplicate_messages_or_touching_repl
         assert len(posts[0].messages) == len(sub['cards'])
         assert post.messages[1:] == replies
         assert post.messages[0].embeds[0].footer.text == card_marker(sub, 0)
-        assert 'PDF 다운로드' in '\n'.join(e.description for e in post.messages[0].embeds)
+        assert '**평가**' in '\n'.join(e.description for e in post.messages[0].embeds)
+        assert len(post.messages[0].attachments) == 1
     asyncio.run(run())
 
 

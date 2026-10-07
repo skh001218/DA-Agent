@@ -1,0 +1,59 @@
+<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>운영용 결과 요약 검증</title>
+<style>body{background:#202126;color:#eee;font:16px/1.55 "Malgun Gothic",sans-serif;margin:24px auto;max-width:780px;padding:0 20px}h1{font-size:25px}h2{font-size:19px;margin:0 0 12px}nav{display:flex;gap:8px;flex-wrap:wrap}button{background:#34363e;color:white;border:1px solid #555861;border-radius:6px;padding:10px 16px;font:inherit;cursor:pointer}button[aria-pressed=true],a{background:#5865f2}section{background:#2b2d33;border-left:4px solid #315d91;border-radius:5px;padding:16px 20px}section div{white-space:pre-wrap;overflow-wrap:anywhere}strong{color:#acbdd8;font-size:14px}.note{color:#b7bac4;font-size:13px}a{display:inline-block;padding:10px 16px;margin-top:12px;color:white;text-decoration:none;border-radius:5px;font-size:14px}</style>
+<h1>운영용 결과 요약 검증</h1><p class="note">추가 AI 호출 없이 저장된 공개 내용에서 발췌 · 실제 Discord 게시 전 로컬 확인</p><nav><button data-case="analysis" aria-pressed="true">분석 결과</button><button data-case="sql" aria-pressed="false">SQL 결과</button><button data-case="held" aria-pressed="false">평가 보류</button><button data-case="errors" aria-pressed="false">계산 오류</button></nav><article id="analysis" ><p class="note">저장된 공개 훈련 결과 · 운영용 발췌·게시 렌더러</p><section><h2>튜토리얼 완료율 변화와 우선 대응</h2><div><strong>결론</strong>
+채널 차이는 약 12.53%p이다. · 한계: 채널 차이는 관측 사실이며 원인이나 인과 효과로 확정하지 않는다.
+
+<strong>핵심 근거</strong>
+• ads 19명 중 13명 완료(68.42%)
+• organic 21명 중 17명 완료(80.95%)
+• 전체 40명 중 30명 완료(75%). 채널 차이는 약 12.53%p이다.
+
+<strong>평가</strong>
+100/100 · 모델 평가 · 사람 검토 대기
+잘한 점: 또한 관측의 한계를 언급하며 대안 설명을 포함했습니다.
+개선점: 다음 과제에서 추가 근거와 적용 한계를 다시 확인하세요.
+
+<strong>다음 행동</strong>
+ads 사용자의 단계별 이탈 로그와 주차별 채널 구성을 먼저 점검한다.</div></section><a href="analysis.pdf" download>전체 보고서·평가 PDF 다운로드</a><p class="note">본문 348자 · 임베드 1개</p></article><article id="sql" hidden><p class="note">저장된 공개 훈련 결과 · 운영용 발췌·게시 렌더러</p><section><h2>SQL · 신규 가입자 3단계 완료율</h2><div><strong>결론</strong>
+준비된 검증 데이터에서 5/5개 항목을 충족했습니다.
+
+<strong>핵심 근거</strong>
+• 전체 실행 결과 4행
+• 1주차 ads: 4/5 = 80.00%
+• 1주차 organic: 12/15 = 80.00%
+
+<strong>평가</strong>
+5/5개 충족 · 검증 데이터 기준
+잘한 점: 실제 읽기 전용 실행 성공
+개선점: 준비된 검증 데이터 범위의 결과 비교이며 모든 SQL의 동치 증명·독립 역량·학습 효과 판정은 아닙니다.
+
+<strong>다음 행동</strong>
+현재 조건을 충족한 SQL을 다른 문제에 적용하세요.</div></section><a href="sql.pdf" download>전체 보고서·평가 PDF 다운로드</a><p class="note">본문 269자 · 임베드 1개</p></article><article id="held" hidden><p class="note">파생 경계 테스트 · 운영용 발췌·게시 렌더러</p><section><h2>튜토리얼 완료율 분석</h2><div><strong>결론</strong>
+채널 차이는 약 12.53%p이다. · 한계: 채널 차이는 관측 사실이며 원인이나 인과 효과로 확정하지 않는다.
+
+<strong>핵심 근거</strong>
+• ads 19명 중 13명 완료(68.42%)
+• organic 21명 중 17명 완료(80.95%)
+• 전체 40명 중 30명 완료(75%). 채널 차이는 약 12.53%p이다.
+
+<strong>평가</strong>
+평가 보류 · 점수 미표시
+보류 이유: 평가 응답 검증 실패 · 학습자 0점이 아닙니다.
+
+<strong>다음 행동</strong>
+보류 이유를 확인하고 해결된 뒤 다시 평가하세요.</div></section><a href="held.pdf" download>전체 보고서·평가 PDF 다운로드</a><p class="note">본문 285자 · 임베드 1개</p></article><article id="errors" hidden><p class="note">파생 경계 테스트 · 운영용 발췌·게시 렌더러</p><section><h2>튜토리얼 완료율 변화와 우선 대응</h2><div><strong>결론</strong>
+채널 차이는 약 12.53%p이다. · 한계: 채널 차이는 관측 사실이며 원인이나 인과 효과로 확정하지 않는다.
+
+<strong>핵심 근거</strong>
+• ads 19명 중 13명 완료(68.42%)
+• organic 21명 중 17명 완료(80.95%)
+• 전체 40명 중 30명 완료(75%). 채널 차이는 약 12.53%p이다.
+
+<strong>평가</strong>
+100/100 · 모델 평가 · 사람 검토 대기
+잘한 점: 또한 관측의 한계를 언급하며 대안 설명을 포함했습니다.
+개선점: 다음 과제에서 추가 근거와 적용 한계를 다시 확인하세요.
+⚠ 확인된 계산 오류 1건 · 수정 필요
+
+<strong>다음 행동</strong>
+전체 완료율을 30/40 = 75%로 수정하세요.</div></section><a href="errors.pdf" download>전체 보고서·평가 PDF 다운로드</a><p class="note">본문 359자 · 임베드 1개</p></article><script>document.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('article').forEach(p=>p.hidden=p.id!==b.dataset.case);document.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));}));</script></html>

@@ -257,6 +257,7 @@ def summary(entry):
 
 def submission(document, evaluation_id=None):
     from .discord_transport import safe_chunks
+    from .discord_result_summary import sql_summary
     entry = next((e for e in document['evaluations'] if e['id'] == evaluation_id), None) if evaluation_id else document['evaluations'][-1]
     if not entry:
         raise DomainError('result_missing', '저장된 SQL 평가가 없습니다.')
@@ -280,4 +281,4 @@ def submission(document, evaluation_id=None):
         evidence_results=[dict(execution_id=attempt['execution_id'], columns=attempt['full_result']['columns'],
             rows=attempt['full_result']['rows'], total_row_count=attempt['full_result'].get('total_row_count'),
             truncated=not attempt['full_result'].get('result_complete'), placement='report', practice='sql')],
-        message_sources=[])
+        message_sources=[], forum_summary=sql_summary(document['task'], attempt, entry['result']))
