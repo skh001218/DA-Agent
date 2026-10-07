@@ -16,12 +16,28 @@
 
 ## Git 반영
 
-검증된 구현을 codex/discord-codex-cli에서 PR로 반영할 예정이다. PR·main CI 결과는 후속 확인 후 기록한다.
+구현 [PR #36](https://github.com/skh001218/DA-Agent/pull/36)의 세 CI 검사 성공 후 main 7f91f63a377f9e2a3b3ddbeab6a68f474a2d3f17에 병합했다. 해당 main의 automated-tests·discord-db-tests·discord-image도 모두 성공했다.
 
 ## 운영 반영
 
-현재 운영은 기존 main b1505888b649e9f3457e04e17d1e6175e4c709f5·Gemma 공급자다. 새 main의 CI 성공 후 지정된 배포 명령으로 CLI를 명시적으로 선택한다. CLI 인증 preflight에 실패하면 기존 봇을 교체하지 않는다.
+지정된 deploy_discord.py --apply --provider codex_cli 명령으로 main 7f91f63을 배포했다. 상태 조회에서 refs/heads/main·codex_cli·실행 중·82개 파일 지문 일치를 확인했다. Discord ready와 별도 인증 preflight도 통과했다. 운영 이미지 ID는 sha256:8f65925fe5599e371285db3220a467ffd827170c98a60f9a8f35fde39752bd53이다. 기존 DB·네트워크·기록 볼륨은 배포 절차로 보존했다.
+
+전용 인증 저장소는 Git 밖의 C:\Users\Administrator\.codex\.local\da-agent-discord-codex다. 기존 공식 CLI의 auth.json만 복사했으며 사용자 설정·플러그인 폴더는 공유하지 않았다. 관리자·SYSTEM 권한으로 제한하고 토큰 갱신이 가능한 쓰기 마운트를 사용했다. 인증값은 코드·이미지·기록에 넣지 않았다.
 
 ## 실제 Discord 화면 확인
 
-아직 확인 전이다. 새 운영에서 /training → query/question → 보고·제출 → /resume의 핵심 흐름을 확인한다. 구현 테스트·모델 호출 성공을 운영 화면 확인으로 간주하지 않는다.
+실제 Chrome의 개발테스트 서버에서 /training을 실행했다. 첫 중급 요청 950ddc20-ac6a-40a1-b522-41a987d299ba는 세 CLI 응답을 받은 뒤 Recipe 규칙(계정키 고유성·진단 하위집합)에서 거절됐고 unsupported_scope·실패 기록·수동 재시도 안내가 보존됐다. 이 요청은 성공으로 표시하지 않았다.
+
+별도 초급 요청 cf2616e8-a763-4783-83e9-53b35496ebb8는 모바일·PC 평균 플레이 횟수 과제 생성과 자동 검증을 통과해 비공개 스레드에 표시됐다. /query의 복수 집계 요청은 한 집계 선택을 묻는 확인 질문으로 연결됐고 /answer로 평균 조회를 선택했다. 평균 조회(모바일 8.41·PC 13.55)와 계정 수(각 100)가 실제 SQL 성공 기록·Discord 표로 표시됐다. 두 실행을 /evidence로 연결하고 /question의 선택 편향 설명, /report·/followup·/submit를 확인했다. 평가 quality_validation=passed, provider_failure 없음, held=true·total=null이다. /resume은 같은 저장 피드백을 다시 표시했고 추가 모델 호출이 없었다.
+
+화면에서 발견한 공급자 고정 안내(Gemma가 설계·API 호출 한도)는 선택한 모델·모델 호출 한도 표현으로 수정한다. 이 문구 변경 후 관련 회귀는 107 passed·14 skipped다.
+
+## 실제 게시 오류와 보완 검증
+
+최종 평가의 포럼 게시가 HTTP 413·code 40005로 거절됐다. Discord 응답은 message.embeds=10150·message.components=52를 초과 필드로 제시했다. 라이브러리의 문자 수는 4679로 6000자 이내였지만 한글 직렬화 전송 크기에서 거절됐다. 빈 포럼 스레드가 남아 /resume 시 첫 메시지 조회에서 404·10008 Unknown Message가 재현됐다. 이는 CLI 응답 실패와 구분되는 결과 전송 실패다.
+
+보완: 문자 제한과 함께 직렬화 UTF-8 본문에 보수적인 6000바이트 한도를 적용한다. 크기를 초과하면 요약·항목 미리보기를 줄이고 원문은 PDF에 그대로 유지한다. 첫 메시지가 없는 후보 스레드는 제목만으로 연결하지 않는다. creating/uncertain 상태의 중복 생성 금지는 유지한다. 한글 크기·원문 보존·실패/불확실 생성 복구 테스트를 추가했으며 게시/PDF 검사 45개 통과했다. 이 보완은 별도 PR·main 배포·실제 게시/PDF 확인이 남았다.
+
+보완 후 전체 자동 검사는 687 passed·80 skipped이며 기존 httpx 관련 경고 1개다.
+
+공식 문서의 6000자 제한과 이 환경에서 관측된 전송 거절을 구분한다. 바이트 한도는 앱의 보수적인 운영 가드이며 Discord의 보편적인 공식 제한이라고 주장하지 않는다. [Discord 공식 Embed 제한](https://github.com/discord/discord-api-docs/blob/main/developers/resources/message.mdx).

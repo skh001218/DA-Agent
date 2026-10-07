@@ -122,7 +122,7 @@ class DiscordStore:
             ON CONFLICT(owner_id,day) DO UPDATE SET calls=discord_records.usage.calls+1
             WHERE discord_records.usage.calls < %s RETURNING calls''', (str(user_id), day, limit)).fetchone()
         if not row:
-            raise DomainError('usage_limit', '오늘의 API 호출 한도에 도달했습니다. 기존 기록은 계속 열람할 수 있습니다.', 429)
+            raise DomainError('usage_limit', '오늘의 모델 호출 한도에 도달했습니다. 기존 기록은 계속 열람할 수 있습니다.', 429)
         return row[0]
 
     def reserve_thread_name(self, user_id, session_id):
