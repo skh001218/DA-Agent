@@ -2,9 +2,9 @@
 
 ## 구현 진행도
 
-- 진행도: 3/5개 완료 (60%)
+- 진행도: 5/5개 완료 (100%)
 - 마지막 갱신일: 2026-10-07
-- 남은 작업: Git·운영 반영, 실제 Discord 확인
+- 남은 작업: 없음
 - 차단 사유: 없음
 
 | 작업 | 상태 | 완료 조건 | 관련 코드 / 검증 결과 |
@@ -12,8 +12,8 @@
 | 저장 결과 요약 연결 | 완료 | 분석·SQL의 저장 제출/평가에서 한 카드의 결론·근거·평가·다음 행동을 작성 | discord_result_summary.py, discord_results.py, discord_sql_practice.py, discord_forum.py; 실제 저장된 분석·SQL의 발췌 확인 |
 | 회귀 검증 | 완료 | 보류·계산 오류·PDF 원문·같은 게시글 갱신·한글/멘션 예산·기존 흐름 검증 | 관련 58개 통과; 전체 회귀 786 passed / 83 skipped |
 | 실제 게시 코드 화면 확인 | 완료 | 운영용 renderer의 분석·SQL·보류·오류 화면과 전체 PDF 확인 | 자동 발췌 렌더러 4개 사례 화면·새로고침·SQL PDF 다운로드 확인. spec055-compact-results-2026-10-07 |
-| Git·운영 반영 | 미착수 | PR CI → main 병합 → main CI → --apply → --status 성공 | — |
-| 실제 Discord 확인 | 미착수 | 기존 결과가 같은 글에서 요약 한 카드로 갱신되고 PDF 다운로드, 평가 재호출·추가 답글 없음 | — |
+| Git·운영 반영 | 완료 | PR CI → main 병합 → main CI → --apply → --status 성공 | PR #53과 main 3f90051의 세 CI 성공; 지정 main 배포 verified; 실행 소스 85개 일치 |
+| 실제 Discord 확인 | 완료 | 기존 결과가 같은 글에서 요약 한 카드로 갱신되고 PDF 다운로드, 평가 재호출·추가 답글 없음 | 분석 /resume: 같은 글에 1개·366자; 신규 SQL 제출/재개: 1개·232자. 분석 9페이지·SQL 3페이지 PDF 버튼 다운로드와 SHA 일치, 평가·보고서·호출 기록·첨부 보존; live-analysis-checks.json / live-sql-checks.json |
 
 ## 목적과 범위
 

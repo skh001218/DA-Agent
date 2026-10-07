@@ -1,0 +1,19 @@
+{
+  "post_id": "1557286559252877375",
+  "before_embeds": 2,
+  "after_embeds": 1,
+  "body_chars": 366,
+  "invariants": {
+    "post_id": true,
+    "evaluation_hash": true,
+    "report_hash": true,
+    "telemetry_hash": true,
+    "usage_hash": true,
+    "reply_ids": true,
+    "attachment_id": true,
+    "pdf_sha256": true
+  },
+  "download_matched": true,
+  "pdf_pages": 9,
+  "button_delivered_ephemeral_pdf": true
+}

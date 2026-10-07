@@ -1,0 +1,21 @@
+{
+  "post_id": "1557296006608191529",
+  "embed_count": 1,
+  "body_chars": 232,
+  "pdf_button_download": true,
+  "pdf_pages": 3,
+  "pdf_bytes": 101787,
+  "session_id": "da8aaf4b-a38f-4be2-b666-868f058c830a",
+  "invariants": {
+    "post_id": true,
+    "starter_id": true,
+    "evaluation_count": true,
+    "evaluation_hash": true,
+    "report_hash": true,
+    "telemetry_hash": true,
+    "usage_hash": true,
+    "attachment_id": true,
+    "pdf_sha256": true,
+    "reply_ids": true
+  }
+}
