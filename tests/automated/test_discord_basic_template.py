@@ -38,6 +38,11 @@ def test_basic_intro_preserves_public_questions_and_conditions(difficulty, label
                   *task['accepted_limits'], task['period']['description'], task['timezone'],
                   task['quality_information']['collection'], task['quality_information']['verification_scope']]:
         assert value in details
+    assert '• 한계:' not in rendered and '• 검산 범위:' not in rendered
+    for limit in task['accepted_limits']:
+        assert limit not in rendered
+        assert limit in reference_info(task, 'evaluation_criteria')
+    assert task['quality_information']['verification_scope'] not in rendered
     assert '9/1 하루' in rendered
     assert '9/2 00:00 미만' in rendered
     for name, entry in task['dictionary'].items():
