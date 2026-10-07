@@ -41,68 +41,22 @@ class ResultForumPublisher:
         return embed
 
     def post_embeds(self, submission, user):
-        """Keep the result in the starter, with the complete PDF for overflow.
-
-        Packing section text avoids the ten-embed limit for submissions with
-        many short cards. Include author, footer and fields in the 6,000 budget.
-        """
+        """One compact starter card; the existing PDF retains every section."""
         import discord
+        from .discord_result_summary import legacy_summary, render_summary
 
-        summary = self.embed(submission, 0, user)
-        title = '제출 내용과 평가'
-
-        def pack(sections):
-            body = '\n\n'.join(sections)
-            descriptions = []
-            while body:
-                end = min(len(body), 4000)
-                if end < len(body):
-                    boundary = body.rfind('\n', 0, end)
-                    if boundary > 0:
-                        end = boundary + 1
-                descriptions.append(body[:end])
-                body = body[end:]
-            return [summary, *[discord.Embed(title=title, description=part,
-                colour=summary.colour) for part in descriptions]]
-
-        cards = submission['cards'][1:]
-        sections = [f"**{card['title']}**\n{card['description']}" for card in cards]
-        embeds = pack(sections)
-        def fits(value):
-            return (len(value) <= 10 and sum(len(e) for e in value) <= 6000
-                    and embed_bytes(value) <= MAX_EMBED_BYTES)
-
-        if fits(embeds):
-            return embeds
-
-        notice = ('**전체 제출·평가는 이 포스트의 PDF에 있습니다.**\n'
-                  'Discord 본문 한도를 초과해 아래에는 각 항목의 일부를 표시합니다. '
-                  '전체 원문과 평가 근거·개선 행동은 PDF 다운로드로 확인하세요.')
-        # Report chunks share a preview; every assessment section remains
-        # eligible even when a long report would otherwise consume the budget.
-        previews, seen = [], set()
-        for card in cards:
-            key = card.get('pdf_kind') or card['title'].split(' · 이어서 ')[0]
-            if key not in seen:
-                previews.append(card)
-                seen.add(key)
-        summary.description = clip_bytes(summary.description, 1800)
-        budget = max(0, MAX_EMBED_BYTES - embed_bytes(pack([notice])) - 64)
-        per_section = min(1500, budget // max(len(previews), 1))
-        while True:
-            sections = [notice]
-            for card in previews:
-                heading = f"**{card['title']}**\n"
-                available = per_section - len(heading.encode('utf-8')) - 8
-                if available < 8:
-                    break  # Complete sections remain in the PDF.
-                sections.append(heading + clip_bytes(card['description'], available))
-            embeds = pack(sections)
-            if fits(embeds):
-                return embeds
-            if not per_section:
-                raise DomainError('result_embed_size', '결과 요약이 게시 한도를 초과했습니다. 평가 기록은 보존했습니다. 운영자가 요약 구성을 확인한 뒤 /resume하세요.')
-            per_section = max(0, per_section - 16)
+        summary = submission.get('forum_summary') or legacy_summary(submission)
+        title, description = render_summary(summary)
+        embed = discord.Embed(title=title, description=description,
+            colour=0xe3a23b if summary.get('held') or summary.get('warning') else 0x315d91)
+        embed.set_author(name=user.display_name[:80])
+        embed.set_footer(text=card_marker(submission, 0))
+        source = submission['cards'][0].get('source_url')
+        if source:
+            embed.add_field(name='원래 과제 공간', value='[과제 스레드 열기](' + source + ')', inline=False)
+        if len(embed) > 6000 or embed_bytes([embed]) > MAX_EMBED_BYTES:
+            raise DomainError('result_embed_size', '결과 요약이 게시 한도를 초과했습니다. 평가 기록은 보존했습니다. /resume으로 다시 시도하세요.')
+        return [embed]
 
     async def forum(self, parent, user):
         import discord

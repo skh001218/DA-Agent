@@ -1,0 +1,21 @@
+{
+  "downloads": [
+    {
+      "case": "analysis",
+      "download_matches": true,
+      "pages": 5
+    },
+    {
+      "case": "sql",
+      "download_matches": true,
+      "pages": 3
+    }
+  ],
+  "case_switching": "passed",
+  "held_score_hidden": "passed",
+  "arithmetic_warning_visible": "passed",
+  "comparison_expand": "passed",
+  "reload": "passed",
+  "live_discord_publication": "not performed",
+  "automatic_summarization": "not tested"
+}

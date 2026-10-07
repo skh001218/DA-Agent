@@ -1,0 +1,52 @@
+[
+  {
+    "case": "analysis",
+    "source": "tests/artifacts/discord-pdf-citations-2026-10-06/public-submission.json",
+    "original_body_chars": 2251,
+    "summary_body_chars": 301,
+    "reduction_percent": 86.6,
+    "embed_bytes": 847,
+    "pdf_pages": 5,
+    "full_cards_preserved": true,
+    "input_unchanged": true
+  },
+  {
+    "case": "sql",
+    "source": "tests/artifacts/spec035-2026-10-06/public-submission.json",
+    "original_body_chars": 1816,
+    "summary_body_chars": 356,
+    "reduction_percent": 80.4,
+    "embed_bytes": 935,
+    "pdf_pages": 3,
+    "full_cards_preserved": true,
+    "input_unchanged": true
+  },
+  {
+    "case": "held",
+    "source": "tests/artifacts/discord-pdf-citations-2026-10-06/public-submission.json",
+    "original_body_chars": 1081,
+    "summary_body_chars": 247,
+    "reduction_percent": 77.2,
+    "embed_bytes": 728,
+    "pdf_pages": 3,
+    "full_cards_preserved": true,
+    "input_unchanged": true
+  },
+  {
+    "case": "errors",
+    "source": "tests/artifacts/discord-pdf-citations-2026-10-06/public-submission.json",
+    "original_body_chars": 2112,
+    "summary_body_chars": 347,
+    "reduction_percent": 83.6,
+    "embed_bytes": 931,
+    "pdf_pages": 5,
+    "full_cards_preserved": true,
+    "input_unchanged": true
+  },
+  {
+    "case": "long_korean_mentions",
+    "summary_body_chars": 869,
+    "embed_bytes": 2357,
+    "passed": true
+  }
+]

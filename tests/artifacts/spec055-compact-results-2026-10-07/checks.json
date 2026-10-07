@@ -1,0 +1,26 @@
+[
+  {
+    "case": "analysis",
+    "chars": 348,
+    "bytes": 1075,
+    "input_unchanged": true
+  },
+  {
+    "case": "sql",
+    "chars": 269,
+    "bytes": 751,
+    "input_unchanged": true
+  },
+  {
+    "case": "held",
+    "chars": 285,
+    "bytes": 918,
+    "input_unchanged": true
+  },
+  {
+    "case": "errors",
+    "chars": 359,
+    "bytes": 1087,
+    "input_unchanged": true
+  }
+]
