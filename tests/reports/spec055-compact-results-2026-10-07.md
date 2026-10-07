@@ -39,4 +39,6 @@
 
 운영 증거: [분석 화면](../artifacts/spec055-compact-results-2026-10-07/discord-analysis.png), [분석 PDF 버튼](../artifacts/spec055-compact-results-2026-10-07/discord-pdf-button.png), [SQL 화면](../artifacts/spec055-compact-results-2026-10-07/discord-sql.png), [SQL PDF 버튼](../artifacts/spec055-compact-results-2026-10-07/discord-sql-pdf-button.png), [분석 불변성 검사](../artifacts/spec055-compact-results-2026-10-07/live-analysis-checks.json), [SQL 재개 검사](../artifacts/spec055-compact-results-2026-10-07/live-sql-checks.json).
 
-검증 기록의 후속 문서 반영은 실행 코드를 바꾸지 않는다. 운영 버전은 위에서 실제 검증한 `3f90051` main 커밋이다. 기존 포럼 전체를 일괄 변경하지 않으며 새 제출과 기존 결과의 `/resume`에 적용한다. 비공개 구성과 원시 운영 스냅샷은 `.local`에 두고 Git에 추가하지 않는다.
+검증 기록의 후속 문서 반영은 실행 코드를 바꾸지 않는다. 이번 기능의 배포·화면 검증 기준은 위의 `3f90051` main 커밋이다. 이후 동시에 진행된 Spec056 PDF 개선이 main에 병합·배포됐으며, 최종 상태 조회에서 두 기능을 포함한 `2fccc0bb851f4d4e3385dacd5277752d7b6c12fd`, running=true, files_verified=86을 확인했다. Spec056의 3쪽 학습형 PDF 검증은 해당 작업의 보고서에서 관리한다.
+
+기존 포럼 전체를 일괄 변경하지 않으며 새 제출과 기존 결과의 `/resume`에 적용한다. 비공개 구성과 원시 운영 스냅샷은 `.local`에 두고 Git에 추가하지 않는다.
