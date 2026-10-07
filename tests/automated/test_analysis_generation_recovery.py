@@ -495,5 +495,3 @@ def test_alignment_input_omits_inactive_null_fields_losslessly():
     assert compact['metrics']==recipe.model_dump(exclude_none=True)['metrics']
     gen=compact['tables'][0]['columns'][0]['generator']
     assert gen['kind']=='id' and 'source_column' not in gen and 'minimum' not in gen
-
-
