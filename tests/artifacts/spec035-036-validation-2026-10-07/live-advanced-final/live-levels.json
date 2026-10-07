@@ -1,0 +1,78 @@
+[
+  {
+    "request": "반복 행동 계정의 활동량과 정상 반례를 비교하고 싶어",
+    "difficulty": "advanced",
+    "help_level": "independent",
+    "session_id": "80029e6d-c775-41bf-aa1d-598736fd55b1",
+    "state": "failed",
+    "generation": {
+      "error": "모델 호출에 실패해 출제를 보류했습니다. 호출 제한·모델 연결을 확인하고 수동 재시도하세요.",
+      "phase": "adaptive-design",
+      "states": [
+        {
+          "at": "2026-10-07T01:04:54.852602+00:00",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-07T01:04:55.645530+00:00",
+          "status": "planning"
+        },
+        {
+          "status": "failed",
+          "at": "2026-10-07T01:04:55.758592+00:00"
+        }
+      ],
+      "status": "failed",
+      "message": "반복 행동 계정의 활동량과 정상 반례를 비교하고 싶어",
+      "version": "discord-generation-v1",
+      "retry_at": "2026-10-07T01:06:00.631937+00:00",
+      "revision": 0,
+      "questions": [],
+      "run_token": "81535878-2e09-4158-87b3-c7b8c03f40c0",
+      "error_code": "api_rate_limited",
+      "request_id": "80029e6d-c775-41bf-aa1d-598736fd55b1",
+      "planning_calls": 1,
+      "original_message": "반복 행동 계정의 활동량과 정상 반례를 비교하고 싶어",
+      "requested_difficulty": "advanced",
+      "requested_help_level": "independent"
+    },
+    "public_task": {
+      "title": "문제 생성 요청",
+      "difficulty": "advanced"
+    },
+    "calls": [
+      {
+        "phase": "adaptive-design",
+        "state": "error",
+        "model": "gemma-4-26b-a4b-it",
+        "reason": "api_rate_limited",
+        "usage": null,
+        "provider_diagnostic": {
+          "stage": "http",
+          "timeout": false,
+          "request_id": "107ab150-de3c-4e79-9133-e05aed186cf0",
+          "http_status": 429
+        },
+        "quota_diagnostic": [
+          {
+            "retry_delay": "4s"
+          },
+          {
+            "quotaId": "GenerateContentInputTokensPerModelPerMinute-FreeTier",
+            "quotaValue": "16000",
+            "quotaMetric": "generativelanguage.googleapis.com/generate_content_free_tier_input_token_count"
+          }
+        ]
+      }
+    ],
+    "validation_failures": [
+      {
+        "at": "2026-10-07T01:04:55.699776+00:00",
+        "code": "api_rate_limited",
+        "issues": []
+      }
+    ],
+    "rejected_design_issues": [],
+    "alignment_errors": []
+  }
+]

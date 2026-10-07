@@ -1,0 +1,7 @@
+{
+  "cosmetic_advanced_accepted": false,
+  "intermediate_metric_structure": "avg:True:1",
+  "advanced_metric_structure": "avg:True:1",
+  "analysis_without_practice_error": "practice",
+  "unsupported_sql_error": "unsupported_scope"
+}

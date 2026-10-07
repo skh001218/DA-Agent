@@ -1,0 +1,44 @@
+{
+  "owner": "spec035-8c1c79109dec415c8fb012fa24a8bb73",
+  "session_id": "c21ab343-4e5e-4e9f-9a25-aed4c4a3d3f9",
+  "state": "failed",
+  "generation": {
+    "error": "고정 데이터 설계의 표본·시간·집계 조건을 충족하지 못했습니다.",
+    "phase": "adaptive-design",
+    "states": [
+      {
+        "at": "2026-10-07T00:40:05.573631+00:00",
+        "status": "planning"
+      },
+      {
+        "at": "2026-10-07T00:40:54.823156+00:00",
+        "status": "planning"
+      },
+      {
+        "at": "2026-10-07T00:42:03.003368+00:00",
+        "status": "planning"
+      },
+      {
+        "status": "failed",
+        "at": "2026-10-07T00:43:08.198288+00:00"
+      }
+    ],
+    "status": "failed",
+    "message": "튜토리얼 완료율 하락을 분석하고 싶어",
+    "version": "discord-generation-v1",
+    "revision": 0,
+    "questions": [],
+    "run_token": "4476de5b-a00f-4793-88aa-3f542dc7ece5",
+    "error_code": "plan_invalid",
+    "request_id": "c21ab343-4e5e-4e9f-9a25-aed4c4a3d3f9",
+    "planning_calls": 3,
+    "original_message": "튜토리얼 완료율 하락을 분석하고 싶어",
+    "requested_difficulty": "beginner",
+    "requested_help_level": null
+  },
+  "task": {
+    "title": "문제 생성 요청",
+    "difficulty": "beginner"
+  },
+  "live_model": true
+}
