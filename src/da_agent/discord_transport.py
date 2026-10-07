@@ -150,6 +150,9 @@ class DiscordTransport:
                         await self._call('bind_sql_prompt', session['owner_user_id'], session['session_id'], table_ids,
                                          session['sql_attempts'][-1]['execution_id'])
                 except Exception:
+                    if table.get('download'):
+                        for chunk in safe_chunks('전체 데이터 파일 첨부를 전송하지 못했습니다. 조회 근거는 저장돼 있으며 아래 표는 미리보기입니다.'):
+                            await self.gateway.send(channel, chunk)
                     for chunk in safe_chunks('표 첨부를 표시하지 못해 행별 목록으로 제공합니다.\n' + table_fallback(table)):
                         sent = await self.gateway.send(channel, chunk)
                         if getattr(sent, 'id', None) and sql_result:

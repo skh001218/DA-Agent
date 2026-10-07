@@ -6,7 +6,7 @@ Spec048은 기존 구독을 이용하는 Discord 전용 Codex CLI 공급자를 �
 
 ## 현재 운영 배포 — 2026-10-07
 
-현재 운영 이미지는 `da-agent-discord-bot:generation-integrated-20261007`입니다. 출제 수정과 호출 차감을 기존 countTokens·pending 예약·SQL·고급 판단 검사에 통합했습니다. [현재 통합·배포 보고와 재시작 명령](../tests/reports/generation-integration-2026-10-07.md)을 사용합니다. 이전 배포에서 필수 text/practice 선택, 중급 SQL 답장·오류 수정·최종 평가·결과 포럼/PDF·재시작 재개, 고급 완료 분석 연결·검산 설명 평가를 확인한 기록은 [이전 검증](../tests/reports/verification-spec035-036-completion-2026-10-07.md)에 보존합니다. 실제 모델의 분석 전체 흐름과 품질 검증은 별도이며, 아래 과거 경로·미배포 내용은 당시 기록입니다.
+현재 운영은 main 커밋 배포 절차로 갱신합니다. 2026-10-07 Spec053 자연어 조회를 main `5062612894ee0457eec57c5fdcdfe5406a9f3b41` 기준으로 배포하고, 원래 스레드의 200행 조회·전체 JSON 다운로드·자료 부족 안내를 확인했습니다. 현재 실행 커밋은 `python scripts/deploy_discord.py --status`로 확인합니다. [자연어 조회 운영 검증](../tests/reports/spec053-natural-language-public-query-2026-10-07.md)을 참고하세요. 출제 수정과 호출 차감을 기존 countTokens·pending 예약·SQL·고급 판단 검사에 통합했습니다. [현재 통합·배포 보고와 재시작 명령](../tests/reports/generation-integration-2026-10-07.md)을 사용합니다. 이전 배포에서 필수 text/practice 선택, 중급 SQL 답장·오류 수정·최종 평가·결과 포럼/PDF·재시작 재개, 고급 완료 분석 연결·검산 설명 평가를 확인한 기록은 [이전 검증](../tests/reports/verification-spec035-036-completion-2026-10-07.md)에 보존합니다. 실제 모델의 분석 전체 흐름과 품질 검증은 별도이며, 아래 과거 경로·미배포 내용은 당시 기록입니다.
 
 ## SQL 연습 추가 — 현재 체크아웃 구현
 
@@ -60,7 +60,9 @@ Spec045 코드는 고정 topic을 필수 text·difficulty로 바꾸고 기존 ad
 
 JSON 형식 오류 진단이 필요하면 `DISCORD_JSON_DIAGNOSTICS_DIR`을 서버 전용 `.local/diagnostics` 경로로 설정한다. 기본값은 원문 기록 비활성화다. 실패 시 응답 원문·파싱 대상·오류 행/열·HTTP 상태·종료 사유·생성 설정을 기록하며 API 키·요청 메시지는 저장하지 않는다. 원문에는 비공개 과제 설계가 포함될 수 있으므로 Discord 안내나 공개 검증 자료에 붙이지 않는다. 기록 폴더는 Git에서 제외하고 진단 종료 후 운영 설정을 해제한다. 검증 스크립트는 `--diagnostics-dir .local/diagnostics/<실행명>`으로 같은 기능을 켤 수 있다.
 
-준비 중 /answer는 확인 질문 답변, /end는 취소, /resume은 상태 복원이다. 실패·중단·시작 전 요청은 재시도 버튼 또는 /retry로 수동 실행한다. 생성 자료 조회는 count/distinct/sum/avg/min/max/ratio, 공개 FK의 many-to-one 조인, 최대3차원 그룹 집계를 지원한다. ratio는 행 기반 비율이며 고유 사용자 분모의 복합 비율이나 표준편차·분산은 근사 실행하지 않는다.
+준비 중 /answer는 확인 질문 답변, /end는 취소, /resume은 상태 복원이다. 실패·중단·시작 전 요청은 재시도 버튼 또는 /retry로 수동 실행한다.
+
+생성 분석 과제의 `/query`는 자연어로 현재 공개 표의 원본 행·컬럼 선택·필터·정렬·비교·여러 집계를 요청할 수 있다. 예: `shop_profiles의 전체 데이터를 조회해줘`, `사전 숙련도가 beginner인 계정만 보여줘`, `상점 구성별 초기·후기 평균 소모량을 비교해줘`. 해석한 SELECT를 현재 공개 표·컬럼으로 검증하고 기존 읽기 전용 실행기에서 실행한다. 없는 자료는 빠진 항목과 조회 가능한 표·컬럼을 안내하고, 모호한 조건은 확인한다. 결과는 첫 10행 표와 수집한 전체 데이터 JSON 첨부로 제공하며 수집 제한에 도달하면 불완전함을 표시한다. 기존 구조화된 집계 조건과 고정 튜토리얼 지표 계약도 유지한다. 이 확장은 운영에 반영했으며 실제 Discord 스레드에서 전체 조회·JSON 다운로드와 자료 부족 안내까지 확인했다. [Spec053](../specs/053-discord-natural-language-public-query.md), [검증 보고](../tests/reports/spec053-natural-language-public-query-2026-10-07.md)를 참고한다.
 
 생성 자료와 공개 정의는 출제 전에 검산·고정한다. 임의 자연어 보고 수치 전체의 자동 검산은 미지원이며 미검산을 감점으로 만들지 않는다. 해당 정의·난이도·자료·모델·코드의 반복 평가 품질 검증이 없으면 점수는 보류하고 피드백을 제공한다.
 

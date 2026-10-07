@@ -1,5 +1,7 @@
 # DA-Agent — 데이터 분석 훈련 에이전트
 
+생성 분석 과제의 자연어 조회를 원본 행·조건·정렬·비교·여러 집계로 확장했습니다. 없는 자료는 필요한 항목을 구체적으로 안내하고, 결과는 표 미리보기와 전체 수집 데이터 JSON 첨부로 제공합니다. 운영 봇에 배포했고, 기존 Discord 스레드에서 200행 전체 조회·JSON 다운로드 일치·자료 부족 안내를 확인했습니다. [Spec053](specs/053-discord-natural-language-public-query.md), [검증 결과](tests/reports/spec053-natural-language-public-query-2026-10-07.md)를 참고하세요.
+
 ## Discord 텍스트 요청 기반 출제
 
 `/training`은 필수 `text`와 SQL/분석 `practice` 선택을 사용합니다. adaptive 설계·합성 자료·DB 검산·조회·교육·점수 보류와 요청 복구를 연결했습니다. [Spec045](specs/045-discord-text-task-generation.md)은 6/7개 완료(85.71%)이며, 실제 모델의 표본·집계 조건과 의미 적합성 오류로 분석 전체 흐름 검증이 남아 있습니다. 현재 운영 코드·명령·옵션 표시를 확인했고 추가 검증에서 발견한 입력·난이도 계약·호출 예산 문제를 수정·배포했습니다. [최신 구현·검증 보고](tests/reports/verification-spec035-036-completion-2026-10-07.md), [실행 설정](docs/discord-setup.md)을 참고하세요.

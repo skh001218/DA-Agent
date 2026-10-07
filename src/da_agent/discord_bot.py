@@ -137,6 +137,11 @@ def create_client(service, settings):
                                           description=table_fallback(table)[:1024])
                 sent = await channel.send(file=attachment, allowed_mentions=discord.AllowedMentions.none())
                 message_ids.append(str(sent.id))
+            if table.get('download'):
+                download = table['download']
+                sent = await channel.send(file=discord.File(BytesIO(download['content'].encode('utf-8')),
+                    filename=download['filename']), allowed_mentions=discord.AllowedMentions.none())
+                message_ids.append(str(sent.id))
             return message_ids
 
         @property
