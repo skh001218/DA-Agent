@@ -1,27 +1,82 @@
 # PRD-v2 구현 Spec 안내
 
+## 전체 Spec 번호 목록 (2026-10-07)
+
+활성 Spec 46개를 001~046으로 정리했다. 기존 번호 순서를 기준으로 하고 같은 번호 안에서는 선행 기능과 후속 변경 관계를 반영했다. 새 Spec은 047부터 사용한다.
+
+동일한 ChatGPT 로그인 문서 사본은 [보관 폴더](archive/chatgpt-login-probe-duplicate.md)에 원문 그대로 보존했다. 과거 검증 보고·실행 파일의 번호는 실행 당시 식별자이며, [이전 번호 대응표](../tests/reports/spec-numbering-2026-10-07.md)로 현재 문서를 찾는다. 구현 진행도는 각 Spec 상단을 따른다.
+
+| 번호 | 문서 |
+| --- | --- |
+| 001 | [문제 1 — 신규 유저 이탈률 계산](001-new-user-churn.md) |
+| 002 | [학습 데이터 스키마와 문제 패키지 관리](002-training-data-packages.md) |
+| 003 | [기능 간 입출력·훈련 기록 저장](003-training-record-contracts.md) |
+| 004 | [로컬 기술 구성 — Docker와 Gemini API](004-local-technology-stack.md) |
+| 005 | [평가 품질 검증 화면과 파일럿 기록](005-quality-and-pilot.md) |
+| 006 | [요청 기반 훈련 공통 계약](006-request-training-contracts.md) |
+| 007 | [요청 기반 훈련 첫 사용 구간](007-request-training-first-use.md) |
+| 008 | [자연어 요청·다양한 과제 설계·신규 접속 데이터 생성과 검증](008-request-task-generation-and-validation.md) |
+| 009 | [학습 상태·품질 판정·운영 로그 확장](009-learning-state-and-quality-logs.md) |
+| 010 | [누적 맥락 코칭·상황별 힌트·과제별 평가](010-adaptive-coaching-and-evaluation.md) |
+| 011 | [요청 기반 학습 화면·품질 운영 화면 확장](011-request-training-and-operator-ui.md) |
+| 012 | [학습 이력 기반 다음 훈련 추천·반복 방지](012-history-based-training-recommendations.md) |
+| 013 | [PRD-v2 통합·장애·품질·파일럿 검증](013-prd-v2-integration-and-release-validation.md) |
+| 014 | [요청별 과제·합성 데이터 설계와 자동 검증](014-request-specific-synthetic-data.md) |
+| 015 | [요청별 데이터 생성의 일관성과 실패 복구](015-adaptive-generation-repair.md) |
+| 016 | [훈련 준비 화면 단순화](016-simple-training-request.md) |
+| 017 | [SQL 작업 탭과 문법 강조 편집기](017-sql-workspace-and-editor.md) |
+| 018 | [짧은 요청의 업무 상황 구체화와 분석 과제 품질](018-business-task-quality.md) |
+| 019 | [ChatGPT 로그인 연결 확인](019-chatgpt-login-probe.md) |
+| 020 | [검색 근거 기반의 다양한 실무 문제 출제](020-source-backed-task-generation.md) |
+| 021 | [Discord 사용자별 기록과 진행 제어](021-discord-owned-records-and-lifecycle.md) |
+| 022 | [Discord 자연어 조회와 의미가 고정된 SQL](022-discord-natural-language-query.md) |
+| 023 | [Discord 대표 과제·도움·분석 평가·성장 관측](023-discord-education-evaluation.md) |
+| 024 | [Discord 독립 봇·비공개 전송](024-discord-bot-transport.md) |
+| 025 | [Discord MVP 통합과 출시 검증](025-discord-integration-and-release-validation.md) |
+| 026 | [Discord Gemma 연결과 실제 API 검증](026-discord-gemma-api-validation.md) |
+| 027 | [Discord 서버 연결과 독립 실행](027-discord-isolated-runtime.md) |
+| 028 | [지원 주제 선택과 정확한 실패 안내](028-discord-supported-topic-guidance.md) |
+| 029 | [비공개 스레드 참가자 조회와 복구](029-discord-thread-members-access.md) |
+| 030 | [Discord 과제 안내 가독성](030-discord-readable-task.md) |
+| 031 | [Discord 과제 첫 안내 간소화](031-discord-concise-task-intro.md) |
+| 032 | [Discord 조회 대화와 오류 복구](032-discord-conversation-recovery.md) |
+| 033 | [Discord 질문에 답장·멘션으로 답변](033-discord-question-replies.md) |
+| 034 | [Discord 데이터 사전·조회 결과 표](034-discord-table-images.md) |
+| 035 | [Discord 명령어별 사용법 조회](035-discord-command-tips.md) |
+| 036 | [Discord 중단 요청의 대기 표시 정리](036-discord-interrupted-response.md) |
+| 037 | [Discord 제출 결과 포럼](037-discord-results-forum.md) |
+| 038 | [포럼 분석 결과 PDF 다운로드](038-discord-result-pdf.md) |
+| 039 | [게임 데이터 분석 용어 질문](039-discord-term-question.md) |
+| 040 | [Discord 평가 검산과 수정 재제출](040-discord-evaluation-verification-and-resubmission.md) |
+| 041 | [완료 결과 게시 후 과제 스레드 삭제](041-discord-completed-thread-cleanup.md) |
+| 042 | [평가 신뢰성 검증·제한된 수정 공통 흐름](042-trustworthy-evaluation-quality-loop.md) |
+| 043 | [완료 과제 보관과 짧은 제목](043-discord-archived-training-and-titles.md) |
+| 044 | [Discord 필수 연습 유형과 SQL 직접 풀이](044-discord-sql-practice-mode.md) |
+| 045 | [Discord 텍스트 요청 기반 문제 생성](045-discord-text-task-generation.md) |
+| 046 | [Discord 출제 설계·수정 요청과 입력 예산 개선](046-discord-bounded-generation-repair.md) |
+
 ## Discord 텍스트 요청 기반 출제 계획 (2026-10-06)
 
-[Spec036](036-discord-text-task-generation.md)은 `/training`의 고정 topic을 필수 text로 바꾸고 기존 adaptive 출제를 연결한다. 코드·임시 DB·고정 모델 응답의 검증용 화면 흐름을 확인해 5/7개 완료(71.43%)다. 실제 Gemma 출제가 429·HTTP500으로 실패했으며 운영 반영·명령 동기화·실제 Discord 전달은 남아 있다. 실행 봇은 기존 topic 형식을 유지한다. [검증 보고](../tests/reports/verification-spec036-2026-10-06.md)를 따른다.
+[Spec045](045-discord-text-task-generation.md)은 `/training`의 고정 topic을 필수 text로 바꾸고 기존 adaptive 출제를 연결한다. 코드·임시 DB·고정 모델 응답의 검증용 화면 흐름을 확인해 5/7개 완료(71.43%)다. 실제 Gemma 출제가 429·HTTP500으로 실패했으며 운영 반영·명령 동기화·실제 Discord 전달은 남아 있다. 실행 봇은 기존 topic 형식을 유지한다. [검증 보고](../tests/reports/verification-spec036-2026-10-06.md)를 따른다.
 
 ## Discord 연습 유형과 SQL 직접 풀이 (2026-10-06)
 
-[Spec035](035-discord-sql-practice-mode.md)은 `/training`의 필수 SQL/분석 선택, 제공된 `sql` 코드 블록을 채운 답장 제출, 실제 SQL 실행·오류 수정·재제출, SQL 전용 평가와 완료 분석 연결을 다룬다. 코드·격리 DB 검증을 마쳤으며 4/8개 완료(50%)다. 실제 Discord 선택·입력·결과 화면은 검증 대기이며 실행 봇에는 아직 반영하지 않았다. [검증 기록](../tests/reports/verification-spec035-2026-10-06.md).
+[Spec044](044-discord-sql-practice-mode.md)은 `/training`의 필수 SQL/분석 선택, 제공된 `sql` 코드 블록을 채운 답장 제출, 실제 SQL 실행·오류 수정·재제출, SQL 전용 평가와 완료 분석 연결을 다룬다. 코드·격리 DB 검증을 마쳤으며 4/8개 완료(50%)다. 실제 Discord 선택·입력·결과 화면은 검증 대기이며 실행 봇에는 아직 반영하지 않았다. [검증 기록](../tests/reports/verification-spec035-2026-10-06.md).
 
 ## 평가 신뢰성 공통 검증 흐름 (2026-10-06)
 
-[Spec033](033-trustworthy-evaluation-quality-loop.md)은 공개 기준·인용·중복 감점 검증, 평가당 최대1회 수정, 여섯 표본×세 번 반복 검사, 유형 검증 미통과 시 점수 보류·분석 피드백, 수정 오류 비교와 새 지표 등록 절차를 다룬다. 코드/자동·화면 검증과 실제 모델 품질 승인은 구분한다. 최신 진행도는 Spec 상단과 [검증 보고](../tests/reports/verification-spec033-2026-10-06.md)를 따른다.
+[Spec042](042-trustworthy-evaluation-quality-loop.md)은 공개 기준·인용·중복 감점 검증, 평가당 최대1회 수정, 여섯 표본×세 번 반복 검사, 유형 검증 미통과 시 점수 보류·분석 피드백, 수정 오류 비교와 새 지표 등록 절차를 다룬다. 코드/자동·화면 검증과 실제 모델 품질 승인은 구분한다. 최신 진행도는 Spec 상단과 [검증 보고](../tests/reports/verification-spec033-2026-10-06.md)를 따른다.
 
 ## Discord 평가 검산·수정 재제출 (2026-10-06)
 
-[Spec032](032-discord-evaluation-verification-and-resubmission.md)은 저장 실행 기반의 제한된 계산 검산과 완료 보고의 새 버전·후속 답변·재평가, 이전 제출 비교를 다룬다. 정의한 코드·격리 서비스·카드 미리보기 검증은5/5개 완료다. 실행 봇 배포·실제 Discord 전달과 모델 의미 평가 품질 보완은 남아 있다. [검증 기록](../tests/reports/verification-spec032-2026-10-06.md)에 성공과 API 보류를 구분했다.
+[Spec040](040-discord-evaluation-verification-and-resubmission.md)은 저장 실행 기반의 제한된 계산 검산과 완료 보고의 새 버전·후속 답변·재평가, 이전 제출 비교를 다룬다. 정의한 코드·격리 서비스·카드 미리보기 검증은5/5개 완료다. 실행 봇 배포·실제 Discord 전달과 모델 의미 평가 품질 보완은 남아 있다. [검증 기록](../tests/reports/verification-spec032-2026-10-06.md)에 성공과 API 보류를 구분했다.
 ## Discord 분석 결과 PDF (2026-10-06)
 
-[Spec 031 — 포럼 분석 결과 PDF](031-discord-result-pdf.md)는 게시 시 PDF 생성·첨부와 다운로드 버튼, 표준 보고서 템플릿, 조회 결과 시각화 및 평가 인용 참조를 다룬다. 현재7/7개 완료(100%)이며 상세 검증 범위와 운영 반영 상태는 Spec 상단과 실제 확인 결과를 따른다.
+[Spec 038 — 포럼 분석 결과 PDF](038-discord-result-pdf.md)는 게시 시 PDF 생성·첨부와 다운로드 버튼, 표준 보고서 템플릿, 조회 결과 시각화 및 평가 인용 참조를 다룬다. 현재7/7개 완료(100%)이며 상세 검증 범위와 운영 반영 상태는 Spec 상단과 실제 확인 결과를 따른다.
 
 ## Discord 제출 결과 포럼 (2026-10-06)
 
-[Spec 031 — Discord 제출 결과 포럼](031-discord-results-forum.md)은 `/submit` 결과를 DA-Result 포럼에 정리하는 기능을 다룬다. 기존 채널 재사용·없는 채널 생성, 카드 구성, 공개 범위·권한, 게시 실패·재시도, 완료 기준을 정의한다. 현재 3/4개 완료(75%)이며 실제 서버의 봇 자동 생성 성공 검증은 채널 관리 권한 부족으로 차단되어 있다. 상세 상태와 근거는 Spec 상단을 따른다.
+[Spec 037 — Discord 제출 결과 포럼](037-discord-results-forum.md)은 `/submit` 결과를 DA-Result 포럼에 정리하는 기능을 다룬다. 기존 채널 재사용·없는 채널 생성, 카드 구성, 공개 범위·권한, 게시 실패·재시도, 완료 기준을 정의한다. 현재 3/4개 완료(75%)이며 실제 서버의 봇 자동 생성 성공 검증은 채널 관리 권한 부족으로 차단되어 있다. 상세 상태와 근거는 Spec 상단을 따른다.
 
 ## PRD-v2 기준
 

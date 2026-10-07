@@ -1,4 +1,4 @@
-# Spec036 Discord 텍스트 요청 기반 문제 생성
+# Spec 045 — Discord 텍스트 요청 기반 문제 생성
 
 `/training`의 고정 `topic` 선택을 필수 `text` 요청으로 바꾼다. 사용자가 연습하고 싶은 내용과 난이도를 입력하면 기존 요청 기반 출제 기능으로 문제·합성 데이터·검산 기준을 준비하고, 검증된 결과를 Discord 훈련에 연결한다.
 
@@ -36,7 +36,7 @@
 
 ## main SQL 연습 통합
 
-PR #27의 SQL 연습 Spec035와 번호가 겹쳐 이 문서를 Spec036으로 변경했다. 과거 검증 artifacts의 spec035 경로는 실행 당시 기록으로 보존한다. `/training`의 필수 practice 선택, `/sqlrun`, 실행 ID를 지정하는 `/submit`, SQL 코드 블록 답장과 기존 SQL 검산을 유지한다. 분석 연습의 text는 Gemma 출제로 연결한다. SQL 연습은 현재 튜토리얼 신규 가입자 3단계 완료율만 지원하며 다른 text 또는 생성 분석의 SQL 연결은 명시적으로 거부한다. 기존 튜토리얼 완료 분석의 SQL 연결은 유지한다.
+PR #27 통합 당시 SQL 연습 문서와 번호가 겹쳐 이 문서를 Spec035에서 Spec036으로 변경했다. 2026-10-07 전체 번호 정리 후 SQL 연습은 Spec044, 텍스트 출제는 Spec045이다. 과거 검증 artifacts의 spec035 경로는 실행 당시 기록으로 보존한다. `/training`의 필수 practice 선택, `/sqlrun`, 실행 ID를 지정하는 `/submit`, SQL 코드 블록 답장과 기존 SQL 검산을 유지한다. 분석 연습의 text는 Gemma 출제로 연결한다. SQL 연습은 현재 튜토리얼 신규 가입자 3단계 완료율만 지원하며 다른 text 또는 생성 분석의 SQL 연결은 명시적으로 거부한다. 기존 튜토리얼 완료 분석의 SQL 연결은 유지한다.
 
 ## 명령 입력 계약
 
@@ -63,7 +63,7 @@ PR #27의 SQL 연습 Spec035와 번호가 겹쳐 이 문서를 Spec036으로 변
 | adaptive_tasks·task_quality | 선언형 설계·합성 자료·업무 맥락·난이도 검사 | Discord 문제·사전·질문·평가 계약으로 변환 |
 | package_validation | 검증·접근 권한·공개·실패 접근 회수 | Discord 전용 DB·스키마·공개 자료 경계 |
 | 기존 Discord 서비스 | 소유권·비공개 스레드·조회·보고·재개·결과 게시 | 고정 tutorial 필드 대신 생성 과제의 공개 계약 |
-| Spec033 평가 흐름 | 검산기 등록·반복 검사·제한된 수정·점수 보류 | 생성 과제의 정의·난이도·데이터·모델·코드 버전 연결 |
+| Spec042 평가 흐름 | 검산기 등록·반복 검사·제한된 수정·점수 보류 | 생성 과제의 정의·난이도·데이터·모델·코드 버전 연결 |
 
 고정 접속 주제로 제한된 `task_planner` 경로를 자유 주제 생성기로 사용하지 않는다. `data_mode=adaptive`를 사용하고 필요한 store·catalog·provider·작업 실행을 Discord 환경에 연결한다. 웹 기록·DB·전역 최근 과제 목록을 그대로 공유하지 않으며 최근 과제 참고는 요청 소유자 범위로 제한한다.
 
@@ -102,8 +102,8 @@ accepted·planning·needs_clarification·preparing_data·validating·ready·fail
 - 자연어 조회는 생성 데이터 사전을 사용한다. tutorial 전용 표·지표·SQL·검산기를 강제 적용하지 않는다. SQL·결과·저장 근거를 현재 세션과 실행 ID에 연결한다.
 - 추가 질문은 고정 업무 조건에서 답하고 없는 사실을 만들지 않는다. 코칭·보고·후속 질문·평가는 공개 요구사항과 저장 근거를 사용한다.
 - 공개 정의·완료 조건·평가 항목·배점·인정할 한계를 출제 전에 고정한다. 생성 결과와 Discord 교육 계약 사이의 변환을 검사하고 평가 중 기준을 추가하지 않는다.
-- 지표·검산기는 Spec033 등록 계약을 사용한다. 지원 밖 지표는 미검산으로 남기며 학습자 오류로 판정하지 않는다. 점수 프로필에는 실제 평가 입력의 공개 정의 전체·난이도·자료·모델·평가 코드가 반영되어야 한다.
-- 유형 검증 미등록·미통과·불일치이면 확정 총점을 보류하고 분석 피드백·사유를 제공한다. 생성 검증 통과를 평가 품질 승인으로 간주하지 않는다. Spec033의 프로필 지문 누락도 새 과제 승인 재사용 전에 보완한다.
+- 지표·검산기는 Spec042 등록 계약을 사용한다. 지원 밖 지표는 미검산으로 남기며 학습자 오류로 판정하지 않는다. 점수 프로필에는 실제 평가 입력의 공개 정의 전체·난이도·자료·모델·평가 코드가 반영되어야 한다.
+- 유형 검증 미등록·미통과·불일치이면 확정 총점을 보류하고 분석 피드백·사유를 제공한다. 생성 검증 통과를 평가 품질 승인으로 간주하지 않는다. Spec042의 프로필 지문 누락도 새 과제 승인 재사용 전에 보완한다.
 
 ## 실패 처리와 기존 기록 호환
 
@@ -128,9 +128,9 @@ accepted·planning·needs_clarification·preparing_data·validating·ready·fail
 
 ## 관련 문서
 
-- [Spec014 합성 자료](014-request-specific-synthetic-data.md), [Spec015 생성 수정](015-adaptive-generation-repair.md), [Spec018 업무 과제 품질](018-business-task-quality.md), [Spec019 사례 출제](019-source-backed-task-generation.md)
-- [Spec022 전송](022-discord-bot-transport.md), [Spec026 기존 주제 제한](026-discord-supported-topic-guidance.md), [Spec030 명령 안내](030-discord-command-tips.md)
-- [Spec033 평가 신뢰성](033-trustworthy-evaluation-quality-loop.md), [Discord PRD](../docs/prd-discord.md)
+- [Spec014 합성 자료](014-request-specific-synthetic-data.md), [Spec015 생성 수정](015-adaptive-generation-repair.md), [Spec018 업무 과제 품질](018-business-task-quality.md), [Spec020 사례 출제](020-source-backed-task-generation.md)
+- [Spec024 전송](024-discord-bot-transport.md), [Spec028 기존 주제 제한](028-discord-supported-topic-guidance.md), [Spec035 명령 안내](035-discord-command-tips.md)
+- [Spec042 평가 신뢰성](042-trustworthy-evaluation-quality-loop.md), [Discord PRD](../docs/prd-discord.md)
 
 ## API 오류 재테스트 결과 (2026-10-06)
 
@@ -151,4 +151,4 @@ accepted·planning·needs_clarification·preparing_data·validating·ready·fail
 
 ## 출제 수정 요청 개선 통합 (2026-10-07)
 
-최신 실패 초안과 현재 오류만 전달하고, 관계·행 단위에 맞는 수정 지시 및 전송 직전 사용량 차감을 추가했다. 기존 countTokens, pending 예약, SQL·고급 judgment 검사와 통합한다. 로컬 회귀 완료와 실제 운영 확인은 구분하며, 후속 검증은 [Spec037](037-discord-bounded-generation-repair.md)에 기록한다.
+최신 실패 초안과 현재 오류만 전달하고, 관계·행 단위에 맞는 수정 지시 및 전송 직전 사용량 차감을 추가했다. 기존 countTokens, pending 예약, SQL·고급 judgment 검사와 통합한다. 로컬 회귀 완료와 실제 운영 확인은 구분하며, 후속 검증은 [Spec046](046-discord-bounded-generation-repair.md)에 기록한다.

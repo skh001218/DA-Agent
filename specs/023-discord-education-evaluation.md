@@ -1,4 +1,4 @@
-# Discord 대표 과제·도움·분석 평가·성장 관측
+# Spec 023 — Discord 대표 과제·도움·분석 평가·성장 관측
 
 ## 구현 진행도
 
@@ -12,7 +12,7 @@
 | 공개 대표 과제·격리 데이터 계약 | 완료 | 세 테이블, 중복·대안 비교 가능한 고정 데이터, 웹 DB 적재 차단, 읽기 전용 확인 | discord_education.py representative_task/prepare_dataset; 격리 PostgreSQL SELECT 가능·DELETE 차단 검증 |
 | 도움·후속 질문·무보조 관측 계약 | 완료 | 도움 유형·전 답변 기록, 공통 기준·난이도·새 과제·사람 비교 승인 조건 확인 | help_response/stakeholder_followup/growth_observation; 자동 표본 통과 |
 | 분석 모드 평가 연결·계약 검증 | 완료 | 공개 5개 항목 배점 100, 근거 ID 검증, 공급자 실패 보류, SQL/문장 길이 점수 없음 | evaluate_report; Gemini review 인터페이스 가짜 공급자 표본 통과 |
-| 교육 타당성·실제 Discord 검증 | 검증 대기 | 실제 모델·사람 표본 검토 및 Discord 도움·보고·수정·성장 흐름 확인 | Spec024의 실 Gemma 표본 완료. 실제 한 계정 시작·조회·중단/재개 화면도 확인(verification-discord-prd-live-2026-10-06.md). 사람 검토·성장 비교 승인 pending 유지 |
+| 교육 타당성·실제 Discord 검증 | 검증 대기 | 실제 모델·사람 표본 검토 및 Discord 도움·보고·수정·성장 흐름 확인 | Spec026의 실 Gemma 표본 완료. 실제 한 계정 시작·조회·중단/재개 화면도 확인(verification-discord-prd-live-2026-10-06.md). 사람 검토·성장 비교 승인 pending 유지 |
 
 ## 범위와 웹 분리
 
@@ -56,4 +56,4 @@ PRD 2.1, 4.1, 6.5, 6.6, 12.1에 대응한다. 새 모듈만 추가하며 기존 
 
 ## Gemma 후속 검증 (2026-10-06)
 
-Gemma4 실제 API의 조회·평가·보류·가설 수정·문체 표본과 영구 기록/최종 제출을 확인했다. Spec024 및 verification-discord-gemma-2026-10-06.md에 초기 실패와 보완/재검증을 기록했다. 실제 Discord 서버와 사람의 교육·성장 비교 승인은 계속 대기한다.
+Gemma4 실제 API의 조회·평가·보류·가설 수정·문체 표본과 영구 기록/최종 제출을 확인했다. Spec026 및 verification-discord-gemma-2026-10-06.md에 초기 실패와 보완/재검증을 기록했다. 실제 Discord 서버와 사람의 교육·성장 비교 승인은 계속 대기한다.

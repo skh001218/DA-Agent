@@ -1,4 +1,4 @@
-# Discord 명령어별 사용법 조회
+# Spec 035 — Discord 명령어별 사용법 조회
 
 ## 구현 진행도
 
@@ -14,7 +14,7 @@
 
 ## 요구사항
 
-- 후속 [Spec036](036-discord-text-task-generation.md) 구현 시 `/tip training`의 topic 선택 안내를 필수 text 요청·난이도·도움 수준 예시로 변경한다. 현재 도움말 구현과 새 형식의 검증 진행도는 구분한다.
+- 후속 [Spec045](045-discord-text-task-generation.md) 구현 시 `/tip training`의 topic 선택 안내를 필수 text 요청·난이도·도움 수준 예시로 변경한다. 현재 도움말 구현과 새 형식의 검증 진행도는 구분한다.
 
 Discord 슬래시 명령 /tip의 command 옵션으로 설명을 조회한다. command 생략 시 지원 목록을 보여준다. 과제 생성 없이 허용된 서버에서 사용 가능하며 본인에게만 응답한다. 분석 상태 및 기록을 변경하거나 모델을 호출하지 않는다. 기존 /help commands와 초기 안내에서 발견할 수 있다.
 

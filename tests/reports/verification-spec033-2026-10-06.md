@@ -3,7 +3,7 @@
 - 검증일: 2026-10-06 (Asia/Seoul)
 - 목적: 사용자가 선택한 엄격한 점수 보류 정책을 구현하고 중복 감점·근거 충돌을 재검증하며, 새 문제 유형에도 같은 절차를 적용한다.
 - 범위: 현재 worktree의 Discord 평가 코드·격리 PostgreSQL 서비스·결과 카드 미리보기. 실행 봇 배포와 실제 Discord 전송은 수행하지 않았다.
-- 명세: [Spec033](../../specs/033-trustworthy-evaluation-quality-loop.md), [유형 추가 절차](../../docs/evaluation-quality-workflow.md).
+- 명세: [Spec042](../../specs/042-trustworthy-evaluation-quality-loop.md), [유형 추가 절차](../../docs/evaluation-quality-workflow.md).
 
 ## 구현과 자동 검증
 

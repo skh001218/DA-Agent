@@ -2,23 +2,23 @@
 
 ## Discord 텍스트 요청 기반 출제
 
-`/training`은 필수 `text`와 SQL/분석 `practice` 선택을 사용합니다. adaptive 설계·합성 자료·DB 검산·조회·교육·점수 보류와 요청 복구를 연결했습니다. [Spec036](specs/036-discord-text-task-generation.md)은 6/7개 완료(85.71%)이며, 실제 모델의 표본·집계 조건과 의미 적합성 오류로 분석 전체 흐름 검증이 남아 있습니다. 현재 운영 코드·명령·옵션 표시를 확인했고 추가 검증에서 발견한 입력·난이도 계약·호출 예산 문제를 수정·배포했습니다. [최신 구현·검증 보고](tests/reports/verification-spec035-036-completion-2026-10-07.md), [실행 설정](docs/discord-setup.md)을 참고하세요.
+`/training`은 필수 `text`와 SQL/분석 `practice` 선택을 사용합니다. adaptive 설계·합성 자료·DB 검산·조회·교육·점수 보류와 요청 복구를 연결했습니다. [Spec045](specs/045-discord-text-task-generation.md)은 6/7개 완료(85.71%)이며, 실제 모델의 표본·집계 조건과 의미 적합성 오류로 분석 전체 흐름 검증이 남아 있습니다. 현재 운영 코드·명령·옵션 표시를 확인했고 추가 검증에서 발견한 입력·난이도 계약·호출 예산 문제를 수정·배포했습니다. [최신 구현·검증 보고](tests/reports/verification-spec035-036-completion-2026-10-07.md), [실행 설정](docs/discord-setup.md)을 참고하세요.
 
 ## 평가 신뢰성·점수 보류 정책
 
 새 제출은 공개 기준·인용·중복 감점을 검사하고 필요한 경우 평가당 최대1회 수정·재검사합니다. 해결되지 않으면 점수를 보류하고 원인과 재시도 방법을 제공합니다. **개별 검사에 통과해도 해당 문제 정의·난이도·모델·평가 코드의 반복 품질 검사가 미통과면 점수를 보류하고 분석 피드백만 제공합니다.** 같은 보류 보고의 재제출은 검증 상태가 바뀌기 전까지 추가 모델 호출 없이 저장 피드백을 보여줍니다.
 
-수정 보고는 이전 기록을 보존하고 같은 근거·정책에서 해결·지속·새 오류·미확인을 비교합니다. 합계/비율 검산 등록과 고정 표본 반복 검사 절차를 마련했으며, 새 주제 출제 기능 자체는 후속 범위입니다. 현재 자동 회귀225개와 카드 화면을 확인했습니다. 실제 모델의 품질 승인과 운영 봇 배포는 완료로 표시하지 않습니다. [Spec033](specs/033-trustworthy-evaluation-quality-loop.md), [검증 보고](tests/reports/verification-spec033-2026-10-06.md), [유형 추가 절차](docs/evaluation-quality-workflow.md)를 참고하세요.
+수정 보고는 이전 기록을 보존하고 같은 근거·정책에서 해결·지속·새 오류·미확인을 비교합니다. 합계/비율 검산 등록과 고정 표본 반복 검사 절차를 마련했으며, 새 주제 출제 기능 자체는 후속 범위입니다. 현재 자동 회귀225개와 카드 화면을 확인했습니다. 실제 모델의 품질 승인과 운영 봇 배포는 완료로 표시하지 않습니다. [Spec042](specs/042-trustworthy-evaluation-quality-loop.md), [검증 보고](tests/reports/verification-spec033-2026-10-06.md), [유형 추가 절차](docs/evaluation-quality-workflow.md)를 참고하세요.
 
 ## Discord SQL 직접 풀이
 
-SQL 연습은 코드 블록 답장 → 실제 읽기 전용 실행 → 오류 수정 → `/submit` 항목별 평가로 진행합니다. 튜토리얼 신규 가입자 3단계 완료율의 세 난이도를 지원합니다. 실제 Discord에서 중급 전체 흐름·재시작 재개, 고급 분석 연결·검산 설명의 실제 모델 검토·결과 포럼/PDF 게시를 확인했습니다. [Spec035](specs/035-discord-sql-practice-mode.md)는 7/8개 완료(87.5%)이며 교육적 타당성의 사람 검토를 기다립니다.
+SQL 연습은 코드 블록 답장 → 실제 읽기 전용 실행 → 오류 수정 → `/submit` 항목별 평가로 진행합니다. 튜토리얼 신규 가입자 3단계 완료율의 세 난이도를 지원합니다. 실제 Discord에서 중급 전체 흐름·재시작 재개, 고급 분석 연결·검산 설명의 실제 모델 검토·결과 포럼/PDF 게시를 확인했습니다. [Spec044](specs/044-discord-sql-practice-mode.md)는 7/8개 완료(87.5%)이며 교육적 타당성의 사람 검토를 기다립니다.
 
 ## Discord 평가 검산과 수정·재제출
 
 완료한 보고도 `/report text:수정한 분석…`으로 새 버전을 저장하고, 새 후속 질문에 `/followup` 또는 `/answer`로 답한 뒤 `/submit`할 수 있습니다. 이전 보고·평가는 보존하며 새 결과에는 항목별 변화와 검산 오류 수 비교를 표시합니다. 동일 완료 제출은 저장된 평가를 재사용합니다.
 
-현재 검산은 선택한 완전한 튜토리얼 완료율 조회의 두 주 수치·증감·1주차 비율 고정 구성 주장에 적용합니다. 확인된 계산 오류는 근거 해석 점수를 제한하며 API 실패는 보류로 남깁니다. 모든 자연어·지표의 정확성을 보장하지 않습니다. [Spec032](specs/032-discord-evaluation-verification-and-resubmission.md)와 [검증 기록](tests/reports/verification-spec032-2026-10-06.md)을 참고하세요. 현재 작업 폴더의 코드 구현이며 별도 PDF 이미지를 쓰는 실행 봇에는 아직 배포하지 않았습니다.
+현재 검산은 선택한 완전한 튜토리얼 완료율 조회의 두 주 수치·증감·1주차 비율 고정 구성 주장에 적용합니다. 확인된 계산 오류는 근거 해석 점수를 제한하며 API 실패는 보류로 남깁니다. 모든 자연어·지표의 정확성을 보장하지 않습니다. [Spec040](specs/040-discord-evaluation-verification-and-resubmission.md)와 [검증 기록](tests/reports/verification-spec032-2026-10-06.md)을 참고하세요. 현재 작업 폴더의 코드 구현이며 별도 PDF 이미지를 쓰는 실행 봇에는 아직 배포하지 않았습니다.
 
 ## 프로젝트 소개
 
@@ -120,7 +120,7 @@ DA-Agent/
 
 Discord 봇은 `/submit`으로 DA-Result 포럼에 게시할 때 공개 분석 보고서와 평가를 PDF로 생성해 첫 카드에 첨부합니다. `PDF 다운로드` 버튼을 누른 뒤 개인 응답에 표시된 파일을 Discord 기본 다운로드로 저장하세요. 포럼 회원은 첫 카드 첨부에서도 직접 저장할 수 있습니다. 기존 글에 PDF가 없으면 과제에서 `/submit` 또는 `/resume`으로 보완합니다.
 
-봇에 **파일 첨부** 권한이 필요합니다. `requirements-discord.txt`를 설치하고 봇을 재시작해야 합니다. Docker 이미지는 NanumGothic TTF를 설치하며 Windows에서는 맑은 고딕을 사용합니다. 다른 TTF는 `DISCORD_PDF_FONT` 환경 변수로 지정할 수 있습니다. [Spec 031](specs/031-discord-result-pdf.md)과 [실제 검증 기록](tests/reports/discord-pdf-live-verification-2026-10-06.md)에 과제 시작부터 게시·PDF 저장과 봇 재시작·재개 확인을 기록했습니다.
+봇에 **파일 첨부** 권한이 필요합니다. `requirements-discord.txt`를 설치하고 봇을 재시작해야 합니다. Docker 이미지는 NanumGothic TTF를 설치하며 Windows에서는 맑은 고딕을 사용합니다. 다른 TTF는 `DISCORD_PDF_FONT` 환경 변수로 지정할 수 있습니다. [Spec 038](specs/038-discord-result-pdf.md)과 [실제 검증 기록](tests/reports/discord-pdf-live-verification-2026-10-06.md)에 과제 시작부터 게시·PDF 저장과 봇 재시작·재개 확인을 기록했습니다.
 
 ## 요청에 맞춘 데이터와 시험 과제
 
@@ -134,7 +134,7 @@ Discord 봇은 `/submit`으로 DA-Result 포럼에 게시할 때 공개 분석 �
 
 과제의 ‘참고한 실무 사례와 출처’에서 검색 인용, 링크, 검색 시각, 선정 이유를 확인할 수 있습니다. 공개 사례와 연습용 업무 설정·기간·합성 수치는 구분합니다. 실제 검색 질의와 출처에 연결된 근거가 없으면 출제하지 않습니다. Gemini Google Search 연결이 필요하며 `GEMINI_SEARCH_MODEL`을 선택적으로 지정할 수 있습니다(빈 값이면 `GEMINI_MODEL` 사용). 검색·선정 2회를 포함한 요청당 출제 호출 상한은 8회입니다.
 
-[Spec 019](specs/019-source-backed-task-generation.md)과 [검증 기록](tests/reports/verification-source-generation-2026-10-06.md)에 구현 및 실제 검색의 할당량 제한을 기록했습니다. 기존에 완료한 과제는 그대로 재개할 수 있습니다.
+[Spec 020](specs/020-source-backed-task-generation.md)과 [검증 기록](tests/reports/verification-source-generation-2026-10-06.md)에 구현 및 실제 검색의 할당량 제한을 기록했습니다. 기존에 완료한 과제는 그대로 재개할 수 있습니다.
 
 현재 로컬 연결은 검색·출제 모두 `gemma-4-26b-a4b-it`를 사용합니다. Gemma는 최소 추론 설정과 JSON 응답 후 서버 스키마 검증을 사용합니다. 실제 검색은 성공했지만 세 난이도 출제는 설계 오류·후속 호출 429로 실패하여 안정적인 출제/품질 승인은 대기입니다. [Gemma 검증 기록](tests/reports/verification-gemma-generation-2026-10-06.md)을 참고하세요. 실행 프로젝트의 `.local/gemma-worktree.override.json`은 변경된 worktree 소스를 빌드 대상으로 지정합니다.
 

@@ -14,7 +14,7 @@
 3. 621f 체크아웃의 현재 미커밋 변경과 공통 기준으로 모의 병합했을 때 다음 파일은 텍스트 충돌이 발생한다.
    - `src/da_agent/discord_generation.py`
    - `src/da_agent/discord_provider.py`
-   - `specs/036-discord-text-task-generation.md`
+   - `specs/045-discord-text-task-generation.md`
 4. 양쪽에서 서로 다른 내용으로 새로 만든 파일도 있다.
    - `src/da_agent/discord_api_budget.py`: 우리 버전의 INSERT VALUES는 4열이고 운영 버전은 pending 열을 포함하는 5열 스키마다. 우리 파일을 그대로 운영에 덮어쓰면 기존 볼륨의 5열 스키마와 호환되지 않는다. 운영의 pending/응답 완료 시각 반영에 release 기능을 통합해야 한다.
    - `dialog/2026.10.07-dialog-1.md`: 양쪽 대화 기록이므로 내용을 보존해 다른 파일명으로 정리해야 한다.

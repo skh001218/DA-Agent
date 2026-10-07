@@ -2,7 +2,7 @@
 
 - 검증일: 2026-10-06 (Asia/Seoul)
 - 대상: 현재 worktree의 Discord 훈련 서비스
-- [Spec032](../../specs/032-discord-evaluation-verification-and-resubmission.md)
+- [Spec040](../../specs/040-discord-evaluation-verification-and-resubmission.md)
 - 별도 discord_test DB와 검증용 합성 자료를 사용했다. Discord 메시지를 보내지 않았다.
 
 ## 구현 확인
