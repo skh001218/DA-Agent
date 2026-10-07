@@ -175,6 +175,8 @@ def runtime_status(container):
     result = dict(container=container, running=current['State']['Running'], image_id=current['Image'],
                 revision=labels.get('org.opencontainers.image.revision'),
                 source_ref=labels.get('io.da-agent.source-ref'))
+    environment = dict(value.split('=', 1) for value in current['Config'].get('Env', []) if '=' in value)
+    result['llm_provider'] = environment.get('DISCORD_LLM_PROVIDER', 'gemma')
     if result['running'] and result['revision']:
         verified = json.loads(command('docker', 'exec', container, 'python', 'scripts/check_discord_release.py'))
         if verified['revision'] != result['revision'] or verified['source_ref'] != result['source_ref']:
@@ -210,7 +212,28 @@ def wait_restored(container, image_id, started):
     raise DeploymentError('Previous bot did not recover its connection')
 
 
-def deploy(root, revision, container, directory):
+def codex_spec(spec, home, model=None, timeout=180):
+    """Explicit release-time provider migration; retain unrelated runtime state."""
+    home = Path(home).resolve()
+    if not home.is_dir() or any(c in str(home) for c in (',', '\n', '\r')):
+        raise DeploymentError('--codex-home must be an existing dedicated Codex directory without commas')
+    if model and not re.fullmatch(r'[a-zA-Z0-9][a-zA-Z0-9._-]{0,100}', model):
+        raise DeploymentError('Invalid --codex-model')
+    if not 1 <= timeout <= 600:
+        raise DeploymentError('--codex-timeout must be between 1 and 600')
+    bot = spec['services']['bot']
+    settings = {'DISCORD_LLM_PROVIDER': 'codex_cli', 'DISCORD_CODEX_HOME': '/run/codex',
+                'DISCORD_CODEX_BIN': '/usr/local/bin/codex',
+                'DISCORD_CODEX_MODEL': model or '', 'DISCORD_CODEX_TIMEOUT_SECONDS': str(timeout)}
+    bot['environment'] = [v for v in bot['environment'] if v.split('=', 1)[0] not in settings]
+    bot['environment'] += [f'{k}={v}' for k, v in settings.items()]
+    bot['volumes'] = [v for v in bot['volumes'] if v['target'] != '/run/codex']
+    bot['volumes'].append(dict(type='bind', source=str(home).replace('$', '$$'),
+                               target='/run/codex', read_only=False))
+    return spec
+
+
+def deploy(root, revision, container, directory, *, codex_home=None, codex_model=None, codex_timeout=180):
     current = inspect_container(container)
     project = current['Config']['Labels']['com.docker.compose.project']
     ensure_idle(container)
@@ -231,6 +254,17 @@ def deploy(root, revision, container, directory):
             if not path.is_relative_to(context.resolve()) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:
                 raise DeploymentError('Candidate source differs from the selected Git commit')
         command('docker', 'run', '--rm', '--entrypoint', 'python', image, 'scripts/check_discord_release.py')
+    candidate = compose_spec(current, image)
+    if codex_home is not None:
+        candidate = codex_spec(candidate, codex_home, codex_model, codex_timeout)
+        probe = """import sys
+from da_agent.codex_provider import CodexCliProvider
+p=CodexCliProvider(executable='/usr/local/bin/codex',home='/run/codex')
+sys.exit(0 if p.status().get('connected') else 1)
+"""
+        command('docker', 'run', '--rm', '--mount',
+                f'type=bind,source={Path(codex_home).resolve()},target=/run/codex',
+                '--entrypoint', 'python', image, '-c', probe)
     ensure_idle(container)
     if inspect_container(container)['Image'] != current['Image']:
         raise DeploymentError('Another operator changed the bot during build; retry from its current configuration')
@@ -239,7 +273,7 @@ def deploy(root, revision, container, directory):
     release_dir = directory / revision
     release_dir.mkdir(exist_ok=True)
     candidate_path, previous_path = release_dir / 'compose.json', release_dir / 'previous-compose.json'
-    write_json(candidate_path, compose_spec(current, image))
+    write_json(candidate_path, candidate)
     write_json(previous_path, compose_spec(current, previous_image))
     started = datetime.now(timezone.utc).isoformat()
     journal = dict(revision=revision, source_ref='refs/heads/main', status='applying', started_at=started,
@@ -273,7 +307,15 @@ def main():
     parser.add_argument('--container', default='da-agent-discord-bot-1')
     parser.add_argument('--apply', action='store_true', help='Apply the verified main release')
     parser.add_argument('--status', action='store_true', help='Read the running revision without deploying')
+    parser.add_argument('--provider', choices=['codex_cli'], help='Explicitly switch to subscription CLI during this release')
+    parser.add_argument('--codex-home', help='Dedicated, authenticated host directory mounted writable for token refresh')
+    parser.add_argument('--codex-model', help='Optional selected Codex model; otherwise CLI default')
+    parser.add_argument('--codex-timeout', type=int, default=180)
     args = parser.parse_args()
+    if bool(args.provider) != bool(args.codex_home):
+        raise DeploymentError('--provider codex_cli and --codex-home must be supplied together')
+    if (args.codex_model or args.codex_timeout != 180) and not args.provider:
+        raise DeploymentError('Codex overrides require --provider codex_cli')
     if args.status:
         print(json.dumps(runtime_status(args.container)))
         return
@@ -281,12 +323,17 @@ def main():
     repository, revision = main_revision(root, args.commit)
     require_ci(repository, revision)
     if not args.apply:
-        print(json.dumps(dict(plan_only=True, revision=revision, source_ref='refs/heads/main', container=args.container)))
+        if args.provider:
+            codex_spec({'services': {'bot': {'environment': [], 'volumes': []}}},
+                       args.codex_home, args.codex_model, args.codex_timeout)
+        print(json.dumps(dict(plan_only=True, revision=revision, source_ref='refs/heads/main',
+                              container=args.container, provider=args.provider or 'preserve_current')))
         return
     directory = root / '.local' / 'releases'
     directory.mkdir(parents=True, exist_ok=True)
     with release_lock(directory):
-        deploy(root, revision, args.container, directory)
+        deploy(root, revision, args.container, directory, codex_home=args.codex_home,
+               codex_model=args.codex_model, codex_timeout=args.codex_timeout)
 
 
 if __name__ == '__main__':

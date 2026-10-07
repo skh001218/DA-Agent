@@ -1,0 +1,39 @@
+# Standalone alternative to compose.discord.yaml; uses the same named data volumes.
+services:
+  db:
+    image: postgres:17.4
+    restart: unless-stopped
+    env_file: .local/discord-runtime/db.env
+    volumes:
+      - discord-data:/var/lib/postgresql/data
+      - ./.local/discord-runtime/init.sql:/docker-entrypoint-initdb.d/01-discord.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+  bot:
+    build:
+      context: .
+      dockerfile: Dockerfile.discord
+    restart: unless-stopped
+    env_file: .local/discord-runtime/bot.env
+    environment:
+      DISCORD_LLM_PROVIDER: codex_cli
+      DISCORD_CODEX_HOME: /run/codex
+      DISCORD_CODEX_BIN: /usr/local/bin/codex
+    volumes:
+      - ${DISCORD_TOKEN_PATH}:/run/secrets/discord_token:ro
+      # Writable: Codex refreshes credentials; only this bot's account belongs here.
+      - ${DISCORD_CODEX_HOME_PATH:?Set a dedicated authenticated Codex home}:/run/codex
+      - discord-responses:/app/.local/discord-responses
+      - discord-quality:/app/.local/evaluation-quality
+      - discord-generation:/app/.local/discord-generation
+    depends_on:
+      db:
+        condition: service_healthy
+volumes:
+  discord-data:
+  discord-responses:
+  discord-quality:
+  discord-generation:

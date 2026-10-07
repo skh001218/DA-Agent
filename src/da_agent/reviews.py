@@ -47,11 +47,12 @@ def review_report(auth, package, report, evidence):
 
 
 def normalize_ai(result):
+    from .codex_provider import CLI_ERRORS
     completed = result.get("status") in {"completed", "success"} or result.get("state") == "completed"
     reason = result.get("error") or result.get("reason")
     if isinstance(reason, str):
         message = {"reauthorization_required": "ChatGPT에 연결한 뒤 다시 요청하세요.", "plan_permission_denied": "계정의 플랜 사용 권한을 확인하세요.", "usage_limit_exceeded": "플랜 한도에 도달했습니다. 한도 초기화 후 다시 요청하세요.", "api_content_blocked": "Gemini가 콘텐츠를 제한해 응답을 완료하지 못했습니다.", "api_key_missing": "로컬 터미널에서 API 키를 설정하세요.", "api_key_invalid": "API 키가 유효하지 않습니다. 키 설정을 확인하세요.", "api_permission_denied": "API 프로젝트·모델 접근 권한을 확인하세요.", "api_quota_exceeded": "API 잔액·결제·사용 한도를 확인하세요.", "api_rate_limited": "Gemini 요청·토큰·일일 사용 한도에 도달했습니다. AI Studio에서 한도를 확인한 뒤 재시도하세요.", "api_timeout": "API 응답 시간이 초과됐습니다. 요청이 처리되었을 수 있으므로 사용량을 확인한 뒤 재시도하세요.", "api_unavailable": "API 서버·네트워크를 확인한 뒤 다시 요청하세요.", "model_unavailable": "설정한 모델의 API 접근 권한을 확인하세요.", "response_incomplete": "AI 응답이 완료되지 않았습니다. 출력 한도·응답 상태를 확인하세요."}.get(reason, "AI 연결을 확인한 뒤 다시 요청하세요.")
-        reason = {"code": reason, "message": message}
+        reason = {"code": reason, "message": CLI_ERRORS.get(reason, message)}
     if isinstance(reason, dict) and result.get('provider_diagnostic'):
         reason = dict(reason, provider_diagnostic=result['provider_diagnostic'])
     return dict(status="completed" if completed else "failed", feedback=result.get("feedback", result.get("text", result.get("output_text"))),
