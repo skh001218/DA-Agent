@@ -246,13 +246,25 @@ def test_optional_real_command_registration_without_login(tmp_path):
     pytest.importorskip("discord")
     settings = DiscordSettings("fake", (10,), "r", "a", "l", tmp_path / "key")
     async def check():
-        client = create_client(Service(), settings)
-        assert {cmd.name for cmd in client.da_command_tree.get_commands()} == {"training", "resume", "query", "answer", "question", "help", "report", "followup", "submit", "sql", "evidence", "end", "tip", "history", "retry", "sqlrun"}
+        service, gateway, _, event = setup(channel=30)
+        service.session['thread_id'] = '30'
+        client = create_client(service, settings)
+        sdk_gateway = client.da_transport.gateway
+        client.da_transport.gateway = gateway
+        assert {cmd.name for cmd in client.da_command_tree.get_commands()} == {"training", "resume", "data", "answer", "question", "help", "report", "followup", "submit", "sql", "evidence", "end", "tip", "history", "retry", "sqlrun"}
+        data_command = client.da_command_tree.get_command('data')
+        assert len(data_command.parameters) == 1
+        assert data_command.parameters[0].name == 'text' and data_command.parameters[0].required
+        await data_command.callback(event, text='전체 데이터를 보여줘')
+        handled = next(call for call in service.calls if call[0] == 'handle')
+        assert handled[1][-1] == 'query' and handled[2]['text'] == '전체 데이터를 보여줘'
+        assert gateway.sent and gateway.replies
         assert not client.intents.message_content
         parameters=client.da_command_tree.get_command('training').parameters
         text=next(p for p in parameters if p.name=='text')
         assert text.required and not text.choices
         assert 'topic' not in {p.name for p in parameters}
+        client.da_transport.gateway = sdk_gateway
         await client.close()
     asyncio.run(check())
 

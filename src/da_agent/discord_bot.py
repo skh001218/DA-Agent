@@ -299,7 +299,8 @@ def create_client(service, settings):
         async def callback(interaction: discord.Interaction, text: str):
             await transport.command(interaction, action, text=text)
         callback.__annotations__["interaction"] = discord.Interaction
-        tree.add_command(app_commands.Command(name=action, description=description, callback=callback))
+        command_name = 'data' if action == 'query' else action
+        tree.add_command(app_commands.Command(name=command_name, description=description, callback=callback))
 
     for action, description in {"sqlrun": "SQL 연습의 sql 코드 블록을 직접 실행", "query": "새로운 자연어 조회 요청", "answer": "현재 봇 질문에 이어서 답변", "question": "게임 분석 용어를 용어당 최대 3줄로 설명", "followup": "업무 담당자 후속 질문에 답변"}.items():
         register_text_action(action, description)

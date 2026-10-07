@@ -421,7 +421,7 @@ class DiscordTransport:
             return  # ordinary discussion never silently becomes a query or an answer
         if not text.strip():
             if not getattr(self.gateway, 'message_content_enabled', True) and not getattr(message, 'attachments', []):
-                await self._emit(message.channel, ['답장 내용을 읽을 수 없습니다. @DA-Agent 봇 계정을 선택해 멘션과 함께 답하거나 /answer를 사용하세요. 새 조회는 /query로 요청하세요.'])
+                await self._emit(message.channel, ['답장 내용을 읽을 수 없습니다. @DA-Agent 봇 계정을 선택해 멘션과 함께 답하거나 /answer를 사용하세요. 새 조회는 /data로 요청하세요.'])
             return
         try:
             response = await self._handle(message.channel, session, str(message.author.id), session["session_id"],

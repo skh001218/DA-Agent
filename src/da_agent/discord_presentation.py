@@ -19,7 +19,7 @@ $conditions
 결론 · 저장 조회 근거 · 가능한 설명과 한계 · 대응 또는 추가 확인 제안
 
 시작하기
-/query로 데이터를 조회하세요.
+/data로 데이터를 조회하세요.
 /help kind:문제 원문으로 전체 배경·가정·판단 조건을 확인하세요.
 /help로 데이터 사전·평가 기준을 확인하세요.
 /report로 보고를 작성하고 후속 질문에 답한 뒤 /submit로 제출하세요.$sources''')
@@ -82,7 +82,7 @@ def task_intro(document):
         '이용 가능한 데이터',
         '가입자 정보, 단계별 도전·완료 기록, 접속 기록입니다. 재도전은 중복 기록될 수 있습니다.',
         task.get('quality_information', {}).get('collection', ''), '',
-        '/query로 새 조회를 요청하세요. 봇 질문에는 답장·멘션 또는 /answer로 답해주세요.',
+        '/data로 새 조회를 요청하세요. 봇 질문에는 답장·멘션 또는 /answer로 답해주세요.',
         '분석 결과와 대응 제안은 /report로 작성하세요.',
         '/tip command:명령어로 사용법과 예시를 확인할 수 있습니다.',
         '/question으로 모르는 용어를 물어보세요. 예: ads와 organic이 뭐야?',
@@ -123,7 +123,7 @@ def reference_info(task, kind):
     if kind == 'commands':
         if task.get('practice') == 'sql':
             return 'SQL 연습 명령\nsql 코드 블록 답장 — 직접 SQL 실행·수정\n/sqlrun — 수신 제한 시 코드 블록 입력 대안\n/sql — 본인 실행 SQL 열람\n/submit — 최종 풀이 평가\n/help — 사전·평가 기준·도움, 첫 제출 후 kind:SQL 해설 공개\n/end · /resume · /history — 중단·재개·기록'
-        return '\n'.join(['전체 명령 안내', '/tip command:명령어 — 사용법과 예시 확인', '/training — 새 훈련 시작', '/query — 새 자연어 조회 요청', '/answer — 현재 봇 질문에 대한 답변', '/question — 용어당 최대 3줄로 뜻 설명',
+        return '\n'.join(['전체 명령 안내', '/tip command:명령어 — 사용법과 예시 확인', '/training — 새 훈련 시작', '/data — 새 자연어 조회 요청', '/answer — 현재 봇 질문에 대한 답변', '/question — 용어당 최대 3줄로 뜻 설명',
             '/help — 도움 요청 또는 데이터 사전·평가 기준·전체 명령 확인',
             '/sql — 저장된 조회의 실행 SQL 확인', '/evidence — 조회를 보고 근거로 선택',
             '/report — 보고 작성·수정 (append로 긴 보고 이어 쓰기)',
@@ -137,7 +137,7 @@ COMMAND_TIPS = {
     'training': ('요청한 내용으로 문제·연습 자료를 생성합니다. 부모 텍스트 채널에서 사용하세요.', 'practice: SQL/분석 연습 (필수), text: 연습할 내용 (필수, 1~4000자; SQL은 튜토리얼 완료율 지원), difficulty: 난이도 (기본 중급), help_level: 도움 수준 (선택)', '/training practice:analysis text:튜토리얼 완료율 하락을 분석하고 싶어 difficulty:intermediate'),
     'retry': ('실패·중단된 출제를 저장된 계획으로 수동 재시도합니다. 재개만으로 모델을 호출하지 않습니다.', '과제 스레드에서 사용, 추가 입력 없음', '/retry'),
     'sqlrun': ('SQL 연습에서 코드 블록 답장 대신 풀이를 실행합니다.', 'text: sql 코드 블록 (필수, 설명 포함 최대 1,900자)', '/sqlrun text:```sql\nSELECT ...\n```'),
-    'query': ('새 조회를 요청합니다. 기존 확인 질문에 답할 때는 답장·멘션 또는 /answer를 사용하세요.', 'text: 조회 요청 (필수)', '/query text:두 주의 채널별 튜토리얼 3단계 완료율을 비교해줘'),
+    'data': ('새 조회를 요청합니다. 기존 확인 질문에 답할 때는 답장·멘션 또는 /answer를 사용하세요.', 'text: 조회 요청 (필수)', '/data text:두 주의 채널별 튜토리얼 3단계 완료율을 비교해줘'),
     'answer': ('현재 봇 질문에 이어서 답합니다. 조회 조건·분석 이유·보고 후속 질문에 사용할 수 있습니다.', 'text: 답변 (필수)', '/answer text:과제 기간의 신규 가입 고유 사용자를 분모로 사용해주세요'),
     'help': ('개념·분석 방향·중간 피드백 또는 참고 정보를 확인합니다.', 'text: 질문 (선택), kind: 문제 원문/개념/분석 방향/중간 검토/데이터 사전/평가 기준/전체 명령 (선택)', '/help kind:문제 원문'),
     'sql': ('성공한 저장 조회의 실제 실행 SQL을 보여줍니다.', 'execution_id: 조회 결과에 표시된 실행 ID (필수)', '/sql execution_id:실행ID'),

@@ -17,6 +17,8 @@ def test_tip_works_without_training_or_model_and_leaves_state_untouched():
 
 def test_tip_slash_normalization_list_unknown_and_coverage():
     assert command_tip(' /REPORT ') == command_tip('report')
+    assert '/data text:' in command_tip('/data')
+    assert '/query' not in command_tip()
     assert '알 수 없는 명령어' in command_tip('missing')
     for name in COMMAND_TIPS:
         assert '/' + name in command_tip()
