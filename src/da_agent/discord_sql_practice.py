@@ -58,6 +58,12 @@ def make_task(analysis_task):
         task['objective'] += (' week는 과제 시작일부터 7일 단위로 구분합니다. SQL 코드 블록 밖에 '
             '중복·기간 경계·분모/NULL을 어떻게 검산했는지 설명하세요. 수행하지 않은 검산은 계획이라고 표시하세요. '
             '설명만으로 실행 사실을 인정하지 않으며 SQL 결과와 설명을 별도로 평가합니다.')
+    # These sentences are the authored tutorial contract, not model prose.
+    sentences = re.split(r'(?<=\.)\s+', task['objective'])
+    output = [line for line in sentences if line.startswith('출력 열 이름과 순서:') or line.startswith('수와 비율은')]
+    extra = [line for line in sentences if line.startswith(('SQL 코드 블록 밖에', '수행하지 않은 검산은', '설명만으로 실행 사실을'))]
+    task['sql_intro_sections'] = dict(goal=sentences[:1],
+        conditions=[line for line in sentences[1:] if line not in output and line not in extra], output=output, extra=extra)
     return task
 
 

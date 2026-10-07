@@ -59,18 +59,8 @@ def generated_task_intro(task):
 def task_intro(document):
     task = document['task']
     if document.get('practice') == 'sql':
-        if task['sql_contract']['version'] == 'sql-generated-v1':
-            return '\n'.join(['📌 '+task['title'], '난이도: '+{'beginner':'초급','intermediate':'중급','advanced':'고급'}[task['difficulty']],
-                task['objective'], '관측 기간: '+task['period']['description'],
-                '데이터 버전: '+document['data_version'],
-                '/help로 데이터 사전·평가 기준을 확인하세요. sql 코드 블록으로 직접 풀이하고 /submit로 평가하세요.'])
-        return '\n'.join(['📌 SQL 연습 · ' + task['title'], task['objective'],
-            f"가입 기간: {task['period']['start']} 이상 ~ {task['period']['end']} 미만",
-            f"시간: UTC · 완료 관측 종료: {task['period']['observation_end']} 미만",
-            '데이터 버전: ' + document['data_version'],
-            '원본 SQL 노출: ' + document.get('sql_exposure', '미상'),
-            '제공된 sql 코드 블록을 복사해 작성하고 해당 메시지에 답장하세요. 최대 1,900자.',
-            '/help로 데이터 사전·평가 기준·개념 도움, /submit로 최종 평가를 요청하세요.'])
+        from .discord_sql_presentation import sql_intro_messages
+        return '\n\n'.join(sql_intro_messages(document))
     if task.get('generation_version'):
         return generated_task_intro(task)
     period = task['period']

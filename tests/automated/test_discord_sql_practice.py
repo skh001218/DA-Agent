@@ -111,7 +111,7 @@ def test_real_database_equivalent_sql_final_result_and_restart(flow, level, tmp_
     restarted = DiscordTrainingService(DiscordStore(flow[0].store.dsn), flow[0].engine, Mock(), flow[0].settings)
     saved = restarted.resume(flow[1], '10', document['session_id'])
     assert saved['session']['sql_attempts'][0]['sql'] == query
-    assert 'sql 코드 블록' in saved['messages'][0]
+    assert 'sql 코드 블록' in '\n'.join(saved['messages'])
     flow[0].provider.review.assert_not_called()
 
 

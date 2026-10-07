@@ -1,0 +1,11 @@
+{
+  "local_preview": true,
+  "production_discord": false,
+  "cases": 6,
+  "image_expansion": true,
+  "close": true,
+  "refresh": true,
+  "mobile_no_overflow": true,
+  "attachment_fallback": true,
+  "errors": []
+}
