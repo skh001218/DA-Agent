@@ -1,0 +1,96 @@
+{
+  "bot_id": "1556884921652609034",
+  "guild_id": 1556888486919934064,
+  "commands": [
+    "training",
+    "resume",
+    "query",
+    "followup",
+    "report",
+    "help",
+    "submit",
+    "end",
+    "sql",
+    "evidence",
+    "tip",
+    "answer",
+    "question",
+    "history",
+    "sqlrun",
+    "retry"
+  ],
+  "training_options": [
+    {
+      "type": 3,
+      "name": "text",
+      "description": "연습할 분석 내용과 목표를 입력하세요 (1~4000자)",
+      "required": true
+    },
+    {
+      "type": 3,
+      "name": "practice",
+      "description": "…",
+      "required": true,
+      "choices": [
+        {
+          "name": "SQL 연습",
+          "value": "sql"
+        },
+        {
+          "name": "분석 연습",
+          "value": "analysis"
+        }
+      ]
+    },
+    {
+      "type": 3,
+      "name": "difficulty",
+      "description": "…",
+      "choices": [
+        {
+          "name": "초급",
+          "value": "beginner"
+        },
+        {
+          "name": "중급",
+          "value": "intermediate"
+        },
+        {
+          "name": "고급",
+          "value": "advanced"
+        }
+      ]
+    },
+    {
+      "type": 3,
+      "name": "help_level",
+      "description": "…",
+      "choices": [
+        {
+          "name": "안내 포함",
+          "value": "guided"
+        },
+        {
+          "name": "내 정의 먼저",
+          "value": "independent"
+        }
+      ]
+    },
+    {
+      "type": 3,
+      "name": "source_session_id",
+      "description": "…"
+    }
+  ],
+  "records_tables": [],
+  "learner_db_connected": true,
+  "model": "gemma-4-26b-a4b-it",
+  "message_content": false,
+  "source_hashes": {
+    "discord_bot.py": "1ead333fc1cef873d17d2d742bcef86688d3d0b37d7ae1e1c836c7c00748373e",
+    "discord_service.py": "f028cdea1b062a5937f00605dc5414345e7fe4137b433bc17ef98ec9dbc1eb33",
+    "discord_generation.py": "1d6dd890476be8ea1b3bc3c418a275090aee7599f480c392d0e477f11b2653ea",
+    "discord_sql_practice.py": "070446c2facd488a0d821aa7db21555ca3221582e34c6050938937937cd6a1a6",
+    "discord_pdf.py": "22eb31aad528750ecfddf2879219b914bdc0e5abb205691e9aece00d34342d33"
+  }
+}

@@ -6,6 +6,11 @@ import pytest
 from da_agent.discord_provider import DiscordGemmaProvider
 
 
+@pytest.fixture(autouse=True)
+def isolated_api_budget(tmp_path, monkeypatch):
+    monkeypatch.setenv('DISCORD_API_BUDGET_DIR',str(tmp_path/'isolated-budget'))
+
+
 def test_quota_diagnostics_keep_limit_identity_without_upstream_secrets(tmp_path):
     path=tmp_path/'key'; path.write_text('test-secret')
     body={'error':{'message':'private upstream text','details':[
@@ -138,3 +143,32 @@ def test_gemma_never_switches_to_configured_gemini_search(tmp_path, monkeypatch)
     assert not calls
     assert provider.review([{'role':'user', 'content':'design'}])['state'] == 'completed'
     assert len(calls) == 1
+
+
+def test_token_count_reservation_uses_provider_count_and_actual_usage(tmp_path):
+    from da_agent.discord_provider import _GemmaClient
+    from da_agent.discord_api_budget import ApiBudget
+    import sqlite3
+    budget=ApiBudget(tmp_path/'calls.sqlite3')
+    observed=[]
+    def respond(req):
+        observed.append(str(req.url))
+        if ':countTokens' in str(req.url):
+            body=json.loads(req.content)
+            assert body['generateContentRequest']['model']=='models/gemma-4-26b-a4b-it'
+            return httpx.Response(200,json={'totalTokens':100})
+        return httpx.Response(200,json={'usageMetadata':{'promptTokenCount':120}})
+    client=_GemmaClient(httpx.Client(transport=httpx.MockTransport(respond)),budget)
+    client.post('https://generativelanguage.googleapis.com/v1beta/models/gemma-4-26b-a4b-it:generateContent',
+        headers={'x-goog-api-key':'test-private-key'},json={'contents':[{'role':'user','parts':[{'text':'연습 요청'}]}]})
+    assert len(observed)==2 and client.last_metadata['input_budget_basis']=='countTokens'
+    with sqlite3.connect(budget.path) as conn:
+        rows=conn.execute('SELECT scope,tokens FROM calls').fetchall()
+    assert len(rows)==1 and rows[0][1]==120 and 'test-private-key' not in rows[0][0]
+
+
+def test_local_quota_failure_also_provides_retry_time(tmp_path):
+    from datetime import datetime,timezone
+    provider=DiscordGemmaProvider(key_file=tmp_path/'missing')
+    result=provider._failed('api_rate_limited')
+    assert datetime.fromisoformat(result['retry_at'])>datetime.now(timezone.utc)

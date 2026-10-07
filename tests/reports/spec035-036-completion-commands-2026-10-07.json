@@ -1,0 +1,1 @@
+{"command_count": 16, "training_options": [{"name": "text", "required": true, "choices": []}, {"name": "practice", "required": true, "choices": ["SQL 연습", "분석 연습"]}, {"name": "difficulty", "required": false, "choices": ["초급", "중급", "고급"]}, {"name": "help_level", "required": false, "choices": ["안내 포함", "내 정의 먼저"]}, {"name": "source_session_id", "required": false, "choices": []}]}

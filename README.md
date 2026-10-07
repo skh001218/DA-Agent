@@ -2,7 +2,7 @@
 
 ## Discord 텍스트 요청 기반 출제
 
-`/training`의 고정 topic을 필수 text로 바꾸고 기존 adaptive 설계·합성 자료·DB 검산을 연결했다. 조회·교육·점수 보류, 추가 질문·취소·재시도·기존 기록 호환을 구현했다. [Spec036](specs/036-discord-text-task-generation.md)는 5/7개 완료(71.43%)다. 임시 DB·고정 모델 응답의 서비스와 검증용 화면 흐름을 확인했으며 실제 Gemma 출제는 429·HTTP500으로 완성 검증에 실패했다. 운영 봇 반영·명령 동기화·실제 Discord 전달은 남아 있다. [검증 보고](tests/reports/verification-spec036-2026-10-06.md), [실행 설정](docs/discord-setup.md)을 참고한다.
+`/training`은 필수 `text`와 SQL/분석 `practice` 선택을 사용합니다. adaptive 설계·합성 자료·DB 검산·조회·교육·점수 보류와 요청 복구를 연결했습니다. [Spec036](specs/036-discord-text-task-generation.md)은 6/7개 완료(85.71%)이며, 실제 모델의 표본·집계 조건과 의미 적합성 오류로 분석 전체 흐름 검증이 남아 있습니다. 현재 운영 코드·명령·옵션 표시를 확인했고 추가 검증에서 발견한 입력·난이도 계약·호출 예산 문제를 수정·배포했습니다. [최신 구현·검증 보고](tests/reports/verification-spec035-036-completion-2026-10-07.md), [실행 설정](docs/discord-setup.md)을 참고하세요.
 
 ## 평가 신뢰성·점수 보류 정책
 
@@ -12,7 +12,7 @@
 
 ## Discord SQL 직접 풀이
 
-SQL 직접 풀이도 현재 체크아웃에 구현했습니다. 새 `/training`의 필수 `practice`에서 SQL/분석을 선택하며, SQL은 제공된 `sql` 코드 블록을 채워 답장 → 실제 실행 → 수정·재제출 → `/submit` 항목별 평가로 진행합니다. 현재 지원 문제는 난이도별 튜토리얼 신규 가입자 3단계 완료율입니다. 실행 봇 반영·실제 Discord 검증은 남아 있습니다. [Spec035](specs/035-discord-sql-practice-mode.md)와 [검증 기록](tests/reports/verification-spec035-2026-10-06.md)을 참고하세요.
+SQL 연습은 코드 블록 답장 → 실제 읽기 전용 실행 → 오류 수정 → `/submit` 항목별 평가로 진행합니다. 튜토리얼 신규 가입자 3단계 완료율의 세 난이도를 지원합니다. 실제 Discord에서 중급 전체 흐름·재시작 재개, 고급 분석 연결·검산 설명의 실제 모델 검토·결과 포럼/PDF 게시를 확인했습니다. [Spec035](specs/035-discord-sql-practice-mode.md)는 7/8개 완료(87.5%)이며 교육적 타당성의 사람 검토를 기다립니다.
 
 ## Discord 평가 검산과 수정·재제출
 

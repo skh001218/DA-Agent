@@ -38,6 +38,10 @@ def status_message(document):
         lines += g.get('questions', []) + ['/answer text:답변으로 출제 조건을 알려주세요.']
     elif g['status'] in {'failed', 'interrupted'}:
         lines += ['기록은 보존했습니다. 재시도 버튼 또는 /retry로 수동 재시도하세요.']
+        if g.get('retry_at'):
+            from datetime import datetime
+            from zoneinfo import ZoneInfo
+            lines += ['재시도 가능 시각: '+datetime.fromisoformat(g['retry_at']).astimezone(ZoneInfo('Asia/Seoul')).strftime('%Y-%m-%d %H:%M:%S KST')]
     elif g['status']=='accepted':
         lines += ['/retry로 저장된 요청의 생성을 시작하고 /end로 취소할 수 있습니다.']
     elif g['status'] in ACTIVE | {'accepted'}:
@@ -61,7 +65,9 @@ def task_from_recipe(recipe, public, source_case, help_level):
                 relationships.append({'table':t.name,'column':c.name,'target_table':target,
                     'target_column':tables[target].columns[0].name})
     requirements = recipe.business_case.requirements
-    by_competency = {r.competency:r.completion for r in requirements}
+    by_competency = {r.competency:r.completion+(
+        '; 판단 기준: '+r.judgment.decision_rule+'; 인정할 한계: '+r.judgment.accepted_limit
+        if r.judgment else '') for r in requirements}
     required = {
         'problem_definition':recipe.goal + '; 대상·기간·단위를 공개 조건과 연결',
         'metric_design':by_competency.get('measurement', by_competency.get('comparison','분석 질문에 맞는 지표·비교 조건 정의')),
@@ -167,9 +173,15 @@ class DiscordGeneration:
                     '실제 검색이나 출처 확인을 수행했다고 말하지 말고 회사 사례·인용·URL을 만들지 마세요. '
                     '업무 배경·기간·대상·수치는 연습용 가상 조건임을 공개 설명에 명시하세요.')
             messages[0]['content'] += (
+                'business_case.requirements의 competency는 중복 없이 초급 measurement/decision, '
+                '중급 comparison/uncertainty/decision, 고급 comparison/uncertainty/decision/alternatives/confounding을 포함하세요. '
                 ' Discord 출제에서도 초급은 분석 대상·기간·단위와 판단 기준치를 공개하세요. '
                 '중급은 요구한 비교 차원·필터가 검산 지표에 실제 연결되어야 합니다. '
                 '고급은 업무 목표에서 학습자가 질문·우선순위를 정할 여지를 두세요. '
+                '고급 confounding 요구에는 judgment(method, control_columns, decision_rule, accepted_limit)를 반드시 작성하세요. '
+                'control_columns는 evidence의 table.column으로 쓰세요. conditional_comparison은 통제 열을 포함한 '
+                '2차원 이상 group_by의 analysis metric_names에 연결하고 동일 조건 안의 비교를 요구하세요. '
+                '자료로 식별할 수 없다면 non_identifiable과 관측 근거에 연결한 판단 유보 이유를 명시하세요. '
                 '필수 판단을 미지원 표준편차·분산·체감·조치 효과로 만들지 마세요. '
                 '관계 미확인·판단 유보·추가 관측도 타당한 결론으로 인정하고 무작위 효과·원인 존재를 전제하지 마세요.')
             return messages
@@ -187,6 +199,9 @@ class DiscordGeneration:
             history.append(entry); save()
             result=handler(messages)
             entry.update(state=result.get('state'),model=result.get('model'),usage=result.get('usage'),reason=result.get('reason'))
+            if result.get('retry_at'):
+                entry['retry_at'] = result['retry_at']
+                self.update(owner,sid,token,'planning',retry_at=result['retry_at'])
             if result.get('normalized_envelope'):
                 entry['normalized_envelope'] = result['normalized_envelope']
             if isinstance(result.get('provider_diagnostic'), dict):
@@ -225,16 +240,21 @@ class DiscordGeneration:
                 same_request = rejected and (rejected[-1].get('request_message') == data.message or (
                     'request_message' not in rejected[-1] and doc['generation'].get('revision',0)==0
                     and doc['generation'].get('original_message')==data.message))
+                reusable = None
                 if retry and same_request:
                     previous = rejected[-1]
                     issues = previous['issues']
                     try:
-                        adaptive.preflight(adaptive.parse_recipe({'state':'completed','text':previous['text']}),seed,data)
+                        candidate = adaptive.preflight(adaptive.parse_recipe({'state':'completed','text':previous['text']}),seed,data)
+                        if candidate.status=='ready' and candidate.difficulty==data.difficulty:
+                            check_quality(candidate,recent,data.intentional_repeat)
+                            reusable = candidate
                     except (DomainError, ValueError) as exc:
                         issues = getattr(exc,'validation_issues',[{'message':str(exc)}])
                     messages += [{'role':'assistant','content':previous['text']},
                         {'role':'user','content':'이전 요청의 실패 설계를 보존했습니다. 원래 목표·난이도를 유지하고 다음 검증 오류를 수정한 전체 JSON 객체를 반환하세요. '+json.dumps(issues,ensure_ascii=False)}]
-                for attempt in range(3):
+                recipe = reusable
+                for attempt in range(0 if reusable else 3):
                     result=call(messages,'adaptive-design')
                     try:
                         recipe=adaptive.preflight(adaptive.parse_recipe(result),seed,data)

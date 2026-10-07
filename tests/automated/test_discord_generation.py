@@ -66,7 +66,7 @@ def generated_service(monkeypatch,tmp_path):
     settings=NS(admin_dsn='postgresql://generator:pass@localhost/discord_data',
         learner_dsn='postgresql://reader:pass@localhost/discord_data',generation_directory=str(tmp_path),daily_call_limit=30)
     service=DiscordTrainingService(store,NS(runner=Mock()),provider,settings)
-    session=service.start('owner','guild','channel','event',text='반복 행동 계정의 정상 반례를 비교하고 싶어')
+    session=service.start('owner','guild','channel','event',text='반복 행동 계정의 정상 반례를 비교하고 싶어',practice='analysis')
     store.save_generation_job('owner',session['session_id'],{'source_case':{'topic':'반복 행동','sources':[]}})
     connection=MagicMock(); connection.__enter__.return_value.execute.return_value.fetchone.return_value=(False,False,False,False)
     monkeypatch.setattr('psycopg.connect',lambda *a,**k:connection)
@@ -154,13 +154,13 @@ def test_clarification_answer_revises_saved_request_without_changing_original(ge
     assert value['generation']['original_message']==session['generation']['original_message']
     assert 'source_case' not in service.store.generation_job('owner',sid)
     # Replaying the original start returns the same revised session.
-    assert service.start('owner','guild','channel','event',text=session['generation']['original_message'])['session_id']==sid
+    assert service.start('owner','guild','channel','event',text=session['generation']['original_message'],practice='analysis')['session_id']==sid
 
 
 def test_duplicate_event_conflicting_request_is_rejected(generated_service):
     service,session,stage=generated_service
     with pytest.raises(DomainError,match='다른 출제'):
-        service.start('owner','guild','channel','event',text='다른 요청')
+        service.start('owner','guild','channel','event',text='다른 요청',practice='analysis')
     stage.assert_not_called()
 
 
