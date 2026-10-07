@@ -1,0 +1,23 @@
+{
+  "head_sha": "ed3a77bcec6ea3bc3455d34f83fa853cd7b7212f",
+  "checks": [
+    {
+      "name": "discord-image",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/skh001218/DA-Agent/actions/runs/37599865896/job/112721327606"
+    },
+    {
+      "name": "discord-db-tests",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/skh001218/DA-Agent/actions/runs/37599865896/job/112721327432"
+    },
+    {
+      "name": "automated-tests",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/skh001218/DA-Agent/actions/runs/37599865896/job/112721326992"
+    }
+  ]
+}
