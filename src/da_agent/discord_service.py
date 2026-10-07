@@ -9,7 +9,7 @@ from .discord_results import build_submission, submission_summary
 
 
 REPORT_FIELDS = ('question', 'findings', 'hypothesis', 'alternatives', 'quality', 'limitations', 'action', 'next_checks')
-ANSWER_GUIDANCE = '\n이 메시지에 답장하거나 @DA-Agent로 답해주세요. 메시지를 읽을 수 없으면 /answer를 사용하세요. 새 조회는 /query로 시작하세요.'
+ANSWER_GUIDANCE = '\n이 메시지에 답장하거나 @DA-Agent로 답해주세요. 메시지를 읽을 수 없으면 /answer를 사용하세요. 새 조회는 /data로 시작하세요.'
 
 
 class MeteredProvider:
@@ -282,14 +282,14 @@ class DiscordTrainingService:
             if not target or not question or target['id'] != question['id'] or target['state'] != 'waiting':
                 raise DomainError('answer_stale', '이 메시지는 현재 답변을 기다리는 질문이 아닙니다. 최신 질문에 답장하거나 /answer를 사용하세요.')
         if not question:
-            raise DomainError('answer_missing', '현재 답변을 기다리는 질문이 없습니다. 새 조회는 /query로 요청하세요.')
+            raise DomainError('answer_missing', '현재 답변을 기다리는 질문이 없습니다. 새 조회는 /data로 요청하세요.')
         if question['kind'] == 'query_conditions':
             return self._query(document, event_id, text)
         if question['kind'] == 'followup':
             return self._apply(document, event_id, 'followup', text, {})
         document.setdefault('analysis_answers', []).append({'question_id': question['id'], 'text': text, 'at': timestamp()})
         self._close_question(document, 'answered')
-        return ['비교를 선택한 이유와 가설에 대한 답변을 기록했습니다. 추가 조회는 /query, 보고 작성은 /report로 진행하세요.']
+        return ['비교를 선택한 이유와 가설에 대한 답변을 기록했습니다. 추가 조회는 /data, 보고 작성은 /report로 진행하세요.']
 
     def resume(self, user_id, guild_id, session_id=None):
         sessions = self.list_sessions(user_id, guild_id)
@@ -446,7 +446,7 @@ class DiscordTrainingService:
         if document.get('practice') == 'sql' and action not in {'end', 'continue', 'question'}:
             return self._apply_sql(document, event_id, action, text, payload)
         if action == 'sqlrun' or action == 'submit' and payload.get('execution_id'):
-            raise DomainError('practice', '분석 연습에서는 /query와 기존 /submit을 사용하세요. 직접 SQL 실행은 SQL 연습에서 가능합니다.')
+            raise DomainError('practice', '분석 연습에서는 /data와 기존 /submit을 사용하세요. 직접 SQL 실행은 SQL 연습에서 가능합니다.')
         if action == 'help' and payload.get('help_type') == 'solution':
             raise DomainError('practice', 'SQL 해설 공개는 SQL 연습의 첫 제출 이후에만 가능합니다.')
         if action == 'question':
@@ -502,7 +502,7 @@ class DiscordTrainingService:
         if action == 'message':
             if document.get('pending_question') or payload.get('reply_to_message_id'):
                 return self._answer(document, event_id, text, payload)
-            return ['현재 답변을 기다리는 질문이 없습니다. 새 조회는 /query, 보고는 /report로 요청하세요.']
+            return ['현재 답변을 기다리는 질문이 없습니다. 새 조회는 /data, 보고는 /report로 요청하세요.']
         if action == 'query':
             document['pending_query'] = None
             self._close_question(document, 'superseded')
@@ -591,7 +591,7 @@ class DiscordTrainingService:
             growth = growth_observation(history + [observation])
             document['evaluations'][-1]['growth'] = growth
             return [submission_summary(document['evaluations'][-1])]
-        raise DomainError('action', '지원하지 않는 행동입니다. /query·/help·/report·/submit을 사용하세요.')
+        raise DomainError('action', '지원하지 않는 행동입니다. /data·/help·/report·/submit을 사용하세요.')
 
     def _apply_sql(self, document, event_id, action, text, payload):
         from .discord_sql_practice import extract_sql, run_full, evaluate, summary, reference_sql
@@ -721,9 +721,9 @@ class DiscordTrainingService:
             if plan.get('reason') == 'usage_limit':
                 return ['오늘의 모델 호출 한도에 도달했습니다. 기존 기록·SQL 열람·재개는 계속 사용할 수 있습니다.']
             if plan.get('reason') == 'api_rate_limited':
-                return ['Gemma API 호출 한도(429)에 도달했습니다. 답변과 조회 조건은 보존됩니다. 잠시 뒤 /answer로 이어서 답해주세요. 새 조회는 /query로 시작하세요.']
+                return ['Gemma API 호출 한도(429)에 도달했습니다. 답변과 조회 조건은 보존됩니다. 잠시 뒤 /answer로 이어서 답해주세요. 새 조회는 /data로 시작하세요.']
             if plan.get('reason') in {'api_unavailable', 'api_timeout', 'api_key_invalid', 'api_permission_denied', 'api_request_invalid', 'api_invalid_response', 'api_empty_response', 'api_content_blocked', 'response_incomplete', 'provider_unavailable', 'provider_invalid_json', 'provider_invalid_response', 'api_key_missing', 'model_unavailable'}:
-                return ['모델 서비스 오류로 조회를 실행하지 못했습니다. 답변과 조회 조건은 보존됩니다. 잠시 뒤 /answer로 이어서 답해주세요. 새 조회는 /query로 시작하세요.']
+                return ['모델 서비스 오류로 조회를 실행하지 못했습니다. 답변과 조회 조건은 보존됩니다. 잠시 뒤 /answer로 이어서 답해주세요. 새 조회는 /data로 시작하세요.']
             return [plan.get('message', '조회 조건을 해석할 수 없었습니다. 지원하는 지표와 기간을 명시해 다시 요청하세요.')]
         document['pending_query'] = None
         self._close_question(document, 'answered')
@@ -789,7 +789,7 @@ def format_task_intro(document):
     assessment.extend(['', '실행 근거 검산 정책', POLICY])
     policy = task.get('help_policy', {})
     commands = ['▶ 이 문제를 이어가는 방법', '이 과제 스레드 안에서 아래 명령을 사용하세요.', '',
-                '1. /query — 조회 요청·확인 답변 (new_query를 켜면 이전 질문 초기화)',
+                '1. /data — 새 자연어 조회 요청 · /answer — 현재 봇 질문에 답변',
                 '2. /help — 개념·분석 방향·중간 피드백 요청',
                 '3. /sql — 실행 SQL 확인 · /evidence — 조회를 보고 근거로 선택',
                 '4. /report — 보고 작성·수정 (append로 긴 보고 이어 쓰기)',

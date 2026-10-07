@@ -30,7 +30,7 @@ Discord Developer Portal에서 Bot을 만들고 서버 설치에 `bot`, `applica
 
 **필수:** Bot → Privileged Gateway Intents → **Server Members Intent**를 켜고 저장한다. 비공개 스레드 참가자 목록 REST 조회는 앱에 이 Intent가 허용돼 있어야 성공한다. Gateway의 전체 멤버 캐시를 켜는 것과는 별개이며 현재 봇은 REST로 소유자·다른 참가자를 검사한다. 꺼져 있으면 과제 데이터는 생성돼도 스레드 검증이 403 Missing Access로 실패한다.
 
-일반 대화를 사용하려면 Developer Portal의 Message Content Intent와 `DISCORD_MESSAGE_CONTENT=true`를 모두 활성화한다. 기본값은 false이며 `/query`, `/help`, `/report`, `/followup`으로 같은 입력을 보낼 수 있다. 스레드 밖·다른 봇·소유자 아닌 사용자의 일반 메시지는 자동 응답하지 않는다.
+일반 대화를 사용하려면 Developer Portal의 Message Content Intent와 `DISCORD_MESSAGE_CONTENT=true`를 모두 활성화한다. 기본값은 false이며 `/data`, `/help`, `/report`, `/followup`으로 같은 입력을 보낼 수 있다. 스레드 밖·다른 봇·소유자 아닌 사용자의 일반 메시지는 자동 응답하지 않는다.
 
 ## 별도 환경변수
 
@@ -62,7 +62,7 @@ JSON 형식 오류 진단이 필요하면 `DISCORD_JSON_DIAGNOSTICS_DIR`을 서�
 
 준비 중 /answer는 확인 질문 답변, /end는 취소, /resume은 상태 복원이다. 실패·중단·시작 전 요청은 재시도 버튼 또는 /retry로 수동 실행한다.
 
-생성 분석 과제의 `/query`는 자연어로 현재 공개 표의 원본 행·컬럼 선택·필터·정렬·비교·여러 집계를 요청할 수 있다. 예: `shop_profiles의 전체 데이터를 조회해줘`, `사전 숙련도가 beginner인 계정만 보여줘`, `상점 구성별 초기·후기 평균 소모량을 비교해줘`. 해석한 SELECT를 현재 공개 표·컬럼으로 검증하고 기존 읽기 전용 실행기에서 실행한다. 없는 자료는 빠진 항목과 조회 가능한 표·컬럼을 안내하고, 모호한 조건은 확인한다. 결과는 첫 10행 표와 수집한 전체 데이터 JSON 첨부로 제공하며 수집 제한에 도달하면 불완전함을 표시한다. 기존 구조화된 집계 조건과 고정 튜토리얼 지표 계약도 유지한다. 이 확장은 운영에 반영했으며 실제 Discord 스레드에서 전체 조회·JSON 다운로드와 자료 부족 안내까지 확인했다. [Spec053](../specs/053-discord-natural-language-public-query.md), [검증 보고](../tests/reports/spec053-natural-language-public-query-2026-10-07.md)를 참고한다.
+생성 분석 과제의 `/data`는 자연어로 현재 공개 표의 원본 행·컬럼 선택·필터·정렬·비교·여러 집계를 요청할 수 있다. 예: `shop_profiles의 전체 데이터를 조회해줘`, `사전 숙련도가 beginner인 계정만 보여줘`, `상점 구성별 초기·후기 평균 소모량을 비교해줘`. 해석한 SELECT를 현재 공개 표·컬럼으로 검증하고 기존 읽기 전용 실행기에서 실행한다. 없는 자료는 빠진 항목과 조회 가능한 표·컬럼을 안내하고, 모호한 조건은 확인한다. 결과는 첫 10행 표와 수집한 전체 데이터 JSON 첨부로 제공하며 수집 제한에 도달하면 불완전함을 표시한다. 기존 구조화된 집계 조건과 고정 튜토리얼 지표 계약도 유지한다. 이 확장은 운영에 반영했으며 실제 Discord 스레드에서 전체 조회·JSON 다운로드와 자료 부족 안내까지 확인했다. [Spec053](../specs/053-discord-natural-language-public-query.md), [검증 보고](../tests/reports/spec053-natural-language-public-query-2026-10-07.md)를 참고한다.
 
 생성 자료와 공개 정의는 출제 전에 검산·고정한다. 임의 자연어 보고 수치 전체의 자동 검산은 미지원이며 미검산을 감점으로 만들지 않는다. 해당 정의·난이도·자료·모델·코드의 반복 평가 품질 검증이 없으면 점수는 보류하고 피드백을 제공한다.
 
@@ -72,9 +72,9 @@ Compose에는 discord-generation 영구 볼륨을 추가했다. 배포 시 기�
 
 1. Spec045 코드 반영·명령 동기화 후에는 부모 채널에서 `/training practice:analysis text:튜토리얼 완료율 하락을 분석하고 싶어 difficulty:intermediate`를 실행한다. text는 필수이며 help_level 선택은 유지한다. 기존 이미지로 실행 중인 봇은 이전 topic 형식을 사용한다.
 2. 최초 Interaction을 바로 지연 응답하고, 과제 준비 뒤 비공개 과제 스레드와 업무 안내를 보낸다.
-3. 스레드에서 `/query text:...`로 새 조회를 요청한다. 확인 질문에는 답장·봇 멘션 또는 `/answer text:...`로 답한다.
+3. 스레드에서 `/data text:...`로 새 조회를 요청한다. 확인 질문에는 답장·봇 멘션 또는 `/answer text:...`로 답한다.
 4. `/help text:...`로 도움을 요청한다. `/sql execution_id:...`로 실제 실행 SQL을 보고 `/evidence execution_id:...`로 보고 근거를 선택한다. 이 두 명령이 버튼 대안이다.
-5. `/query text:...`는 새 조회를 시작한다. 봇 확인 질문에는 해당 메시지에 답장하거나 멤버 목록의 `@DA-Agent` 봇을 선택해 멘션과 함께 답한다. `/answer text:...`로도 현재 질문에 답할 수 있다. 내용 수신이 제한된 답장은 멘션 또는 `/answer` 사용 안내가 나온다. 과거 질문에 대한 답장은 최신 질문으로 안내하며 일반 채팅은 자동 조회하지 않는다.
+5. `/data text:...`는 새 조회를 시작한다. 봇 확인 질문에는 해당 메시지에 답장하거나 멤버 목록의 `@DA-Agent` 봇을 선택해 멘션과 함께 답한다. `/answer text:...`로도 현재 질문에 답할 수 있다. 내용 수신이 제한된 답장은 멘션 또는 `/answer` 사용 안내가 나온다. 과거 질문에 대한 답장은 최신 질문으로 안내하며 일반 채팅은 자동 조회하지 않는다.
 6. `/report text:...`로 초안·수정본을 저장하고 긴 보고는 `/report text:... append:true`로 이어 쓴다. `/help kind:분석 방향` 또는 `kind:중간 검토`로 도움 종류를 선택할 수 있다. `/help`의 `kind`에서 데이터 사전·평가 기준·전체 명령을 선택하면 질문 입력 없이 공개 자료를 확인할 수 있다. 첫 안내에는 업무 요청, 주별 가입 대상, UTC 관측 경계, 데이터의 필수 사실과 다음 행동만 표시한다. 보고 후속 질문에도 답장·멘션·`/answer` 또는 `/followup text:...`로 답할 수 있다. `/submit`으로 최종 제출한다.
 7. `/end`로 중단한다. `/resume session_id:...`로 재개하며 ID 생략 시 서비스가 자신의 최근 과제를 찾는다. 스레드 삭제 시 부모 채널에서 `/resume`을 실행하면 기록을 유지하고 새 비공개 공간에 연결한다. 접근 권한 오류는 기존 연결을 보존하고 운영자의 권한 수정을 안내한다.
 
@@ -106,7 +106,7 @@ Compose에는 discord-generation 영구 볼륨을 추가했다. 배포 시 기�
 
 데이터 사전과 성공 조회의 첫 10행을 한글 PNG 표로 첨부한다. 표를 누르면 Discord 미디어 뷰어에서 확대할 수 있다. 기호·공백으로 열을 정렬하지 않는다. 숫자는 오른쪽 정렬하고 NULL·빈 결과·표시 제한·불완전 수집을 구분한다. 계산 기준은 한글 목록으로, 실행 ID·SQL·근거 선택은 기존 명령으로 제공한다. 이미지 대체 설명도 포함한다.
 
-- `/query text:데이터 사전 보여줘`, `/help text:users 데이터 사전 알려줘`, `@DA-Agent 데이터 사전 보여줘`로 공개 사전을 조회한다. 모델·SQL을 호출하지 않으며 진행 중인 조회 확인 조건을 유지한다.
+- `/data text:데이터 사전 보여줘`, `/help text:users 데이터 사전 알려줘`, `@DA-Agent 데이터 사전 보여줘`로 공개 사전을 조회한다. 모델·SQL을 호출하지 않으며 진행 중인 조회 확인 조건을 유지한다.
 - 자연어 SQL 조회가 성공하면 결과 표를 자동으로 첨부한다. 첫 안내는 간결하게 표시한다. 사전 표는 `/help`의 데이터 사전 선택이나 사전 조회 요청으로 확인한다.
 - 봇에 파일 첨부(Attach Files) 권한이 필요하다. 첨부 실패 시 행별 목록으로 값을 제공하며 성공 조회를 다시 실행하지 않는다.
 - `requirements-discord.txt`에 Pillow를 포함하며 Dockerfile.discord에서 Noto CJK 글꼴을 설치한다. Windows는 맑은 고딕을 사용한다. 다른 실행 환경은 `DISCORD_TABLE_FONT`와 선택 사항인 `DISCORD_TABLE_BOLD_FONT`에 한글 글꼴 경로를 설정한다.
@@ -141,3 +141,5 @@ Discord 관련 자동 테스트 115개 통과, 전용 테스트 DB가 필요한 
 출제 수정은 최신 초안 하나와 현재 오류·허용 표 관계만 전달하며 전체 실패 이력은 비공개로 보존한다. 내부 입력 크기 검사와 65초 공유 예산을 통과한 외부 전송 시도만 출제 요청/일일 추론 호출 횟수에 반영한다. 분당 예산 부족은 대기 시간을 안내하며 /retry는 대기 뒤 수동 실행한다. 내부 입력 초과·인증 설정·요청별 호출 소진은 원인을 해결해야 하므로 무조건 재시도 버튼을 제공하지 않는다. 일일 제한은 다음 날 재시도한다. 사용자 목표·난이도·계정 분모·관계 검증은 유지한다.
 
 DISCORD_API_BUDGET_DIR은 기본으로 DISCORD_GENERATION_DIRECTORY/api-budget을 사용한다. SQLite 공유 예산은 기존 generation 볼륨에 보존하며 4열/5열 DB를 모두 지원한다. 실제 호출 전에 최대130초 예산 회복을 기다리고, 기다리는 중에는 추론 호출 수를 차감하지 않는다. 다른 배포 체크아웃은 보존하고 통합한 현재 코드로 운영 봇을 갱신했다. [Spec046](../specs/046-discord-bounded-generation-repair.md), [현재 검증 보고](../tests/reports/generation-integration-2026-10-07.md).
+
+조회 명령어 변경 (2026-10-08): `/query`를 `/data`로 변경했다. 위 사용 예시는 수정된 코드 기준이며, 운영 봇의 명령어는 배포와 동기화 후 바뀐다.
