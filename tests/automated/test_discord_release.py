@@ -125,9 +125,20 @@ def test_compose_preserves_environment_external_volumes_and_network(tmp_path):
     assert spec['volumes']['volume0'] == dict(external=True, name='existing-records')
     assert spec['networks']['network0'] == dict(external=True, name='project_default')
     assert spec['services']['bot']['volumes'][1]['read_only'] is True
+    current['Config']['Env'] = ['LITERAL_VALUE=cost$5-${not_a_variable}']
+    escaped = release.compose_spec(current, 'reviewed-image')
+    assert escaped['services']['bot']['environment'] == ['LITERAL_VALUE=cost$$5-$${not_a_variable}']
     secret.unlink()
     with pytest.raises(release.DeploymentError, match='mount is unavailable'):
         release.compose_spec(current, 'reviewed-image')
+
+
+def test_docker_desktop_bind_paths_round_trip_after_recreate():
+    vm_path = '/run/desktop/mnt/host/c/Users/Administrator/수업자료/token'
+    windows_path = 'C:/Users/Administrator/수업자료/token'
+    assert release.host_bind_source(vm_path, 'nt') == windows_path
+    assert release.host_bind_source(windows_path, 'nt') == windows_path
+    assert release.host_bind_source(vm_path, 'posix') == vm_path
 
 
 def test_concurrent_deployment_is_rejected_and_lock_released(tmp_path):

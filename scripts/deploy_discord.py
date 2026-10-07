@@ -96,13 +96,23 @@ def main_revision(root, requested):
     return match[1], revision
 
 
+def host_bind_source(source, platform=None):
+    # Docker Desktop reports Windows binds using its Linux VM path after recreate.
+    if (platform or os.name) == 'nt':
+        match = re.fullmatch(r'/run/desktop/mnt/host/([A-Za-z])/(.+)', source)
+        if match:
+            return match[1].upper() + ':/' + match[2]
+    return source
+
+
 def compose_spec(current, image):
     labels = current['Config']['Labels']
     if labels.get('com.docker.compose.service') != 'bot':
         raise DeploymentError('The target must be the existing Compose bot service')
     if current['HostConfig'].get('Privileged') or current['HostConfig'].get('NetworkMode') == 'host':
         raise DeploymentError('Custom privileged/host-network deployments need a reviewed adapter')
-    service = dict(image=image, environment=current['Config']['Env'], restart='unless-stopped',
+    # Compose interpolates dollar signs even in JSON; retain literal runtime values.
+    service = dict(image=image, environment=[value.replace('$', '$$') for value in current['Config']['Env']], restart='unless-stopped',
                    volumes=[], networks={}, working_dir=current['Config'].get('WorkingDir') or '/app')
     spec = dict(services={'bot': service}, volumes={}, networks={})
     for i, mount in enumerate(current['Mounts']):
@@ -112,9 +122,10 @@ def compose_spec(current, image):
             spec['volumes'][key] = dict(external=True, name=mount['Name'])
             item['source'] = key
         elif mount['Type'] == 'bind':
-            if not Path(mount['Source']).exists():
+            source = host_bind_source(mount['Source'])
+            if not Path(source).exists():
                 raise DeploymentError('An existing secret/file mount is unavailable; preserve or repair it before deployment')
-            item['source'] = mount['Source']
+            item['source'] = source
         else:
             raise DeploymentError('Unsupported mount type; deployment stopped')
         service['volumes'].append(item)
