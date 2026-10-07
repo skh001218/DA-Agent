@@ -93,6 +93,7 @@ def create_client(service, settings):
 
         async def generation_controls(self,channel,session):
             if session.get('generation',{}).get('status') not in {'accepted','failed','interrupted'}: return
+            if session['generation'].get('error_code') in {'api_input_budget','planning_limit','api_key_missing','api_key_invalid','model_unavailable'}: return
             view=discord.ui.View(timeout=None)
             view.add_item(discord.ui.Button(label='출제 재시도',custom_id='generation-retry:'+session['session_id']))
             await channel.send('저장된 요청으로 수동 재시도합니다. 남은 API 한도가 적용됩니다.',view=view)

@@ -68,7 +68,7 @@ def scenario(service,*,live=False,text=None,difficulty='intermediate',retry_resu
     else:
         owner='spec035-'+uuid.uuid4().hex
         session=service.start(owner,'spec035-guild','spec035-parent',uuid.uuid4().hex,
-            text=text or '반복 행동 계정의 활동량과 정상 반례를 비교하고 싶어',difficulty=difficulty)
+            text=text or '반복 행동 계정의 활동량과 정상 반례를 비교하고 싶어',difficulty=difficulty,practice='analysis')
         sid=session['session_id']
     if not live:
         service.store.save_generation_job(owner,sid,{'source_case':{'topic':'반복 행동','sources':[]}})
@@ -122,7 +122,7 @@ def preview_app(settings):
             'executions':doc['executions'],'reports':doc['reports'],'evaluations':doc['evaluations']}
     @app.post('/training')
     def training(body:dict):
-        doc=service.start(owner,'spec035-guild','spec035-parent',uuid.uuid4().hex,text=body.get('text',''),difficulty=body.get('difficulty','intermediate'))
+        doc=service.start(owner,'spec035-guild','spec035-parent',uuid.uuid4().hex,text=body.get('text',''),difficulty=body.get('difficulty','intermediate'),practice='analysis')
         service.store.save_generation_job(owner,doc['session_id'],{'source_case':{'topic':'반복 행동','sources':[]}})
         doc=service.generate(owner,doc['session_id'])
         return response(doc,service.resume(owner,'spec035-guild',doc['session_id'])['messages'])
@@ -143,6 +143,7 @@ def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--port',required=True,type=int)
     parser.add_argument('--live',action='store_true')
+    parser.add_argument('--budget-dir', default=str(ROOT/'.local/spec035-036-validation/api-budget'))
     parser.add_argument('--key-file')
     parser.add_argument('--model', default='gemma-4-26b-a4b-it')
     parser.add_argument('--diagnostics-dir', help='Private ignored directory for invalid JSON response originals')
@@ -155,13 +156,20 @@ def main():
     args=parser.parse_args()
     directory=ROOT/args.output; directory.mkdir(parents=True,exist_ok=True)
     settings=settings_for(args.port,directory)
+    if args.live:
+        # Concurrent regression startup must not mark live generation interrupted.
+        base=settings.records_dsn.rsplit('/',1)[0]
+        with psycopg.connect(base+'/postgres',autocommit=True) as conn:
+            if not conn.execute("SELECT 1 FROM pg_database WHERE datname='spec035_live_records'").fetchone():
+                conn.execute('CREATE DATABASE spec035_live_records')
+        settings.records_dsn=base+'/spec035_live_records'
     if args.serve:
         import uvicorn
         uvicorn.run(preview_app(settings),host='127.0.0.1',port=args.http_port)
         return
     if args.live:
         if not args.key_file: parser.error('--live requires explicit --key-file')
-        provider=DiscordGemmaProvider(key_file=args.key_file, model=args.model, diagnostics_directory=args.diagnostics_dir)
+        provider=DiscordGemmaProvider(key_file=args.key_file, model=args.model, diagnostics_directory=args.diagnostics_dir,budget_directory=args.budget_dir)
     else: provider=FixtureProvider()
     retry_result=json.loads(Path(args.retry_result).read_text(encoding='utf-8')) if args.retry_result else None
     result=scenario(create_service(settings,provider),live=args.live,text=args.text,difficulty=args.difficulty,retry_result=retry_result)

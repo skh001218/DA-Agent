@@ -57,11 +57,11 @@ class DiscordTrainingService:
         if text is not None:
             from .discord_generation import request
             request(text, 'input-check', difficulty)
-            if practice not in {None, 'analysis', 'sql'}:
+            if practice not in {'analysis', 'sql'}:
                 raise DomainError('practice', 'SQL 연습 또는 분석 연습을 선택하세요.')
-            if practice == 'sql' and not source_session_id and not (
-                '튜토리얼' in text and ('완료율' in text or '3단계' in text)):
-                raise DomainError('unsupported_scope', 'SQL 연습은 현재 튜토리얼 신규 가입자 3단계 완료율을 지원합니다. 다른 텍스트 요청은 분석 연습을 선택하세요.')
+            if practice == 'sql':
+                from .discord_sql_practice import validate_request
+                validate_request(text)
             if source_session_id and practice != 'sql':
                 raise DomainError('practice', '완료 분석 연결은 SQL 연습에서만 사용하세요.')
         if text is None or practice == 'sql':
@@ -621,9 +621,12 @@ class DiscordTrainingService:
             if parent and str(parent) not in document.get('sql_reply_targets', {}):
                 raise DomainError('sql_reply', '이 SQL 과제의 문제 또는 실행 결과 메시지에 답장하세요.')
             source = extract_sql(text)
+            import re
+            notes = re.sub(r'```sql\s*\n[\s\S]*?```', '', text, flags=re.IGNORECASE).strip()
+            notes = re.sub(r'<@!?\d+>', '', notes).strip()
             preview, full = run_full(self.engine.runner, document['session_id'], document['schema_name'], source)
             attempt = dict(id=record_id(), event_id=str(event_id), sql=source, original_text=text,
-                execution_id=preview['execution_id'], result=preview, full_result=full, at=timestamp(),
+                execution_id=preview['execution_id'], result=preview, full_result=full, at=timestamp(), verification_notes=notes,
                 reply_to_message_id=parent, parent_execution_id=document.get('sql_reply_targets', {}).get(str(parent)),
                 input_method='reply' if parent else 'slash')
             document['sql_attempts'].append(attempt)
@@ -652,7 +655,8 @@ class DiscordTrainingService:
                     and len(latest['result'].get('help_history', [])) == len(document['help_history'])):
                 document['state'] = 'completed'
                 return [summary(latest)]
-            result = evaluate(self.engine.runner, document['session_id'], document['task'], document['sql_checks'], attempt)
+            provider = MeteredProvider(self.provider, self.store, document['owner_user_id'], self.daily_limit, document['telemetry']) if self.provider else None
+            result = evaluate(self.engine.runner, document['session_id'], document['task'], document['sql_checks'], attempt, provider=provider)
             result.update(help_history=list(document['help_history']), sql_exposure=document.get('sql_exposure', '미상'))
             entry = dict(id=record_id(), event_id=str(event_id), execution_id=attempt['execution_id'],
                 at=timestamp(), result=result, version=len(document['evaluations']) + 1)

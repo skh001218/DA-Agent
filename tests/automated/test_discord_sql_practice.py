@@ -96,7 +96,10 @@ def test_real_database_equivalent_sql_final_result_and_restart(flow, level, tmp_
     assert len(replay['session']['sql_attempts']) == 1
     evaluation = handle(flow, document, 'submit')
     assert evaluation['session']['state'] == 'completed'
-    assert all(c['status'] == '충족' for c in evaluation['session']['evaluations'][-1]['result']['criteria'])
+    criteria = evaluation['session']['evaluations'][-1]['result']['criteria']
+    assert all(c['status'] == '충족' for c in criteria if c['id'] != 'verification')
+    if level == 'advanced':
+        assert next(c for c in criteria if c['id']=='verification')['status']=='보완 필요'
     assert evaluation['submission']['practice'] == 'sql'
     public = str(evaluation['submission'])
     assert 'sql_checks' not in public
@@ -239,3 +242,20 @@ def test_native_template_reply_routing_wrong_target_and_duplicate(flow, attachme
     saved = service.get_session(owner, document['session_id'])
     assert len(saved['sql_attempts']) == 2
     assert saved['sql_attempts'][-1]['parent_execution_id'] == saved['sql_attempts'][0]['execution_id']
+import json
+
+
+def test_advanced_explanation_is_saved_reviewed_and_restored(flow):
+    document = start(flow, 'advanced')
+    notes = '중복: 고유 가입자 수와 조인 전후 수를 비교하고 재도전은 EXISTS로 확인할 계획입니다. 기간: 시작 직전·시작·종료 직전·종료 시각과 가입일 7일 경계 표본을 대조할 계획입니다. 분모/NULL: 미도전자 포함 고유 가입자와 완료자 수를 따로 계산하고 0명 분모에서 NULL인지 확인할 계획입니다.'
+    checks = [{'id':key,'status':'met','reason':'공개 조건에 연결된 구체적인 검산 계획'} for key in ('duplicates','period','denominator')]
+    flow[0].provider.review.return_value = {'state':'completed','text':json.dumps({'checks':checks}),'model':'gemma-fixture'}
+    first = handle(flow, document, 'sqlrun', block(reference_sql(document['task']))+'\n'+notes)
+    assert first['session']['sql_attempts'][-1]['verification_notes']==notes
+    result = handle(flow, document, 'submit')
+    assert result['submission']['completed']
+    assert all(c['status']=='충족' for c in result['session']['evaluations'][-1]['result']['criteria'])
+    flow[0].provider.review.assert_called_once()
+    restored = DiscordTrainingService(DiscordStore(flow[0].store.dsn),flow[0].engine,Mock(),flow[0].settings).resume(flow[1],'10',document['session_id'])
+    assert restored['session']['sql_attempts'][-1]['verification_notes']==notes
+    assert any(c['title']=='검산 방법 설명' and notes in c['description'] for c in result['submission']['cards'])

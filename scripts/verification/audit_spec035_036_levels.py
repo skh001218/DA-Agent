@@ -20,6 +20,7 @@ from da_agent.discord_sql_practice import reference_sql
 from da_agent.discord_provider import DiscordGemmaProvider
 from da_agent.adaptive_tasks import Recipe
 from da_agent.task_quality import check_quality, structure
+from da_agent.errors import DomainError
 from test_adaptive_tasks import bot_recipe
 
 LEVELS = ('beginner', 'intermediate', 'advanced')
@@ -33,6 +34,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--port', type=int, required=True)
     parser.add_argument('--output', required=True)
+    parser.add_argument('--budget-dir', default=str(ROOT/'.local/spec035-036-validation/api-budget'))
     parser.add_argument('--key-file')
     parser.add_argument('--live', action='store_true')
     parser.add_argument('--live-request', help='Run only this exact request')
@@ -93,20 +95,36 @@ def main():
         item.update(competency=competency, question='플랫폼별 평균 활동량만 계산하세요. 추가 판단은 필요하지 않습니다.',
                     completion='플랫폼별 평균 활동량 표 한 개를 제시하면 완료합니다.')
         crafted['business_case']['requirements'].append(item)
-    check_quality(Recipe.model_validate(crafted))
-    probes={'cosmetic_advanced_accepted':True,
+    try:
+        check_quality(Recipe.model_validate(crafted))
+        cosmetic_accepted=True
+    except (DomainError, ValueError):
+        cosmetic_accepted=False
+    assert not cosmetic_accepted
+    probes={'cosmetic_advanced_accepted':cosmetic_accepted,
         'intermediate_metric_structure':structure(Recipe.model_validate(value)),
         'advanced_metric_structure':structure(Recipe.model_validate(crafted))}
     owner='audit-contract-'+uuid4().hex
-    missing=service.start(owner,'audit-guild','audit-parent',uuid4().hex,text='계정 행동 비교',difficulty='intermediate')
-    probes['analysis_without_practice_state']=missing['state']
-    bypass=service.start(owner,'audit-guild','audit-parent',uuid4().hex,practice='sql',
-        text='튜토리얼 완료율 대신 D7 리텐션을 계산해줘', difficulty='intermediate',help_level='independent')
-    probes['unsupported_sql_text']={'state':bypass['state'],'objective':bypass['task']['objective']}
+    try:
+        service.start(owner,'audit-guild','audit-parent',uuid4().hex,text='계정 행동 비교',difficulty='intermediate')
+        raise AssertionError('missing practice accepted')
+    except DomainError as exc:
+        probes['analysis_without_practice_error']=exc.code
+    try:
+        service.start(owner,'audit-guild','audit-parent',uuid4().hex,practice='sql',
+            text='튜토리얼 완료율 대신 D7 리텐션을 계산해줘',difficulty='intermediate')
+        raise AssertionError('unsupported SQL substituted')
+    except DomainError as exc:
+        probes['unsupported_sql_error']=exc.code
     write(out / 'contract-probes.json', probes)
     if args.live:
         if not args.key_file: parser.error('--live requires --key-file')
-        provider = DiscordGemmaProvider(key_file=args.key_file, model='gemma-4-26b-a4b-it')
+        base=settings.records_dsn.rsplit('/',1)[0]
+        with psycopg.connect(base+'/postgres',autocommit=True) as conn:
+            if not conn.execute("SELECT 1 FROM pg_database WHERE datname='spec035_live_records'").fetchone():
+                conn.execute('CREATE DATABASE spec035_live_records')
+        settings.records_dsn=base+'/spec035_live_records'
+        provider = DiscordGemmaProvider(key_file=args.key_file, model='gemma-4-26b-a4b-it',budget_directory=args.budget_dir)
         live_service = create_service(settings, provider)
         records=[]
         requests = [args.live_request] if args.live_request else (
@@ -126,7 +144,8 @@ def main():
                     'calls':[{k:c[k] for k in ('phase','state','model','reason','usage','provider_diagnostic','quota_diagnostic','json_diagnostic') if k in c}
                              for c in job.get('calls',[])],
                     'validation_failures':job.get('failures',[]),
-                    'rejected_design_issues':[r.get('issues',[]) for r in job.get('rejected_designs',[])]}
+                    'rejected_design_issues':[r.get('issues',[]) for r in job.get('rejected_designs',[])],
+                    'alignment_errors':job.get('alignment_errors',[])}
                 if result['state']=='analysis':
                     restored=create_service(settings,provider).resume(owner,'audit-guild',doc['session_id'])['session']
                     record['restart_restored']=restored['task']==result['task']
