@@ -302,4 +302,3 @@ def render_learning_pdf(data, *, preview=False):
     if pages != [1, 2, 3]:
         raise ValueError('3쪽 분량을 초과했습니다. 내용을 편집하거나 더 긴 템플릿을 선택하세요.')
     return result
-
