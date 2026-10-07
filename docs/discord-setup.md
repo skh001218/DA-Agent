@@ -142,4 +142,4 @@ Discord 관련 자동 테스트 115개 통과, 전용 테스트 DB가 필요한 
 
 DISCORD_API_BUDGET_DIR은 기본으로 DISCORD_GENERATION_DIRECTORY/api-budget을 사용한다. SQLite 공유 예산은 기존 generation 볼륨에 보존하며 4열/5열 DB를 모두 지원한다. 실제 호출 전에 최대130초 예산 회복을 기다리고, 기다리는 중에는 추론 호출 수를 차감하지 않는다. 다른 배포 체크아웃은 보존하고 통합한 현재 코드로 운영 봇을 갱신했다. [Spec046](../specs/046-discord-bounded-generation-repair.md), [현재 검증 보고](../tests/reports/generation-integration-2026-10-07.md).
 
-조회 명령어 변경 (2026-10-08): `/query`를 `/data`로 변경했다. 위 사용 예시는 수정된 코드 기준이며, 운영 봇의 명령어는 배포와 동기화 후 바뀐다.
+조회 명령어 변경 (2026-10-08): `/query`를 `/data`로 변경해 운영에 배포하고 동기화했다. main `1b61395`에서 서버 명령 등록과 실제 `/data text:데이터 사전 보여줘` 응답을 확인했다. [배포 검증 보고](../tests/reports/data-command-release-2026-10-08.md).

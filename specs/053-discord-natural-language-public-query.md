@@ -2,9 +2,9 @@
 
 ## 구현 진행도
 
-- 진행도: 5/6개 완료 (83.3%)
+- 진행도: 6/6개 완료 (100%)
 - 마지막 갱신일: 2026-10-08
-- 남은 작업: `/data` 변경 PR·main CI, 운영 배포와 실제 Discord 화면 확인
+- 남은 작업: 없음
 - 차단 사유: 없음
 
 | 작업 | 상태 | 완료 조건 | 관련 코드 / 검증 결과 |
@@ -14,13 +14,15 @@
 | 결과 화면·다운로드 검증 | 완료 | 첫 10행 미리보기와 수집된 전체 데이터 파일 확인, 불완전 결과·전송 실패 안내 확인 | 실제 Gateway 코드의 PNG/JSON 첨부 검사; IAB 로컬 화면 200행 열기·다운로드 원본 SHA256 일치 |
 | Git·운영 반영 | 완료 | PR CI·main 병합·main CI 성공 후 --apply와 --status 확인 | PR #49; main 5062612 CI 3개 성공; --apply verified; --status running / 83개 파일 검증 |
 | 실제 Discord 확인 | 완료 | 같은 스레드에서 전체 조회 200행·JSON 첨부와 없는 자료의 구체 안내 확인 | 실행 3fe7530c: 200행; 다운로드·저장 근거·독립 SQL 일치; 자료 부족 missing_data와 SQL 미실행 |
-| 조회 명령어 이름 변경 | 검증 대기 | `/data text:...` 등록·기존 조회 연결·도움말 갱신 및 실제 Discord 화면 확인 | discord_bot.py, discord_presentation.py, discord_service.py, discord_transport.py; 실제 SDK 명령 등록·필수 text·콜백→query 처리·모의 응답 전송 확인. Discord 회귀 443 passed / 49 skipped; 운영 화면 미확인 |
+| 조회 명령어 이름 변경 | 완료 | `/data text:...` 등록·기존 조회 연결·도움말 갱신 및 실제 Discord 화면 확인 | SDK 등록·필수 text·query 처리 연결 확인; Discord 회귀 443 passed / 49 skipped. PR #61와 main 1b61395 CI 3개 성공, --apply verified / 88개 파일, 실제 /data 데이터 사전 표 응답과 분석 상태·기존 조회 보존 확인 |
 
 범위 갱신: 사용자의 운영 배포 요청으로 Git·운영 반영과 실제 Discord 확인을 추가하여 3→5개 작업으로 갱신했다.
 
 2026-10-08 범위 갱신: 조회 명령어를 `/data`로 변경하는 작업을 추가하여 5→6개로 갱신했다. 기존 코드의 이름은 `/query`이며 내부 `query` 처리와 저장 기록은 유지한다. 기존 운영 검증 기록은 변경 전 명령어 기준이다. 후속 운영 배포 요청에 따라 PR·CI·main 병합·배포·실제 화면 확인까지 진행한다. 배포 후 과제 스레드에서 `/data text:데이터 사전 보여줘`를 실행해 명령 표시와 응답을 확인한다.
 
-로컬 검증: `python -m pytest tests/automated -q -k discord` — 443 passed, 49 skipped, 454 deselected. 운영 요청 후 전체 `python -m pytest tests/automated -q` — 850 passed, 96 skipped. `git diff --check` 통과. 운영 명령 동기화·실제 Discord UI 검증은 배포 후 진행한다.
+로컬 검증: `python -m pytest tests/automated -q -k discord` — 443 passed, 49 skipped, 454 deselected. 운영 요청 후 전체 `python -m pytest tests/automated -q` — 850 passed, 96 skipped. `git diff --check` 통과. 운영 명령 동기화·실제 Discord UI 검증 결과는 아래에 기록했다.
+
+2026-10-08 운영 확인 완료: [PR #61](https://github.com/skh001218/DA-Agent/pull/61)과 병합 main `1b61395c3bc7e91f6c55d4a63b2db27d73092a15`의 CI 3개가 각각 성공했다. 처리 중인 봇 요청이 끝난 뒤 `python scripts/deploy_discord.py --apply`와 `--status`로 main 커밋·Discord 연결·실행 소스 88개를 확인했다. 서버 등록 목록에 `/data`와 필수 `text`가 있으며 `/query`는 없다. 현재 저장된 [분석 과제 스레드](https://discord.com/channels/1556888486919934064/1557374704099139585)에서 `/data text:데이터 사전 보여줘`를 실행하여 `new_users` 데이터 사전 PNG와 정상 응답을 확인했다. 이벤트 `1557447945069133885`가 `query` 처리로 완료됐으며 분석 상태·조회 개수·대기 조건은 유지됐다. [배포 검증 보고](../tests/reports/data-command-release-2026-10-08.md).
 
 ## 목적과 범위
 
