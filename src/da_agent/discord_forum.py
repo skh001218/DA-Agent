@@ -22,6 +22,62 @@ class ResultForumPublisher:
             embed.add_field(name='원래 과제 공간', value='[과제 스레드 열기](' + card['source_url'] + ')', inline=False)
         return embed
 
+    def post_embeds(self, submission, user):
+        """Keep the result in the starter, with the complete PDF for overflow.
+
+        Packing section text avoids the ten-embed limit for submissions with
+        many short cards. Include author, footer and fields in the 6,000 budget.
+        """
+        import discord
+
+        summary = self.embed(submission, 0, user)
+        title = '제출 내용과 평가'
+
+        def pack(sections):
+            body = '\n\n'.join(sections)
+            descriptions = []
+            while body:
+                end = min(len(body), 4000)
+                if end < len(body):
+                    boundary = body.rfind('\n', 0, end)
+                    if boundary > 0:
+                        end = boundary + 1
+                descriptions.append(body[:end])
+                body = body[end:]
+            return [summary, *[discord.Embed(title=title, description=part,
+                colour=summary.colour) for part in descriptions]]
+
+        cards = submission['cards'][1:]
+        sections = [f"**{card['title']}**\n{card['description']}" for card in cards]
+        embeds = pack(sections)
+        if len(embeds) <= 10 and sum(len(embed) for embed in embeds) <= 6000:
+            return embeds
+
+        notice = ('**전체 제출·평가는 이 포스트의 PDF에 있습니다.**\n'
+                  'Discord 본문 한도를 초과해 아래에는 각 항목의 일부를 표시합니다. '
+                  '전체 원문과 평가 근거·개선 행동은 PDF 다운로드로 확인하세요.')
+        # Report chunks share a preview; every assessment section remains
+        # eligible even when a long report would otherwise consume the budget.
+        previews, seen = [], set()
+        for card in cards:
+            key = card.get('pdf_kind') or card['title'].split(' · 이어서 ')[0]
+            if key not in seen:
+                previews.append(card)
+                seen.add(key)
+        budget = max(0, 6000 - len(summary) - len(title) * 2 - len(notice) - 20)
+        per_section = min(500, budget // max(len(previews), 1))
+        sections = [notice]
+        for card in previews:
+            heading = f"**{card['title']}**\n"
+            if per_section <= len(heading) + 5:
+                break  # The PDF still contains every section in extreme cases.
+            available = per_section - len(heading) - 2
+            text = card['description']
+            if len(text) > available:
+                text = text[:available - 1] + '…'
+            sections.append(heading + text)
+        return pack(sections)
+
     async def forum(self, parent, user):
         import discord
         guild = parent.guild
@@ -63,6 +119,7 @@ class ResultForumPublisher:
         from .discord_pdf_view import ResultPDFView
         forum = await self.forum(parent, user)
         filename = pdf_filename(submission)
+        embeds = self.post_embeds(submission, user)
 
         async def pdf_file():
             try:
@@ -94,7 +151,7 @@ class ResultForumPublisher:
                 file = await pdf_file()
                 await save(status='creating', forum_id=str(forum.id))
                 try:
-                    created = await forum.create_thread(name=submission['post_name'], embed=self.embed(submission, 0, user),
+                    created = await forum.create_thread(name=submission['post_name'], embeds=embeds,
                         file=file, view=ResultPDFView([forum.guild.id]),
                         allowed_mentions=discord.AllowedMentions.none(), applied_tags=tags,
                         reason='저장된 최종 제출·평가 결과 게시')
@@ -115,25 +172,13 @@ class ResultForumPublisher:
         if not any(a.filename == filename for a in starter.attachments):
             file = await pdf_file()
             try:
-                await starter.edit(attachments=[*starter.attachments, file],
+                await starter.edit(embeds=embeds, attachments=[*starter.attachments, file],
                                    view=ResultPDFView([forum.guild.id]),
                                    allowed_mentions=discord.AllowedMentions.none())
             finally:
                 file.close()
         else:
-            await starter.edit(view=ResultPDFView([forum.guild.id]))
-        present = set()
-        async for message in thread.history(limit=None):
-            if message.author.id == self.client.user.id:
-                present.update(e.footer.text for e in message.embeds)
-                for index in range(len(submission['cards'])):
-                    if any(e.footer.text == legacy_card_marker(submission, index) or
-                           (e.footer.text == card_marker(submission, index) and index == 0)
-                           for e in message.embeds):
-                        await message.edit(embed=self.embed(submission, index, user), allowed_mentions=discord.AllowedMentions.none())
-                        present.add(card_marker(submission, index))
-        for index in range(len(submission['cards'])):
-            if card_marker(submission, index) not in present:
-                await thread.send(embed=self.embed(submission, index, user), allowed_mentions=discord.AllowedMentions.none())
+            await starter.edit(embeds=embeds, view=ResultPDFView([forum.guild.id]),
+                               allowed_mentions=discord.AllowedMentions.none())
         await save(status='published', forum_id=str(forum.id), post_id=str(thread.id), error_code=None)
         return f"https://discord.com/channels/{forum.guild.id}/{thread.id}"

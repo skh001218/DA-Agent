@@ -1,9 +1,16 @@
 FROM python:3.12.10-slim
+ARG GIT_SHA
+ARG SOURCE_REF
+LABEL org.opencontainers.image.revision=$GIT_SHA \
+      org.opencontainers.image.source="https://github.com/skh001218/DA-Agent" \
+      io.da-agent.source-ref=$SOURCE_REF
 RUN apt-get update && apt-get install -y --no-install-recommends fonts-noto-cjk fonts-nanum && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 COPY requirements.lock.txt requirements-discord.txt ./
 RUN pip install --no-cache-dir -r requirements.lock.txt -r requirements-discord.txt
 COPY src ./src
 COPY scripts/run_discord_container.py ./scripts/run_discord_container.py
+COPY scripts/build_discord_release.py scripts/check_discord_release.py ./scripts/
+RUN python scripts/build_discord_release.py --revision "$GIT_SHA" --source-ref "$SOURCE_REF" --output /app/release.json
 ENV PYTHONPATH=/app/src PYTHONUNBUFFERED=1
 CMD ["python", "scripts/run_discord_container.py"]

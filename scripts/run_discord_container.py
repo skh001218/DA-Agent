@@ -1,8 +1,11 @@
 """Read mounted secrets and start the isolated Discord Gateway process."""
 import os
 from pathlib import Path
-from da_agent import discord_bot
+from check_discord_release import verify
 
+release = verify()
+print(f"Discord release: revision={release['revision']}; source_ref={release['source_ref']}", flush=True)
+from da_agent import discord_bot
 os.environ['DISCORD_BOT_TOKEN'] = Path('/run/secrets/discord_token').read_text(encoding='utf-8-sig').strip()
 original_create_client = discord_bot.create_client
 
