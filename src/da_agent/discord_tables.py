@@ -1,6 +1,7 @@
 """Public tabular payloads and deterministic Korean PNG rendering for Discord."""
 import math
 import os
+import json
 import re
 from decimal import Decimal
 from io import BytesIO
@@ -28,9 +29,16 @@ def result_table(execution):
              'rate_percent': '비율 (%)', 'user_count': '고유 사용자 수',
              'attempts_count': '도전 이벤트 수', 'duplicate_attempts': '중복 도전 이벤트 수'}
     columns = [c['name'] if isinstance(c, dict) else str(c) for c in result.get('columns', [])]
-    return dict(title='조회 결과', subtitle='실행 ID: ' + execution['execution_id'],
+    table = dict(title='조회 결과', subtitle='실행 ID: ' + execution['execution_id'],
                 columns=[names.get(name, name) + ('\n' + name if name in names else '') for name in columns],
                 rows=result.get('rows', [])[:10], after_message=0)
+    if execution.get('conditions', {}).get('operation') == 'select':
+        table['download'] = dict(filename='query-' + execution['execution_id'] + '.json',
+                                content=json.dumps(dict(execution_id=execution['execution_id'],
+                                    columns=result.get('columns', []), rows=result.get('rows', []),
+                                    result_complete=result.get('result_complete', False),
+                                    total_row_count=result.get('total_row_count')), ensure_ascii=False))
+    return table
 
 
 def cell_text(value):
