@@ -20,36 +20,27 @@ $conditions
 
 시작하기
 /query로 데이터를 조회하세요.
+/help kind:문제 원문으로 전체 배경·가정·판단 조건을 확인하세요.
 /help로 데이터 사전·평가 기준을 확인하세요.
 /report로 보고를 작성하고 후속 질문에 답한 뒤 /submit로 제출하세요.$sources''')
 
 
 def generated_task_intro(task):
     """Render saved public facts without model calls or additional analysis hints."""
-    sections = task.get('intro_sections') or {}
-    background = [sections.get('background') or task['objective']]
-    background.extend(sections.get('context', []))
-    if sections.get('decision'):
-        background.append('판단할 업무 결정: ' + sections['decision'])
+    from .discord_task_brief import public_sections, background_preview, period_lines, short_text
+    sections = public_sections(task)
     questions = []
-    judgments = sections.get('judgments', [])
     for index, question in enumerate(sections.get('questions', [])):
         questions.append(f'{index + 1}. {question}')
-        if index < len(judgments) and judgments[index]:
-            questions.extend('   ' + line for line in judgments[index].splitlines())
     if not questions:
         # Older saved tasks keep the full public request; valid_paths can be
         # coaching hints in legacy tasks and must not become mandatory steps.
         questions.append('위 업무 요청에 따라 분석하세요.')
-    period = task['period']
-    conditions = ['• 관측 기간: ' + period['description'], '• 시간 기준: ' + task['timezone']]
-    if period.get('observation_end'):
-        conditions.append('• 자료 관측 종료: ' + period['observation_end'] + ' 미만')
+    conditions = period_lines(task)
     dictionary = task.get('dictionary', {})
     for name in task['schema']:
         unit = dictionary.get(name, {}).get('unit')
-        conditions.append('• 제공 표: ' + name + (' — 한 행: ' + unit if unit else ''))
-    conditions.extend('• 연습 조건: ' + condition for condition in sections.get('conditions', []))
+        conditions.append('• 제공 표: ' + name + (' — ' + short_text(unit, 70) if unit else ''))
     conditions.extend('• 한계: ' + limit for limit in task.get('accepted_limits', []))
     quality = task['quality_information']
     conditions.extend(['• 자료 안내: ' + quality['collection'], '• 검산 범위: ' + quality['verification_scope']])
@@ -60,7 +51,7 @@ def generated_task_intro(task):
                for item in source.get('sources', [])]
     difficulty = {'beginner':'초급', 'intermediate':'중급', 'advanced':'고급'}.get(task.get('difficulty'), '미상')
     return BASIC_PROBLEM_TEMPLATE.substitute(title=task['title'], difficulty=difficulty,
-        background='\n'.join(background), questions='\n'.join(questions), conditions='\n'.join(conditions),
+        background=background_preview(task), questions='\n'.join(questions), conditions='\n'.join(conditions),
         sources=('\n\n' + '\n'.join(sources)) if sources else '')
 
 
@@ -104,6 +95,9 @@ def task_intro(document):
 
 
 def reference_info(task, kind):
+    if kind == 'task_details':
+        from .discord_task_brief import task_details
+        return task_details(task) if task.get('generation_version') else '문제 원문\n' + task['objective']
     if kind == 'data_dictionary':
         lines = ['데이터 사전']
         for name, entry in task['dictionary'].items():
@@ -149,7 +143,7 @@ COMMAND_TIPS = {
     'sqlrun': ('SQL 연습에서 코드 블록 답장 대신 풀이를 실행합니다.', 'text: sql 코드 블록 (필수, 설명 포함 최대 1,900자)', '/sqlrun text:```sql\nSELECT ...\n```'),
     'query': ('새 조회를 요청합니다. 기존 확인 질문에 답할 때는 답장·멘션 또는 /answer를 사용하세요.', 'text: 조회 요청 (필수)', '/query text:두 주의 채널별 튜토리얼 3단계 완료율을 비교해줘'),
     'answer': ('현재 봇 질문에 이어서 답합니다. 조회 조건·분석 이유·보고 후속 질문에 사용할 수 있습니다.', 'text: 답변 (필수)', '/answer text:과제 기간의 신규 가입 고유 사용자를 분모로 사용해주세요'),
-    'help': ('개념·분석 방향·중간 피드백 또는 참고 정보를 확인합니다.', 'text: 질문 (선택), kind: 개념/분석 방향/중간 검토/데이터 사전/평가 기준/전체 명령 (선택)', '/help kind:데이터 사전'),
+    'help': ('개념·분석 방향·중간 피드백 또는 참고 정보를 확인합니다.', 'text: 질문 (선택), kind: 문제 원문/개념/분석 방향/중간 검토/데이터 사전/평가 기준/전체 명령 (선택)', '/help kind:문제 원문'),
     'sql': ('성공한 저장 조회의 실제 실행 SQL을 보여줍니다.', 'execution_id: 조회 결과에 표시된 실행 ID (필수)', '/sql execution_id:실행ID'),
     'evidence': ('성공한 저장 조회를 보고 근거로 선택합니다. 보고 저장 전에 선택하세요.', 'execution_id: 조회 결과에 표시된 실행 ID (필수)', '/evidence execution_id:실행ID'),
     'report': ('보고를 작성하거나 수정합니다. 평가 완료 후에도 새 보고 버전을 저장할 수 있고 이전 보고·평가는 보존합니다.', 'text: 보고 내용 (필수), append: True면 최신 보고 뒤에 줄바꿈 후 추가. False 또는 생략하면 입력 내용만 저장. 첫 보고에서는 True여도 새로 작성합니다.', '/report text:분석 결과와 대응 제안…\n/report text:추가 검증과 한계… append:True\n내용을 모두 작성한 뒤 새 후속 질문에 답하고 /submit하세요.'),
