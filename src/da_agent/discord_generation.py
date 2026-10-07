@@ -17,6 +17,29 @@ VERSION = 'discord-generation-v1'
 ACTIVE = {'planning', 'preparing_data', 'validating'}
 
 
+def retain_alignment_failure(job, message, phase, code, issues, revision=0):
+    """Keep semantic rejection and the attempted full recipe for manual repair."""
+    if not job.get('recipe') or not job.get('alignment_repair_used'):
+        return False
+    if phase != 'adaptive-alignment-repair' and not (phase == 'adaptive-alignment' and code == 'goal_mismatch'):
+        return False
+    text = json.dumps(job['recipe'], ensure_ascii=False)
+    if phase == 'adaptive-alignment-repair':
+        # Older private jobs may contain patches; this provider requests full recipes.
+        candidates = [job.get('alignment_candidate', {})] + list(reversed(job.get('recipe_patches', [])))
+        for candidate in candidates:
+            same = candidate.get('request_message') == message or ('request_message' not in candidate and revision == 0)
+            if candidate.get('phase') == 'alignment' and same:
+                text = candidate.get('after') or candidate.get('before') or text
+                break
+    semantic = (job.get('alignment_errors') or [[]])[-1]
+    job.setdefault('rejected_designs', []).append({'text': text, 'issues': semantic + issues,
+        'request_message': message, 'requires_model_repair': True})
+    job.pop('recipe', None)
+    job.pop('alignment', None)
+    return True
+
+
 def failure_message(code, diagnostic=None):
     from .codex_provider import CLI_ERRORS
     if code in CLI_ERRORS:
@@ -190,6 +213,11 @@ class DiscordGeneration:
             doc['state']='planning'
         self.notify(doc)
         job=self.store.generation_job(owner,sid)
+        if retry and job.get('failures'):
+            failure = job['failures'][-1]
+            retain_alignment_failure(job, doc['generation']['message'],
+                failure.get('phase', doc['generation'].get('phase')), failure['code'],
+                failure.get('issues', []), doc['generation'].get('revision', 0))
         synthetic = getattr(self.service.provider, 'generation_mode', None) == 'synthetic'
         if synthetic and job.get('source_case', {}).get('version') != 'discord-synthetic-v1':
             # Preserve previous attempts for diagnosis but do not reuse a recipe
@@ -301,16 +329,20 @@ class DiscordGeneration:
                     'request_message' not in rejected[-1] and doc['generation'].get('revision',0)==0
                     and doc['generation'].get('original_message')==data.message))
                 reusable = None
+                semantic_issues = []
                 if retry and same_request:
                     previous = rejected[-1]
                     issues = previous['issues']
+                    if previous.get('requires_model_repair'):
+                        semantic_issues = deepcopy(issues)
                     try:
                         candidate = adaptive.preflight(adaptive.parse_recipe({'state':'completed','text':previous['text']}),seed,data)
                         if candidate.status=='ready' and candidate.difficulty==data.difficulty:
                             check_quality(candidate,recent,data.intentional_repeat)
-                            reusable = candidate
+                            if not previous.get('requires_model_repair'):
+                                reusable = candidate
                     except (DomainError, ValueError) as exc:
-                        issues = getattr(exc,'validation_issues',[{'message':str(exc)}])
+                        issues = issues + getattr(exc,'validation_issues',[{'message':str(exc)}])
                     from .discord_design import repair_messages
                     messages=repair_messages(design_messages(),previous['text'],issues)
                 recipe = reusable
@@ -321,11 +353,12 @@ class DiscordGeneration:
                         if recipe.status=='ready': check_quality(recipe,recent,data.intentional_repeat)
                         break
                     except (DomainError,ValueError) as exc:
-                        issues=getattr(exc,'validation_issues',[{'message':str(exc)}])
+                        issues=semantic_issues+getattr(exc,'validation_issues',[{'message':str(exc)}])
                         job.setdefault('design_errors',[]).append(issues)
                         # Keep rejected model recipes server-side for diagnosis;
                         # they must never become public task/evaluation material.
-                        job.setdefault('rejected_designs',[]).append({'issues':issues,'text':result.get('text',''), 'request_message':data.message})
+                        job.setdefault('rejected_designs',[]).append({'issues':issues,'text':result.get('text',''),
+                            'request_message':data.message, **({'requires_model_repair':True} if semantic_issues else {})})
                         save()
                         if attempt==2: raise
                         from .discord_design import repair_messages
@@ -354,7 +387,14 @@ class DiscordGeneration:
                         from .discord_design import repair_messages
                         messages=repair_messages(design_messages(),json.dumps(recipe.model_dump(),ensure_ascii=False),issues)
                         original_labels=recipe.labels_public
-                        recipe=adaptive.preflight(adaptive.parse_recipe(call(messages,'adaptive-alignment-repair')),seed,data)
+                        candidate = {'phase':'alignment', 'before':json.dumps(recipe.model_dump(),ensure_ascii=False),
+                            'request_message':data.message}
+                        job['alignment_candidate'] = candidate
+                        save()
+                        result = call(messages,'adaptive-alignment-repair')
+                        candidate['after'] = result.get('text', '')
+                        save()
+                        recipe=adaptive.preflight(adaptive.parse_recipe(result),seed,data)
                         if recipe.status!='ready' or recipe.difficulty!=data.difficulty or recipe.labels_public!=original_labels:
                             raise DomainError('goal_mismatch','검토 수정에서 요청 상태·난이도·공개 라벨을 변경할 수 없습니다.')
                         check_quality(recipe,recent,data.intentional_repeat)
@@ -402,5 +442,8 @@ class DiscordGeneration:
                 return current
             code=exc.code if isinstance(exc,DomainError) else 'generation_failed'
             message=exc.message if isinstance(exc,DomainError) else '문제 설계·자료 검증에 실패했습니다. 검증되지 않은 과제는 공개하지 않았습니다.'
-            job.setdefault('failures',[]).append({'code':code,'at':timestamp(),'issues':getattr(exc,'validation_issues',[])}); save()
+            phase = current['generation'].get('phase')
+            issues = getattr(exc,'validation_issues',[])
+            retain_alignment_failure(job, data.message, phase, code, issues, doc['generation'].get('revision',0))
+            job.setdefault('failures',[]).append({'code':code,'phase':phase,'at':timestamp(),'issues':issues}); save()
             return self.update(owner,sid,token,'failed',error_code=code,error=message)

@@ -1,0 +1,223 @@
+{
+  "request": "실무에서 발생하는 문제를 분석하고 싶어",
+  "difficulty": "advanced",
+  "provider": "codex_cli",
+  "generation_calls": 7,
+  "rate_limit_errors": 0,
+  "initial_failure": {
+    "code": "goal_mismatch",
+    "calls": 5,
+    "reason": "비공개 생성 명세와의 일치를 학습자 검산 조건으로 요구"
+  },
+  "manual_retry": "전체 Recipe 수정 후 출제 성공",
+  "phases": [
+    {
+      "phase": "generation",
+      "passed": true,
+      "error_code": null,
+      "calls": 7
+    },
+    {
+      "phase": "query",
+      "passed": true,
+      "messages": [
+        "실행 성공 · ID 599527d2-9a67-4120-92b4-78b09eb9a4e7\n확정 계산 기준\n• 요청한 공개 자료의 행·조건·비교 기준으로 조회했습니다. 실행 SQL은 /sql에서 확인할 수 있습니다.\n조회 결과는 첨부 표에서 확인하세요. 표를 누르면 확대할 수 있습니다.\n수집한 전체 조회 데이터는 첨부 JSON 파일에서 확인할 수 있습니다.\n읽기 전용 · 실행 제한 5초 · 데이터 버전 discord-generated-57e8fcf23842aba9c392f01e-data · /sql로 SQL 확인, /evidence로 보고 연결",
+        "멘토: 이 비교를 선택한 이유와 검토할 가설을 설명해주세요. 어떤 결과가 나오면 가설을 수정하거나 기각하겠습니까? 이미 설명한 내용은 보고에도 연결할 수 있습니다.\n이 메시지에 답장하거나 @DA-Agent로 답해주세요. 메시지를 읽을 수 없으면 /answer를 사용하세요. 새 조회는 /query로 시작하세요."
+      ]
+    },
+    {
+      "phase": "education",
+      "passed": true,
+      "messages": [
+        "선택 편향: 분석에 포함된 대상이 전체 대상을 고르게 대표하지 못해 결과가 치우치는 현상입니다.\n완료된 로딩만 분석하면, 로딩 중 나간 이용자의 경험은 빠질 수 있습니다.\n누가 포함되고 제외됐는지 확인하고, 결과를 전체 이용자에게 일반화할 때 주의하세요."
+      ]
+    },
+    {
+      "phase": "evaluation",
+      "passed": true,
+      "held": true,
+      "total": null,
+      "quality_status": "passed"
+    },
+    {
+      "phase": "resume",
+      "passed": true
+    }
+  ],
+  "task": {
+    "title": "모바일 로딩부터 개선해야 할까?",
+    "difficulty": "advanced",
+    "intro_sections": {
+      "background": "배경·기간·대상·수치는 모두 연습용 가상 조건이다. 게임 클라이언트 팀은 완료된 관문 로딩 관측을 이용하여 상세 계측 대상을 선정하려 한다. 느린 로딩은 소요 시간이 15초 이상인 관측이다. 분석 단위는 완료된 로딩 1건이며, 느린 비율의 분모는 각 플랫폼·숙련도 조합의 완료된 로딩 전체다. 같은 계정의 반복 관측을 포함하므로 관측이 많은 계정의 경험이 더 큰 비중을 갖는다. 공개 자료 충분성 기준은 총 800건, pc와 mobile 각각의 beginner 및 experienced 조합 모두 존재, 각 조합 최소 80건이다. 전체 플랫폼 평균과 동일 숙련도 내 평균·느린 비율을 비교하고 느린 관측 부분집합을 조사하라. 질문의 우선순위와 조사 대상은 직접 선택한다. 내부 생성 충분성 검사는 observed_loading_count로 총량, loading_count_by_platform_skill로 네 조합과 최소 표본, slow_share_by_platform_skill로 느린 관측의 존재·부재, mean_duration_by_platform_skill로 숙련도에 따른 비교 방향의 차이, slow_mean_by_platform_skill로 부분집합 평균의 정의 여부를 확인한다. 이는 학습자에게 특정 결과를 맞히도록 요구하는 조건이 아니다. 학습자는 실제 관측 결과를 보고하며 관계 미확인이나 판단 유보도 근거가 있으면 인정된다.",
+      "context": [
+        "게임 클라이언트 팀이 관문 로딩 개선을 위한 상세 계측 대상을 선정하는 연습용 가상 상황이다. 가상 계정 200개와 완료된 로딩 800건을 사용한다. 배경·기간·대상·수치는 모두 실제 서비스 자료가 아니다.",
+        "플랫폼 전체 평균을 기준으로 모바일을 먼저 조사하자는 제안이 나왔다. 팀은 숙련도 구성과 반복 관측 빈도가 비교에 영향을 줄 수 있다고 우려한다. 플랫폼 차이의 크기와 원인은 검산 전 확정하지 않는다."
+      ],
+      "decision": "플랫폼·숙련도 조합 중 상세 계측을 먼저 진행할 대상을 선택한다. 개선 방향을 결정하기 어렵다면 판단을 유보하고 필요한 추가 관측을 제안한다.",
+      "questions": [
+        "분석 단위와 비율의 분자·분모는 무엇이며 공개 표본 기준을 충족하는가?",
+        "전체 플랫폼 평균과 동일 숙련도 안의 비교는 같은 조사 우선순위를 지지하는가?",
+        "느린 로딩 부분집합에서 플랫폼 차이와 숙련도 구성 차이라는 설명은 어떤 근거를 갖는가?",
+        "숙련도를 통제한 플랫폼 비교와 전체 비교의 차이를 이용자 구성으로 설명할 수 있는가?",
+        "반복 관측, 집단별 건수 차이와 느린 관측 부재는 해석을 어떻게 제한하는가?",
+        "어떤 집단을 먼저 상세 계측하며 결정을 보완할 추가 관측은 무엇인가?"
+      ],
+      "conditions": [
+        "모든 배경·기간·대상·수치는 연습용 가상 조건이다.",
+        "공개 자료 충분성 기준은 완료된 로딩 총 800건, 네 플랫폼·숙련도 조합의 존재와 각 조합 최소 80건이다. 비공개 집단별 생성 배분과의 일치는 학습자 평가 조건이 아니다.",
+        "플랫폼과 숙련도는 관측 기간에 고정된 공개 변수이며 생성 그룹 이름은 공개하지 않는다.",
+        "느린 로딩은 연습용 운영 기준으로 소요 시간이 15초 이상인 완료 관측이다.",
+        "내부 생성 검사는 loading_count_by_platform_skill의 네 조합·최소 표본, slow_share_by_platform_skill의 두 플랫폼 초보자 집단에서 느린 관측 존재 및 숙련자 집단에서 부재, mean_duration_by_platform_skill의 두 숙련도 구간에서 서로 다른 플랫폼 비교 방향을 확인한다. slow_mean_by_platform_skill은 느린 관측이 있는 집단에서만 정의되어야 한다. 이 검사는 생성 자료의 충분성 확인이며 학습자 정답 기준이 아니다.",
+        "모든 계정의 로딩 관측을 보장하지 않는다. 동일 숙련도라도 기기·네트워크·관문 조건이 같다고 가정하지 않는다."
+      ],
+      "judgments": [
+        "",
+        "",
+        "",
+        "판단 방법: conditional_comparison; 관측/통제 열: accounts.skill_band\n완료 판단: 동일 숙련도 안에서 플랫폼별 평균과 느린 비율을 비교한다. 전체 비교와 조건부 비교의 방향이나 크기가 다르면 집단별 관측 건수를 함께 확인하여 구성 차이 설명을 검토하고 우선순위 기준을 밝힌다.\n인정할 한계: 숙련도만 통제하며 기기·네트워크·관문 특성과 계정별 반복 관측은 통제하지 못한다. 관측 근거에 연결하여 플랫폼 자체의 인과 효과 판단을 유보하는 결론을 인정한다.",
+        "",
+        ""
+      ]
+    },
+    "schema": {
+      "accounts": {
+        "id": "bigint",
+        "platform": "text",
+        "skill_band": "text"
+      },
+      "loading_observations": {
+        "id": "bigint",
+        "account_id": "bigint",
+        "event_at": "timestamptz",
+        "duration_seconds": "double precision"
+      }
+    },
+    "metrics": {
+      "mean_duration_by_platform": {
+        "description": "avg",
+        "table": "loading_observations",
+        "column": "duration_seconds",
+        "operation": "avg",
+        "group_by": [
+          "accounts.platform"
+        ],
+        "conditions": [],
+        "denominator_conditions": [],
+        "joins": [
+          {
+            "table": "accounts",
+            "source_column": "account_id"
+          }
+        ]
+      },
+      "mean_duration_by_platform_skill": {
+        "description": "avg",
+        "table": "loading_observations",
+        "column": "duration_seconds",
+        "operation": "avg",
+        "group_by": [
+          "accounts.platform",
+          "accounts.skill_band"
+        ],
+        "conditions": [],
+        "denominator_conditions": [],
+        "joins": [
+          {
+            "table": "accounts",
+            "source_column": "account_id"
+          }
+        ]
+      },
+      "slow_share_by_platform_skill": {
+        "description": "ratio",
+        "table": "loading_observations",
+        "column": null,
+        "operation": "ratio",
+        "group_by": [
+          "accounts.platform",
+          "accounts.skill_band"
+        ],
+        "conditions": [
+          {
+            "column": "duration_seconds",
+            "operator": "gte",
+            "value": 15
+          }
+        ],
+        "denominator_conditions": [],
+        "joins": [
+          {
+            "table": "accounts",
+            "source_column": "account_id"
+          }
+        ]
+      },
+      "loading_count_by_platform_skill": {
+        "description": "count",
+        "table": "loading_observations",
+        "column": null,
+        "operation": "count",
+        "group_by": [
+          "accounts.platform",
+          "accounts.skill_band"
+        ],
+        "conditions": [],
+        "denominator_conditions": [],
+        "joins": [
+          {
+            "table": "accounts",
+            "source_column": "account_id"
+          }
+        ]
+      },
+      "slow_mean_by_platform_skill": {
+        "description": "avg",
+        "table": "loading_observations",
+        "column": "duration_seconds",
+        "operation": "avg",
+        "group_by": [
+          "accounts.platform",
+          "accounts.skill_band"
+        ],
+        "conditions": [
+          {
+            "column": "duration_seconds",
+            "operator": "gte",
+            "value": 15
+          }
+        ],
+        "denominator_conditions": [],
+        "joins": [
+          {
+            "table": "accounts",
+            "source_column": "account_id"
+          }
+        ]
+      }
+    },
+    "quality_information": {
+      "collection": "요청별 합성 자료 · 자동 검증 통과 · 사람 품질 검토 전",
+      "required_check": "공개 자료의 단위·중복·관측 조건 점검",
+      "verification_scope": "저장 조회 값은 근거로 사용하지만 임의 자연어 주장의 자동 검산은 미지원"
+    }
+  },
+  "query_rows": [
+    [
+      "pc",
+      8.149357854999998
+    ],
+    [
+      "mobile",
+      15.896074869999993
+    ]
+  ],
+  "quality_validation": {
+    "version": "evaluation-quality-v1",
+    "status": "passed",
+    "contract_fingerprint": "f8e40c5dcaaa8dc31668e27e43ff40f108ec41cd8771e4bf2072a12be0437ac7",
+    "issues": [],
+    "scope": "감점의 공개 기준·인용·중복·확인된 산술 오류 연결 검사. 임의의 의미적 진실 전체 검증은 아님"
+  },
+  "evaluation_held": true,
+  "evaluation_total": null
+}
