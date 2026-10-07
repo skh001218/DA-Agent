@@ -41,7 +41,7 @@ def main():
     html += 'section{background:#2c2d33;border-left:4px solid #315d91;border-radius:8px;padding:10px 22px;margin:16px 0}pre{white-space:pre-wrap;font:inherit;overflow-wrap:anywhere}h3{margin:6px 0}a{color:#cdd9ff}.download{display:inline-block;background:#5865f2;color:white;padding:8px 18px;border-radius:6px;margin-bottom:28px}</style>'
     html += '<h1>첫 포스트 통합 표시 검증</h1><p>고정 예시로 만든 로컬 미리보기입니다. 실제 Discord 게시 화면과 구분합니다.</p><nav><a href="#short">짧은 결과</a> · <a href="#long">긴 결과</a></nav>'
     html += ''.join(samples) + '</html>'
-    (output / 'index.html').write_text(html, encoding='utf-8')
+    (output / 'index.html').write_text('\n'.join(line.rstrip() for line in html.splitlines()), encoding='utf-8')
     print((output / 'index.html').resolve())
 
 
