@@ -24,7 +24,7 @@ def failure_message(code, diagnostic=None):
     messages = {
         'api_input_budget':'내부 출제 입력이 허용 크기를 초과했습니다. 초안과 원래 요청은 보존했습니다. 운영자의 입력 구성 점검이 필요하며 같은 요청을 그대로 반복하지 마세요.',
         'api_rate_limited':'분당 모델 호출·입력 한도로 출제를 보류했습니다. 대기 후 /retry로 수동 재시도하세요.',
-        'usage_limit':'오늘의 API 호출 한도에 도달했습니다. 다음 날 /retry로 재시도할 수 있으며 기존 기록은 계속 열람할 수 있습니다.',
+        'usage_limit':'오늘의 모델 호출 한도에 도달했습니다. 다음 날 /retry로 재시도할 수 있으며 기존 기록은 계속 열람할 수 있습니다.',
         'planning_limit':'요청별 출제 호출 한도에 도달했습니다. 기록을 보존했으며 새 /training 요청이 필요합니다.',
         'plan_invalid':'모델의 자료 설계가 생성·관계 규칙을 충족하지 못했습니다. 초안을 보존했으며 /retry로 오류에 맞춘 수정을 요청할 수 있습니다.',
         'research_unavailable':'현재 제공자가 사례 검색을 지원하지 않습니다. 모델의 출제 방식을 확인하세요.',
@@ -169,7 +169,7 @@ class DiscordGeneration:
             job['source_case'] = {'version':'discord-synthetic-v1', 'topic':'요청 기반 가상 분석',
                 'business_problem':'사용자 요청에 맞춰 설정한 가상 업무 문제',
                 'analysis_question':doc['generation']['message'], 'decision':'합성 자료로 판단과 한계를 연습',
-                'selection_reason':'사용자 요청과 난이도로 Gemma가 직접 설계',
+                'selection_reason':'사용자 요청과 난이도로 선택한 모델이 직접 설계',
                 'sources':[], 'searched_at':None, 'queries':[], 'search_suggestions':''}
         data=request(doc['generation']['message'],sid,doc['difficulty'])
         seed=int(hashlib.sha256(sid.encode()).hexdigest()[:8],16)

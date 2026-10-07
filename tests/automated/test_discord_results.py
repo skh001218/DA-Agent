@@ -8,7 +8,7 @@ import pytest
 discord = pytest.importorskip('discord')
 
 from da_agent.discord_education import representative_task
-from da_agent.discord_forum import ResultForumPublisher
+from da_agent.discord_forum import ResultForumPublisher, embed_bytes, MAX_EMBED_BYTES
 from da_agent.discord_results import build_submission, card_marker, legacy_card_marker
 from da_agent.discord_service import DiscordTrainingService
 from da_agent.discord_transport import DiscordTransport
@@ -256,19 +256,56 @@ def test_overflow_previews_keep_evaluation_and_fit_actual_embed_budget(monkeypat
 def test_inline_budget_boundary_and_extremely_many_sections(monkeypatch):
     publisher, _, user, _, _, _ = setup_forum(monkeypatch)
     sub = build_submission(document())
-    for size in (3500, 3900, 5000, 5800, 6000, 8000):
+    for size in (1000, 1500, 3500, 3900, 5000, 5800, 6000, 8000):
         sub['cards'] = [dict(title='요약', description='저장됨'),
                         dict(title='평가 근거', description='가' * size)]
         embeds = publisher.post_embeds(sub, user)
         assert sum(len(e) for e in embeds) <= 6000
         assert all(len(e.description) <= 4096 for e in embeds)
-        if size <= 5000:
+        if size <= 1500:
             assert ''.join(e.description for e in embeds[1:]).endswith('가' * size)
-        if size >= 6000:
+        if size >= 3500:
             assert '전체 제출·평가' in embeds[1].description
+        assert embed_bytes(embeds) <= MAX_EMBED_BYTES
     sub['cards'].extend(dict(title='평가' + str(i) + '가' * 200, description='근거' * 900) for i in range(100))
     embeds = publisher.post_embeds(sub, user)
     assert len(embeds) <= 10 and sum(len(e) for e in embeds) <= 6000
+
+
+def test_multibyte_forum_payload_is_previewed_without_altering_full_pdf_cards(monkeypatch):
+    publisher, _, user, _, _, _ = setup_forum(monkeypatch)
+    sub = build_submission(document())
+    sub['cards'] = [dict(title='요약', description='업무 배경과 판단 기준 ' * 140),
+                    *[dict(title=f'평가 근거 {i}', description='공개 자료의 분석 근거입니다. ' * 12) for i in range(10)]]
+    before = deepcopy(sub)
+    embeds = publisher.post_embeds(sub, user)
+    assert embed_bytes(embeds) <= MAX_EMBED_BYTES
+    assert sum(len(e) for e in embeds) <= 6000
+    assert 'PDF 다운로드' in '\n'.join(e.description for e in embeds)
+    assert all(f'평가 근거 {i}' in '\n'.join(e.description for e in embeds) for i in range(10))
+    assert sub == before
+
+
+@pytest.mark.parametrize('status', ['failed', 'uncertain'])
+def test_missing_starter_cannot_bind_an_empty_forum_thread(monkeypatch, status):
+    publisher, parent, user, _, posts, _ = setup_forum(monkeypatch)
+    sub, journal = build_submission(document()), {}
+    async def save(**changes): journal.update(changes)
+    async def run():
+        forum = await publisher.forum(parent, user)
+        orphan = (await forum.create_thread(name=sub['post_name'], embed=publisher.embed(sub,0,user))).thread
+        async def missing(_):
+            raise discord.NotFound(NS(status=404,reason='Not Found'), {'code':10008,'message':'Unknown Message'})
+        orphan.fetch_message = missing
+        assert await publisher.find_post(forum,sub) is None
+        if status == 'uncertain':
+            with pytest.raises(DomainError,match='중복 게시'):
+                await publisher.publish(parent,user,sub,{'status':status},save)
+            assert len(posts) == 1
+        else:
+            await publisher.publish(parent,user,sub,{'status':status},save)
+            assert len(posts) == 2 and journal['post_id'] != str(orphan.id)
+    asyncio.run(run())
 
 
 @pytest.mark.parametrize('exists', [True, False])

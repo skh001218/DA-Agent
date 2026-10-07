@@ -21,7 +21,7 @@ def task_intro(document):
             '/report로 보고를 작성하고 후속 질문에 답한 뒤 /submit로 제출하세요.']
         source=task.get('source_case') or {}
         if source.get('version') == 'discord-synthetic-v1':
-            lines.append('Gemma가 요청에 맞춰 만든 가상 분석 문제입니다. 실제 사례 검색은 수행하지 않았습니다.')
+            lines.append('선택한 모델이 요청에 맞춰 만든 가상 분석 문제입니다. 실제 사례 검색은 수행하지 않았습니다.')
         for item in source.get('sources',[]):
             lines.append('사례 출처: '+item.get('title','')+' '+item.get('url',''))
         return '\n'.join(lines)
