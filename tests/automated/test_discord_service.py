@@ -167,6 +167,38 @@ def test_atomic_user_daily_limit_does_not_block_record_read(service):
     assert service.get_session(owner, session['session_id'])
 
 
+def test_unlimited_daily_calls_preserve_saturated_usage_and_atomic_accounting(store):
+    owner = uuid.uuid4().hex
+    for expected in range(1, 31):
+        assert store.reserve_call(owner, 30) == expected
+    with pytest.raises(DomainError):
+        store.reserve_call(owner, 30)
+    with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
+        values = list(pool.map(lambda _: store.reserve_call(owner, 0), range(12)))
+    assert sorted(values) == list(range(31, 43))
+    with pytest.raises(DomainError):
+        store.reserve_call(owner, 30)
+    assert store.reserve_call(owner, 43) == 43
+    with pytest.raises(DomainError):
+        store.reserve_call(owner, 43)
+
+
+def test_unlimited_reservation_rolls_back_with_cancelled_generation_transaction(store):
+    owner = uuid.uuid4().hex
+    with pytest.raises(RuntimeError):
+        with store.connect() as conn:
+            assert store.reserve_call(owner, 0, conn=conn) == 1
+            raise RuntimeError('cancelled')
+    assert store.reserve_call(owner, 0) == 1
+
+
+def test_negative_daily_limit_does_not_disable_accounting(store):
+    owner = uuid.uuid4().hex
+    with pytest.raises(DomainError):
+        store.reserve_call(owner, -1)
+    assert store.reserve_call(owner, 0) == 1
+
+
 def test_concurrent_reports_keep_versions_ordered(service):
     owner, session = start(service)
     def report(index):

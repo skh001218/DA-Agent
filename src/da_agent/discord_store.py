@@ -115,12 +115,12 @@ class DiscordStore:
         if conn is None:
             with self.connect() as connection:
                 return self.reserve_call(user_id, limit, conn=connection)
-        if limit < 1:
+        if limit < 0:
             raise DomainError('usage_limit', '새 API 작업이 비활성화되어 있습니다.', 429)
         day = dt.datetime.now(dt.timezone(dt.timedelta(hours=9))).date()
         row = conn.execute('''INSERT INTO discord_records.usage(owner_id,day,calls) VALUES (%s,%s,1)
             ON CONFLICT(owner_id,day) DO UPDATE SET calls=discord_records.usage.calls+1
-            WHERE discord_records.usage.calls < %s RETURNING calls''', (str(user_id), day, limit)).fetchone()
+            WHERE %s = 0 OR discord_records.usage.calls < %s RETURNING calls''', (str(user_id), day, limit, limit)).fetchone()
         if not row:
             raise DomainError('usage_limit', '오늘의 모델 호출 한도에 도달했습니다. 기존 기록은 계속 열람할 수 있습니다.', 429)
         return row[0]

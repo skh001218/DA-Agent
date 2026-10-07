@@ -177,6 +177,7 @@ def runtime_status(container):
                 source_ref=labels.get('io.da-agent.source-ref'))
     environment = dict(value.split('=', 1) for value in current['Config'].get('Env', []) if '=' in value)
     result['llm_provider'] = environment.get('DISCORD_LLM_PROVIDER', 'gemma')
+    result['daily_call_limit'] = int(environment.get('DISCORD_DAILY_CALL_LIMIT', '30'))
     if result['running'] and result['revision']:
         verified = json.loads(command('docker', 'exec', container, 'python', 'scripts/check_discord_release.py'))
         if verified['revision'] != result['revision'] or verified['source_ref'] != result['source_ref']:
@@ -233,7 +234,19 @@ def codex_spec(spec, home, model=None, timeout=180):
     return spec
 
 
-def deploy(root, revision, container, directory, *, codex_home=None, codex_model=None, codex_timeout=180):
+def daily_limit_spec(spec, limit):
+    """Explicitly change the daily limit; zero keeps accounting without a cap."""
+    if type(limit) is not int or limit < 0:
+        raise DeploymentError('--daily-call-limit must be non-negative (0 means unlimited)')
+    bot = spec['services']['bot']
+    bot['environment'] = [v for v in bot['environment'] if v.split('=', 1)[0] != 'DISCORD_DAILY_CALL_LIMIT']
+    bot['environment'].append(f'DISCORD_DAILY_CALL_LIMIT={limit}')
+    return spec
+
+
+def deploy(root, revision, container, directory, *, codex_home=None, codex_model=None, codex_timeout=180, daily_call_limit=None):
+    if daily_call_limit is not None:
+        daily_limit_spec({'services': {'bot': {'environment': []}}}, daily_call_limit)
     current = inspect_container(container)
     project = current['Config']['Labels']['com.docker.compose.project']
     ensure_idle(container)
@@ -255,6 +268,8 @@ def deploy(root, revision, container, directory, *, codex_home=None, codex_model
                 raise DeploymentError('Candidate source differs from the selected Git commit')
         command('docker', 'run', '--rm', '--entrypoint', 'python', image, 'scripts/check_discord_release.py')
     candidate = compose_spec(current, image)
+    if daily_call_limit is not None:
+        candidate = daily_limit_spec(candidate, daily_call_limit)
     if codex_home is not None:
         candidate = codex_spec(candidate, codex_home, codex_model, codex_timeout)
         probe = """import sys
@@ -282,6 +297,8 @@ sys.exit(0 if p.status().get('connected') else 1)
     try:
         command('docker', 'compose', '-p', project, '-f', str(candidate_path), 'up', '-d', '--no-deps', '--no-build', 'bot')
         verified = wait_ready(container, revision, started)
+        if daily_call_limit is not None and runtime_status(container)['daily_call_limit'] != daily_call_limit:
+            raise DeploymentError('Running daily call limit does not match the requested setting')
         journal.update(status='verified', verified_at=datetime.now(timezone.utc).isoformat(),
                        image_id=inspect_container(container)['Image'], files_verified=verified['files_verified'])
         write_json(release_dir / 'deployment.json', journal)
@@ -311,7 +328,10 @@ def main():
     parser.add_argument('--codex-home', help='Dedicated, authenticated host directory mounted writable for token refresh')
     parser.add_argument('--codex-model', help='Optional selected Codex model; otherwise CLI default')
     parser.add_argument('--codex-timeout', type=int, default=180)
+    parser.add_argument('--daily-call-limit', type=int, help='User daily model calls; 0 disables the cap; omitted preserves current')
     args = parser.parse_args()
+    if args.daily_call_limit is not None:
+        daily_limit_spec({'services': {'bot': {'environment': []}}}, args.daily_call_limit)
     if bool(args.provider) != bool(args.codex_home):
         raise DeploymentError('--provider codex_cli and --codex-home must be supplied together')
     if (args.codex_model or args.codex_timeout != 180) and not args.provider:
@@ -327,13 +347,14 @@ def main():
             codex_spec({'services': {'bot': {'environment': [], 'volumes': []}}},
                        args.codex_home, args.codex_model, args.codex_timeout)
         print(json.dumps(dict(plan_only=True, revision=revision, source_ref='refs/heads/main',
-                              container=args.container, provider=args.provider or 'preserve_current')))
+                              container=args.container, provider=args.provider or 'preserve_current',
+                              daily_call_limit=args.daily_call_limit if args.daily_call_limit is not None else 'preserve_current')))
         return
     directory = root / '.local' / 'releases'
     directory.mkdir(parents=True, exist_ok=True)
     with release_lock(directory):
         deploy(root, revision, args.container, directory, codex_home=args.codex_home,
-               codex_model=args.codex_model, codex_timeout=args.codex_timeout)
+               codex_model=args.codex_model, codex_timeout=args.codex_timeout, daily_call_limit=args.daily_call_limit)
 
 
 if __name__ == '__main__':

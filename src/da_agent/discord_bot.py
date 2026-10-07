@@ -60,8 +60,8 @@ class DiscordSettings:
         if key_file is not None and not key_file.is_file():
             raise ValueError("DISCORD_GEMINI_KEY_FILE does not exist")
         daily_limit = int(env.get("DISCORD_DAILY_CALL_LIMIT", "30"))
-        if daily_limit <= 0:
-            raise ValueError("DISCORD_DAILY_CALL_LIMIT must be positive")
+        if daily_limit < 0:
+            raise ValueError("DISCORD_DAILY_CALL_LIMIT must be non-negative (0 means unlimited)")
         codex_model = env.get('DISCORD_CODEX_MODEL', '').strip() or None
         timeout = int(env.get('DISCORD_CODEX_TIMEOUT_SECONDS', '180'))
         model = env.get('DISCORD_MODEL', 'gemma-4-26b-a4b-it') if provider == 'gemma' else codex_model or 'codex-default'
