@@ -12,7 +12,7 @@
                 with pytest.raises(psycopg.errors.InsufficientPrivilege):
 &gt;                   conn.execute(f'DELETE FROM "{info["schema_name"]}".users')
 
-tests\automated\test_discord_education.py:178: 
+tests\automated\test_discord_education.py:178:
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
 self = &lt;psycopg.Connection [BAD] at 0x1e8c26db7d0&gt;
@@ -32,7 +32,7 @@ params = None
             cur = self.cursor()
             if binary:
                 cur.format = BINARY
-    
+
             if isinstance(query, Template):
                 if params is not None:
                     raise TypeError(
