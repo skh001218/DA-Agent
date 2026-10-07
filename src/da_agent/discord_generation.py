@@ -113,6 +113,17 @@ def task_from_recipe(recipe, public, source_case, help_level):
     return {'generation_version':VERSION, 'task_id':public['package_id'], 'version':public['plan_version'],
         'data_version':public['dataset_id'], 'title':recipe.title,'topic':recipe.topic,
         'difficulty':recipe.difficulty,'objective':public['description'], 'schema':schema,'dictionary':dictionary,
+        # Presentation-only copy of facts already included in the public description.
+        # Never project generation groups, reference values or answer SQL here.
+        'intro_sections':{
+            'background':recipe.description,
+            'context':[recipe.business_case.background, recipe.business_case.observed_problem],
+            'decision':recipe.business_case.decision,
+            'questions':[r.question for r in requirements],
+            'conditions':recipe.business_case.agent_assumptions,
+            'judgments':[('판단 방법: '+r.judgment.method+'; 관측/통제 열: '+', '.join(r.judgment.control_columns)
+                +'\n완료 판단: '+r.judgment.decision_rule+'\n인정할 한계: '+r.judgment.accepted_limit)
+                if r.judgment else '' for r in requirements]},
         'relationships':relationships,'timezone':'Asia/Seoul',
         'period':{'start':min(dates)[:10] if dates else None,'end':max(ends)[:10] if ends else None,
                   'observation_end':public['data_complete_before'],'description':recipe.business_case.observation_period},
