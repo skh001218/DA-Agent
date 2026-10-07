@@ -1,0 +1,52 @@
+{
+  "original_pages": 9,
+  "preview_pages": 3,
+  "original_text_characters": 6896,
+  "preview_text_characters": 1961,
+  "preview_sha256": "1d2a73b670c7b6d4af2395e08abacd593b045447829b206a66e8ca0c32b7662b",
+  "original_preserved": true,
+  "stored_metrics_matched": true,
+  "visual_review": "all three pages inspected after final alignment change; no clipping or overlap",
+  "tests": "20 passed",
+  "pages": [
+    {
+      "page": 1,
+      "characters": 646,
+      "font_sizes": [
+        8.0,
+        9.0,
+        10.0,
+        11.0,
+        13.0,
+        21.0
+      ],
+      "inside_page": true
+    },
+    {
+      "page": 2,
+      "characters": 682,
+      "font_sizes": [
+        8.0,
+        9.0,
+        10.0,
+        11.0,
+        13.0,
+        21.0
+      ],
+      "inside_page": true
+    },
+    {
+      "page": 3,
+      "characters": 519,
+      "font_sizes": [
+        8.0,
+        9.0,
+        10.0,
+        11.0,
+        13.0,
+        21.0
+      ],
+      "inside_page": true
+    }
+  ]
+}

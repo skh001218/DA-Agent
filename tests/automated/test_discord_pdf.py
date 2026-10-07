@@ -10,6 +10,7 @@ discord = pytest.importorskip('discord')
 pytest.importorskip('reportlab')
 from da_agent.discord_pdf import pdf_filename, plain_text, render_submission_pdf
 from da_agent.discord_pdf_view import ResultPDFView
+from da_agent.discord_pdf_summary import summary_filename
 from da_agent.discord_results import build_submission
 from da_agent.errors import DomainError
 from test_discord_results import document, setup_forum
@@ -72,7 +73,7 @@ def test_pdf_reused_and_missing_attachment_repaired_without_duplicate_post(monke
         posts[0].messages[0].attachments = [NS(filename='keep.txt')]
         await publisher.publish(parent, user, sub, journal, save)
         assert len(posts) == 1 and renderer.call_count == 2
-        assert [a.filename for a in posts[0].messages[0].attachments] == ['keep.txt', pdf_filename(sub)]
+        assert [a.filename for a in posts[0].messages[0].attachments] == ['keep.txt', summary_filename(sub), pdf_filename(sub)]
         assert journal['status'] == 'published'
     asyncio.run(run())
 
@@ -196,8 +197,9 @@ def test_evaluation_citations_render_new_query_once_and_link_previously_shown_fi
     assert sum('/Dest' in a for a in annotations) >= 4
 
 
+@pytest.mark.parametrize('button_index', [0, 1])
 @pytest.mark.parametrize('case', ['success', 'forbidden', 'missing', 'foreign', 'server', 'http'])
-def test_persistent_download_fetches_fresh_attachment_and_checks_access(monkeypatch, case):
+def test_persistent_download_fetches_fresh_attachment_and_checks_access(monkeypatch, case, button_index):
     class Forum: pass
     class Thread:
         parent = Forum()
@@ -217,7 +219,7 @@ def test_persistent_download_fetches_fresh_attachment_and_checks_access(monkeypa
     async def run():
         view = ResultPDFView([1])
         assert view.is_persistent()
-        await view.children[0].callback(event)
+        await view.children[button_index].callback(event)
     asyncio.run(run())
     kwargs = event.followup.send.call_args.kwargs
     assert kwargs['ephemeral'] is True
