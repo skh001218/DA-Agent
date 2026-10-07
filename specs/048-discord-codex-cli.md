@@ -35,6 +35,7 @@
 - 시간·입력·출력 크기 제한과 공급자 인스턴스의 호출 직렬화를 둔다. 시간 초과 시 프로세스 트리를 종료한다. 취소·앱 호출 예산 검사는 before_send 계약으로 실행 직전에 적용한다. 이미 전송한 요청은 사용량이 발생할 수 있다.
 - CLI 미설치·로그인 필요·구독 한도·모델 접근·시간 초과를 구분해 한국어로 안내한다. 원문 stdout/stderr·인증정보·입력은 공개 오류나 기록에 넣지 않는다. 사용량 이벤트가 있으면 토큰 수만 저장한다.
 - DISCORD_CODEX_BIN, DISCORD_CODEX_HOME, DISCORD_CODEX_MODEL, DISCORD_CODEX_TIMEOUT_SECONDS를 지원한다. 모델 생략 시 CLI 기본 모델을 사용한다. DISCORD_MODEL의 Gemma 값은 Codex에 전달하지 않는다.
+- CLI 추론 노력은 medium으로 지정한다. 2026-10-07 사용자의 middle(중간) 요청을 Codex 공식 설정값 medium으로 반영했다.
 - 컨테이너에는 고정 CLI 버전과 갱신 가능한 전용 인증 볼륨이 필요하다. 공개 CI는 로그인하지 않는다. 운영 활성화는 main·CI·배포 절차를 따른다. 로컬 구현 검증과 운영 Discord 검증은 구분한다.
 
 ## 완료 기준과 검증

@@ -211,7 +211,7 @@ class CodexCliProvider:
                     args = [binary, 'exec', '--ignore-user-config', '--ephemeral', '--json',
                             '--color', 'never', '--sandbox', 'read-only', '--skip-git-repo-check',
                             '-c', 'approval_policy="never"', '-c', 'forced_login_method="chatgpt"',
-                            '-c', 'model_reasoning_effort="low"',
+                            '-c', 'model_reasoning_effort="medium"',
                             '-c', 'web_search="disabled"', '-c', 'project_doc_max_bytes=0',
                             '-c', 'features.shell_tool=false', '-c', 'features.unified_exec=false',
                             '-c', 'features.apps=false', '-c', 'features.plugins=false',

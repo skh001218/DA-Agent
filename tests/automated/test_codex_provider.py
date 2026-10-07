@@ -47,7 +47,8 @@ def test_subscription_transport_keeps_prompt_off_commandline_and_isolates_enviro
     assert args[-1] == '-' and 'learner input' not in str(args)
     assert 'learner input' in params['prompt'] and args[args.index('--sandbox')+1] == 'read-only'
     for setting in ('approval_policy="never"', 'forced_login_method="chatgpt"', 'features.shell_tool=false',
-                    'features.apps=false', 'features.plugins=false', 'features.multi_agent=false', 'web_search="disabled"'):
+                    'features.apps=false', 'features.plugins=false', 'features.multi_agent=false', 'web_search="disabled"',
+                    'model_reasoning_effort="medium"'):
         assert setting in args
     assert '--ignore-user-config' in args and '--ephemeral' in args
     assert params['env']['CODEX_HOME'] == str(tmp_path.resolve())
