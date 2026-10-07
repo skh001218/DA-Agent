@@ -21,6 +21,59 @@ release = load('deploy_discord')
 checker = load('check_discord_release')
 
 
+def test_cli_release_configuration_preserves_data_and_updates_only_selected_settings(tmp_path):
+    spec = {'services': {'bot': {
+        'environment': ['DISCORD_LLM_PROVIDER=gemma', 'DISCORD_CODEX_MODEL=old',
+                        'DISCORD_RECORDS_DSN=private', 'OTHER=value'],
+        'volumes': [{'type':'volume','source':'records','target':'/app/.local/discord-responses'},
+                    {'type':'bind','source':'old-home','target':'/run/codex'}]}},
+        'networks': {'existing': {'external': True}}}
+    value = release.codex_spec(spec, tmp_path, 'gpt-6.1-sol', 90)
+    bot = value['services']['bot']
+    assert bot['environment'].count('DISCORD_LLM_PROVIDER=codex_cli') == 1
+    assert 'DISCORD_CODEX_MODEL=old' not in bot['environment']
+    assert 'DISCORD_RECORDS_DSN=private' in bot['environment'] and 'OTHER=value' in bot['environment']
+    assert bot['volumes'][0]['source'] == 'records'
+    assert bot['volumes'][1]['source'] == str(tmp_path.resolve()) and not bot['volumes'][1]['read_only']
+    assert value['networks'] == {'existing': {'external': True}}
+
+
+@pytest.mark.parametrize('model,timeout', [('bad/model',180),(None,0),(None,601)])
+def test_cli_release_rejects_invalid_config(tmp_path, model, timeout):
+    with pytest.raises(release.DeploymentError):
+        release.codex_spec({'services':{'bot':{'environment':[],'volumes':[]}}},tmp_path,model,timeout)
+
+
+def test_cli_release_rejects_missing_auth_directory(tmp_path):
+    with pytest.raises(release.DeploymentError):
+        release.codex_spec({'services':{'bot':{'environment':[],'volumes':[]}}},tmp_path/'missing')
+
+
+def test_cli_auth_preflight_failure_keeps_running_bot_untouched(tmp_path, monkeypatch):
+    revision = 'b' * 40
+    current = dict(Image='sha256:existing', Config={'Labels': {'com.docker.compose.project': 'fixture'}})
+    monkeypatch.setattr(release, 'inspect_container', lambda _: current)
+    monkeypatch.setattr(release, 'ensure_idle', lambda _: None)
+    monkeypatch.setattr(release, 'compose_spec', lambda _, image: {'services':{'bot':{
+        'image':image,'environment':[],'volumes':[]}}})
+    stream = BytesIO()
+    with tarfile.open(fileobj=stream, mode='w'): pass
+    monkeypatch.setattr(release.subprocess, 'check_output', lambda *a, **k: stream.getvalue())
+    calls = []
+    def command(*args, **kwargs):
+        calls.append(args)
+        if '/app/release.json' in args:
+            return json.dumps(dict(revision=revision, source_ref='refs/heads/main', files={}))
+        if any('p=CodexCliProvider' in str(value) for value in args):
+            raise release.DeploymentError('authentication failed')
+        return '{}'
+    monkeypatch.setattr(release, 'command', command)
+    with pytest.raises(release.DeploymentError, match='authentication failed'):
+        release.deploy(tmp_path, revision, 'bot', tmp_path, codex_home=tmp_path)
+    assert not any(c[:2] == ('docker','compose') for c in calls)
+    assert not (tmp_path / revision).exists()
+
+
 def checks():
     return [dict(id=i, name=name, status='completed', conclusion='success', app={'slug': 'github-actions'})
             for i, name in enumerate(sorted(release.REQUIRED_CHECKS))]

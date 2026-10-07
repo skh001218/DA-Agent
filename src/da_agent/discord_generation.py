@@ -18,6 +18,9 @@ ACTIVE = {'planning', 'preparing_data', 'validating'}
 
 
 def failure_message(code, diagnostic=None):
+    from .codex_provider import CLI_ERRORS
+    if code in CLI_ERRORS:
+        return CLI_ERRORS[code]
     messages = {
         'api_input_budget':'내부 출제 입력이 허용 크기를 초과했습니다. 초안과 원래 요청은 보존했습니다. 운영자의 입력 구성 점검이 필요하며 같은 요청을 그대로 반복하지 마세요.',
         'api_rate_limited':'분당 모델 호출·입력 한도로 출제를 보류했습니다. 대기 후 /retry로 수동 재시도하세요.',

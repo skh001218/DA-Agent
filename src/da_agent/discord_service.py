@@ -704,6 +704,9 @@ class DiscordTrainingService:
             answer = self._ask(document, 'query_conditions', answer, event_id, kind)
             return [answer]
         if plan.get('state') != 'ready':
+            from .codex_provider import CLI_ERRORS
+            if plan.get('reason') in CLI_ERRORS:
+                return [CLI_ERRORS[plan['reason']] + ' 답변과 조회 조건은 보존됩니다. 원인 해결 후 수동 재시도하세요.']
             if plan.get('reason') == 'unsupported_query':
                 document['pending_query'] = None
                 self._close_question(document, 'superseded')

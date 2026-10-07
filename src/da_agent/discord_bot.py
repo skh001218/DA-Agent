@@ -15,7 +15,7 @@ class DiscordSettings:
     records_dsn: str = field(repr=False)
     admin_dsn: str = field(repr=False)
     learner_dsn: str = field(repr=False)
-    gemini_key_file: Path
+    gemini_key_file: Path | None
     message_content: bool = False
     query_timeout_ms: int = 5000
     max_rows: int = 1000
@@ -26,12 +26,22 @@ class DiscordSettings:
     llm_model: str = 'gemma-4-26b-a4b-it'
     quality_profiles_directory: str = '.local/evaluation-quality'
     generation_directory: str = '.local/discord-generation'
+    llm_provider: str = 'gemma'
+    codex_bin: str = 'codex'
+    codex_home: str | None = None
+    codex_model: str | None = None
+    codex_timeout_seconds: int = 180
 
     @classmethod
     def from_env(cls, env=None):
         env = os.environ if env is None else env
+        provider = env.get('DISCORD_LLM_PROVIDER', 'gemma')
+        if provider not in {'gemma', 'codex_cli'}:
+            raise ValueError('DISCORD_LLM_PROVIDER must be gemma or codex_cli')
         names = ("DISCORD_BOT_TOKEN", "DISCORD_GUILD_IDS", "DISCORD_RECORDS_DSN",
-                 "DISCORD_ADMIN_DSN", "DISCORD_LEARNER_DSN", "DISCORD_GEMINI_KEY_FILE")
+                 "DISCORD_ADMIN_DSN", "DISCORD_LEARNER_DSN")
+        if provider == 'gemma':
+            names += ("DISCORD_GEMINI_KEY_FILE",)
         if any(not env.get(name, "").strip() for name in names):
             raise ValueError("Discord 설정 필수: " + ", ".join(names))
         guilds = tuple(int(value.strip()) for value in env[names[1]].split(","))
@@ -46,21 +56,31 @@ class DiscordSettings:
             raise ValueError("Discord DBs must be explicitly isolated from web records/training")
         if databases[0] == databases[1] or databases[0] == databases[2]:
             raise ValueError("Discord records DB must be separate from the dataset DB")
-        key_file = Path(env[names[5]])
-        if not key_file.is_file():
+        key_file = Path(env['DISCORD_GEMINI_KEY_FILE']) if provider == 'gemma' else None
+        if key_file is not None and not key_file.is_file():
             raise ValueError("DISCORD_GEMINI_KEY_FILE does not exist")
         daily_limit = int(env.get("DISCORD_DAILY_CALL_LIMIT", "30"))
         if daily_limit <= 0:
             raise ValueError("DISCORD_DAILY_CALL_LIMIT must be positive")
-        model = env.get('DISCORD_MODEL', 'gemma-4-26b-a4b-it')
-        import re
-        if not re.fullmatch(r'gemma-[a-zA-Z0-9._-]{1,95}', model):
+        codex_model = env.get('DISCORD_CODEX_MODEL', '').strip() or None
+        timeout = int(env.get('DISCORD_CODEX_TIMEOUT_SECONDS', '180'))
+        model = env.get('DISCORD_MODEL', 'gemma-4-26b-a4b-it') if provider == 'gemma' else codex_model or 'codex-default'
+        if provider == 'gemma' and not re.fullmatch(r'gemma-[a-zA-Z0-9._-]{1,95}', model):
             raise ValueError('DISCORD_MODEL must be a Gemma model ID')
+        if provider == 'codex_cli':
+            from .codex_provider import MODEL_PATTERN
+            if codex_model and not re.fullmatch(MODEL_PATTERN, codex_model):
+                raise ValueError('Invalid DISCORD_CODEX_MODEL')
+            if not 1 <= timeout <= 600:
+                raise ValueError('DISCORD_CODEX_TIMEOUT_SECONDS must be between 1 and 600')
         return cls(env[names[0]], guilds, *dsns, key_file,
                    message_content=env.get("DISCORD_MESSAGE_CONTENT", "false").lower() == "true",
                    daily_call_limit=daily_limit, llm_model=model,
                    quality_profiles_directory=env.get('DISCORD_QUALITY_PROFILES_DIR','.local/evaluation-quality'),
-                   generation_directory=env.get('DISCORD_GENERATION_DIRECTORY','.local/discord-generation'))
+                   generation_directory=env.get('DISCORD_GENERATION_DIRECTORY','.local/discord-generation'),
+                   llm_provider=provider, codex_bin=env.get('DISCORD_CODEX_BIN', 'codex'),
+                   codex_home=env.get('DISCORD_CODEX_HOME') or None, codex_model=codex_model,
+                   codex_timeout_seconds=timeout)
 
 
 def create_client(service, settings):
@@ -93,10 +113,10 @@ def create_client(service, settings):
 
         async def generation_controls(self,channel,session):
             if session.get('generation',{}).get('status') not in {'accepted','failed','interrupted'}: return
-            if session['generation'].get('error_code') in {'api_input_budget','planning_limit','api_key_missing','api_key_invalid','model_unavailable'}: return
+            if session['generation'].get('error_code') in {'api_input_budget','planning_limit','api_key_missing','api_key_invalid','model_unavailable','codex_cli_unavailable','codex_login_required','codex_request_invalid'}: return
             view=discord.ui.View(timeout=None)
             view.add_item(discord.ui.Button(label='출제 재시도',custom_id='generation-retry:'+session['session_id']))
-            await channel.send('저장된 요청으로 수동 재시도합니다. 남은 API 한도가 적용됩니다.',view=view)
+            await channel.send('저장된 요청으로 수동 재시도합니다. 남은 모델 호출 한도가 적용됩니다.',view=view)
 
         async def rename_generated_thread(self,channel,user,session):
             await self.validate_thread(channel,user)
@@ -313,12 +333,12 @@ def create_client(service, settings):
 
 def main():
     settings = DiscordSettings.from_env()
-    from .discord_provider import DiscordGemmaProvider
+    from .discord_provider import configured_discord_provider
     from .discord_store import DiscordStore
     from .discord_service import DiscordTrainingService
     from .discord_query import DiscordQueryEngine
     from .sql_runner import SqlRunner
-    provider = DiscordGemmaProvider(key_file=settings.gemini_key_file, model=settings.llm_model)
+    provider = configured_discord_provider(settings)
     store = DiscordStore(settings.records_dsn)
     store.initialize()
     query_engine = DiscordQueryEngine(provider, SqlRunner(settings), settings)

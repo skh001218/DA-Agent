@@ -1,5 +1,9 @@
 # Discord 봇 실행과 검증
 
+## Codex CLI 연결 선택 (2026-10-07)
+
+Spec048은 기존 구독을 이용하는 Discord 전용 Codex CLI 공급자를 추가한다. DISCORD_LLM_PROVIDER=codex_cli를 명시하면 출제·조회 해석·용어 설명·평가가 CLI를 사용한다. 생략 시 아래 기존 Gemma 구성이 유지된다. CLI 설치·전용 인증·main 배포에서 공급자 전환은 [Codex CLI 설정](codex-cli-setup.md)을 따른다. 실제 검증 범위와 미확인 운영 항목은 [Spec048](../specs/048-discord-codex-cli.md)에 기록한다.
+
 ## 현재 운영 배포 — 2026-10-07
 
 현재 운영 이미지는 `da-agent-discord-bot:generation-integrated-20261007`입니다. 출제 수정과 호출 차감을 기존 countTokens·pending 예약·SQL·고급 판단 검사에 통합했습니다. [현재 통합·배포 보고와 재시작 명령](../tests/reports/generation-integration-2026-10-07.md)을 사용합니다. 이전 배포에서 필수 text/practice 선택, 중급 SQL 답장·오류 수정·최종 평가·결과 포럼/PDF·재시작 재개, 고급 완료 분석 연결·검산 설명 평가를 확인한 기록은 [이전 검증](../tests/reports/verification-spec035-036-completion-2026-10-07.md)에 보존합니다. 실제 모델의 분석 전체 흐름과 품질 검증은 별도이며, 아래 과거 경로·미배포 내용은 당시 기록입니다.

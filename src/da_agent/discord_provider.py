@@ -16,6 +16,16 @@ from .api_provider import GeminiProvider
 from .errors import DomainError
 
 
+def configured_discord_provider(settings):
+    if settings.llm_provider == 'codex_cli':
+        from .codex_provider import CodexCliProvider
+        return CodexCliProvider(executable=settings.codex_bin, home=settings.codex_home,
+                                model=settings.codex_model, timeout=settings.codex_timeout_seconds)
+    if settings.llm_provider != 'gemma':
+        raise ValueError('Unsupported Discord provider')
+    return DiscordGemmaProvider(key_file=settings.gemini_key_file, model=settings.llm_model)
+
+
 class _GemmaClient:
     def __init__(self, client, budget=None, *, budget_wait_seconds=0):
         self.client = client
