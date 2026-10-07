@@ -41,9 +41,10 @@ def generated_task_intro(task):
     for name in task['schema']:
         unit = dictionary.get(name, {}).get('unit')
         conditions.append('• 제공 표: ' + name + (' — ' + short_text(unit, 70) if unit else ''))
-    conditions.extend('• 한계: ' + limit for limit in task.get('accepted_limits', []))
     quality = task['quality_information']
-    conditions.extend(['• 자료 안내: ' + quality['collection'], '• 검산 범위: ' + quality['verification_scope']])
+    # Detailed interpretation/verification limits remain in on-demand references.
+    # Query failures and incomplete-result notices are emitted by the service.
+    conditions.append('• 자료 안내: ' + quality['collection'])
     source = task.get('source_case') or {}
     if source.get('version') == 'discord-synthetic-v1':
         conditions.append('• 선택한 모델이 요청에 맞춰 만든 가상 분석 문제입니다. 실제 사례 검색은 수행하지 않았습니다.')
