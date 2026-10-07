@@ -50,12 +50,13 @@ def request(text, sid, difficulty):
 
 
 def status_message(document):
+    from .discord_progress import progress_message
     g = document['generation']
     labels = {'accepted':'출제 요청을 저장했습니다.', 'planning':'문제를 설계·검토하고 있습니다.',
         'preparing_data':'연습 자료를 준비하고 있습니다.', 'validating':'자료를 검산하고 있습니다.',
         'failed':'문제를 생성하지 못했습니다.', 'interrupted':'서버 재시작으로 출제가 중단됐습니다.',
         'cancelled':'출제를 취소했습니다.', 'needs_clarification':'출제 조건을 확인해주세요.'}
-    lines = [labels.get(g['status'], g['status']), g.get('error', '')]
+    lines = [progress_message(g), labels.get(g['status'], g['status']), g.get('error', '')]
     if g['status'] == 'needs_clarification':
         lines += g.get('questions', []) + ['/answer text:답변으로 출제 조건을 알려주세요.']
     elif g['status'] in {'failed', 'interrupted'}:
@@ -144,9 +145,23 @@ def task_from_recipe(recipe, public, source_case, help_level):
 
 
 class DiscordGeneration:
-    def __init__(self, service):
+    def __init__(self, service, progress=None):
         self.service = service
         self.store = service.store
+        self.progress = progress
+        self.last_progress = None
+
+    def notify(self, document):
+        if self.progress is not None:
+            from .discord_progress import snapshot
+            progress = snapshot(document['generation'])
+            if progress == self.last_progress:
+                return
+            self.last_progress = progress
+            try:
+                self.progress(progress)
+            except Exception:
+                pass  # Display failure cannot change generation or publication.
 
     def update(self, owner, sid, token, status, **fields):
         with self.store.edit(owner,sid) as (doc,_):
@@ -154,8 +169,12 @@ class DiscordGeneration:
             if g.get('run_token') != token or g['status']=='cancelled':
                 raise DomainError('cancelled','취소되거나 다른 실행으로 대체된 출제입니다.')
             g.update(status=status,**fields)
+            from .discord_progress import COMPLETED_STEPS
+            if status in COMPLETED_STEPS:
+                g['completed_steps'] = COMPLETED_STEPS[status]
             g.setdefault('states',[]).append({'status':status,'at':timestamp()})
             doc['state']=status
+        self.notify(doc)
         return doc
 
     def run(self, owner, sid, *, retry=False):
@@ -166,9 +185,10 @@ class DiscordGeneration:
             if g['status']=='ready' or g['status'] in ACTIVE or g['status']=='cancelled': return doc
             if g['status'] in {'failed','interrupted'} and not retry: return doc
             if g['status']=='needs_clarification': return doc
-            g.update(status='planning',run_token=token,error=None,error_code=None)
+            g.update(status='planning',run_token=token,error=None,error_code=None,completed_steps=0)
             g.pop('retry_at',None)
             doc['state']='planning'
+        self.notify(doc)
         job=self.store.generation_job(owner,sid)
         synthetic = getattr(self.service.provider, 'generation_mode', None) == 'synthetic'
         if synthetic and job.get('source_case', {}).get('version') != 'discord-synthetic-v1':
@@ -367,16 +387,19 @@ class DiscordGeneration:
                 grant(package,admin_dsn=settings.admin_dsn,learner_role=learner.username)
                 publish(package)
                 doc.update(task=task,schema_name=package.schema_name,data_version=task['data_version'],state='analysis')
-                doc['generation'].update(status='ready',package_id=job['package_id'],error=None)
+                doc['generation'].update(status='ready',package_id=job['package_id'],error=None,completed_steps=3)
                 # Reserve a new stable name after the final title is known.
                 for key in ('thread_name','thread_name_base','thread_name_ordinal'): doc.pop(key,None)
+            self.notify(doc)
             return doc
         except Exception as exc:
             if package:
                 try: revoke(package,admin_dsn=self.service.settings.admin_dsn,learner_role=urlparse(self.service.settings.learner_dsn).username)
                 except Exception: pass
             current=self.store.get(owner,sid)
-            if current['generation']['status']=='cancelled': return current
+            if current['generation']['status']=='cancelled':
+                self.notify(current)
+                return current
             code=exc.code if isinstance(exc,DomainError) else 'generation_failed'
             message=exc.message if isinstance(exc,DomainError) else '문제 설계·자료 검증에 실패했습니다. 검증되지 않은 과제는 공개하지 않았습니다.'
             job.setdefault('failures',[]).append({'code':code,'at':timestamp(),'issues':getattr(exc,'validation_issues',[])}); save()
