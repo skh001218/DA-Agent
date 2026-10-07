@@ -2,19 +2,19 @@
 
 ## 구현 진행도
 
-- 진행도: 1/6개 완료 (16.67%)
+- 진행도: 6/6개 완료 (100%)
 - 마지막 갱신일: 2026-10-07
-- 남은 작업: CI 실제 실행, 배포 안전 검사 검증, 이미지·운영 버전 검증, PR·main 병합, 운영 배포, Discord 실제 흐름 확인
+- 남은 작업: 없음 (최종 운영 커밋은 로컬 배포 기록·상태 명령으로 확인)
 - 차단 사유: 없음
 
 | 작업 | 상태 | 완료 조건 | 관련 코드 / 검증 결과 |
 | --- | --- | --- | --- |
-| PR·main CI | 검증 대기 | GitHub에서 전체 테스트·전용 Discord DB 검사·이미지 검사가 실제 성공 | [.github/workflows/ci.yml](../.github/workflows/ci.yml) |
-| main·CI 배포 제한 | 완료 | 미병합 커밋·누락/실패 CI·동시 배포를 거절하는 검증 통과 | [배포 명령](../scripts/deploy_discord.py), [회귀 검사](../tests/automated/test_discord_release.py): 12개 통과, 실패 배포 복구·복구 실패 기록 포함 |
-| 이미지·실행 소스 기록 | 검증 대기 | 커밋·파일 지문을 이미지에 기록하고 실행 소스 변경을 거절 | [지문 생성](../scripts/build_discord_release.py), [실행 검사](../scripts/check_discord_release.py) |
-| PR·main 절차 정착 | 미착수 | 이번 변경의 PR·CI·main 병합과 프로젝트 협업 지침 기록 | [운영 절차](../docs/discord-release-workflow.md) |
-| 해당 main 커밋 운영 배포 | 미착수 | 기존 설정·볼륨 보존, 봇 연결, 운영 커밋·파일 지문 일치, 배포 기록 저장 | `.local/releases/` 로컬 전용 기록 |
-| 포럼 변경 실제 Discord 확인 | 미착수 | 같은 포스트 첫 메시지에 평가·전체 PDF, 재시도 추가 평가 답글 없음, 다운로드 동작 확인 | [Spec037](037-discord-results-forum.md) |
+| PR·main CI | 완료 | GitHub에서 전체 테스트·전용 Discord DB 검사·이미지 검사가 실제 성공 | PR #33·#34와 main의 세 검사 성공; [검증 보고](../tests/reports/discord-main-release-2026-10-07.md) |
+| main·CI 배포 제한 | 완료 | 미병합 커밋·누락/실패 CI·동시 배포를 거절하는 검증 통과 | [배포 명령](../scripts/deploy_discord.py), [회귀 검사](../tests/automated/test_discord_release.py): 15개 통과, 인증·Docker Desktop 경로·복구 검사 포함 |
+| 이미지·실행 소스 기록 | 완료 | 커밋·파일 지문을 이미지에 기록하고 실행 소스 변경을 거절 | main `18aa696` 이미지·실행 파일 81개 일치, 변경 거절 자동 검사 통과 |
+| PR·main 절차 정착 | 완료 | 이번 변경의 PR·CI·main 병합과 프로젝트 협업 지침 기록 | PR #33·#34 병합, main 보호 규칙·[운영 절차](../docs/discord-release-workflow.md)·AGENTS.md |
+| 해당 main 커밋 운영 배포 | 완료 | 기존 설정·볼륨 보존, 봇 연결, 운영 커밋·파일 지문 일치, 배포 기록 저장 | main `18aa696` 배포 verified, 재시작 0회, 환경·마운트·네트워크 유지, DB·웹 컨테이너 동일 |
+| 포럼 변경 실제 Discord 확인 | 완료 | 같은 포스트 첫 메시지에 평가·전체 PDF, 재시도 추가 평가 답글 없음, 다운로드 동작 확인 | SQL 신규 제출·`/resume`에서 11개 섹션→첫 메시지 임베드 2개, 평가 1개·답글 0개, 다운로드 PDF 3페이지 확인 |
 
 ## 요구사항
 

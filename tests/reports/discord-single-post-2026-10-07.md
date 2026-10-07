@@ -31,10 +31,16 @@ python -m pytest tests/automated/test_discord_results.py tests/automated/test_di
 - 긴 결과 링크 이동 및 새로고침 후 내용 유지 확인. [화면 증빙](../artifacts/discord-single-post-2026-10-07/preview-long.png).
 - PDF 링크 클릭 확인. 앱 내부 브라우저는 PDF 본문을 표시하지 못했으므로 Chrome에서 동일 PDF의 한글 본문과 6페이지 문서 표시를 확인했다. [PDF 화면 증빙](../artifacts/discord-single-post-2026-10-07/pdf-chrome.png).
 
-## 남은 실제 Discord 확인
+## 실제 Discord 확인
 
-운영 봇 소스·이미지와 실제 포럼 게시글은 변경하지 않았다. 새 코드의 실제 Discord `/submit`·재시도·PDF 다운로드 버튼은 검증 대기다.
+main 커밋 `18aa6962af96b0fc798f35d917b0ba2f8a9d17fb`으로 운영 배포하고 사용자가 선택한 별도 SQL 과제를 실제 Discord에서 생성·풀이·제출했다. 이전 본인 결과 글 두 개는 404를 반환해 검증 대상으로 재사용하지 않았다.
 
-운영 반영 후 본인의 저장 평가에서 `/resume session_id:...`을 실행하고 결과 링크를 열어 첫 메시지에 평가와 PDF가 표시되는지 확인한다. 신규 제출의 평가 답글 0개와 재시도 시 동일 글 ID·동일 평가 유지도 확인해야 한다. 기존 방식의 답글은 자동 삭제하지 않는다.
+- 신규 과제: `b1eeb9d2-3a3a-4846-886b-0efddf0950b4`. 실제 SQL 실행 결과는 분모 40, 분자 30, 비율 0.75이며 평가 다섯 항목이 모두 충족됐다. SQL 평가는 항목별 결과이며 저장 total은 null이다.
+- [실제 결과 글](https://discord.com/channels/1556888486919934064/1557217841730551810): 문제·제출 SQL·평가 등 11개 섹션이 첫 메시지의 임베드 2개에 모두 표시됐다. 본문 설명 합계 1,783자, 영구 평가 답글 0개.
+- `/resume` 재시도 후 같은 글 ID·평가 ID·평가 1개·기록 지문·답글 0개 유지. 실제 REST 임베드 본문은 저장 결과에서 구성한 예상 내용과 일치했다.
+- 결과 글을 새로고침한 뒤에도 요약·평가·PDF 버튼이 유지됐다.
+- PDF 다운로드 버튼이 본인만 보이는 첨부를 제공했고 실제 파일을 다운로드했다. 3페이지 PDF에서 제출 SQL과 구문·계산·중복·기간·분모 평가 항목을 확인했다. 다운로드 파일의 직접 file URL 화면 열기는 브라우저 URL 정책이 거절해 실제 다운로드 PDF의 브라우저 시각 검증은 수행하지 않았다. 앞 절의 로컬 PDF 시각 검증과 실제 파일 내용 검증을 구분한다.
+- [첫 메시지 화면](../artifacts/discord-main-release-2026-10-07/forum-first-post.png), [평가 부분](../artifacts/discord-main-release-2026-10-07/forum-evaluation.png), [다운로드 응답](../artifacts/discord-main-release-2026-10-07/pdf-download-response.png), [읽기 확인](../artifacts/discord-main-release-2026-10-07/forum-after-resume.json), [다운로드 PDF](../artifacts/discord-main-release-2026-10-07/downloaded-result.pdf).
+- 한도 초과와 분석 평가의 새 운영 제출은 이번 SQL 화면 검증에서 수행하지 않았다. 해당 분기는 자동 검사·로컬 표시 검증 근거를 유지한다. 기존 방식의 답글과 회원 댓글은 자동 삭제하지 않는다.
 
 한 메시지 한도 근거: [Discord 공식 메시지 문서](https://github.com/discord/discord-api-docs/blob/main/developers/resources/message.mdx).
