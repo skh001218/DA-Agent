@@ -31,6 +31,16 @@ VERSION = 'adaptive-recipe-v1'
 PLANNING_LIMIT = 8
 
 
+def promises_source_summary(description):
+    """Require an actual promise of source data, not a login definition or denial."""
+    sentences = re.split(r'(?<=[.!?。])\s+|\n', description)
+    summary = any(re.search(r'요약.*제공|제공.*요약', sentence) for sentence in sentences)
+    source = any(re.search(r'로그(?!인)|원본|상세', sentence) and re.search(r'제공|포함|함께', sentence)
+        and not re.search(r'아닙|아니|미제공|미포함|제공하지|포함하지|없습니다|없음|없이|제외|대신', sentence)
+        for sentence in sentences)
+    return bool(summary and source)
+
+
 class Model(BaseModel):
     model_config = ConfigDict(extra='forbid')
 
@@ -299,7 +309,7 @@ class Recipe(Model):
                         raise ValueError(f'{table.name}.{column.name}: summary measure linked to child events cannot be independent random data; move it to a derived_from summary of the event table')
         if re.search(r'숙련도\s*(?:그룹|별)|skill\s*(?:group|level)',text,re.I) and not any(re.search(r'skill|rating|level|experience|proficiency|숙련|레벨|경험',c.name+' '+c.description,re.I) for t in self.tables for c in t.columns):
             raise ValueError('skill group comparison requires public observable skill/level/rating evidence; private groups are not public data')
-        if re.search(r'요약.*제공|제공.*요약',self.description) and not any(t.derived_from for t in self.tables) and re.search(r'로그|원본|상세',self.description):
+        if promises_source_summary(self.description) and not any(t.derived_from for t in self.tables):
             raise ValueError('description promises both source logs and summary but no derived summary table is present')
         if len({m.name for m in self.metrics}) != len(self.metrics):
             raise ValueError('duplicate metric')
@@ -554,13 +564,13 @@ def comparison_references(recipe, rows):
     return {m.name: dict(zip(('comparison_expected','sql'),analytical_reference(m,tables,rows))) for m in recipe.metrics if m.group_by}
 
 
-def preflight(recipe, seed, data=None):
+def preflight(recipe, seed, data=None, *, quality_checker=check_quality):
     """Check fixed-seed data feasibility before pinning or touching PostgreSQL."""
     if recipe.status != 'ready': return recipe
     try:
-        if data and re.search(r'로그|원본',data.message) and re.search(r'요약',data.message) and re.search(r'제공|계산한',data.message) and not any(t.derived_from for t in recipe.tables):
+        if data and promises_source_summary(data.message) and not any(t.derived_from for t in recipe.tables):
             raise ValueError('request explicitly requires both source logs and computed summary; include a derived_from table')
-        if data: check_quality(recipe)
+        if data: quality_checker(recipe)
         rows = generate_rows(recipe,seed)
         if recipe.business_case and recipe.task_kind=='investigation':
             tables={t.name:t for t in recipe.tables}

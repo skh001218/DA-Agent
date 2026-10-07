@@ -35,12 +35,17 @@ def test_missing_practice_cannot_create_records_or_call_model(practice):
     '주간 재방문율',
 ])
 @pytest.mark.parametrize('source', [None,'source-id'])
-def test_unsupported_sql_never_creates_data_even_with_source(text, source):
+def test_text_sql_preserves_arbitrary_scope_and_rejects_unsupported_source_link(text, source):
     store, provider, factory = MemoryStore(), Mock(), Mock()
     service = DiscordTrainingService(store, NS(), provider, NS(), dataset_factory=factory)
-    with pytest.raises(DomainError, match='지원'):
-        service.start('u','g','c','e',text=text,practice='sql',source_session_id=source)
-    assert not store.docs and not store.events
+    if source:
+        with pytest.raises(DomainError, match='지원'):
+            service.start('u','g','c','e',text=text,practice='sql',source_session_id=source)
+        assert not store.docs and not store.events
+    else:
+        doc=service.start('u','g','c','e',text=text,practice='sql')
+        assert doc['generation']['original_message']==text and doc['state']=='accepted'
+    provider.review.assert_not_called()
     factory.assert_not_called()
 
 

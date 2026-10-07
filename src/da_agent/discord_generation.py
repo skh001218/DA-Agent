@@ -190,7 +190,13 @@ class DiscordGeneration:
             doc['state']='planning'
         self.notify(doc)
         job=self.store.generation_job(owner,sid)
-        synthetic = getattr(self.service.provider, 'generation_mode', None) == 'synthetic'
+        sql_practice = doc.get('practice') == 'sql'
+        synthetic = sql_practice or getattr(self.service.provider, 'generation_mode', None) == 'synthetic'
+        quality_checker = check_quality
+        if sql_practice:
+            from .discord_generated_sql import check_quality as quality_checker
+        def preflight(result):
+            return adaptive.preflight(adaptive.parse_recipe(result),seed,data,quality_checker=quality_checker)
         if synthetic and job.get('source_case', {}).get('version') != 'discord-synthetic-v1':
             # Preserve previous attempts for diagnosis but do not reuse a recipe
             # designed under the old searched-case contract after this switch.
@@ -203,6 +209,13 @@ class DiscordGeneration:
                 'selection_reason':'사용자 요청과 난이도로 선택한 모델이 직접 설계',
                 'sources':[], 'searched_at':None, 'queries':[], 'search_suggestions':''}
         data=request(doc['generation']['message'],sid,doc['difficulty'])
+        if retry and sql_practice and job.get('recipe') and job.get('failures',[]) and job['failures'][-1]['code']=='goal_mismatch':
+            # A structurally valid recipe that failed semantic review needs a
+            # new design, not repeated review of the identical rejected draft.
+            job.setdefault('rejected_designs',[]).append(dict(text=json.dumps(job.pop('recipe'),ensure_ascii=False),
+                issues=job['failures'][-1].get('issues',[]),request_message=data.message,semantic_failure=True))
+            job.pop('alignment',None)
+            job.pop('alignment_repair_used',None)
         seed=int(hashlib.sha256(sid.encode()).hexdigest()[:8],16)
         package=None
         history=job.setdefault('calls',[])
@@ -211,6 +224,9 @@ class DiscordGeneration:
 
         def save(): self.store.save_generation_job(owner,sid,job)
         def design_messages():
+            if sql_practice:
+                from .discord_generated_sql import planning_messages
+                return planning_messages(data, recent)
             if synthetic:
                 from .discord_design import planning_messages
                 return planning_messages(data, recent)
@@ -305,9 +321,9 @@ class DiscordGeneration:
                     previous = rejected[-1]
                     issues = previous['issues']
                     try:
-                        candidate = adaptive.preflight(adaptive.parse_recipe({'state':'completed','text':previous['text']}),seed,data)
-                        if candidate.status=='ready' and candidate.difficulty==data.difficulty:
-                            check_quality(candidate,recent,data.intentional_repeat)
+                        candidate = preflight({'state':'completed','text':previous['text']})
+                        if candidate.status=='ready' and candidate.difficulty==data.difficulty and not previous.get('semantic_failure'):
+                            quality_checker(candidate,recent,data.intentional_repeat)
                             reusable = candidate
                     except (DomainError, ValueError) as exc:
                         issues = getattr(exc,'validation_issues',[{'message':str(exc)}])
@@ -317,8 +333,8 @@ class DiscordGeneration:
                 for attempt in range(0 if reusable else 3):
                     result=call(messages,'adaptive-design')
                     try:
-                        recipe=adaptive.preflight(adaptive.parse_recipe(result),seed,data)
-                        if recipe.status=='ready': check_quality(recipe,recent,data.intentional_repeat)
+                        recipe=preflight(result)
+                        if recipe.status=='ready': quality_checker(recipe,recent,data.intentional_repeat)
                         break
                     except (DomainError,ValueError) as exc:
                         issues=getattr(exc,'validation_issues',[{'message':str(exc)}])
@@ -341,10 +357,15 @@ class DiscordGeneration:
                     raise DomainError('goal_mismatch','정답 라벨 공개를 요청하지 않은 과제는 라벨을 공개할 수 없습니다.')
                 job['recipe']=recipe.model_dump(); save()
             recipe=adaptive.Recipe.model_validate(job['recipe'])
+            def alignment_messages():
+                if sql_practice:
+                    from .discord_generated_sql import alignment_messages as sql_alignment
+                    return sql_alignment(data,recipe,seed)
+                return adaptive.alignment_messages(data,recipe,seed,None if synthetic else job['source_case'])
             if not job.get('alignment'):
                 for review_number in range(2):
                     try:
-                        job['alignment']=adaptive.validate_alignment(call(adaptive.alignment_messages(data,recipe,seed,None if synthetic else job['source_case']),'adaptive-alignment'),quality_required=True)
+                        job['alignment']=adaptive.validate_alignment(call(alignment_messages(),'adaptive-alignment'),quality_required=True)
                         save(); break
                     except DomainError as exc:
                         if exc.code!='goal_mismatch' or review_number or job.get('alignment_repair_used'): raise
@@ -354,10 +375,10 @@ class DiscordGeneration:
                         from .discord_design import repair_messages
                         messages=repair_messages(design_messages(),json.dumps(recipe.model_dump(),ensure_ascii=False),issues)
                         original_labels=recipe.labels_public
-                        recipe=adaptive.preflight(adaptive.parse_recipe(call(messages,'adaptive-alignment-repair')),seed,data)
+                        recipe=preflight(call(messages,'adaptive-alignment-repair'))
                         if recipe.status!='ready' or recipe.difficulty!=data.difficulty or recipe.labels_public!=original_labels:
                             raise DomainError('goal_mismatch','검토 수정에서 요청 상태·난이도·공개 라벨을 변경할 수 없습니다.')
-                        check_quality(recipe,recent,data.intentional_repeat)
+                        quality_checker(recipe,recent,data.intentional_repeat)
                         job['recipe']=recipe.model_dump(); save()
             self.update(owner,sid,token,'preparing_data')
             settings=self.service.settings
@@ -380,6 +401,11 @@ class DiscordGeneration:
             task['semantic_signature']=public['semantic_signature']
             task['semantic_signature']['source_topic']=job['source_case']['topic']
             job['private_reference']=private; save()
+            if sql_practice:
+                from .discord_generated_sql import make_task, prepare_checks
+                task = make_task(task,recipe,seed)
+                job['sql_reference'] = prepare_checks(settings,package,recipe,seed)
+                save()
             # Serialize final grants against cancellation; no model calls hold this lock.
             with self.store.edit(owner,sid) as (doc,_):
                 if doc['generation'].get('run_token')!=token or doc['generation']['status']=='cancelled':
@@ -387,17 +413,25 @@ class DiscordGeneration:
                 grant(package,admin_dsn=settings.admin_dsn,learner_role=learner.username)
                 publish(package)
                 doc.update(task=task,schema_name=package.schema_name,data_version=task['data_version'],state='analysis')
+                if sql_practice:
+                    doc.update(sql_checks=[{k:c[k] for k in ('case','schema_name')} for c in job['sql_reference']['checks']],
+                        sql_attempts=[],sql_reply_targets={},sql_exposure='없음 확인',source_session_id=None)
                 doc['generation'].update(status='ready',package_id=job['package_id'],error=None,completed_steps=3)
                 # Reserve a new stable name after the final title is known.
                 for key in ('thread_name','thread_name_base','thread_name_ordinal'): doc.pop(key,None)
             self.notify(doc)
             return doc
         except Exception as exc:
+            if sql_practice and job.get('sql_reference'):
+                try:
+                    from .discord_generated_sql import revoke_checks
+                    revoke_checks(self.service.settings,[c['schema_name'] for c in job['sql_reference']['checks'] if c['case']!='main'])
+                except Exception: pass
             if package:
                 try: revoke(package,admin_dsn=self.service.settings.admin_dsn,learner_role=urlparse(self.service.settings.learner_dsn).username)
                 except Exception: pass
             current=self.store.get(owner,sid)
-            if current['generation']['status']=='cancelled':
+            if current['generation']['status']=='cancelled' or current['generation'].get('run_token')!=token:
                 self.notify(current)
                 return current
             code=exc.code if isinstance(exc,DomainError) else 'generation_failed'

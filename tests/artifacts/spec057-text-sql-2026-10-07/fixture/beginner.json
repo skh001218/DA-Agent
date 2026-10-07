@@ -1,0 +1,512 @@
+{
+  "level": "beginner",
+  "owner": "sql057-8e6b27b25fb44ed3a4fc2fd6a31a7f0e",
+  "session_id": "5f31aae6-89ec-450e-b71b-eb5c4dc2f2ae",
+  "generation": {
+    "error": null,
+    "phase": "adaptive-alignment",
+    "states": [
+      {
+        "at": "2026-10-07T08:37:09.626976+00:00",
+        "status": "planning"
+      },
+      {
+        "at": "2026-10-07T08:37:09.827125+00:00",
+        "status": "planning"
+      },
+      {
+        "at": "2026-10-07T08:37:10.001296+00:00",
+        "status": "preparing_data"
+      },
+      {
+        "at": "2026-10-07T08:37:10.233683+00:00",
+        "status": "validating"
+      }
+    ],
+    "status": "ready",
+    "message": "게임 신규 이용자의 D7 리텐션을 전체 계산하는 SQL 문제를 만들어줘. 무접속자 포함, 관측 미완료 이용자는 분모 제외. 이용자별 관측 요약 자료를 제공해줘.",
+    "version": "discord-generation-v1",
+    "revision": 0,
+    "questions": [],
+    "run_token": "13798ce4-b294-4e91-a8c1-c9939e4aba6e",
+    "error_code": null,
+    "request_id": "5f31aae6-89ec-450e-b71b-eb5c4dc2f2ae",
+    "planning_calls": 2,
+    "completed_steps": 3,
+    "original_message": "게임 신규 이용자의 D7 리텐션을 전체 계산하는 SQL 문제를 만들어줘. 무접속자 포함, 관측 미완료 이용자는 분모 제외. 이용자별 관측 요약 자료를 제공해줘.",
+    "requested_difficulty": "beginner",
+    "requested_help_level": null,
+    "package_id": "discord-generated-fbdc87e912635233fe5c2ef7"
+  },
+  "request": "게임 신규 이용자의 D7 리텐션을 전체 계산하는 SQL 문제를 만들어줘. 무접속자 포함, 관측 미완료 이용자는 분모 제외. 이용자별 관측 요약 자료를 제공해줘.",
+  "task": {
+    "generation_version": "discord-generation-v1",
+    "task_id": "discord-generated-fbdc87e912635233fe5c2ef7",
+    "version": "sql-generated-v1",
+    "data_version": "discord-generated-fbdc87e912635233fe5c2ef7-data",
+    "title": "SQL · 관측 완료 이용자의 D7 리텐션",
+    "topic": "게임 이용자 리텐션",
+    "difficulty": "beginner",
+    "objective": "게임팀은 신규 이용자의 D7 리텐션을 확인하려 합니다. 연습용 합성 관측 요약으로 계산하세요.\n목표: 관측 완료 이용자의 D7 리텐션을 직접 SELECT로 계산하세요.\n목표에 맞는 SELECT를 직접 작성하세요.\n계산 단위: 이용자별 한 행의 합성 D7 관측 요약; 무접속 이용자 포함\n분석 조건: 2026-09-01~14 가입 대상의 이용자별 합성 D7 관측 요약이며 원본 로그가 아닙니다.; D7은 가입 한국 날짜+7일 재접속 여부입니다. observed_days>=7인 이용자만 분모, d7_returned=yes가 분자입니다.; 무접속 이용자도 요약에 포함하고 7일 미관측 이용자는 분모에서 제외합니다.\n집계: ratio · 대상 표: retention_observations · 그룹: 전체\n분자 조건: d7_returned = 'yes'\n분모 조건: observed_days >= 7\n출력 열과 순서: denominator, numerator, d7_retention. 행 순서는 무관합니다. 숫자는 숫자형으로 출력하세요.\n비율은 0~1이며 분모 0은 NULL입니다. 그룹 집계는 대상 행이 있는 그룹만 출력합니다.\n자료는 요청별 연습용 합성 데이터입니다. /help의 데이터 사전에서 관계와 열 정의를 확인하세요.",
+    "schema": {
+      "accounts": {
+        "account_id": "bigint",
+        "channel": "text",
+        "cohort": "text"
+      },
+      "retention_observations": {
+        "observation_id": "bigint",
+        "account_id": "bigint",
+        "observed_days": "bigint",
+        "d7_returned": "text"
+      }
+    },
+    "dictionary": {
+      "accounts": {
+        "unit": "신규 이용자별 한 행",
+        "columns": {
+          "account_id": "bigint",
+          "channel": "text",
+          "cohort": "text"
+        },
+        "description": "account_id: 이용자 기본키 / channel: 가입 채널 / cohort: 가입 코호트: week1=9월1~7일, week2=9월8~14일"
+      },
+      "retention_observations": {
+        "unit": "이용자별 한 행의 합성 D7 관측 요약; 무접속 이용자 포함",
+        "columns": {
+          "observation_id": "bigint",
+          "account_id": "bigint",
+          "observed_days": "bigint",
+          "d7_returned": "text"
+        },
+        "description": "observation_id: 관측 요약 기본키 / account_id: accounts 기본키; 모든 가입자를 한 번씩 포함 / observed_days: 가입 이후 관측을 완료한 일수; 7 미만은 D7 미관측 / d7_returned: 가입 한국 날짜+7일 재접속 yes/no; observed_days<7이면 미관측이므로 평가 제외"
+      }
+    },
+    "intro_sections": {
+      "background": "게임팀은 신규 이용자의 D7 리텐션을 확인하려 합니다. 연습용 합성 관측 요약으로 계산하세요.",
+      "context": [
+        "신규 이용자의 관측 완료 조건에 따른 D7 리텐션을 확인하는 가상 업무입니다.",
+        "채널과 가입 코호트에 따라 관측 완료 일수와 재접속 여부가 다른 합성 관측 자료를 제공합니다."
+      ],
+      "decision": "SQL 실행 결과와 모집단을 확인하여 다음 연습에 활용합니다.",
+      "questions": [
+        "게임팀은 신규 이용자의 D7 리텐션을 확인하려 합니다. 연습용 합성 관측 요약으로 계산하세요.\n목표: 관측 완료 이용자의 D7 리텐션을 직접 SELECT로 계산하세요.\n목표에 맞는 SELECT를 직접 작성하세요.\n계산 단위: 이용자별 한 행의 합성 D7 관측 요약; 무접속 이용자 포함\n분석 조건: 2026-09-01~14 가입 대상의 이용자별 합성 D7 관측 요약이며 원본 로그가 아닙니다.; D7은 가입 한국 날짜+7일 재접속 여부입니다. observed_days>=7인 이용자만 분모, d7_returned=yes가 분자입니다.; 무접속 이용자도 요약에 포함하고 7일 미관측 이용자는 분모에서 제외합니다.\n집계: ratio · 대상 표: retention_observations · 그룹: 전체\n분자 조건: d7_returned = 'yes'\n분모 조건: observed_days >= 7\n출력 열과 순서: denominator, numerator, d7_retention. 행 순서는 무관합니다. 숫자는 숫자형으로 출력하세요.\n비율은 0~1이며 분모 0은 NULL입니다. 그룹 집계는 대상 행이 있는 그룹만 출력합니다.\n자료는 요청별 연습용 합성 데이터입니다. /help의 데이터 사전에서 관계와 열 정의를 확인하세요."
+      ],
+      "conditions": [
+        "2026-09-01~14 가입 대상의 이용자별 합성 D7 관측 요약이며 원본 로그가 아닙니다.",
+        "D7은 가입 한국 날짜+7일 재접속 여부입니다. observed_days>=7인 이용자만 분모, d7_returned=yes가 분자입니다.",
+        "무접속 이용자도 요약에 포함하고 7일 미관측 이용자는 분모에서 제외합니다."
+      ],
+      "judgments": [
+        "",
+        ""
+      ]
+    },
+    "relationships": [
+      {
+        "table": "retention_observations",
+        "column": "account_id",
+        "target_table": "accounts",
+        "target_column": "account_id"
+      }
+    ],
+    "timezone": "Asia/Seoul",
+    "period": {
+      "start": null,
+      "end": null,
+      "observation_end": "2026-10-07T08:37:10.113235+00:00",
+      "description": "가입: 한국 시간 2026-09-01~14, 관측 종료: 2026-09-29 00:00 미만"
+    },
+    "metrics": {
+      "d7_retention": {
+        "description": "ratio",
+        "table": "retention_observations",
+        "column": null,
+        "operation": "ratio",
+        "group_by": [],
+        "conditions": [
+          {
+            "column": "d7_returned",
+            "operator": "eq",
+            "value": "yes"
+          }
+        ],
+        "denominator_conditions": [
+          {
+            "column": "observed_days",
+            "operator": "gte",
+            "value": 7
+          }
+        ],
+        "joins": []
+      }
+    },
+    "quality_information": {
+      "collection": "요청별 합성 자료 · 자동 검증 통과 · 사람 품질 검토 전",
+      "required_check": "공개 자료의 단위·중복·관측 조건 점검",
+      "verification_scope": "저장 조회 값은 근거로 사용하지만 임의 자연어 주장의 자동 검산은 미지원"
+    },
+    "accepted_limits": [
+      "합성 요약은 실제 서비스 결과가 아닙니다.",
+      "관계 미확인·판단 유보·추가 관측도 타당한 결론으로 인정"
+    ],
+    "valid_paths": [
+      "관측 완료 이용자의 D7 리텐션을 직접 SELECT로 계산하세요.",
+      "SQL 결과의 중복과 관측 조건 및 분모/NULL 검산 방법을 점검하세요."
+    ],
+    "rubric": {
+      "version": "sql-generated-v1",
+      "criteria": [
+        {
+          "id": "syntax",
+          "name": "구문·실행"
+        },
+        {
+          "id": "calculation",
+          "name": "계산·출력"
+        },
+        {
+          "id": "robustness",
+          "name": "다른 표본·빈 데이터"
+        }
+      ],
+      "non_scoring": [
+        "문장 길이",
+        "조회 횟수",
+        "교육 효과"
+      ],
+      "total": null,
+      "no_duplicate_penalty": true
+    },
+    "help_policy": {
+      "default_level": "guided",
+      "types": [
+        "clarification",
+        "concept",
+        "direction",
+        "feedback"
+      ]
+    },
+    "source_case": {
+      "version": "discord-synthetic-v1",
+      "topic": "게임 이용자 리텐션",
+      "business_problem": "사용자 요청에 맞춰 설정한 가상 업무 문제",
+      "analysis_question": "게임 신규 이용자의 D7 리텐션을 전체 계산하는 SQL 문제를 만들어줘. 무접속자 포함, 관측 미완료 이용자는 분모 제외. 이용자별 관측 요약 자료를 제공해줘.",
+      "decision": "합성 자료로 판단과 한계를 연습",
+      "selection_reason": "사용자 요청과 난이도로 선택한 모델이 직접 설계",
+      "sources": [],
+      "searched_at": null,
+      "search_suggestions": ""
+    },
+    "semantic_signature": {
+      "domain": "게임 이용자 리텐션",
+      "goal": "관측 완료 이용자의 D7 리텐션을 직접 SELECT로 계산하세요.",
+      "required_judgment": "calculation",
+      "format": "calculation",
+      "situation": "496d9c7ea42d",
+      "ambiguity": "beginner",
+      "evaluation": "adaptive",
+      "quality_version": "task-quality-v1",
+      "difficulty": "beginner",
+      "structure": "ratio:False:0",
+      "source_topic": "게임 이용자 리텐션"
+    },
+    "practice": "sql",
+    "sql_contract": {
+      "version": "sql-generated-v1",
+      "columns": [
+        "denominator",
+        "numerator",
+        "d7_retention"
+      ],
+      "numeric_columns": [
+        "d7_retention",
+        "denominator",
+        "numerator"
+      ],
+      "timestamp_columns": [],
+      "ordering": "unordered",
+      "tolerance": "0.000001",
+      "metric": {
+        "name": "d7_retention",
+        "table": "retention_observations",
+        "operation": "ratio",
+        "column": null,
+        "conditions": [
+          {
+            "column": "d7_returned",
+            "operator": "eq",
+            "value": "yes"
+          }
+        ],
+        "purpose": "analysis",
+        "joins": [],
+        "group_by": [],
+        "denominator_conditions": [
+          {
+            "column": "observed_days",
+            "operator": "gte",
+            "value": 7
+          }
+        ]
+      },
+      "criteria": [
+        {
+          "id": "syntax",
+          "name": "구문·실행"
+        },
+        {
+          "id": "calculation",
+          "name": "계산·출력"
+        },
+        {
+          "id": "robustness",
+          "name": "다른 표본·빈 데이터"
+        }
+      ],
+      "verification_scope": "본 자료·다른 고정 시드 2개·빈 데이터의 전체 결과 비교"
+    }
+  },
+  "intro": "📌 SQL · 관측 완료 이용자의 D7 리텐션\n난이도: 초급\n게임팀은 신규 이용자의 D7 리텐션을 확인하려 합니다. 연습용 합성 관측 요약으로 계산하세요.\n목표: 관측 완료 이용자의 D7 리텐션을 직접 SELECT로 계산하세요.\n목표에 맞는 SELECT를 직접 작성하세요.\n계산 단위: 이용자별 한 행의 합성 D7 관측 요약; 무접속 이용자 포함\n분석 조건: 2026-09-01~14 가입 대상의 이용자별 합성 D7 관측 요약이며 원본 로그가 아닙니다.; D7은 가입 한국 날짜+7일 재접속 여부입니다. observed_days>=7인 이용자만 분모, d7_returned=yes가 분자입니다.; 무접속 이용자도 요약에 포함하고 7일 미관측 이용자는 분모에서 제외합니다.\n집계: ratio · 대상 표: retention_observations · 그룹: 전체\n분자 조건: d7_returned = 'yes'\n분모 조건: observed_days >= 7\n출력 열과 순서: denominator, numerator, d7_retention. 행 순서는 무관합니다. 숫자는 숫자형으로 출력하세요.\n비율은 0~1이며 분모 0은 NULL입니다. 그룹 집계는 대상 행이 있는 그룹만 출력합니다.\n자료는 요청별 연습용 합성 데이터입니다. /help의 데이터 사전에서 관계와 열 정의를 확인하세요.\n관측 기간: 가입: 한국 시간 2026-09-01~14, 관측 종료: 2026-09-29 00:00 미만\n데이터 버전: discord-generated-fbdc87e912635233fe5c2ef7-data\n/help로 데이터 사전·평가 기준을 확인하세요. sql 코드 블록으로 직접 풀이하고 /submit로 평가하세요.",
+  "execution": {
+    "id": "6bd5e2b5-4033-4a94-b64e-cff52ca3068d",
+    "event_id": "015013274087482abc15765425a10947",
+    "sql": "WITH answer AS (SELECT COUNT(*) AS denominator, COUNT(*) FILTER (WHERE \"retention_observations\".\"d7_returned\" = 'yes') AS numerator, COUNT(*) FILTER (WHERE \"retention_observations\".\"d7_returned\" = 'yes')::double precision / NULLIF(COUNT(*),0) AS \"d7_retention\" FROM \"retention_observations\" WHERE \"retention_observations\".\"observed_days\" >= 7) SELECT * FROM answer",
+    "original_text": "```sql\nWITH answer AS (SELECT COUNT(*) AS denominator, COUNT(*) FILTER (WHERE \"retention_observations\".\"d7_returned\" = 'yes') AS numerator, COUNT(*) FILTER (WHERE \"retention_observations\".\"d7_returned\" = 'yes')::double precision / NULLIF(COUNT(*),0) AS \"d7_retention\" FROM \"retention_observations\" WHERE \"retention_observations\".\"observed_days\" >= 7) SELECT * FROM answer\n```\n검산 계획: retention_observations.observation_id 각각으로 GROUP BY하여 COUNT(*)=1인지 확인합니다. 관측 요약은 계정당 한 행인지, FK 조인 전후 COUNT(*)가 같고 조인 후에도 계정키별 COUNT(*)=1인지 비교해 중복 증폭을 점검합니다. 기간/관측: observed_days gte 7의 각 경계 바로 전·같은 값·바로 뒤를 비교합니다. gte 경계값은 포함, lt 경계값은 제외하고 가입 날짜 및 D7 날짜는 Asia/Seoul 기준으로 변환하여 관측 일수 6/7과 연결합니다. 전체별 분모/분자를 별도 집계해 그룹 누락과 다른 그룹 혼합이 없는지 대조합니다. 분모: 무접속자도 관측 완료 시 포함하고 미관측자는 제외되는지 확인합니다. 빈 표의 전체 집계에서 denominator/numerator=0, NULLIF로 비율 NULL인지 확인합니다. 모두 아직 수행하지 않은 계획입니다.",
+    "execution_id": "a490702c-0f42-4778-aa26-ee938448385c",
+    "result": {
+      "execution_id": "a490702c-0f42-4778-aa26-ee938448385c",
+      "status": "success",
+      "executed_at": "2026-10-07T08:37:10.976834Z",
+      "columns": [
+        {
+          "name": "denominator",
+          "type": "int8"
+        },
+        {
+          "name": "numerator",
+          "type": "int8"
+        },
+        {
+          "name": "d7_retention",
+          "type": "float8"
+        }
+      ],
+      "rows": [
+        [
+          18,
+          10,
+          0.5555555555555556
+        ]
+      ],
+      "preview_row_count": 1,
+      "total_row_count": 1,
+      "result_complete": true,
+      "truncated": false,
+      "error": null,
+      "expires_in_seconds": 600,
+      "duration_ms": 62
+    },
+    "full_result": {
+      "execution_id": "a490702c-0f42-4778-aa26-ee938448385c",
+      "status": "success",
+      "executed_at": "2026-10-07T08:37:10.976834Z",
+      "columns": [
+        {
+          "name": "denominator",
+          "type": "int8"
+        },
+        {
+          "name": "numerator",
+          "type": "int8"
+        },
+        {
+          "name": "d7_retention",
+          "type": "float8"
+        }
+      ],
+      "rows": [
+        [
+          18,
+          10,
+          0.5555555555555556
+        ]
+      ],
+      "preview_row_count": 1,
+      "total_row_count": 1,
+      "result_complete": true,
+      "truncated": false,
+      "error": null,
+      "expires_in_seconds": 600,
+      "duration_ms": 62
+    },
+    "at": "2026-10-07T08:37:11.035423+00:00",
+    "verification_notes": "검산 계획: retention_observations.observation_id 각각으로 GROUP BY하여 COUNT(*)=1인지 확인합니다. 관측 요약은 계정당 한 행인지, FK 조인 전후 COUNT(*)가 같고 조인 후에도 계정키별 COUNT(*)=1인지 비교해 중복 증폭을 점검합니다. 기간/관측: observed_days gte 7의 각 경계 바로 전·같은 값·바로 뒤를 비교합니다. gte 경계값은 포함, lt 경계값은 제외하고 가입 날짜 및 D7 날짜는 Asia/Seoul 기준으로 변환하여 관측 일수 6/7과 연결합니다. 전체별 분모/분자를 별도 집계해 그룹 누락과 다른 그룹 혼합이 없는지 대조합니다. 분모: 무접속자도 관측 완료 시 포함하고 미관측자는 제외되는지 확인합니다. 빈 표의 전체 집계에서 denominator/numerator=0, NULLIF로 비율 NULL인지 확인합니다. 모두 아직 수행하지 않은 계획입니다.",
+    "reply_to_message_id": null,
+    "parent_execution_id": null,
+    "input_method": "slash"
+  },
+  "evaluation": {
+    "practice": "sql",
+    "rubric_version": "sql-generated-v1",
+    "held": false,
+    "reason": null,
+    "total": null,
+    "criteria": [
+      {
+        "id": "syntax",
+        "name": "구문·실행",
+        "status": "충족",
+        "reason": "실제 읽기 전용 실행 성공",
+        "evidence_refs": [
+          "execution:a490702c-0f42-4778-aa26-ee938448385c"
+        ]
+      },
+      {
+        "id": "calculation",
+        "name": "계산·출력",
+        "status": "충족",
+        "reason": "고정 검증 데이터의 전체 결과 비교",
+        "evidence_refs": [
+          "execution:a490702c-0f42-4778-aa26-ee938448385c"
+        ]
+      },
+      {
+        "id": "robustness",
+        "name": "다른 표본·빈 데이터",
+        "status": "충족",
+        "reason": "고정 검증 데이터의 전체 결과 비교",
+        "evidence_refs": [
+          "execution:a490702c-0f42-4778-aa26-ee938448385c"
+        ]
+      }
+    ],
+    "checks": [
+      {
+        "case": "main",
+        "complete": true,
+        "matched": true
+      },
+      {
+        "case": "variation_1",
+        "complete": true,
+        "matched": true
+      },
+      {
+        "case": "variation_2",
+        "complete": true,
+        "matched": true
+      },
+      {
+        "case": "empty",
+        "complete": true,
+        "matched": true
+      }
+    ],
+    "human_review": "pending",
+    "limitation": "준비된 검증 데이터 범위의 결과 비교이며 모든 SQL의 동치 증명·독립 역량·학습 효과 판정은 아닙니다.",
+    "recommendation": "보완 항목을 수정해 전체 SQL과 필요한 검산 설명을 새 답장으로 제출하세요. 모두 충족했다면 다른 문제에 적용하세요.",
+    "help_history": [],
+    "sql_exposure": "없음 확인"
+  },
+  "restart_restored": true,
+  "submission": {
+    "session_id": "5f31aae6-89ec-450e-b71b-eb5c4dc2f2ae",
+    "evaluation_id": "35c2a8e9-04df-40bf-ae17-1398399b69fc",
+    "owner_user_id": "sql057-8e6b27b25fb44ed3a4fc2fd6a31a7f0e",
+    "guild_id": "sql057-test",
+    "completed": true,
+    "practice": "sql",
+    "post_name": "SQL 연습 · 5f31aae6 · v1",
+    "cards": [
+      {
+        "title": "SQL 연습 결과",
+        "description": "SQL · 관측 완료 이용자의 D7 리텐션\nSQL 평가 · 구문·실행: 충족 / 계산·출력: 충족 / 다른 표본·빈 데이터: 충족\n준비된 검증 데이터 범위의 결과 비교이며 모든 SQL의 동치 증명·독립 역량·학습 효과 판정은 아닙니다.",
+        "score": null,
+        "held": false
+      },
+      {
+        "title": "문제",
+        "description": "게임팀은 신규 이용자의 D7 리텐션을 확인하려 합니다. 연습용 합성 관측 요약으로 계산하세요.\n목표: 관측 완료 이용자의 D7 리텐션을 직접 SELECT로 계산하세요.\n목표에 맞는 SELECT를 직접 작성하세요.\n계산 단위: 이용자별 한 행의 합성 D7 관측 요약; 무접속 이용자 포함\n분석 조건: 2026-09-01\\~14 가입 대상의 이용자별 합성 D7 관측 요약이며 원본 로그가 아닙니다.; D7은 가입 한국 날짜+7일 재접속 여부입니다. observed\\_days\\>=7인 이용자만 분모, d7\\_returned=yes가 분자입니다.; 무접속 이용자도 요약에 포함하고 7일 미관측 이용자는 분모에서 제외합니다.\n집계: ratio · 대상 표: retention\\_observations · 그룹: 전체\n분자 조건: d7\\_returned = 'yes'\n분모 조건: observed\\_days \\>= 7\n출력 열과 순서: denominator, numerator, d7\\_retention. 행 순서는 무관합니다. 숫자는 숫자형으로 출력하세요.\n비율은 0\\~1이며 분모 0은 NULL입니다. 그룹 집계는 대상 행이 있는 그룹만 출력합니다.\n자료는 요청별 연습용 합성 데이터입니다. /help의 데이터 사전에서 관계와 열 정의를 확인하세요."
+      },
+      {
+        "title": "제출 SQL",
+        "description": "WITH answer AS \\(SELECT COUNT\\(\\*\\) AS denominator, COUNT\\(\\*\\) FILTER \\(WHERE \"retention\\_observations\".\"d7\\_returned\" = 'yes'\\) AS numerator, COUNT\\(\\*\\) FILTER \\(WHERE \"retention\\_observations\".\"d7\\_returned\" = 'yes'\\)::double precision / NULLIF\\(COUNT\\(\\*\\),0\\) AS \"d7\\_retention\" FROM \"retention\\_observations\" WHERE \"retention\\_observations\".\"observed\\_days\" \\>= 7\\) SELECT \\* FROM answer"
+      },
+      {
+        "title": "검산 방법 설명",
+        "description": "검산 계획: retention\\_observations.observation\\_id 각각으로 GROUP BY하여 COUNT\\(\\*\\)=1인지 확인합니다. 관측 요약은 계정당 한 행인지, FK 조인 전후 COUNT\\(\\*\\)가 같고 조인 후에도 계정키별 COUNT\\(\\*\\)=1인지 비교해 중복 증폭을 점검합니다. 기간/관측: observed\\_days gte 7의 각 경계 바로 전·같은 값·바로 뒤를 비교합니다. gte 경계값은 포함, lt 경계값은 제외하고 가입 날짜 및 D7 날짜는 Asia/Seoul 기준으로 변환하여 관측 일수 6/7과 연결합니다. 전체별 분모/분자를 별도 집계해 그룹 누락과 다른 그룹 혼합이 없는지 대조합니다. 분모: 무접속자도 관측 완료 시 포함하고 미관측자는 제외되는지 확인합니다. 빈 표의 전체 집계에서 denominator/numerator=0, NULLIF로 비율 NULL인지 확인합니다. 모두 아직 수행하지 않은 계획입니다."
+      },
+      {
+        "title": "도움·정답 노출",
+        "description": "SQL 노출: 없음 확인\n평가 시점 도움 이력: 0"
+      },
+      {
+        "title": "다음 연습",
+        "description": "보완 항목을 수정해 전체 SQL과 필요한 검산 설명을 새 답장으로 제출하세요. 모두 충족했다면 다른 문제에 적용하세요."
+      },
+      {
+        "title": "구문·실행 · 충족",
+        "description": "실제 읽기 전용 실행 성공\n선택한 제출 SQL의 실행과 고정 검증 데이터를 근거로 합니다. 실행 ID: a490702c-0f42-4778-aa26-ee938448385c"
+      },
+      {
+        "title": "계산·출력 · 충족",
+        "description": "고정 검증 데이터의 전체 결과 비교\n선택한 제출 SQL의 실행과 고정 검증 데이터를 근거로 합니다. 실행 ID: a490702c-0f42-4778-aa26-ee938448385c"
+      },
+      {
+        "title": "다른 표본·빈 데이터 · 충족",
+        "description": "고정 검증 데이터의 전체 결과 비교\n선택한 제출 SQL의 실행과 고정 검증 데이터를 근거로 합니다. 실행 ID: a490702c-0f42-4778-aa26-ee938448385c"
+      }
+    ],
+    "evidence_results": [
+      {
+        "execution_id": "a490702c-0f42-4778-aa26-ee938448385c",
+        "columns": [
+          {
+            "name": "denominator",
+            "type": "int8"
+          },
+          {
+            "name": "numerator",
+            "type": "int8"
+          },
+          {
+            "name": "d7_retention",
+            "type": "float8"
+          }
+        ],
+        "rows": [
+          [
+            18,
+            10,
+            0.5555555555555556
+          ]
+        ],
+        "total_row_count": 1,
+        "truncated": false,
+        "placement": "report",
+        "practice": "sql"
+      }
+    ],
+    "message_sources": [],
+    "forum_summary": {
+      "title": "SQL · 관측 완료 이용자의 D7 리텐션",
+      "practice": "sql",
+      "conclusion": "준비된 검증 데이터에서 3/3개 항목을 충족했습니다.",
+      "evidence": [
+        "전체 실행 결과 1행",
+        "denominator: 18 · numerator: 10 · d7_retention: 0.5555555555555556"
+      ],
+      "held": false,
+      "score": null,
+      "assessment": "3/3개 충족 · 검증 데이터 기준",
+      "strength": "실제 읽기 전용 실행 성공",
+      "improvement": "준비된 검증 데이터 범위의 결과 비교이며 모든 SQL의 동치 증명·독립 역량·학습 효과 판정은 아닙니다.",
+      "hold_reason": "",
+      "next_action": "현재 조건을 충족한 SQL을 다른 문제에 적용하세요.",
+      "warning": ""
+    }
+  },
+  "passed": true,
+  "verification_population_varied": true
+}

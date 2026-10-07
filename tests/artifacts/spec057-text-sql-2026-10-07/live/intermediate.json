@@ -1,0 +1,612 @@
+{
+  "level": "intermediate",
+  "owner": "sql057-186c78aa211e4dcab26758026c14c140",
+  "session_id": "564b67c6-3fc0-4fb8-a269-a8daa057032b",
+  "generation": {
+    "error": null,
+    "phase": "adaptive-alignment",
+    "states": [
+      {
+        "at": "2026-10-07T08:17:11.765656+00:00",
+        "status": "planning"
+      },
+      {
+        "at": "2026-10-07T08:17:26.409222+00:00",
+        "status": "planning"
+      },
+      {
+        "at": "2026-10-07T08:19:04.546368+00:00",
+        "status": "planning"
+      },
+      {
+        "at": "2026-10-07T08:20:31.385308+00:00",
+        "status": "planning"
+      },
+      {
+        "at": "2026-10-07T08:20:37.789714+00:00",
+        "status": "preparing_data"
+      },
+      {
+        "at": "2026-10-07T08:20:37.972026+00:00",
+        "status": "validating"
+      }
+    ],
+    "status": "ready",
+    "message": "게임 신규 이용자의 D7 리텐션을 유입 채널별 계산하는 SQL 문제를 만들어줘. 무접속자 포함, 관측 미완료 이용자는 분모 제외. 이용자별 관측 요약 자료를 제공해줘.",
+    "version": "discord-generation-v1",
+    "revision": 0,
+    "questions": [],
+    "run_token": "bdd7a9bf-af27-4e0a-bd2f-869976aa922d",
+    "error_code": null,
+    "package_id": "discord-generated-69997c487ae6813c16cdb350",
+    "request_id": "564b67c6-3fc0-4fb8-a269-a8daa057032b",
+    "planning_calls": 4,
+    "completed_steps": 3,
+    "original_message": "게임 신규 이용자의 D7 리텐션을 유입 채널별 계산하는 SQL 문제를 만들어줘. 무접속자 포함, 관측 미완료 이용자는 분모 제외. 이용자별 관측 요약 자료를 제공해줘.",
+    "requested_difficulty": "intermediate",
+    "requested_help_level": null
+  },
+  "request": "게임 신규 이용자의 D7 리텐션을 유입 채널별 계산하는 SQL 문제를 만들어줘. 무접속자 포함, 관측 미완료 이용자는 분모 제외. 이용자별 관측 요약 자료를 제공해줘.",
+  "task": {
+    "title": "SQL · 유입 채널별 신규 이용자 D7 리텐션 계산",
+    "topic": "게임 신규 이용자의 유입 채널별 D7 리텐션",
+    "period": {
+      "end": "2026-09-12",
+      "start": "2026-09-01",
+      "description": "가입 대상: 2026-09-01~2026-09-12. 관측 종료: 2026-09-16 00:00, Asia/Seoul. 종료 시각은 관측 구간에 포함하지 않는다.",
+      "observation_end": "2026-09-11T15:00:00+00:00"
+    },
+    "rubric": {
+      "grades": {
+        "0": "내용 없음",
+        "1": "확인된 핵심 오류",
+        "2": "필수 조건 누락",
+        "3": "필수 조건 충족",
+        "4": "추가 근거·한계 검토"
+      },
+      "version": "discord-generation-v1",
+      "criteria": [
+        {
+          "id": "problem_definition",
+          "name": "문제 정의",
+          "weight": 20,
+          "advanced": "추가 검증과 한계를 실제 근거로 설명",
+          "required": "무접속자를 포함하고 관측 미완료 이용자를 제외하여 유입 채널별 D7 리텐션을 계산한다.; 대상·기간·단위를 공개 조건과 연결",
+          "core_error": "요청과 다른 대상·기간으로 결론 확정"
+        },
+        {
+          "id": "metric_design",
+          "name": "지표·비교 설계",
+          "weight": 25,
+          "advanced": "추가 검증과 한계를 실제 근거로 설명",
+          "required": "유입 채널별 전체 결과를 지정된 네 출력 열로 제출하며 비율의 범위와 빈 분모 처리 기준을 충족한다.",
+          "core_error": "분모·단위·비교 조건을 혼동해 결론 확정"
+        },
+        {
+          "id": "hypothesis_review",
+          "name": "가설·대안 검토",
+          "weight": 20,
+          "advanced": "추가 검증과 한계를 실제 근거로 설명",
+          "required": "확인한 사실과 가설을 구분하고 타당한 대안 또는 미확인을 설명",
+          "core_error": "반례를 무시하고 비공개 원인 맞히기로 가설 확정"
+        },
+        {
+          "id": "evidence_interpretation",
+          "name": "근거 해석",
+          "weight": 20,
+          "advanced": "추가 검증과 한계를 실제 근거로 설명",
+          "required": "저장 실행을 인용해 유입 채널별 전체 결과를 지정된 네 출력 열로 제출하며 비율의 범위와 빈 분모 처리 기준을 충족한다.; 관측 차이로 인과를 단정하지 않음",
+          "core_error": "근거 없는 수치·인과 확정"
+        },
+        {
+          "id": "decision_limits",
+          "name": "한계·의사결정",
+          "weight": 15,
+          "advanced": "추가 검증과 한계를 실제 근거로 설명",
+          "required": "스칼라 검산 출력과 비교 결과를 제출하고, 요약 누락·조인 중복·무접속자 누락·관측 미완료 행 포함 여부의 점검 결과를 명시한다.; 확인할 수 없는 범위와 판단 유보 설명",
+          "core_error": "관측하지 못한 조치 효과를 확정"
+        }
+      ],
+      "non_scoring": [
+        "SQL 작성 역량",
+        "문장 길이",
+        "조회 횟수"
+      ],
+      "passing_grade": 3,
+      "weights_total": 100,
+      "no_duplicate_penalty": true
+    },
+    "schema": {
+      "user_profiles": {
+        "user_id": "bigint",
+        "signup_at": "timestamptz",
+        "acquisition_channel": "text"
+      },
+      "user_observations": {
+        "user_id": "bigint",
+        "d7_returned": "bigint",
+        "observed_days": "bigint",
+        "observation_id": "bigint",
+        "return_sessions": "bigint"
+      }
+    },
+    "metrics": {
+      "d7_retention": {
+        "joins": [
+          {
+            "table": "user_profiles",
+            "source_column": "user_observations.user_id"
+          }
+        ],
+        "table": "user_observations",
+        "column": null,
+        "group_by": [
+          "user_profiles.acquisition_channel"
+        ],
+        "operation": "ratio",
+        "conditions": [
+          {
+            "value": 1,
+            "column": "user_observations.d7_returned",
+            "operator": "eq"
+          }
+        ],
+        "description": "ratio",
+        "denominator_conditions": [
+          {
+            "value": 7,
+            "column": "user_observations.observed_days",
+            "operator": "gte"
+          }
+        ]
+      }
+    },
+    "task_id": "discord-generated-69997c487ae6813c16cdb350",
+    "version": "sql-generated-v1",
+    "practice": "sql",
+    "timezone": "Asia/Seoul",
+    "objective": "연습용 합성 신규 이용자 200명의 프로필과 이용자별 합성 관측 요약을 제공합니다. 두 표는 같은 이용자 집합에 맞춰 함께 구성되며, 요약에는 모든 이용자가 정확히 한 행씩 포함됩니다. 가입일은 Asia/Seoul 기준 D0입니다. D7 재접속은 가입일로부터 7일 뒤인 달력 날짜의 00:00 이상 다음 날 00:00 미만에 게임 접속 세션을 한 번 이상 시작한 경우입니다. observed_days는 가입 다음 날부터 관측 종료 시점까지 완전히 관측한 달력 날짜 수입니다. observed_days가 7 이상인 이용자만 분모에 포함하고, 그중 d7_returned가 1인 이용자를 분자로 사용하세요. 관측 완료 이용자는 가입 후 재접속이 전혀 없어도 분모에 포함합니다. 관측 미완료 이용자의 d7_returned는 판정 전 임시값이므로 실패로 해석하지 않습니다. 직접 SELECT를 작성하여 유입 채널별 결과 전체를 출력하고 검산하세요.\n목표: 무접속자를 포함하고 관측 미완료 이용자를 제외하여 유입 채널별 D7 리텐션을 계산한다.\n목표에 맞는 SELECT를 직접 작성하세요.\n계산 단위: user_profiles의 모든 이용자를 빠짐없이 정확히 한 번 포함하는 이용자별 합성 관측 요약. 같은 이름의 프로필 그룹 전체와 중복 없이 일대일로 대응하며, 이용자와 관측 값을 독립적으로 추출하지 않는다.\n분석 조건: 가입일을 D0으로 정의하고 Asia/Seoul의 달력 날짜로 D7을 판정한다.; observed_days는 가입 다음 날부터 관측 종료 전까지 완전히 관측한 날짜 수이며 7 이상일 때만 모집단에 포함한다.; D7 재접속은 해당 날짜에 게임 접속 세션을 한 번 이상 시작한 경우이다.; 이용자별 관측 일수와 실제 D7 재접속 여부를 직접 구성한 합성 관측 요약을 제공한다.; 요약의 FK는 같은 이름의 프로필 그룹 전체에 중복 없이 대응하며 모든 이용자를 정확히 한 번 포함한다.; 관측 미완료 행의 d7_returned는 임시값이며 분자와 분모에서 모두 제외한다.\n집계: ratio · 대상 표: user_observations · 그룹: user_profiles.acquisition_channel\n분자 조건: user_observations.d7_returned = 1\n분모 조건: user_observations.observed_days >= 7\n출력 열과 순서: user_profiles__acquisition_channel, denominator, numerator, d7_retention. 행 순서는 무관합니다. 숫자는 숫자형으로 출력하세요.\n비율은 0~1이며 분모 0은 NULL입니다. 그룹 집계는 대상 행이 있는 그룹만 출력합니다.\n자료는 요청별 연습용 합성 데이터입니다. /help의 데이터 사전에서 관계와 열 정의를 확인하세요.",
+    "dictionary": {
+      "user_profiles": {
+        "unit": "신규 이용자 한 명당 정확히 한 행이며 첫 컬럼 user_id가 기본키이다.",
+        "columns": {
+          "user_id": "bigint",
+          "signup_at": "timestamptz",
+          "acquisition_channel": "text"
+        },
+        "description": "user_id: 신규 이용자 기본키 / acquisition_channel: 가입 당시 유입 채널 / signup_at: Asia/Seoul 기준 가입 시각. 해당 시각의 달력 날짜를 D0으로 정의한다."
+      },
+      "user_observations": {
+        "unit": "user_profiles의 모든 이용자를 빠짐없이 정확히 한 번 포함하는 이용자별 합성 관측 요약. 같은 이름의 프로필 그룹 전체와 중복 없이 일대일로 대응하며, 이용자와 관측 값을 독립적으로 추출하지 않는다.",
+        "columns": {
+          "user_id": "bigint",
+          "d7_returned": "bigint",
+          "observed_days": "bigint",
+          "observation_id": "bigint",
+          "return_sessions": "bigint"
+        },
+        "description": "observation_id: 합성 관측 요약 행의 기본키 / user_id: user_profiles.user_id를 참조하며 모든 프로필 이용자가 정확히 한 번 등장한다. / observed_days: 가입 다음 날부터 2026-09-16T00:00:00+09:00까지 완전히 관측한 달력 날짜 수. 7 이상일 때 D7 관측이 완료된다. / d7_returned: D7 날짜에 접속 세션을 시작했으면 1, 관측 완료 후 D7 접속이 없었으면 0. 관측 미완료 행의 0은 판정 전 임시값이다. / return_sessions: 가입일 다음 날부터 관측 종료 전까지 시작한 접속 세션 수. 0인 행은 해당 기간에 재접속이 전혀 없는 이용자이다."
+      }
+    },
+    "difficulty": "intermediate",
+    "help_policy": {
+      "types": [
+        "clarification",
+        "concept",
+        "direction",
+        "feedback"
+      ],
+      "default_level": "independent"
+    },
+    "source_case": {
+      "topic": "게임 신규 이용자의 유입 채널별 D7 리텐션",
+      "sources": [],
+      "version": "discord-synthetic-v1",
+      "decision": "합성 자료로 판단과 한계를 연습",
+      "searched_at": null,
+      "business_problem": "사용자 요청에 맞춰 설정한 가상 업무 문제",
+      "selection_reason": "사용자 요청과 난이도로 선택한 모델이 직접 설계",
+      "analysis_question": "게임 신규 이용자의 D7 리텐션을 유입 채널별 계산하는 SQL 문제를 만들어줘. 무접속자 포함, 관측 미완료 이용자는 분모 제외. 이용자별 관측 요약 자료를 제공해줘.",
+      "search_suggestions": ""
+    },
+    "valid_paths": [
+      "이용자별 관측 요약을 프로필과 연결하여 유입 채널별 D7 리텐션을 계산하는 SELECT를 직접 작성하세요. 관측 완료 무접속자를 포함하고 관측 미완료 이용자는 제외하세요.",
+      "스칼라 SELECT 결과로 채널별 분모 합계와 eligible_users를 비교하고 관측 완료 무접속자의 포함 여부를 점검하세요. profile_users와 summarized_users를 비교하여 요약 누락을 확인하고, FK 및 고유키를 통해 조인 중복과 관측 미완료 행의 제외 여부를 검산하세요."
+    ],
+    "data_version": "discord-generated-69997c487ae6813c16cdb350-data",
+    "sql_contract": {
+      "metric": {
+        "name": "d7_retention",
+        "joins": [
+          {
+            "table": "user_profiles",
+            "source_column": "user_observations.user_id"
+          }
+        ],
+        "table": "user_observations",
+        "column": null,
+        "purpose": "analysis",
+        "group_by": [
+          "user_profiles.acquisition_channel"
+        ],
+        "operation": "ratio",
+        "conditions": [
+          {
+            "value": 1,
+            "column": "user_observations.d7_returned",
+            "operator": "eq"
+          }
+        ],
+        "denominator_conditions": [
+          {
+            "value": 7,
+            "column": "user_observations.observed_days",
+            "operator": "gte"
+          }
+        ]
+      },
+      "columns": [
+        "user_profiles__acquisition_channel",
+        "denominator",
+        "numerator",
+        "d7_retention"
+      ],
+      "version": "sql-generated-v1",
+      "criteria": [
+        {
+          "id": "syntax",
+          "name": "구문·실행"
+        },
+        {
+          "id": "calculation",
+          "name": "계산·출력"
+        },
+        {
+          "id": "robustness",
+          "name": "다른 표본·빈 데이터"
+        }
+      ],
+      "ordering": "unordered",
+      "tolerance": "0.000001",
+      "numeric_columns": [
+        "d7_retention",
+        "denominator",
+        "numerator"
+      ],
+      "timestamp_columns": [],
+      "verification_scope": "본 자료·다른 고정 시드 2개·빈 데이터의 전체 결과 비교"
+    },
+    "relationships": [
+      {
+        "table": "user_observations",
+        "column": "user_id",
+        "target_table": "user_profiles",
+        "target_column": "user_id"
+      }
+    ],
+    "intro_sections": {
+      "context": [
+        "가상의 게임 운영팀이 신규 이용자의 가입 후 재접속 현황을 확인하기 위해 유입 채널별 D7 리텐션 계산을 연습합니다.",
+        "가입 후 무접속자를 제외하거나 아직 D7 관측이 끝나지 않은 이용자를 실패로 처리하면 채널별 리텐션의 모집단이 잘못 설정됩니다."
+      ],
+      "decision": "SELECT 결과가 정의된 모집단과 D7 판정 기준을 충족하는지 검산하여 계산 결과의 제출 가능 여부를 점검합니다.",
+      "judgments": [
+        "",
+        ""
+      ],
+      "questions": [
+        "연습용 합성 신규 이용자 200명의 프로필과 이용자별 합성 관측 요약을 제공합니다. 두 표는 같은 이용자 집합에 맞춰 함께 구성되며, 요약에는 모든 이용자가 정확히 한 행씩 포함됩니다. 가입일은 Asia/Seoul 기준 D0입니다. D7 재접속은 가입일로부터 7일 뒤인 달력 날짜의 00:00 이상 다음 날 00:00 미만에 게임 접속 세션을 한 번 이상 시작한 경우입니다. observed_days는 가입 다음 날부터 관측 종료 시점까지 완전히 관측한 달력 날짜 수입니다. observed_days가 7 이상인 이용자만 분모에 포함하고, 그중 d7_returned가 1인 이용자를 분자로 사용하세요. 관측 완료 이용자는 가입 후 재접속이 전혀 없어도 분모에 포함합니다. 관측 미완료 이용자의 d7_returned는 판정 전 임시값이므로 실패로 해석하지 않습니다. 직접 SELECT를 작성하여 유입 채널별 결과 전체를 출력하고 검산하세요.\n목표: 무접속자를 포함하고 관측 미완료 이용자를 제외하여 유입 채널별 D7 리텐션을 계산한다.\n목표에 맞는 SELECT를 직접 작성하세요.\n계산 단위: user_profiles의 모든 이용자를 빠짐없이 정확히 한 번 포함하는 이용자별 합성 관측 요약. 같은 이름의 프로필 그룹 전체와 중복 없이 일대일로 대응하며, 이용자와 관측 값을 독립적으로 추출하지 않는다.\n분석 조건: 가입일을 D0으로 정의하고 Asia/Seoul의 달력 날짜로 D7을 판정한다.; observed_days는 가입 다음 날부터 관측 종료 전까지 완전히 관측한 날짜 수이며 7 이상일 때만 모집단에 포함한다.; D7 재접속은 해당 날짜에 게임 접속 세션을 한 번 이상 시작한 경우이다.; 이용자별 관측 일수와 실제 D7 재접속 여부를 직접 구성한 합성 관측 요약을 제공한다.; 요약의 FK는 같은 이름의 프로필 그룹 전체에 중복 없이 대응하며 모든 이용자를 정확히 한 번 포함한다.; 관측 미완료 행의 d7_returned는 임시값이며 분자와 분모에서 모두 제외한다.\n집계: ratio · 대상 표: user_observations · 그룹: user_profiles.acquisition_channel\n분자 조건: user_observations.d7_returned = 1\n분모 조건: user_observations.observed_days >= 7\n출력 열과 순서: user_profiles__acquisition_channel, denominator, numerator, d7_retention. 행 순서는 무관합니다. 숫자는 숫자형으로 출력하세요.\n비율은 0~1이며 분모 0은 NULL입니다. 그룹 집계는 대상 행이 있는 그룹만 출력합니다.\n자료는 요청별 연습용 합성 데이터입니다. /help의 데이터 사전에서 관계와 열 정의를 확인하세요."
+      ],
+      "background": "연습용 합성 신규 이용자 200명의 프로필과 이용자별 합성 관측 요약을 제공합니다. 두 표는 같은 이용자 집합에 맞춰 함께 구성되며, 요약에는 모든 이용자가 정확히 한 행씩 포함됩니다. 가입일은 Asia/Seoul 기준 D0입니다. D7 재접속은 가입일로부터 7일 뒤인 달력 날짜의 00:00 이상 다음 날 00:00 미만에 게임 접속 세션을 한 번 이상 시작한 경우입니다. observed_days는 가입 다음 날부터 관측 종료 시점까지 완전히 관측한 달력 날짜 수입니다. observed_days가 7 이상인 이용자만 분모에 포함하고, 그중 d7_returned가 1인 이용자를 분자로 사용하세요. 관측 완료 이용자는 가입 후 재접속이 전혀 없어도 분모에 포함합니다. 관측 미완료 이용자의 d7_returned는 판정 전 임시값이므로 실패로 해석하지 않습니다. 직접 SELECT를 작성하여 유입 채널별 결과 전체를 출력하고 검산하세요.",
+      "conditions": [
+        "가입일을 D0으로 정의하고 Asia/Seoul의 달력 날짜로 D7을 판정한다.",
+        "observed_days는 가입 다음 날부터 관측 종료 전까지 완전히 관측한 날짜 수이며 7 이상일 때만 모집단에 포함한다.",
+        "D7 재접속은 해당 날짜에 게임 접속 세션을 한 번 이상 시작한 경우이다.",
+        "이용자별 관측 일수와 실제 D7 재접속 여부를 직접 구성한 합성 관측 요약을 제공한다.",
+        "요약의 FK는 같은 이름의 프로필 그룹 전체에 중복 없이 대응하며 모든 이용자를 정확히 한 번 포함한다.",
+        "관측 미완료 행의 d7_returned는 임시값이며 분자와 분모에서 모두 제외한다."
+      ]
+    },
+    "accepted_limits": [
+      "배경과 데이터는 모두 연습용 합성 자료이며 실제 게임이나 회사 사례를 나타내지 않는다.",
+      "제공하는 관측 요약은 이용자별 관측 일수와 재접속 여부를 직접 구성한 합성 자료이다.",
+      "관측 미완료 이용자의 D7 재접속 임시값은 성공 또는 실패의 근거로 사용할 수 없다.",
+      "관계 미확인·판단 유보·추가 관측도 타당한 결론으로 인정"
+    ],
+    "generation_version": "discord-generation-v1",
+    "semantic_signature": {
+      "goal": "무접속자를 포함하고 관측 미완료 이용자를 제외하여 유입 채널별 D7 리텐션을 계산한다.",
+      "domain": "게임 신규 이용자의 유입 채널별 D7 리텐션",
+      "format": "calculation",
+      "ambiguity": "intermediate",
+      "situation": "563d59cc6da2",
+      "structure": "ratio:True:1",
+      "difficulty": "intermediate",
+      "evaluation": "adaptive",
+      "source_topic": "게임 신규 이용자의 유입 채널별 D7 리텐션",
+      "quality_version": "task-quality-v1",
+      "required_judgment": "calculation"
+    },
+    "quality_information": {
+      "collection": "요청별 합성 자료 · 자동 검증 통과 · 사람 품질 검토 전",
+      "required_check": "공개 자료의 단위·중복·관측 조건 점검",
+      "verification_scope": "저장 조회 값은 근거로 사용하지만 임의 자연어 주장의 자동 검산은 미지원"
+    }
+  },
+  "intro": "📌 SQL · 유입 채널별 신규 이용자 D7 리텐션 계산\n난이도: 중급\n연습용 합성 신규 이용자 200명의 프로필과 이용자별 합성 관측 요약을 제공합니다. 두 표는 같은 이용자 집합에 맞춰 함께 구성되며, 요약에는 모든 이용자가 정확히 한 행씩 포함됩니다. 가입일은 Asia/Seoul 기준 D0입니다. D7 재접속은 가입일로부터 7일 뒤인 달력 날짜의 00:00 이상 다음 날 00:00 미만에 게임 접속 세션을 한 번 이상 시작한 경우입니다. observed_days는 가입 다음 날부터 관측 종료 시점까지 완전히 관측한 달력 날짜 수입니다. observed_days가 7 이상인 이용자만 분모에 포함하고, 그중 d7_returned가 1인 이용자를 분자로 사용하세요. 관측 완료 이용자는 가입 후 재접속이 전혀 없어도 분모에 포함합니다. 관측 미완료 이용자의 d7_returned는 판정 전 임시값이므로 실패로 해석하지 않습니다. 직접 SELECT를 작성하여 유입 채널별 결과 전체를 출력하고 검산하세요.\n목표: 무접속자를 포함하고 관측 미완료 이용자를 제외하여 유입 채널별 D7 리텐션을 계산한다.\n목표에 맞는 SELECT를 직접 작성하세요.\n계산 단위: user_profiles의 모든 이용자를 빠짐없이 정확히 한 번 포함하는 이용자별 합성 관측 요약. 같은 이름의 프로필 그룹 전체와 중복 없이 일대일로 대응하며, 이용자와 관측 값을 독립적으로 추출하지 않는다.\n분석 조건: 가입일을 D0으로 정의하고 Asia/Seoul의 달력 날짜로 D7을 판정한다.; observed_days는 가입 다음 날부터 관측 종료 전까지 완전히 관측한 날짜 수이며 7 이상일 때만 모집단에 포함한다.; D7 재접속은 해당 날짜에 게임 접속 세션을 한 번 이상 시작한 경우이다.; 이용자별 관측 일수와 실제 D7 재접속 여부를 직접 구성한 합성 관측 요약을 제공한다.; 요약의 FK는 같은 이름의 프로필 그룹 전체에 중복 없이 대응하며 모든 이용자를 정확히 한 번 포함한다.; 관측 미완료 행의 d7_returned는 임시값이며 분자와 분모에서 모두 제외한다.\n집계: ratio · 대상 표: user_observations · 그룹: user_profiles.acquisition_channel\n분자 조건: user_observations.d7_returned = 1\n분모 조건: user_observations.observed_days >= 7\n출력 열과 순서: user_profiles__acquisition_channel, denominator, numerator, d7_retention. 행 순서는 무관합니다. 숫자는 숫자형으로 출력하세요.\n비율은 0~1이며 분모 0은 NULL입니다. 그룹 집계는 대상 행이 있는 그룹만 출력합니다.\n자료는 요청별 연습용 합성 데이터입니다. /help의 데이터 사전에서 관계와 열 정의를 확인하세요.\n관측 기간: 가입 대상: 2026-09-01~2026-09-12. 관측 종료: 2026-09-16 00:00, Asia/Seoul. 종료 시각은 관측 구간에 포함하지 않는다.\n데이터 버전: discord-generated-69997c487ae6813c16cdb350-data\n/help로 데이터 사전·평가 기준을 확인하세요. sql 코드 블록으로 직접 풀이하고 /submit로 평가하세요.",
+  "execution": {
+    "id": "acf86fe8-f1db-43df-8350-28a5e9bb4392",
+    "event_id": "ef66b3354ec44e3aad6f0ecf56f532d1",
+    "sql": "WITH answer AS (SELECT \"user_profiles\".\"acquisition_channel\" AS \"user_profiles__acquisition_channel\", COUNT(*) AS denominator, COUNT(*) FILTER (WHERE \"user_observations\".\"d7_returned\" = 1) AS numerator, COUNT(*) FILTER (WHERE \"user_observations\".\"d7_returned\" = 1)::double precision / NULLIF(COUNT(*),0) AS \"d7_retention\" FROM \"user_observations\" JOIN \"user_profiles\" ON \"user_observations\".\"user_id\" = \"user_profiles\".\"user_id\" WHERE \"user_observations\".\"observed_days\" >= 7 GROUP BY \"user_profiles\".\"acquisition_channel\") SELECT * FROM answer",
+    "original_text": "```sql\nWITH answer AS (SELECT \"user_profiles\".\"acquisition_channel\" AS \"user_profiles__acquisition_channel\", COUNT(*) AS denominator, COUNT(*) FILTER (WHERE \"user_observations\".\"d7_returned\" = 1) AS numerator, COUNT(*) FILTER (WHERE \"user_observations\".\"d7_returned\" = 1)::double precision / NULLIF(COUNT(*),0) AS \"d7_retention\" FROM \"user_observations\" JOIN \"user_profiles\" ON \"user_observations\".\"user_id\" = \"user_profiles\".\"user_id\" WHERE \"user_observations\".\"observed_days\" >= 7 GROUP BY \"user_profiles\".\"acquisition_channel\") SELECT * FROM answer\n```\n검산 계획: user_observations.observation_id, user_observations.user_observations.user_id, user_profiles.user_id 각각으로 GROUP BY하여 COUNT(*)=1인지 확인합니다. 관측 요약은 계정당 한 행인지, FK 조인 전후 COUNT(*)가 같고 조인 후에도 계정키별 COUNT(*)=1인지 비교해 중복 증폭을 점검합니다. 기간/관측: user_observations.observed_days gte 7의 각 경계 바로 전·같은 값·바로 뒤를 비교합니다. gte 경계값은 포함, lt 경계값은 제외하고 가입 날짜 및 D7 날짜는 Asia/Seoul 기준으로 변환하여 관측 일수 6/7과 연결합니다. user_profiles.acquisition_channel별 분모/분자를 별도 집계해 그룹 누락과 다른 그룹 혼합이 없는지 대조합니다. 분모: 무접속자도 관측 완료 시 포함하고 미관측자는 제외되는지 확인합니다. 빈 표의 이 GROUP BY 쿼리는 0행이며 분모 조건을 만족하는 행이 없는 그룹도 미출력인지 확인합니다. 별도로 GROUP BY를 제거한 전체 집계에서 denominator/numerator=0, NULLIF로 비율 NULL인지 검산합니다. 모두 아직 수행하지 않은 계획입니다.",
+    "execution_id": "ffb75a9b-5d4d-47d7-9a48-1255e7bcf420",
+    "result": {
+      "execution_id": "ffb75a9b-5d4d-47d7-9a48-1255e7bcf420",
+      "status": "success",
+      "executed_at": "2026-10-07T08:38:02.369595Z",
+      "columns": [
+        {
+          "name": "user_profiles__acquisition_channel",
+          "type": "text"
+        },
+        {
+          "name": "denominator",
+          "type": "int8"
+        },
+        {
+          "name": "numerator",
+          "type": "int8"
+        },
+        {
+          "name": "d7_retention",
+          "type": "float8"
+        }
+      ],
+      "rows": [
+        [
+          "paid",
+          80,
+          40,
+          0.5
+        ],
+        [
+          "organic",
+          80,
+          40,
+          0.5
+        ]
+      ],
+      "preview_row_count": 2,
+      "total_row_count": 2,
+      "result_complete": true,
+      "truncated": false,
+      "error": null,
+      "expires_in_seconds": 600,
+      "duration_ms": 47
+    },
+    "full_result": {
+      "execution_id": "ffb75a9b-5d4d-47d7-9a48-1255e7bcf420",
+      "status": "success",
+      "executed_at": "2026-10-07T08:38:02.369595Z",
+      "columns": [
+        {
+          "name": "user_profiles__acquisition_channel",
+          "type": "text"
+        },
+        {
+          "name": "denominator",
+          "type": "int8"
+        },
+        {
+          "name": "numerator",
+          "type": "int8"
+        },
+        {
+          "name": "d7_retention",
+          "type": "float8"
+        }
+      ],
+      "rows": [
+        [
+          "paid",
+          80,
+          40,
+          0.5
+        ],
+        [
+          "organic",
+          80,
+          40,
+          0.5
+        ]
+      ],
+      "preview_row_count": 2,
+      "total_row_count": 2,
+      "result_complete": true,
+      "truncated": false,
+      "error": null,
+      "expires_in_seconds": 600,
+      "duration_ms": 47
+    },
+    "at": "2026-10-07T08:38:02.410703+00:00",
+    "verification_notes": "검산 계획: user_observations.observation_id, user_observations.user_observations.user_id, user_profiles.user_id 각각으로 GROUP BY하여 COUNT(*)=1인지 확인합니다. 관측 요약은 계정당 한 행인지, FK 조인 전후 COUNT(*)가 같고 조인 후에도 계정키별 COUNT(*)=1인지 비교해 중복 증폭을 점검합니다. 기간/관측: user_observations.observed_days gte 7의 각 경계 바로 전·같은 값·바로 뒤를 비교합니다. gte 경계값은 포함, lt 경계값은 제외하고 가입 날짜 및 D7 날짜는 Asia/Seoul 기준으로 변환하여 관측 일수 6/7과 연결합니다. user_profiles.acquisition_channel별 분모/분자를 별도 집계해 그룹 누락과 다른 그룹 혼합이 없는지 대조합니다. 분모: 무접속자도 관측 완료 시 포함하고 미관측자는 제외되는지 확인합니다. 빈 표의 이 GROUP BY 쿼리는 0행이며 분모 조건을 만족하는 행이 없는 그룹도 미출력인지 확인합니다. 별도로 GROUP BY를 제거한 전체 집계에서 denominator/numerator=0, NULLIF로 비율 NULL인지 검산합니다. 모두 아직 수행하지 않은 계획입니다.",
+    "reply_to_message_id": null,
+    "parent_execution_id": null,
+    "input_method": "slash"
+  },
+  "evaluation": {
+    "practice": "sql",
+    "rubric_version": "sql-generated-v1",
+    "held": false,
+    "reason": null,
+    "total": null,
+    "criteria": [
+      {
+        "id": "syntax",
+        "name": "구문·실행",
+        "status": "충족",
+        "reason": "실제 읽기 전용 실행 성공",
+        "evidence_refs": [
+          "execution:ffb75a9b-5d4d-47d7-9a48-1255e7bcf420"
+        ]
+      },
+      {
+        "id": "calculation",
+        "name": "계산·출력",
+        "status": "충족",
+        "reason": "고정 검증 데이터의 전체 결과 비교",
+        "evidence_refs": [
+          "execution:ffb75a9b-5d4d-47d7-9a48-1255e7bcf420"
+        ]
+      },
+      {
+        "id": "robustness",
+        "name": "다른 표본·빈 데이터",
+        "status": "충족",
+        "reason": "고정 검증 데이터의 전체 결과 비교",
+        "evidence_refs": [
+          "execution:ffb75a9b-5d4d-47d7-9a48-1255e7bcf420"
+        ]
+      }
+    ],
+    "checks": [
+      {
+        "case": "main",
+        "complete": true,
+        "matched": true
+      },
+      {
+        "case": "variation_1",
+        "complete": true,
+        "matched": true
+      },
+      {
+        "case": "variation_2",
+        "complete": true,
+        "matched": true
+      },
+      {
+        "case": "empty",
+        "complete": true,
+        "matched": true
+      }
+    ],
+    "human_review": "pending",
+    "limitation": "준비된 검증 데이터 범위의 결과 비교이며 모든 SQL의 동치 증명·독립 역량·학습 효과 판정은 아닙니다.",
+    "recommendation": "보완 항목을 수정해 전체 SQL과 필요한 검산 설명을 새 답장으로 제출하세요. 모두 충족했다면 다른 문제에 적용하세요.",
+    "help_history": [],
+    "sql_exposure": "없음 확인"
+  },
+  "restart_restored": true,
+  "submission": {
+    "session_id": "564b67c6-3fc0-4fb8-a269-a8daa057032b",
+    "evaluation_id": "5a960b10-77a1-4b8c-8be1-9935059bfa28",
+    "owner_user_id": "sql057-186c78aa211e4dcab26758026c14c140",
+    "guild_id": "sql057-test",
+    "completed": true,
+    "practice": "sql",
+    "post_name": "SQL 연습 · 564b67c6 · v2",
+    "cards": [
+      {
+        "title": "SQL 연습 결과",
+        "description": "SQL · 유입 채널별 신규 이용자 D7 리텐션 계산\nSQL 평가 · 구문·실행: 충족 / 계산·출력: 충족 / 다른 표본·빈 데이터: 충족\n준비된 검증 데이터 범위의 결과 비교이며 모든 SQL의 동치 증명·독립 역량·학습 효과 판정은 아닙니다.",
+        "score": null,
+        "held": false
+      },
+      {
+        "title": "문제",
+        "description": "연습용 합성 신규 이용자 200명의 프로필과 이용자별 합성 관측 요약을 제공합니다. 두 표는 같은 이용자 집합에 맞춰 함께 구성되며, 요약에는 모든 이용자가 정확히 한 행씩 포함됩니다. 가입일은 Asia/Seoul 기준 D0입니다. D7 재접속은 가입일로부터 7일 뒤인 달력 날짜의 00:00 이상 다음 날 00:00 미만에 게임 접속 세션을 한 번 이상 시작한 경우입니다. observed\\_days는 가입 다음 날부터 관측 종료 시점까지 완전히 관측한 달력 날짜 수입니다. observed\\_days가 7 이상인 이용자만 분모에 포함하고, 그중 d7\\_returned가 1인 이용자를 분자로 사용하세요. 관측 완료 이용자는 가입 후 재접속이 전혀 없어도 분모에 포함합니다. 관측 미완료 이용자의 d7\\_returned는 판정 전 임시값이므로 실패로 해석하지 않습니다. 직접 SELECT를 작성하여 유입 채널별 결과 전체를 출력하고 검산하세요.\n목표: 무접속자를 포함하고 관측 미완료 이용자를 제외하여 유입 채널별 D7 리텐션을 계산한다.\n목표에 맞는 SELECT를 직접 작성하세요.\n계산 단위: user\\_profiles의 모든 이용자를 빠짐없이 정확히 한 번 포함하는 이용자별 합성 관측 요약. 같은 이름의 프로필 그룹 전체와 중복 없이 일대일로 대응하며, 이용자와 관측 값을 독립적으로 추출하지 않는다.\n분석 조건: 가입일을 D0으로 정의하고 Asia/Seoul의 달력 날짜로 D7을 판정한다.; observed\\_days는 가입 다음 날부터 관측 종료 전까지 완전히 관측한 날짜 수이며 7 이상일 때만 모집단에 포함한다.; D7 재접속은 해당 날짜에 게임 접속 세션을 한 번 이상 시작한 경우이다.; 이용자별 관측 일수와 실제 D7 재접속 여부를 직접 구성한 합성 관측 요약을 제공한다.; 요약의 FK는 같은 이름의 프로필 그룹 전체에 중복 없이 대응하며 모든 이용자를 정확히 한 번 포함한다.; 관측 미완료 행의 d7\\_returned는 임시값이며 분자와 분모에서 모두 제외한다.\n집계: ratio · 대상 표: user\\_observations · 그룹: user\\_profiles.acquisition\\_channel\n분자 조건: user\\_observations.d7\\_returned = 1\n분모 조건: user\\_observations.observed\\_days \\>= 7\n출력 열과 순서: user\\_profiles\\_\\_acquisition\\_channel, denominator, numerator, d7\\_retention. 행 순서는 무관합니다. 숫자는 숫자형으로 출력하세요.\n비율은 0\\~1이며 분모 0은 NULL입니다. 그룹 집계는 대상 행이 있는 그룹만 출력합니다.\n자료는 요청별 연습용 합성 데이터입니다. /help의 데이터 사전에서 관계와 열 정의를 확인하세요."
+      },
+      {
+        "title": "제출 SQL",
+        "description": "WITH answer AS \\(SELECT \"user\\_profiles\".\"acquisition\\_channel\" AS \"user\\_profiles\\_\\_acquisition\\_channel\", COUNT\\(\\*\\) AS denominator, COUNT\\(\\*\\) FILTER \\(WHERE \"user\\_observations\".\"d7\\_returned\" = 1\\) AS numerator, COUNT\\(\\*\\) FILTER \\(WHERE \"user\\_observations\".\"d7\\_returned\" = 1\\)::double precision / NULLIF\\(COUNT\\(\\*\\),0\\) AS \"d7\\_retention\" FROM \"user\\_observations\" JOIN \"user\\_profiles\" ON \"user\\_observations\".\"user\\_id\" = \"user\\_profiles\".\"user\\_id\" WHERE \"user\\_observations\".\"observed\\_days\" \\>= 7 GROUP BY \"user\\_profiles\".\"acquisition\\_channel\"\\) SELECT \\* FROM answer"
+      },
+      {
+        "title": "검산 방법 설명",
+        "description": "검산 계획: user\\_observations.observation\\_id, user\\_observations.user\\_observations.user\\_id, user\\_profiles.user\\_id 각각으로 GROUP BY하여 COUNT\\(\\*\\)=1인지 확인합니다. 관측 요약은 계정당 한 행인지, FK 조인 전후 COUNT\\(\\*\\)가 같고 조인 후에도 계정키별 COUNT\\(\\*\\)=1인지 비교해 중복 증폭을 점검합니다. 기간/관측: user\\_observations.observed\\_days gte 7의 각 경계 바로 전·같은 값·바로 뒤를 비교합니다. gte 경계값은 포함, lt 경계값은 제외하고 가입 날짜 및 D7 날짜는 Asia/Seoul 기준으로 변환하여 관측 일수 6/7과 연결합니다. user\\_profiles.acquisition\\_channel별 분모/분자를 별도 집계해 그룹 누락과 다른 그룹 혼합이 없는지 대조합니다. 분모: 무접속자도 관측 완료 시 포함하고 미관측자는 제외되는지 확인합니다. 빈 표의 이 GROUP BY 쿼리는 0행이며 분모 조건을 만족하는 행이 없는 그룹도 미출력인지 확인합니다. 별도로 GROUP BY를 제거한 전체 집계에서 denominator/numerator=0, NULLIF로 비율 NULL인지 검산합니다. 모두 아직 수행하지 않은 계획입니다."
+      },
+      {
+        "title": "도움·정답 노출",
+        "description": "SQL 노출: 없음 확인\n평가 시점 도움 이력: 0"
+      },
+      {
+        "title": "다음 연습",
+        "description": "보완 항목을 수정해 전체 SQL과 필요한 검산 설명을 새 답장으로 제출하세요. 모두 충족했다면 다른 문제에 적용하세요."
+      },
+      {
+        "title": "구문·실행 · 충족",
+        "description": "실제 읽기 전용 실행 성공\n선택한 제출 SQL의 실행과 고정 검증 데이터를 근거로 합니다. 실행 ID: ffb75a9b-5d4d-47d7-9a48-1255e7bcf420"
+      },
+      {
+        "title": "계산·출력 · 충족",
+        "description": "고정 검증 데이터의 전체 결과 비교\n선택한 제출 SQL의 실행과 고정 검증 데이터를 근거로 합니다. 실행 ID: ffb75a9b-5d4d-47d7-9a48-1255e7bcf420"
+      },
+      {
+        "title": "다른 표본·빈 데이터 · 충족",
+        "description": "고정 검증 데이터의 전체 결과 비교\n선택한 제출 SQL의 실행과 고정 검증 데이터를 근거로 합니다. 실행 ID: ffb75a9b-5d4d-47d7-9a48-1255e7bcf420"
+      }
+    ],
+    "evidence_results": [
+      {
+        "execution_id": "ffb75a9b-5d4d-47d7-9a48-1255e7bcf420",
+        "columns": [
+          {
+            "name": "user_profiles__acquisition_channel",
+            "type": "text"
+          },
+          {
+            "name": "denominator",
+            "type": "int8"
+          },
+          {
+            "name": "numerator",
+            "type": "int8"
+          },
+          {
+            "name": "d7_retention",
+            "type": "float8"
+          }
+        ],
+        "rows": [
+          [
+            "paid",
+            80,
+            40,
+            0.5
+          ],
+          [
+            "organic",
+            80,
+            40,
+            0.5
+          ]
+        ],
+        "total_row_count": 2,
+        "truncated": false,
+        "placement": "report",
+        "practice": "sql"
+      }
+    ],
+    "message_sources": [],
+    "forum_summary": {
+      "title": "SQL · 유입 채널별 신규 이용자 D7 리텐션 계산",
+      "practice": "sql",
+      "conclusion": "준비된 검증 데이터에서 3/3개 항목을 충족했습니다.",
+      "evidence": [
+        "전체 실행 결과 2행",
+        "user_profiles__acquisition_channel: paid · denominator: 80 · numerator: 40",
+        "user_profiles__acquisition_channel: organic · denominator: 80 · numerator: 40"
+      ],
+      "held": false,
+      "score": null,
+      "assessment": "3/3개 충족 · 검증 데이터 기준",
+      "strength": "실제 읽기 전용 실행 성공",
+      "improvement": "준비된 검증 데이터 범위의 결과 비교이며 모든 SQL의 동치 증명·독립 역량·학습 효과 판정은 아닙니다.",
+      "hold_reason": "",
+      "next_action": "현재 조건을 충족한 SQL을 다른 문제에 적용하세요.",
+      "warning": ""
+    }
+  },
+  "passed": true,
+  "verification_population_varied": true
+}

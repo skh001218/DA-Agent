@@ -272,7 +272,7 @@ def create_client(service, settings):
     @tree.command(name="training", description="SQL 또는 분석 연습을 선택해 비공개 훈련 시작")
     @app_commands.guild_only()
     @app_commands.choices(practice=[app_commands.Choice(name="SQL 연습", value="sql"), app_commands.Choice(name="분석 연습", value="analysis")])
-    @app_commands.describe(text='연습할 분석 내용과 목표를 입력하세요 (1~4000자)')
+    @app_commands.describe(text='SQL 또는 분석에서 연습할 주제와 목표를 입력하세요 (1~4000자)')
     @app_commands.choices(difficulty=[app_commands.Choice(name="초급", value="beginner"), app_commands.Choice(name="중급", value="intermediate"), app_commands.Choice(name="고급", value="advanced")])
     @app_commands.choices(help_level=[app_commands.Choice(name="안내 포함", value="guided"), app_commands.Choice(name="내 정의 먼저", value="independent")])
     async def training(interaction: discord.Interaction, text: str, practice: str, difficulty: str = "intermediate", help_level: str | None = None, source_session_id: str | None = None):

@@ -68,7 +68,7 @@ def validate_metric(metric, tables):
     if metric.operation != 'ratio' and metric.denominator_conditions:
         raise ValueError('denominator conditions only supported for ratios')
 
-def reference(metric, tables, rows):
+def reference(metric, tables, rows, *, include_counts=False, require_comparison=True):
     indexes = {name:{r[tables[name].columns[0].name]:r for r in data} for name,data in rows.items()}
     joined = [{(metric.table,k):v for k,v in row.items()} for row in rows[metric.table]]
     for join in metric.joins:
@@ -110,14 +110,15 @@ def reference(metric, tables, rows):
             if item is not None and kind in ('timestamp','timestamp_bucket','timestamp_sequence','timestamp_offset'):
                 item=dt.datetime.fromisoformat(item.replace('Z','+00:00')).astimezone(dt.timezone.utc).isoformat().replace('+00:00','Z')
             normalized_key.append(item)
-        result.append([*normalized_key,value])
-    if metric.group_by and len(result) < 2:
+        counts = [len(group), sum(matches(r,metric.conditions) for r in group)] if include_counts and op == 'ratio' else []
+        result.append([*normalized_key,*counts,value])
+    if require_comparison and metric.group_by and len(result) < 2:
         raise ValueError('comparison needs at least two observable groups/periods')
-    columns = [ref.replace('.','__') for ref in metric.group_by] + [metric.name]
-    return {'columns':columns,'rows':result}, compile_metric(metric,tables)
+    columns = [ref.replace('.','__') for ref in metric.group_by] + (['denominator','numerator'] if include_counts and metric.operation == 'ratio' else []) + [metric.name]
+    return {'columns':columns,'rows':result}, compile_metric(metric,tables,include_counts=include_counts)
 
 
-def compile_metric(metric, tables):
+def compile_metric(metric, tables, *, include_counts=False):
     """Compile the same validated metric without requiring private fixture rows."""
     validate_metric(metric,tables)
     base_conditions = metric.denominator_conditions if metric.operation == 'ratio' else metric.conditions
@@ -130,6 +131,9 @@ def compile_metric(metric, tables):
         from_clause += sql.SQL(' JOIN {} ON {} = {}').format(sql.Identifier(join.table),identifier(join.source_column),sql.Identifier(join.table,tables[join.table].columns[0].name))
     columns = [ref.replace('.','__') for ref in metric.group_by] + [metric.name]
     selections = [sql.SQL('{} AS {}').format(identifier(ref),sql.Identifier(alias)) for ref,alias in zip(metric.group_by,columns)]
+    if include_counts and metric.operation == 'ratio':
+        selections.extend([sql.SQL('COUNT(*) AS denominator'),
+            sql.SQL('COUNT(*) FILTER (WHERE {}) AS numerator').format(where(metric.conditions))])
     selections.append(sql.SQL('{} AS {}').format(expression,sql.Identifier(metric.name)))
     query = sql.SQL('SELECT {} FROM {}').format(sql.SQL(', ').join(selections),from_clause)
     if base_conditions: query += sql.SQL(' WHERE {}').format(where(base_conditions))
