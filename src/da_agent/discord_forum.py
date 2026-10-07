@@ -5,6 +5,7 @@ from io import BytesIO
 
 from .discord_results import card_marker, legacy_card_marker
 from .discord_pdf import pdf_filename, render_submission_pdf
+from .discord_pdf_summary import summary_filename, render_summary_pdf
 from .errors import DomainError
 
 
@@ -77,7 +78,9 @@ class ResultForumPublisher:
 
         notice = ('**전체 제출·평가는 이 포스트의 PDF에 있습니다.**\n'
                   'Discord 본문 한도를 초과해 아래에는 각 항목의 일부를 표시합니다. '
-                  '전체 원문과 평가 근거·개선 행동은 PDF 다운로드로 확인하세요.')
+                  'PDF 다운로드는 학습형 요약이며, 전체 보고·평가 근거는 상세 원문 PDF로 확인하세요.'
+                  if submission.get('practice') != 'sql' else
+                  '**전체 제출·평가는 이 포스트의 PDF에 있습니다.**\nPDF 다운로드로 전체 원문을 확인하세요.')
         # Report chunks share a preview; every assessment section remains
         # eligible even when a long report would otherwise consume the budget.
         previews, seen = [], set()
@@ -151,19 +154,32 @@ class ResultForumPublisher:
         import discord
         from .discord_pdf_view import ResultPDFView
         forum = await self.forum(parent, user)
-        filename = pdf_filename(submission)
+        analysis = submission.get('practice') != 'sql'
+        pdf_specs = ([(summary_filename(submission), render_summary_pdf)] if analysis else [])
+        pdf_specs.append((pdf_filename(submission), render_submission_pdf))
         embeds = self.post_embeds(submission, user)
 
-        async def pdf_file():
+        def view():
+            return ResultPDFView([forum.guild.id], include_detail=analysis)
+
+        async def pdf_files(existing=()):
+            files = []
             try:
-                data = await asyncio.to_thread(render_submission_pdf, submission)
-            except DomainError:
-                raise
+                for filename, renderer in pdf_specs:
+                    if filename in existing:
+                        continue
+                    public = {**submission, 'result_url': f"https://discord.com/channels/{forum.guild.id}/{publication.get('post_id') or forum.id}"}
+                    data = await asyncio.to_thread(renderer, public)
+                    if len(data) > forum.guild.filesize_limit:
+                        raise DomainError('result_pdf_size', 'PDF가 서버 파일 첨부 한도를 초과했습니다. 운영자가 업로드 한도를 확인한 뒤 /resume하세요.')
+                    files.append(discord.File(BytesIO(data), filename=filename))
+                return files
             except Exception as exc:
+                for file in files:
+                    file.close()
+                if isinstance(exc, DomainError):
+                    raise
                 raise DomainError('result_pdf_generation', 'PDF 생성에 실패했습니다. 평가 기록은 보존했습니다. /resume으로 다시 시도하세요.') from exc
-            if len(data) > forum.guild.filesize_limit:
-                raise DomainError('result_pdf_size', 'PDF가 서버 파일 첨부 한도를 초과했습니다. 운영자가 업로드 한도를 확인한 뒤 /resume하세요.')
-            return discord.File(BytesIO(data), filename=filename)
         if publication.get('post_id'):
             try:
                 thread = await self.client.fetch_channel(int(publication['post_id']))
@@ -181,11 +197,11 @@ class ResultForumPublisher:
                     tags = [tag for tag in forum.available_tags if not tag.moderated or forum.permissions_for(forum.guild.me).manage_threads][:1]
                     if not tags:
                         raise DomainError('result_tag_required', 'DA-Result는 태그가 필수입니다. 봇이 적용할 수 있는 태그를 준비한 뒤 /submit하세요.')
-                file = await pdf_file()
+                files = await pdf_files()
                 await save(status='creating', forum_id=str(forum.id))
                 try:
                     created = await forum.create_thread(name=submission['post_name'], embeds=embeds,
-                        file=file, view=ResultPDFView([forum.guild.id]),
+                        files=files, view=view(),
                         allowed_mentions=discord.AllowedMentions.none(), applied_tags=tags,
                         reason='저장된 최종 제출·평가 결과 게시')
                     thread = created.thread
@@ -193,7 +209,8 @@ class ResultForumPublisher:
                     await save(status='failed' if 400 <= exc.status < 500 else 'uncertain')
                     raise
                 finally:
-                    file.close()
+                    for file in files:
+                        file.close()
         await save(status='partial', forum_id=str(forum.id), post_id=str(thread.id))
         if thread.archived:
             await thread.edit(archived=False)
@@ -202,16 +219,20 @@ class ResultForumPublisher:
                 or not any(e.footer.text in {card_marker(submission, 0), legacy_card_marker(submission, 0)}
                            for e in starter.embeds)):
             raise DomainError('result_post_author', '결과 게시글 작성자와 제출 연결을 확인하세요.')
-        if not any(a.filename == filename for a in starter.attachments):
-            file = await pdf_file()
+        existing = {a.filename for a in starter.attachments}
+        if any(filename not in existing for filename, _ in pdf_specs):
+            if len(starter.attachments) + sum(filename not in existing for filename, _ in pdf_specs) > 10:
+                raise DomainError('result_pdf_attachments', '결과 게시글의 첨부 개수가 많아 PDF를 추가할 수 없습니다. 기록을 보존했습니다. 운영자에게 첨부 구성을 확인해달라고 요청하세요.')
+            files = await pdf_files(existing)
             try:
-                await starter.edit(embeds=embeds, attachments=[*starter.attachments, file],
-                                   view=ResultPDFView([forum.guild.id]),
+                await starter.edit(embeds=embeds, attachments=[*starter.attachments, *files],
+                                   view=view(),
                                    allowed_mentions=discord.AllowedMentions.none())
             finally:
-                file.close()
+                for file in files:
+                    file.close()
         else:
-            await starter.edit(embeds=embeds, view=ResultPDFView([forum.guild.id]),
+            await starter.edit(embeds=embeds, view=view(),
                                allowed_mentions=discord.AllowedMentions.none())
         await save(status='published', forum_id=str(forum.id), post_id=str(thread.id), error_code=None)
         return f"https://discord.com/channels/{forum.guild.id}/{thread.id}"

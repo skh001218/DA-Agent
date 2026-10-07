@@ -191,6 +191,8 @@ def setup_forum(monkeypatch, exists=True):
             assert len(embeds) <= 10 and sum(len(e) for e in embeds) <= 6000
             thread = Thread(kwargs['name'], embeds[0], self.id, kwargs.get('file'), kwargs.get('view'))
             thread.messages[0].embeds = embeds
+            if kwargs.get('files'):
+                thread.messages[0].attachments = [NS(filename=f.filename) for f in kwargs['files']]
             posts.append(thread)
             return NS(thread=thread)
     async def active_threads(): return [t for t in posts if not t.archived]
