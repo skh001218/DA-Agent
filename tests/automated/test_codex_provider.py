@@ -180,6 +180,18 @@ def test_codex_settings_do_not_require_gemma_key_or_reuse_web_model():
     assert isinstance(p, cli.CodexCliProvider) and p.selected_model is None
 
 
+@pytest.mark.parametrize('limit', ['0', '300'])
+def test_daily_call_limit_accepts_unlimited_or_positive(limit):
+    settings = DiscordSettings.from_env(dict(settings_env(), DISCORD_DAILY_CALL_LIMIT=limit))
+    assert settings.daily_call_limit == int(limit)
+
+
+@pytest.mark.parametrize('limit', ['-1', 'invalid'])
+def test_daily_call_limit_rejects_invalid_settings(limit):
+    with pytest.raises(ValueError):
+        DiscordSettings.from_env(dict(settings_env(), DISCORD_DAILY_CALL_LIMIT=limit))
+
+
 @pytest.mark.parametrize('values', [
     {'DISCORD_LLM_PROVIDER':'unknown'}, {'DISCORD_CODEX_MODEL':'bad / model'},
     {'DISCORD_CODEX_TIMEOUT_SECONDS':'0'}, {'DISCORD_CODEX_TIMEOUT_SECONDS':'601'},

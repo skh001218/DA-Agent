@@ -22,6 +22,8 @@ python scripts/deploy_discord.py
 python scripts/deploy_discord.py --apply
 ```
 
+하루 모델 호출 제한을 해제하려면 검증된 main에서 `python scripts/deploy_discord.py --apply --daily-call-limit 0`을 실행한다. 양수는 사용자별 하루 호출 수이며, 옵션 생략 시 현재 값을 유지한다. `--status`의 `daily_call_limit=0`이 무제한이다. 기존 사용량은 삭제하지 않고 계속 누적하며, 요청별 출제 호출·재시도 제한과 공급자 구독 한도는 유지한다. 한도를 다시 적용하려면 `--daily-call-limit 30`처럼 양수를 지정한다. 컨테이너를 재시작하는 것만으로 환경 설정이 바뀌지는 않는다.
+
 첫 명령은 현재 운영의 커밋·이미지 ID를 읽는다. 두 번째는 최신 origin/main과 해당 커밋의 CI를 확인하고 계획만 출력한다. 세 번째가 실제 배포다. 특정 main 커밋을 선택하려면 `--commit <40자리 SHA>`를 추가한다. 이 옵션으로 이전 main 커밋도 선택할 수 있지만 해당 커밋이 새 배포 규약과 CI 검사를 충족해야 한다.
 
 배포 명령은 다음을 확인한다.

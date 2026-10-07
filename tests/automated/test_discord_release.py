@@ -79,6 +79,67 @@ def checks():
             for i, name in enumerate(sorted(release.REQUIRED_CHECKS))]
 
 
+@pytest.mark.parametrize('limit', [0, 300])
+def test_daily_limit_release_changes_only_the_selected_setting(limit):
+    spec = {'services': {'bot': {'environment': ['DISCORD_DAILY_CALL_LIMIT=30',
+        'DISCORD_RECORDS_DSN=private', 'DISCORD_LLM_PROVIDER=codex_cli'], 'volumes': ['existing']}},
+        'networks': {'existing': {'external': True}}}
+    result = release.daily_limit_spec(spec, limit)
+    assert result['services']['bot']['environment'] == ['DISCORD_RECORDS_DSN=private',
+        'DISCORD_LLM_PROVIDER=codex_cli', f'DISCORD_DAILY_CALL_LIMIT={limit}']
+    assert result['services']['bot']['volumes'] == ['existing']
+    assert result['networks'] == {'existing': {'external': True}}
+
+
+@pytest.mark.parametrize('limit', [-1, '0', True])
+def test_daily_limit_release_rejects_invalid_values_before_runtime_access(tmp_path, monkeypatch, limit):
+    monkeypatch.setattr(release, 'inspect_container', lambda _: pytest.fail('runtime must not be accessed'))
+    with pytest.raises(release.DeploymentError, match='non-negative'):
+        release.deploy(tmp_path, 'a' * 40, 'bot', tmp_path, daily_call_limit=limit)
+
+
+def test_runtime_status_reports_unlimited_without_disclosing_other_environment(monkeypatch):
+    monkeypatch.setattr(release, 'inspect_container', lambda _: {'Config': {
+        'Labels': {}, 'Env': ['DISCORD_DAILY_CALL_LIMIT=0', 'DISCORD_BOT_TOKEN=private']},
+        'State': {'Running': True}, 'Image': 'fixture'})
+    status = release.runtime_status('bot')
+    assert status['daily_call_limit'] == 0 and 'private' not in json.dumps(status)
+
+
+@pytest.mark.parametrize('applied_limit', [0, 30])
+def test_daily_limit_deployment_verifies_setting_and_restores_previous_on_mismatch(tmp_path, monkeypatch, applied_limit):
+    revision = 'c' * 40
+    current = dict(Image='sha256:old', Config={'Labels': {'com.docker.compose.project': 'fixture'}})
+    monkeypatch.setattr(release, 'inspect_container', lambda _: current)
+    monkeypatch.setattr(release, 'ensure_idle', lambda _: None)
+    monkeypatch.setattr(release, 'compose_spec', lambda _, image: {'services': {'bot': {
+        'image': image, 'environment': ['DISCORD_DAILY_CALL_LIMIT=30', 'OTHER=preserved']}}})
+    monkeypatch.setattr(release, 'wait_ready', lambda *_: {'files_verified': 82})
+    monkeypatch.setattr(release, 'runtime_status', lambda _: {'daily_call_limit': applied_limit})
+    restored = []
+    monkeypatch.setattr(release, 'wait_restored', lambda *_: restored.append(True))
+    stream = BytesIO()
+    with tarfile.open(fileobj=stream, mode='w'): pass
+    monkeypatch.setattr(release.subprocess, 'check_output', lambda *_, **__: stream.getvalue())
+    def fake_command(*args, **kwargs):
+        if '/app/release.json' in args:
+            return json.dumps(dict(revision=revision, source_ref='refs/heads/main', files={}))
+        return '{}'
+    monkeypatch.setattr(release, 'command', fake_command)
+    if applied_limit == 0:
+        release.deploy(tmp_path, revision, 'bot', tmp_path, daily_call_limit=0)
+        assert json.loads((tmp_path / 'current.json').read_text())['status'] == 'verified'
+        assert not restored
+    else:
+        with pytest.raises(release.DeploymentError, match='rolled_back'):
+            release.deploy(tmp_path, revision, 'bot', tmp_path, daily_call_limit=0)
+        assert restored and not (tmp_path / 'current.json').exists()
+    candidate = json.loads((tmp_path / revision / 'compose.json').read_text())
+    previous = json.loads((tmp_path / revision / 'previous-compose.json').read_text())
+    assert candidate['services']['bot']['environment'] == ['OTHER=preserved', 'DISCORD_DAILY_CALL_LIMIT=0']
+    assert previous['services']['bot']['environment'] == ['DISCORD_DAILY_CALL_LIMIT=30', 'OTHER=preserved']
+
+
 def test_ci_requires_all_latest_successful_github_action_checks():
     valid = checks()
     assert release.approved_checks(valid)

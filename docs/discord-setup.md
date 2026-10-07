@@ -45,7 +45,7 @@ $env:DISCORD_LEARNER_DSN = 'postgresql://discord_learner:<password>@127.0.0.1:54
 $env:DISCORD_GEMINI_KEY_FILE = 'C:\secrets\discord-gemini.key'
 $env:DISCORD_MODEL = 'gemma-4-26b-a4b-it'  # Discord 전용, 웹 GEMINI_MODEL 유지
 $env:DISCORD_GENERATION_DIRECTORY = '.local/discord-generation'  # 생성 패키지·검산 자료 보관
-$env:DISCORD_DAILY_CALL_LIMIT = '30'  # 파일럿 운영자가 예산에 맞게 조정
+$env:DISCORD_DAILY_CALL_LIMIT = '30'  # 사용자별 하루 호출 수. 0은 무제한이며 사용량 기록은 유지
 $env:DISCORD_MESSAGE_CONTENT = 'false'
 python -m da_agent.discord_bot
 ```
