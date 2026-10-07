@@ -55,7 +55,7 @@ jobs:
       - run: sudo apt-get update && sudo apt-get install -y fonts-nanum fonts-noto-cjk
       - run: python -m pip install -r requirements.lock.txt -r requirements-discord.txt
       - run: python scripts/verification/prepare_ci_discord_db.py
-      - run: python -m pytest tests/automated/test_discord_service.py tests/automated/test_discord_flow.py tests/automated/test_discord_sql_practice.py tests/automated/test_discord_generation.py -q
+      - run: python -m pytest tests/automated/test_discord_service.py tests/automated/test_discord_flow.py tests/automated/test_discord_sql_practice.py tests/automated/test_discord_generated_sql.py tests/automated/test_discord_generation.py -q
 
   discord-image:
     runs-on: ubuntu-latest

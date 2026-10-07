@@ -59,6 +59,11 @@ def generated_task_intro(task):
 def task_intro(document):
     task = document['task']
     if document.get('practice') == 'sql':
+        if task['sql_contract']['version'] == 'sql-generated-v1':
+            return '\n'.join(['📌 '+task['title'], '난이도: '+{'beginner':'초급','intermediate':'중급','advanced':'고급'}[task['difficulty']],
+                task['objective'], '관측 기간: '+task['period']['description'],
+                '데이터 버전: '+document['data_version'],
+                '/help로 데이터 사전·평가 기준을 확인하세요. sql 코드 블록으로 직접 풀이하고 /submit로 평가하세요.'])
         return '\n'.join(['📌 SQL 연습 · ' + task['title'], task['objective'],
             f"가입 기간: {task['period']['start']} 이상 ~ {task['period']['end']} 미만",
             f"시간: UTC · 완료 관측 종료: {task['period']['observation_end']} 미만",
@@ -98,7 +103,7 @@ def task_intro(document):
 def reference_info(task, kind):
     if kind == 'task_details':
         from .discord_task_brief import task_details
-        return task_details(task) if task.get('generation_version') else '문제 원문\n' + task['objective']
+        return '문제 원문\n'+task['objective'] if task.get('practice') == 'sql' else task_details(task) if task.get('generation_version') else '문제 원문\n' + task['objective']
     if kind == 'data_dictionary':
         lines = ['데이터 사전']
         for name, entry in task['dictionary'].items():

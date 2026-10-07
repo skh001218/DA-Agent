@@ -14,7 +14,7 @@
 
 ## Discord SQL 직접 풀이
 
-SQL 연습은 코드 블록 답장 → 실제 읽기 전용 실행 → 오류 수정 → `/submit` 항목별 평가로 진행합니다. 튜토리얼 신규 가입자 3단계 완료율의 세 난이도를 지원합니다. 실제 Discord에서 중급 전체 흐름·재시작 재개, 고급 분석 연결·검산 설명의 실제 모델 검토·결과 포럼/PDF 게시를 확인했습니다. [Spec044](specs/044-discord-sql-practice-mode.md)는 7/8개 완료(87.5%)이며 교육적 타당성의 사람 검토를 기다립니다.
+SQL 연습은 `text`에 원하는 분석 주제와 목표를 입력하면 문제·합성 데이터·출력 조건을 생성합니다. 예: `/training practice:sql text:게임 신규 이용자의 D7 리텐션을 채널별로 계산하는 문제 difficulty:중급`. 코드 블록 답장 → 실제 읽기 전용 실행 → 오류 수정 → `/submit` 항목별 평가로 진행하며, 출제 전 독립 Python/SQL 검산과 다른 표본·빈 데이터 비교를 사용합니다. 지원 계산과 검증 범위는 [Spec058](specs/058-text-generated-sql-practice.md)을 참고하세요. 이 변경의 운영 배포는 아직 진행하지 않았습니다. 기존 튜토리얼 과제의 실제 Discord 검증 이력과 교육적 타당성 사람 검토 상태는 [Spec044](specs/044-discord-sql-practice-mode.md)에 보존합니다.
 
 ## Discord 평가 검산과 수정·재제출
 

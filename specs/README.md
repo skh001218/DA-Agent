@@ -57,6 +57,7 @@
 | 047 | [main 커밋 기반 Discord 운영 배포](047-discord-main-release-workflow.md) |
 | 055 | [포럼 결과 핵심 요약 템플릿](055-discord-compact-result-summary.md) |
 | 056 | [3쪽 학습형 결과 PDF와 운영 다운로드](056-discord-concise-result-pdf-template.md) |
+| 058 | [text 기반 SQL 문제 생성](058-text-generated-sql-practice.md) |
 
 ## Discord 텍스트 요청 기반 출제 계획 (2026-10-06)
 

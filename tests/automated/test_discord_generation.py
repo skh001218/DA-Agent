@@ -41,17 +41,15 @@ def public(): return {'package_id':'discord-generated-test','dataset_id':'genera
     'description':'공개 과제 설명','data_complete_before':'2026-09-02T00:00:00+09:00','semantic_signature':{}}
 
 
-def test_practice_dispatch_preserves_text_generation_and_sql_scope(monkeypatch):
+def test_practice_dispatch_preserves_text_generation_for_both_modes(monkeypatch):
     service=DiscordTrainingService(MemoryStore(),NS(),Mock(),NS())
     generated=service.start('u','g','c','analysis-event',text='계정 행동 비교',practice='analysis')
     assert generated['practice']=='analysis' and generated['generation']['original_message']=='계정 행동 비교'
     legacy=Mock(return_value={'session_id':'sql'})
     monkeypatch.setattr(service,'_start_legacy',legacy)
-    with pytest.raises(DomainError,match='SQL 연습'):
-        service.start('u','g','c','bad-sql',text='게임 재화 분석',practice='sql')
+    sql = service.start('u','g','c','sql-event',text='게임 재화 분석',practice='sql')
+    assert sql['practice']=='sql' and sql['generation']['original_message']=='게임 재화 분석'
     legacy.assert_not_called()
-    assert service.start('u','g','c','sql-event',text='튜토리얼 신규 가입자 3단계 완료율',practice='sql')['session_id']=='sql'
-    assert legacy.call_args.kwargs['practice']=='sql'
     with pytest.raises(DomainError):
         service.start('u','g','c','bad-mode',text='계정 비교',practice='other')
 

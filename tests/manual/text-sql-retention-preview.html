@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SQL 출제 · 로컬 검증</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f4f6fa;color:#14223a;font:16px/1.6 system-ui,sans-serif}main{max-width:1000px;margin:32px auto;padding:0 20px}h1{font-size:28px;margin-bottom:4px}.note{color:#516079}section{padding:24px;background:white;border:1px solid #d9e0ea;border-radius:12px;margin:20px 0}label{display:block;font-weight:600;margin:12px 0 6px}input,textarea,select{padding:10px;border:1px solid #aab7cb;border-radius:6px;font:inherit;max-width:100%}input,textarea{width:100%}textarea{height:225px;font:14px/1.5 ui-monospace,monospace}button{padding:10px 18px;margin:12px 8px 0 0;border:0;border-radius:6px;background:#285bca;color:white;font:inherit;cursor:pointer}button:disabled{opacity:.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:14px/1.6 system-ui,sans-serif}table{border-collapse:collapse;width:100%;font-size:14px}td,th{padding:8px;border-bottom:1px solid #d9e0ea;text-align:left}#status{padding:10px;background:#edf2fb;min-height:45px}.scroll{overflow:auto}
+</style>
+<main><h1>SQL 출제와 직접 풀이</h1><p class="note">로컬 검증 화면 · 고정 리텐션 출제 표본 · 별도 테스트 DB · 운영 Discord와 구분</p>
+<section><label for="level">난이도</label><select id="level"><option value="beginner">초급</option><option value="intermediate">중급</option><option value="advanced">고급</option></select>
+<label for="request">연습할 분석 주제</label><input id="request" value="게임 신규 이용자의 D7 리텐션을 계산하는 SQL 문제를 만들어줘. 관측 미완료 이용자는 제외해줘.">
+<button id="generate">문제 생성</button><button id="load">저장 문제 불러오기</button></section>
+<section><h2>문제와 데이터</h2><pre id="intro">불러오는 중</pre><div id="dictionary"></div></section>
+<section><h2>직접 SQL 풀이</h2><label for="query">SQL 코드 블록과 검산 설명</label><textarea id="query" spellcheck="false">```sql
+-- 여기에 풀이 SQL을 작성하세요.
+```</textarea><button id="execute">SQL 실행</button><button id="submit">최종 평가</button><div role="status" id="status"></div><div id="result" class="scroll"></div><div id="evaluation"></div></section>
+</main>
+<script>
+const $=s=>document.querySelector(s);const level=()=>$('#level').value;
+function node(tag,value){const e=document.createElement(tag);e.textContent=value;return e}
+async function request(url,body){const response=await fetch(url,body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:{});if(!response.ok)throw Error('요청 실패 '+response.status);return response.json()}
+function result(data){$('#result').replaceChildren();$('#evaluation').replaceChildren();const a=data.attempts?.at(-1);if(a){const r=a.full_result;if(r.status==='success'){const t=document.createElement('table');const header=document.createElement('tr');r.columns.forEach(c=>header.append(node('th',c.name)));t.append(header);r.rows.forEach(row=>{const tr=document.createElement('tr');row.forEach(v=>tr.append(node('td',v===null?'NULL':String(v))));t.append(tr)});$('#result').append(t)}else $('#result').append(node('p','SQL 실행 상태: '+r.status));}const e=data.evaluations?.at(-1);if(e)e.result.criteria.forEach(c=>$('#evaluation').append(node('p',c.name+': '+c.status)));}
+async function load(){const d=await request('/task/'+level());$('#intro').textContent=d.intro;$('#dictionary').replaceChildren();Object.entries(d.schema).forEach(([name,info])=>$('#dictionary').append(node('h3',name),node('p',info.unit),node('p',info.description)));result(d);if(d.attempts?.length)$('#query').value=d.attempts.at(-1).original_text;$('#status').textContent='저장된 문제와 풀이 기록을 불러왔습니다.'}
+async function busy(fn){document.querySelectorAll('button').forEach(b=>b.disabled=true);try{await fn()}catch(e){$('#status').textContent=e.message}finally{document.querySelectorAll('button').forEach(b=>b.disabled=false)}}
+$('#level').onchange=()=>busy(load);$('#load').onclick=()=>busy(load);$('#generate').onclick=()=>busy(async()=>{const d=await request('/generate/'+level(),{action:'generate',text:$('#request').value});if(d.status!=='ready')throw Error('출제 실패');await load();$('#query').value='```sql\n-- 여기에 풀이 SQL을 작성하세요.\n```';$('#status').textContent='입력한 주제로 새 SQL 문제를 생성했습니다.'});
+$('#execute').onclick=()=>busy(async()=>{const d=await request('/task/'+level(),{action:'sqlrun',text:$('#query').value});$('#status').textContent=d.messages.join('\n');result(d)});$('#submit').onclick=()=>busy(async()=>{const d=await request('/task/'+level(),{action:'submit'});$('#status').textContent=d.messages.join('\n');result(d)});load();
+</script></html>

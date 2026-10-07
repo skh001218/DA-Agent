@@ -59,29 +59,28 @@ class DiscordTrainingService:
             request(text, 'input-check', difficulty)
             if practice not in {'analysis', 'sql'}:
                 raise DomainError('practice', 'SQL 연습 또는 분석 연습을 선택하세요.')
-            if practice == 'sql':
-                from .discord_sql_practice import validate_request
-                validate_request(text)
             if source_session_id and practice != 'sql':
                 raise DomainError('practice', '완료 분석 연결은 SQL 연습에서만 사용하세요.')
-        if text is None or practice == 'sql':
+        if text is None:
             return self._start_legacy(user_id,guild_id,channel_id,event_id,topic,difficulty,help_level,practice=practice,source_session_id=source_session_id)
+        if source_session_id:
+            raise DomainError('source_link_unsupported','text 기반 SQL 출제는 새 과제로 시작합니다. 기존 분석 연결은 아직 지원하지 않습니다.')
         from .discord_generation import request, VERSION
         sid=record_id()
         data=request(text,sid,difficulty)
         if help_level is not None and help_level not in {'guided','independent'}:
             raise DomainError('help_level','도움 수준은 guided 또는 independent를 선택하세요.')
-        prior=self.store.claim_event(event_id,user_id,request={'action':'generate','text':data.message,
+        prior=self.store.claim_event(event_id,user_id,request={'action':'generate','text':data.message,'practice':practice,
             'difficulty':difficulty,'help_level':help_level,'guild_id':str(guild_id),'channel_id':str(channel_id)})
         if prior is not None:
             if 'session' not in prior: return prior
             current=self.get_session(user_id,prior['session']['session_id'])
-            if current['generation']['original_message']!=data.message or current['generation'].get('requested_difficulty')!=difficulty or current['guild_id']!=str(guild_id) or current['channel_id']!=str(channel_id) or current['generation'].get('requested_help_level')!=help_level:
+            if current['generation']['original_message']!=data.message or current.get('practice')!=practice or current['generation'].get('requested_difficulty')!=difficulty or current['guild_id']!=str(guild_id) or current['channel_id']!=str(channel_id) or current['generation'].get('requested_help_level')!=help_level:
                 raise DomainError('idempotency_conflict','같은 요청 ID에 다른 출제 내용이 있습니다.',409)
             return current
         level=help_level or ('guided' if difficulty=='beginner' else 'independent')
         document={'session_id':sid,'owner_user_id':str(user_id),'guild_id':str(guild_id),
-            'channel_id':str(channel_id),'thread_id':None,'state':'accepted','practice':'analysis','created_at':timestamp(),
+            'channel_id':str(channel_id),'thread_id':None,'state':'accepted','practice':practice,'created_at':timestamp(),
             'difficulty':difficulty,'help_level':level,'schema_name':None,'data_version':None,
             'task':{'title':'문제 생성 요청','difficulty':difficulty},
             'generation':{'version':VERSION,'request_id':sid,'original_message':data.message,'message':data.message,
@@ -594,6 +593,10 @@ class DiscordTrainingService:
 
     def _apply_sql(self, document, event_id, action, text, payload):
         from .discord_sql_practice import extract_sql, run_full, evaluate, summary, reference_sql
+        generated = document['task'].get('sql_contract',{}).get('version') == 'sql-generated-v1'
+        private = self.store.generation_job(document['owner_user_id'],document['session_id']).get('sql_reference') if generated else None
+        if generated and not private and (action == 'submit' or action == 'help' and payload.get('help_type') == 'solution'):
+            raise DomainError('sql_reference_missing','출제 기준을 복원하지 못했습니다. SQL 판정을 보류합니다.')
         if action == 'sql':
             attempt = next((a for a in document['sql_attempts'] if a['execution_id'] == payload.get('execution_id')), None)
             if not attempt:
@@ -606,11 +609,11 @@ class DiscordTrainingService:
                 if not document['sql_attempts']:
                     raise DomainError('solution_early', '먼저 본인의 SQL을 한 번 제출한 뒤 해설 공개를 요청하세요.')
                 document['sql_exposure'] = '열람 확인'
-                answer = reference_sql(document['task'])
+                answer = private['sql'] if generated else reference_sql(document['task'])
             else:
                 answer = reference_info(document['task'], kind)
                 if answer is None:
-                    answer = '공개 가입 기간과 완료 관측 기간, 고유 가입자 분모, 재도전 중복과 0 분모 처리를 확인하세요. 정답 전체는 자동 공개하지 않습니다.'
+                    answer = '공개 계산 단위·필터·출력 열과 중복·기간/관측·NULL 처리를 확인하세요. 정답 전체는 자동 공개하지 않습니다.'
             document['help_history'].append(dict(type=kind, text=answer, at=timestamp()))
             return [answer]
         if action in {'query', 'report', 'followup', 'evidence', 'answer', 'message'}:
@@ -625,7 +628,7 @@ class DiscordTrainingService:
             import re
             notes = re.sub(r'```sql\s*\n[\s\S]*?```', '', text, flags=re.IGNORECASE).strip()
             notes = re.sub(r'<@!?\d+>', '', notes).strip()
-            preview, full = run_full(self.engine.runner, document['session_id'], document['schema_name'], source)
+            preview, full = run_full(self.engine.runner, document['session_id'], document['schema_name'], source, allowed_tables=set(document['task']['schema']))
             attempt = dict(id=record_id(), event_id=str(event_id), sql=source, original_text=text,
                 execution_id=preview['execution_id'], result=preview, full_result=full, at=timestamp(), verification_notes=notes,
                 reply_to_message_id=parent, parent_execution_id=document.get('sql_reply_targets', {}).get(str(parent)),
@@ -657,7 +660,7 @@ class DiscordTrainingService:
                 document['state'] = 'completed'
                 return [summary(latest)]
             provider = MeteredProvider(self.provider, self.store, document['owner_user_id'], self.daily_limit, document['telemetry']) if self.provider else None
-            result = evaluate(self.engine.runner, document['session_id'], document['task'], document['sql_checks'], attempt, provider=provider)
+            result = evaluate(self.engine.runner, document['session_id'], document['task'], private['checks'] if generated else document['sql_checks'], attempt, provider=provider)
             result.update(help_history=list(document['help_history']), sql_exposure=document.get('sql_exposure', '미상'))
             entry = dict(id=record_id(), event_id=str(event_id), execution_id=attempt['execution_id'],
                 at=timestamp(), result=result, version=len(document['evaluations']) + 1)
