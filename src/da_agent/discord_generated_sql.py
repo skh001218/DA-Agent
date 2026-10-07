@@ -113,19 +113,24 @@ def make_task(task, recipe, seed):
     def conditions(items):
         operators={'eq':'=','gt':'>','gte':'>=','lt':'<','lte':'<='}
         return ' AND '.join(c.column+' '+operators[c.operator]+' '+repr(c.value) for c in items) or '추가 조건 없음'
-    task['objective'] = '\n'.join([recipe.description, '목표: '+recipe.goal, '목표에 맞는 SELECT를 직접 작성하세요.',
+    goal = [recipe.description, '목표: '+recipe.goal, '목표에 맞는 SELECT를 직접 작성하세요.']
+    conditions_lines = [
         '계산 단위: '+tables[metric.table].grain,
         '분석 조건: '+ '; '.join(recipe.business_case.agent_assumptions),
         '집계: '+metric.operation+' · 대상 표: '+metric.table+' · 그룹: '+(', '.join(metric.group_by) or '전체'),
         '분자 조건: '+conditions(metric.conditions) if metric.operation == 'ratio' else '필터: '+conditions(metric.conditions),
-        '분모 조건: '+conditions(metric.denominator_conditions) if metric.operation == 'ratio' else '대상 열: '+str(metric.column or '행 수'),
-        '출력 열과 순서: '+', '.join(expected['columns'])+'. 행 순서는 무관합니다. 숫자는 숫자형으로 출력하세요.',
-        '비율은 0~1이며 분모 0은 NULL입니다. 그룹 집계는 대상 행이 있는 그룹만 출력합니다.' if metric.operation == 'ratio' else '빈 데이터에서 COUNT/DISTINCT는 0, SUM/AVG/MIN/MAX는 NULL입니다.',
+        '분모 조건: '+conditions(metric.denominator_conditions) if metric.operation == 'ratio' else '대상 열: '+str(metric.column or '행 수')]
+    output = ['출력 열과 순서: '+', '.join(expected['columns'])+'. 행 순서는 무관합니다. 숫자는 숫자형으로 출력하세요.']
+    empty = '비율은 0~1이며 분모 0은 NULL입니다. 그룹 집계는 대상 행이 있는 그룹만 출력합니다.' if metric.operation == 'ratio' else '빈 데이터에서 COUNT/DISTINCT는 0, SUM/AVG/MIN/MAX는 NULL입니다.'
+    task['objective'] = '\n'.join(goal + conditions_lines + output + [empty,
         '자료는 요청별 연습용 합성 데이터입니다. /help의 데이터 사전에서 관계와 열 정의를 확인하세요.'])
+    task['sql_intro_sections'] = dict(goal=goal, conditions=conditions_lines+[empty], output=output, extra=[])
     if recipe.difficulty == 'advanced':
         task['sql_contract']['verification_required'] = True
         task['sql_contract']['criteria'].append(dict(id='verification',name='검산 방법 설명'))
-        task['objective'] += '\nSQL 블록 밖에 중복·기간/관측 경계·분모/NULL을 어떻게 검산할지 설명하세요. 미수행 검산은 계획이라고 표시하세요.'
+        explanation = 'SQL 블록 밖에 중복·기간/관측 경계·분모/NULL을 어떻게 검산할지 설명하세요. 미수행 검산은 계획이라고 표시하세요.'
+        task['objective'] += '\n' + explanation
+        task['sql_intro_sections']['extra'].append(explanation)
     task['rubric'] = dict(version=VERSION,criteria=deepcopy(task['sql_contract']['criteria']),
         non_scoring=['문장 길이','조회 횟수','교육 효과'],total=None,no_duplicate_penalty=True)
     # The public source references remain available on demand, while mandatory

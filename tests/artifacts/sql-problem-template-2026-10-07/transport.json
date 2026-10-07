@@ -1,0 +1,183 @@
+{
+  "generated-beginner": [
+    {
+      "kind": "text",
+      "text": "📌 SQL · 관측 완료 이용자의 D7 리텐션\n난이도: 초급 · 연습 유형: SQL\n\n🎯 1. 문제 목표\n게임팀은 신규 이용자의 D7 리텐션을 확인하려 합니다. 연습용 합성 관측 요약으로 계산하세요.\n목표: 관측 완료 이용자의 D7 리텐션을 직접 SELECT로 계산하세요.\n목표에 맞는 SELECT를 직접 작성하세요.\n\n📚 2. 사용할 데이터\n첨부한 데이터 사전 이미지를 누르면 확대할 수 있습니다.\n요청별 합성 자료 · 자동 검증 통과 · 사람 품질 검토 전"
+    },
+    {
+      "kind": "image",
+      "title": "데이터 사전 · accounts",
+      "src": "generated-beginner-1-0.png"
+    },
+    {
+      "kind": "image",
+      "title": "데이터 사전 · retention_observations",
+      "src": "generated-beginner-2-0.png"
+    },
+    {
+      "kind": "text",
+      "text": "🔎 3. 계산 조건\n• 관측 기간: 가입: 한국 시간 2026-09-01\\~14, 관측 종료: 2026-09-29 00:00 미만\n• 계산 단위: 이용자별 한 행의 합성 D7 관측 요약; 무접속 이용자 포함\n• 분석 조건: 2026-09-01\\~14 가입 대상의 이용자별 합성 D7 관측 요약이며 원본 로그가 아닙니다.; D7은 가입 한국 날짜+7일 재접속 여부입니다. observed\\_days\\>=7인 이용자만 분모, d7\\_returned=yes가 분자입니다.; 무접속 이용자도 요약에 포함하고 7일 미관측 이용자는 분모에서 제외합니다.\n• 집계: ratio · 대상 표: retention\\_observations · 그룹: 전체\n• 분자 조건: d7\\_returned = 'yes'\n• 분모 조건: observed\\_days \\>= 7\n• 비율은 0\\~1이며 분모 0은 NULL입니다. 그룹 집계는 대상 행이 있는 그룹만 출력합니다.\n\n📤 4. 출력 형식\n• 출력 열과 순서: denominator, numerator, d7\\_retention. 행 순서는 무관합니다. 숫자는 숫자형으로 출력하세요.\n\n📝 5. 제출 방법\n1. 아래에 제공된 sql 코드 블록 틀을 복사해 풀이를 작성하세요.\n2. 틀 안내 메시지에 답장해 실행하세요. 수정할 때도 전체 SQL을 새 답장으로 보내세요.\n3. 실행 결과를 확인한 뒤 /submit로 최종 평가를 요청하세요.\n• 코드 블록과 설명을 포함해 1,900자 이내로 제출하세요.\n• /help로 데이터 사전·평가 기준·개념 도움을 확인하세요.\n• 답장 수신이 제한되면 /sqlrun text:코드블록을 사용하세요.\n\n문제 정보\n• 데이터 버전: template-fixture"
+    },
+    {
+      "kind": "text",
+      "text": "이 틀을 복사해 SQL을 작성한 뒤 이 메시지에 답장하세요. 수정도 전체 SQL을 새 답장으로 보내세요.\n```sql\n-- 여기에 풀이 SQL을 작성하세요.\n```"
+    }
+  ],
+  "generated-intermediate": [
+    {
+      "kind": "text",
+      "text": "📌 SQL · 관측 완료 이용자의 D7 리텐션\n난이도: 중급 · 연습 유형: SQL\n\n🎯 1. 문제 목표\n게임팀은 신규 이용자의 D7 리텐션을 확인하려 합니다. 연습용 합성 관측 요약으로 계산하세요.\n목표: 관측 완료 이용자의 D7 리텐션을 직접 SELECT로 계산하세요.\n목표에 맞는 SELECT를 직접 작성하세요.\n\n📚 2. 사용할 데이터\n첨부한 데이터 사전 이미지를 누르면 확대할 수 있습니다.\n요청별 합성 자료 · 자동 검증 통과 · 사람 품질 검토 전"
+    },
+    {
+      "kind": "image",
+      "title": "데이터 사전 · accounts",
+      "src": "generated-intermediate-1-0.png"
+    },
+    {
+      "kind": "image",
+      "title": "데이터 사전 · retention_observations",
+      "src": "generated-intermediate-2-0.png"
+    },
+    {
+      "kind": "text",
+      "text": "🔎 3. 계산 조건\n• 관측 기간: 가입: 한국 시간 2026-09-01\\~14, 관측 종료: 2026-09-29 00:00 미만\n• 계산 단위: 이용자별 한 행의 합성 D7 관측 요약; 무접속 이용자 포함\n• 분석 조건: 2026-09-01\\~14 가입 대상의 이용자별 합성 D7 관측 요약이며 원본 로그가 아닙니다.; D7은 가입 한국 날짜+7일 재접속 여부입니다. observed\\_days\\>=7인 이용자만 분모, d7\\_returned=yes가 분자입니다.; 무접속 이용자도 요약에 포함하고 7일 미관측 이용자는 분모에서 제외합니다.\n• 집계: ratio · 대상 표: retention\\_observations · 그룹: accounts.channel\n• 분자 조건: d7\\_returned = 'yes'\n• 분모 조건: observed\\_days \\>= 7\n• 비율은 0\\~1이며 분모 0은 NULL입니다. 그룹 집계는 대상 행이 있는 그룹만 출력합니다.\n\n📤 4. 출력 형식\n• 출력 열과 순서: accounts\\_\\_channel, denominator, numerator, d7\\_retention. 행 순서는 무관합니다. 숫자는 숫자형으로 출력하세요.\n\n📝 5. 제출 방법\n1. 아래에 제공된 sql 코드 블록 틀을 복사해 풀이를 작성하세요.\n2. 틀 안내 메시지에 답장해 실행하세요. 수정할 때도 전체 SQL을 새 답장으로 보내세요.\n3. 실행 결과를 확인한 뒤 /submit로 최종 평가를 요청하세요.\n• 코드 블록과 설명을 포함해 1,900자 이내로 제출하세요.\n• /help로 데이터 사전·평가 기준·개념 도움을 확인하세요.\n• 답장 수신이 제한되면 /sqlrun text:코드블록을 사용하세요.\n\n문제 정보\n• 데이터 버전: template-fixture"
+    },
+    {
+      "kind": "text",
+      "text": "이 틀을 복사해 SQL을 작성한 뒤 이 메시지에 답장하세요. 수정도 전체 SQL을 새 답장으로 보내세요.\n```sql\n-- 여기에 풀이 SQL을 작성하세요.\n```"
+    }
+  ],
+  "generated-advanced": [
+    {
+      "kind": "text",
+      "text": "📌 SQL · 관측 완료 이용자의 D7 리텐션\n난이도: 고급 · 연습 유형: SQL\n\n🎯 1. 문제 목표\n게임팀은 신규 이용자의 D7 리텐션을 확인하려 합니다. 연습용 합성 관측 요약으로 계산하세요.\n목표: 관측 완료 이용자의 D7 리텐션을 직접 SELECT로 계산하세요.\n목표에 맞는 SELECT를 직접 작성하세요.\n\n📚 2. 사용할 데이터\n첨부한 데이터 사전 이미지를 누르면 확대할 수 있습니다.\n요청별 합성 자료 · 자동 검증 통과 · 사람 품질 검토 전"
+    },
+    {
+      "kind": "image",
+      "title": "데이터 사전 · accounts",
+      "src": "generated-advanced-1-0.png"
+    },
+    {
+      "kind": "image",
+      "title": "데이터 사전 · retention_observations",
+      "src": "generated-advanced-2-0.png"
+    },
+    {
+      "kind": "text",
+      "text": "🔎 3. 계산 조건\n• 관측 기간: 가입: 한국 시간 2026-09-01\\~14, 관측 종료: 2026-09-29 00:00 미만\n• 계산 단위: 이용자별 한 행의 합성 D7 관측 요약; 무접속 이용자 포함\n• 분석 조건: 2026-09-01\\~14 가입 대상의 이용자별 합성 D7 관측 요약이며 원본 로그가 아닙니다.; D7은 가입 한국 날짜+7일 재접속 여부입니다. observed\\_days\\>=7인 이용자만 분모, d7\\_returned=yes가 분자입니다.; 무접속 이용자도 요약에 포함하고 7일 미관측 이용자는 분모에서 제외합니다.\n• 집계: ratio · 대상 표: retention\\_observations · 그룹: accounts.cohort, accounts.channel\n• 분자 조건: d7\\_returned = 'yes'\n• 분모 조건: observed\\_days \\>= 7\n• 비율은 0\\~1이며 분모 0은 NULL입니다. 그룹 집계는 대상 행이 있는 그룹만 출력합니다.\n\n📤 4. 출력 형식\n• 출력 열과 순서: accounts\\_\\_cohort, accounts\\_\\_channel, denominator, numerator, d7\\_retention. 행 순서는 무관합니다. 숫자는 숫자형으로 출력하세요.\n\n📝 5. 제출 방법\n1. 아래에 제공된 sql 코드 블록 틀을 복사해 풀이를 작성하세요.\n2. 틀 안내 메시지에 답장해 실행하세요. 수정할 때도 전체 SQL을 새 답장으로 보내세요.\n3. 실행 결과를 확인한 뒤 /submit로 최종 평가를 요청하세요.\n• 코드 블록과 설명을 포함해 1,900자 이내로 제출하세요.\n• SQL 블록 밖에 중복·기간/관측 경계·분모/NULL을 어떻게 검산할지 설명하세요. 미수행 검산은 계획이라고 표시하세요.\n• /help로 데이터 사전·평가 기준·개념 도움을 확인하세요.\n• 답장 수신이 제한되면 /sqlrun text:코드블록을 사용하세요.\n\n문제 정보\n• 데이터 버전: template-fixture"
+    },
+    {
+      "kind": "text",
+      "text": "이 틀을 복사해 SQL을 작성한 뒤 이 메시지에 답장하세요. 수정도 전체 SQL을 새 답장으로 보내세요.\n```sql\n-- 여기에 풀이 SQL을 작성하세요.\n```"
+    }
+  ],
+  "tutorial-beginner": [
+    {
+      "kind": "text",
+      "text": "📌 SQL · 신규 가입자 3단계 완료율\n난이도: 초급 · 연습 유형: SQL\n\n🎯 1. 문제 목표\n신규 가입자의 튜토리얼 3단계 완료율을 전체를 한 행으로 계산하는 SELECT를 직접 작성하세요.\n\n📚 2. 사용할 데이터\n첨부한 데이터 사전 이미지를 누르면 확대할 수 있습니다.\n정해진 관측 기간의 합성 이벤트. 실제 게임 수집 누락 여부는 이 표만으로 판단 불가."
+    },
+    {
+      "kind": "image",
+      "title": "데이터 사전 · users",
+      "src": "tutorial-beginner-1-0.png"
+    },
+    {
+      "kind": "image",
+      "title": "데이터 사전 · tutorial_attempts",
+      "src": "tutorial-beginner-2-0.png"
+    },
+    {
+      "kind": "image",
+      "title": "데이터 사전 · sessions",
+      "src": "tutorial-beginner-3-0.png"
+    },
+    {
+      "kind": "text",
+      "text": "🔎 3. 계산 조건\n• 가입 기간: 2026-09-01 이상 \\~ 2026-09-15 미만\n• 시간: UTC · 완료 관측 종료: 2026-10-01 미만\n• 완료율은 0\\~1 비율이며 분모 0은 NULL입니다.\n• 도전하지 않은 가입자도 분모에 포함합니다.\n• 완료 이벤트는 가입 기간 시작 이상, 관측 종료 미만\\(UTC\\)만 인정하고 재도전을 중복 집계하지 않습니다.\n• denominator는 전체 가입자 수, numerator는 완료한 가입자 수입니다.\n• 나눗셈의 정수 절삭을 주의하세요.\n\n📤 4. 출력 형식\n• 출력 열 이름과 순서: denominator, numerator, completion\\_rate.\n• 수와 비율은 숫자형, channel은 문자형입니다.\n\n📝 5. 제출 방법\n1. 아래에 제공된 sql 코드 블록 틀을 복사해 풀이를 작성하세요.\n2. 틀 안내 메시지에 답장해 실행하세요. 수정할 때도 전체 SQL을 새 답장으로 보내세요.\n3. 실행 결과를 확인한 뒤 /submit로 최종 평가를 요청하세요.\n• 코드 블록과 설명을 포함해 1,900자 이내로 제출하세요.\n• /help로 데이터 사전·평가 기준·개념 도움을 확인하세요.\n• 답장 수신이 제한되면 /sqlrun text:코드블록을 사용하세요.\n\n문제 정보\n• 데이터 버전: template-fixture\n• 원본 SQL 노출: 미상"
+    },
+    {
+      "kind": "text",
+      "text": "이 틀을 복사해 SQL을 작성한 뒤 이 메시지에 답장하세요. 수정도 전체 SQL을 새 답장으로 보내세요.\n```sql\n-- 여기에 풀이 SQL을 작성하세요.\n```"
+    }
+  ],
+  "tutorial-intermediate": [
+    {
+      "kind": "text",
+      "text": "📌 SQL · 신규 가입자 3단계 완료율\n난이도: 중급 · 연습 유형: SQL\n\n🎯 1. 문제 목표\n신규 가입자의 튜토리얼 3단계 완료율을 유입 채널별로 계산하는 SELECT를 직접 작성하세요.\n\n📚 2. 사용할 데이터\n첨부한 데이터 사전 이미지를 누르면 확대할 수 있습니다.\n정해진 관측 기간의 합성 이벤트. 실제 게임 수집 누락 여부는 이 표만으로 판단 불가."
+    },
+    {
+      "kind": "image",
+      "title": "데이터 사전 · users",
+      "src": "tutorial-intermediate-1-0.png"
+    },
+    {
+      "kind": "image",
+      "title": "데이터 사전 · tutorial_attempts",
+      "src": "tutorial-intermediate-2-0.png"
+    },
+    {
+      "kind": "image",
+      "title": "데이터 사전 · sessions",
+      "src": "tutorial-intermediate-3-0.png"
+    },
+    {
+      "kind": "text",
+      "text": "🔎 3. 계산 조건\n• 가입 기간: 2026-09-01 이상 \\~ 2026-09-15 미만\n• 시간: UTC · 완료 관측 종료: 2026-10-01 미만\n• 완료율은 0\\~1 비율이며 분모 0은 NULL입니다.\n• 도전하지 않은 가입자도 분모에 포함합니다.\n• 완료 이벤트는 가입 기간 시작 이상, 관측 종료 미만\\(UTC\\)만 인정하고 재도전을 중복 집계하지 않습니다.\n\n📤 4. 출력 형식\n• 출력 열 이름과 순서: channel, denominator, numerator, completion\\_rate.\n• 수와 비율은 숫자형, channel은 문자형입니다.\n\n📝 5. 제출 방법\n1. 아래에 제공된 sql 코드 블록 틀을 복사해 풀이를 작성하세요.\n2. 틀 안내 메시지에 답장해 실행하세요. 수정할 때도 전체 SQL을 새 답장으로 보내세요.\n3. 실행 결과를 확인한 뒤 /submit로 최종 평가를 요청하세요.\n• 코드 블록과 설명을 포함해 1,900자 이내로 제출하세요.\n• /help로 데이터 사전·평가 기준·개념 도움을 확인하세요.\n• 답장 수신이 제한되면 /sqlrun text:코드블록을 사용하세요.\n\n문제 정보\n• 데이터 버전: template-fixture\n• 원본 SQL 노출: 미상"
+    },
+    {
+      "kind": "text",
+      "text": "이 틀을 복사해 SQL을 작성한 뒤 이 메시지에 답장하세요. 수정도 전체 SQL을 새 답장으로 보내세요.\n```sql\n-- 여기에 풀이 SQL을 작성하세요.\n```"
+    }
+  ],
+  "tutorial-advanced": [
+    {
+      "kind": "text",
+      "text": "📌 SQL · 신규 가입자 3단계 완료율\n난이도: 고급 · 연습 유형: SQL\n\n🎯 1. 문제 목표\n신규 가입자의 튜토리얼 3단계 완료율을 가입 주차\\(1 또는 2\\)와 유입 채널별로 계산하는 SELECT를 직접 작성하세요.\n\n📚 2. 사용할 데이터\n첨부한 데이터 사전 이미지를 누르면 확대할 수 있습니다.\n정해진 관측 기간의 합성 이벤트. 실제 게임 수집 누락 여부는 이 표만으로 판단 불가."
+    },
+    {
+      "kind": "image",
+      "title": "데이터 사전 · users",
+      "src": "tutorial-advanced-1-0.png"
+    },
+    {
+      "kind": "image",
+      "title": "데이터 사전 · tutorial_attempts",
+      "src": "tutorial-advanced-2-0.png"
+    },
+    {
+      "kind": "image",
+      "title": "데이터 사전 · sessions",
+      "src": "tutorial-advanced-3-0.png"
+    },
+    {
+      "kind": "text",
+      "text": "🔎 3. 계산 조건\n• 가입 기간: 2026-09-01 이상 \\~ 2026-09-15 미만\n• 시간: UTC · 완료 관측 종료: 2026-10-01 미만\n• 완료율은 0\\~1 비율이며 분모 0은 NULL입니다.\n• 도전하지 않은 가입자도 분모에 포함합니다.\n• 완료 이벤트는 가입 기간 시작 이상, 관측 종료 미만\\(UTC\\)만 인정하고 재도전을 중복 집계하지 않습니다.\n• week는 과제 시작일부터 7일 단위로 구분합니다.\n\n📤 4. 출력 형식\n• 출력 열 이름과 순서: week, channel, denominator, numerator, completion\\_rate.\n• 수와 비율은 숫자형, channel은 문자형입니다.\n\n📝 5. 제출 방법\n1. 아래에 제공된 sql 코드 블록 틀을 복사해 풀이를 작성하세요.\n2. 틀 안내 메시지에 답장해 실행하세요. 수정할 때도 전체 SQL을 새 답장으로 보내세요.\n3. 실행 결과를 확인한 뒤 /submit로 최종 평가를 요청하세요.\n• 코드 블록과 설명을 포함해 1,900자 이내로 제출하세요.\n• SQL 코드 블록 밖에 중복·기간 경계·분모/NULL을 어떻게 검산했는지 설명하세요.\n• 수행하지 않은 검산은 계획이라고 표시하세요.\n• 설명만으로 실행 사실을 인정하지 않으며 SQL 결과와 설명을 별도로 평가합니다.\n• /help로 데이터 사전·평가 기준·개념 도움을 확인하세요.\n• 답장 수신이 제한되면 /sqlrun text:코드블록을 사용하세요.\n\n문제 정보\n• 데이터 버전: template-fixture\n• 원본 SQL 노출: 미상"
+    },
+    {
+      "kind": "text",
+      "text": "이 틀을 복사해 SQL을 작성한 뒤 이 메시지에 답장하세요. 수정도 전체 SQL을 새 답장으로 보내세요.\n```sql\n-- 여기에 풀이 SQL을 작성하세요.\n```"
+    }
+  ],
+  "attachment-failure": [
+    {
+      "kind": "text",
+      "text": "📌 SQL · 관측 완료 이용자의 D7 리텐션\n난이도: 고급 · 연습 유형: SQL\n\n🎯 1. 문제 목표\n게임팀은 신규 이용자의 D7 리텐션을 확인하려 합니다. 연습용 합성 관측 요약으로 계산하세요.\n목표: 관측 완료 이용자의 D7 리텐션을 직접 SELECT로 계산하세요.\n목표에 맞는 SELECT를 직접 작성하세요.\n\n📚 2. 사용할 데이터\n첨부한 데이터 사전 이미지를 누르면 확대할 수 있습니다.\n요청별 합성 자료 · 자동 검증 통과 · 사람 품질 검토 전"
+    },
+    {
+      "kind": "text",
+      "text": "표 첨부를 표시하지 못해 행별 목록으로 제공합니다.\n데이터 사전 · accounts\n한 행: 신규 이용자별 한 행\naccount\\_id: 이용자 기본키 / channel: 가입 채널 / cohort: 가입 코호트: week1=9월1\\~7일, week2=9월8\\~14일\n행 1\n• 컬럼명: account\\_id\n• 자료형: bigint\n행 2\n• 컬럼명: channel\n• 자료형: text\n행 3\n• 컬럼명: cohort\n• 자료형: text"
+    },
+    {
+      "kind": "text",
+      "text": "표 첨부를 표시하지 못해 행별 목록으로 제공합니다.\n데이터 사전 · retention\\_observations\n한 행: 이용자별 한 행의 합성 D7 관측 요약; 무접속 이용자 포함\nobservation\\_id: 관측 요약 기본키 / account\\_id: accounts 기본키; 모든 가입자를 한 번씩 포함 / observed\\_days: 가입 이후 관측을 완료한 일수; 7 미만은 D7 미관측 / d7\\_returned: 가입 한국 날짜+7일 재접속 yes/no; observed\\_days\\<7이면 미관측이므로 평가 제외\n행 1\n• 컬럼명: observation\\_id\n• 자료형: bigint\n행 2\n• 컬럼명: account\\_id\n• 자료형: bigint\n행 3\n• 컬럼명: observed\\_days\n• 자료형: bigint\n행 4\n• 컬럼명: d7\\_returned\n• 자료형: text"
+    },
+    {
+      "kind": "text",
+      "text": "🔎 3. 계산 조건\n• 관측 기간: 가입: 한국 시간 2026-09-01\\~14, 관측 종료: 2026-09-29 00:00 미만\n• 계산 단위: 이용자별 한 행의 합성 D7 관측 요약; 무접속 이용자 포함\n• 분석 조건: 2026-09-01\\~14 가입 대상의 이용자별 합성 D7 관측 요약이며 원본 로그가 아닙니다.; D7은 가입 한국 날짜+7일 재접속 여부입니다. observed\\_days\\>=7인 이용자만 분모, d7\\_returned=yes가 분자입니다.; 무접속 이용자도 요약에 포함하고 7일 미관측 이용자는 분모에서 제외합니다.\n• 집계: ratio · 대상 표: retention\\_observations · 그룹: accounts.cohort, accounts.channel\n• 분자 조건: d7\\_returned = 'yes'\n• 분모 조건: observed\\_days \\>= 7\n• 비율은 0\\~1이며 분모 0은 NULL입니다. 그룹 집계는 대상 행이 있는 그룹만 출력합니다.\n\n📤 4. 출력 형식\n• 출력 열과 순서: accounts\\_\\_cohort, accounts\\_\\_channel, denominator, numerator, d7\\_retention. 행 순서는 무관합니다. 숫자는 숫자형으로 출력하세요.\n\n📝 5. 제출 방법\n1. 아래에 제공된 sql 코드 블록 틀을 복사해 풀이를 작성하세요.\n2. 틀 안내 메시지에 답장해 실행하세요. 수정할 때도 전체 SQL을 새 답장으로 보내세요.\n3. 실행 결과를 확인한 뒤 /submit로 최종 평가를 요청하세요.\n• 코드 블록과 설명을 포함해 1,900자 이내로 제출하세요.\n• SQL 블록 밖에 중복·기간/관측 경계·분모/NULL을 어떻게 검산할지 설명하세요. 미수행 검산은 계획이라고 표시하세요.\n• /help로 데이터 사전·평가 기준·개념 도움을 확인하세요.\n• 답장 수신이 제한되면 /sqlrun text:코드블록을 사용하세요.\n\n문제 정보\n• 데이터 버전: template-fixture"
+    },
+    {
+      "kind": "text",
+      "text": "이 틀을 복사해 SQL을 작성한 뒤 이 메시지에 답장하세요. 수정도 전체 SQL을 새 답장으로 보내세요.\n```sql\n-- 여기에 풀이 SQL을 작성하세요.\n```"
+    }
+  ]
+}

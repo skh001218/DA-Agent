@@ -306,6 +306,8 @@ class DiscordTrainingService:
         if document.get('practice') == 'sql':
             from .discord_sql_practice import TEMPLATE, summary
             from .discord_tables import dictionary_tables
+            from .discord_sql_presentation import sql_intro_messages
+            messages = sql_intro_messages(document)
             messages.append(TEMPLATE)
             if document.get('sql_attempts'):
                 attempt = document['sql_attempts'][-1]
