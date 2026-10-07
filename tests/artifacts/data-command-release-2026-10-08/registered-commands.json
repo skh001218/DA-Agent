@@ -1,0 +1,301 @@
+{
+  "application_id": "1556884921652609034",
+  "guilds": [
+    {
+      "guild_id": "1556888486919934064",
+      "commands": [
+        {
+          "id": "1556890414563332146",
+          "name": "training",
+          "description": "SQL 또는 분석 연습을 선택해 비공개 훈련 시작",
+          "options": [
+            {
+              "type": 3,
+              "name": "text",
+              "description": "SQL 또는 분석에서 연습할 주제와 목표를 입력하세요 (1~4000자)",
+              "required": true
+            },
+            {
+              "type": 3,
+              "name": "practice",
+              "description": "…",
+              "required": true,
+              "choices": [
+                {
+                  "name": "SQL 연습",
+                  "value": "sql"
+                },
+                {
+                  "name": "분석 연습",
+                  "value": "analysis"
+                }
+              ]
+            },
+            {
+              "type": 3,
+              "name": "difficulty",
+              "description": "…",
+              "choices": [
+                {
+                  "name": "초급",
+                  "value": "beginner"
+                },
+                {
+                  "name": "중급",
+                  "value": "intermediate"
+                },
+                {
+                  "name": "고급",
+                  "value": "advanced"
+                }
+              ]
+            },
+            {
+              "type": 3,
+              "name": "help_level",
+              "description": "…",
+              "choices": [
+                {
+                  "name": "안내 포함",
+                  "value": "guided"
+                },
+                {
+                  "name": "내 정의 먼저",
+                  "value": "independent"
+                }
+              ]
+            },
+            {
+              "type": 3,
+              "name": "source_session_id",
+              "description": "…"
+            }
+          ]
+        },
+        {
+          "id": "1556890414563332147",
+          "name": "resume",
+          "description": "진행 과제 재개 또는 완료 과제 결과·대화 열람",
+          "options": [
+            {
+              "type": 3,
+              "name": "session_id",
+              "description": "…"
+            }
+          ]
+        },
+        {
+          "id": "1556890414563332149",
+          "name": "followup",
+          "description": "업무 담당자 후속 질문에 답변",
+          "options": [
+            {
+              "type": 3,
+              "name": "text",
+              "description": "…",
+              "required": true
+            }
+          ]
+        },
+        {
+          "id": "1556890414563332150",
+          "name": "report",
+          "description": "보고 초안 작성·수정 또는 긴 보고 이어 쓰기",
+          "options": [
+            {
+              "type": 3,
+              "name": "text",
+              "description": "…",
+              "required": true
+            },
+            {
+              "type": 5,
+              "name": "append",
+              "description": "…"
+            }
+          ]
+        },
+        {
+          "id": "1556890414563332151",
+          "name": "help",
+          "description": "개념·분석 방향·중간 피드백 도움 요청",
+          "options": [
+            {
+              "type": 3,
+              "name": "text",
+              "description": "…"
+            },
+            {
+              "type": 3,
+              "name": "kind",
+              "description": "…",
+              "choices": [
+                {
+                  "name": "문제 원문",
+                  "value": "task_details"
+                },
+                {
+                  "name": "개념",
+                  "value": "concept_hint"
+                },
+                {
+                  "name": "분석 방향",
+                  "value": "analysis_direction_hint"
+                },
+                {
+                  "name": "중간 검토",
+                  "value": "intermediate_feedback"
+                },
+                {
+                  "name": "데이터 사전",
+                  "value": "data_dictionary"
+                },
+                {
+                  "name": "평가 기준",
+                  "value": "evaluation_criteria"
+                },
+                {
+                  "name": "전체 명령",
+                  "value": "commands"
+                },
+                {
+                  "name": "SQL 해설 공개",
+                  "value": "solution"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "1556890414563332152",
+          "name": "submit",
+          "description": "분석 보고 또는 SQL 풀이의 최종 평가",
+          "options": [
+            {
+              "type": 3,
+              "name": "execution_id",
+              "description": "…"
+            }
+          ]
+        },
+        {
+          "id": "1556890414563332153",
+          "name": "end",
+          "description": "훈련 중단·기록 보존",
+          "options": null
+        },
+        {
+          "id": "1556890414563332154",
+          "name": "sql",
+          "description": "저장된 조회의 실제 실행 SQL 보기",
+          "options": [
+            {
+              "type": 3,
+              "name": "execution_id",
+              "description": "…",
+              "required": true
+            }
+          ]
+        },
+        {
+          "id": "1556890414563332155",
+          "name": "evidence",
+          "description": "성공 조회를 보고 근거로 선택",
+          "options": [
+            {
+              "type": 3,
+              "name": "execution_id",
+              "description": "…",
+              "required": true
+            }
+          ]
+        },
+        {
+          "id": "1556921199785807974",
+          "name": "tip",
+          "description": "명령어의 사용법과 예시 확인",
+          "options": [
+            {
+              "type": 3,
+              "name": "command",
+              "description": "확인할 명령어 이름 (예: report 또는 /report). 생략하면 목록"
+            }
+          ]
+        },
+        {
+          "id": "1556921199785807975",
+          "name": "answer",
+          "description": "현재 봇 질문에 이어서 답변",
+          "options": [
+            {
+              "type": 3,
+              "name": "text",
+              "description": "…",
+              "required": true
+            }
+          ]
+        },
+        {
+          "id": "1556942665201745970",
+          "name": "question",
+          "description": "게임 분석 용어를 용어당 최대 3줄로 설명",
+          "options": [
+            {
+              "type": 3,
+              "name": "text",
+              "description": "…",
+              "required": true
+            }
+          ]
+        },
+        {
+          "id": "1556954236472922143",
+          "name": "history",
+          "description": "본인의 분석 연습 기록과 결과 링크 확인",
+          "options": [
+            {
+              "type": 4,
+              "name": "page",
+              "description": "…",
+              "min_value": 1,
+              "max_value": 1000000
+            }
+          ]
+        },
+        {
+          "id": "1557374127856164864",
+          "name": "sqlrun",
+          "description": "SQL 연습의 sql 코드 블록을 직접 실행",
+          "options": [
+            {
+              "type": 3,
+              "name": "text",
+              "description": "…",
+              "required": true
+            }
+          ]
+        },
+        {
+          "id": "1557374127856164865",
+          "name": "retry",
+          "description": "실패·중단된 출제 수동 재시도",
+          "options": null
+        },
+        {
+          "id": "1557446853304258760",
+          "name": "data",
+          "description": "새로운 자연어 조회 요청",
+          "options": [
+            {
+              "type": 3,
+              "name": "text",
+              "description": "…",
+              "required": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "global_commands": []
+}
