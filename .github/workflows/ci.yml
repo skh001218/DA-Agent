@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  automated-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: |
+            requirements.lock.txt
+            requirements-discord.txt
+      - run: sudo apt-get update && sudo apt-get install -y fonts-nanum fonts-noto-cjk
+      - run: python -m pip install -r requirements.lock.txt -r requirements-discord.txt pypdf==6.1.3
+      - run: python -m pytest tests/automated -q
+
+  discord-db-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:17.4
+        env:
+          POSTGRES_PASSWORD: ci-only-password
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s --health-timeout 5s --health-retries 12
+    env:
+      DISCORD_TEST_ADMIN_DSN: postgresql://postgres:ci-only-password@localhost:5432/discord_ci_training
+      DISCORD_TEST_LEARNER_DSN: postgresql://ci_reader:ci-reader-password@localhost:5432/discord_ci_training
+      DISCORD_TEST_RECORDS_DSN: postgresql://postgres:ci-only-password@localhost:5432/discord_ci_records
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12'
+      - run: sudo apt-get update && sudo apt-get install -y fonts-nanum fonts-noto-cjk
+      - run: python -m pip install -r requirements.lock.txt -r requirements-discord.txt
+      - run: python scripts/verification/prepare_ci_discord_db.py
+      - run: python -m pytest tests/automated/test_discord_service.py tests/automated/test_discord_flow.py tests/automated/test_discord_sql_practice.py tests/automated/test_discord_generation.py -q
+
+  discord-image:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - run: docker build -f Dockerfile.discord --build-arg GIT_SHA=${{ github.sha }} --build-arg SOURCE_REF=${{ github.ref }} -t da-agent-discord:ci .
+      - run: docker run --rm --entrypoint python da-agent-discord:ci scripts/check_discord_release.py

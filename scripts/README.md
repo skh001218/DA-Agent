@@ -1,5 +1,7 @@
 # 실행 도구
 
+- Discord 운영 배포: `python scripts/deploy_discord.py --apply`. main의 CI 성공 커밋을 Git archive로 빌드하고 기존 봇만 교체한다. `--status`로 운영 커밋을 확인한다. [배포 절차](../docs/discord-release-workflow.md).
+
 - 이 폴더 바로 아래: 로컬 설정, API 키 입력, 훈련 데이터 생성·검증, DB 초기 준비. `verify_release.py`는 설치 과정의 패키지 지문 검사이므로 이 위치를 유지한다.
 - `verification/`: 자동 회귀, 실제 모델·브라우저 검증, 결과 내보내기와 보고서 생성.
 - `diagnostics/`: 모델·데이터·화면 문제 조사.

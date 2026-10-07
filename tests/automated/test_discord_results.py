@@ -156,7 +156,11 @@ def setup_forum(monkeypatch, exists=True):
             self.attachments = [NS(filename=file.filename)] if file else []
             self.view = view
         async def edit(self, **kwargs):
+            if getattr(self, 'fail_edit', False):
+                self.fail_edit = False
+                raise ConnectionError('interrupted starter update')
             if 'embed' in kwargs: self.embeds = [kwargs['embed']]
+            if 'embeds' in kwargs: self.embeds = kwargs['embeds']
             if 'attachments' in kwargs: self.attachments = [NS(filename=a.filename) for a in kwargs['attachments']]
             if 'view' in kwargs: self.view = kwargs['view']
     class Thread:
@@ -183,7 +187,10 @@ def setup_forum(monkeypatch, exists=True):
             for thread in posts:
                 if thread.archived: yield thread
         async def create_thread(self, **kwargs):
-            thread = Thread(kwargs['name'], kwargs['embed'], self.id, kwargs.get('file'), kwargs.get('view'))
+            embeds = kwargs.get('embeds') or [kwargs['embed']]
+            assert len(embeds) <= 10 and sum(len(e) for e in embeds) <= 6000
+            thread = Thread(kwargs['name'], embeds[0], self.id, kwargs.get('file'), kwargs.get('view'))
+            thread.messages[0].embeds = embeds
             posts.append(thread)
             return NS(thread=thread)
     async def active_threads(): return [t for t in posts if not t.archived]
@@ -205,6 +212,65 @@ def setup_forum(monkeypatch, exists=True):
     return ResultForumPublisher(client), parent, user, permissions, posts, created
 
 
+def test_short_result_including_many_sections_is_entirely_in_one_starter(monkeypatch):
+    publisher, parent, user, _, posts, _ = setup_forum(monkeypatch)
+    doc = document()
+    doc['reports'][0]['content'] = {'report_text': '짧은 보고서 원문'}
+    sub = build_submission(doc)
+    sub['cards'].extend(dict(title=f'추가 평가 {i}', description=f'항목별 평가 근거 {i}') for i in range(15))
+    sub['cards'][0]['source_url'] = 'https://discord.com/channels/guild/source'
+    before = deepcopy(sub)
+    journal = {}
+    async def save(**changes): journal.update(changes)
+    async def run():
+        await publisher.publish(parent, user, sub, journal, save)
+        await publisher.publish(parent, user, sub, journal, save)
+    asyncio.run(run())
+    assert len(posts) == len(posts[0].messages) == 1
+    embeds = posts[0].messages[0].embeds
+    text = '\n'.join(e.description for e in embeds)
+    assert all(c['title'] in text or c['title'] == embeds[0].title for c in sub['cards'])
+    assert all(c['description'] in text for c in sub['cards'])
+    assert '본문 한도' not in text
+    assert embeds[0].fields[0].value.endswith('/source)')
+    assert len(embeds) <= 10 and sum(len(e) for e in embeds) <= 6000
+    assert sub == before and journal['status'] == 'published'
+
+
+@pytest.mark.parametrize('held', [False, True])
+def test_overflow_previews_keep_evaluation_and_fit_actual_embed_budget(monkeypatch, held):
+    publisher, _, user, _, _, _ = setup_forum(monkeypatch)
+    doc = document()
+    doc['evaluations'][0]['result'].update(held=held, total=None if held else 75)
+    sub = build_submission(doc)
+    user.display_name = '참가자' * 100
+    embeds = publisher.post_embeds(sub, user)
+    text = '\n'.join(e.description for e in embeds)
+    assert len(embeds) <= 10 and sum(len(e) for e in embeds) <= 6000
+    assert all(len(e.description) <= 4096 for e in embeds)
+    assert 'PDF 다운로드' in text and 'None/100' not in text
+    assert all(c['name'] in text for c in doc['task']['rubric']['criteria'])
+    if held: assert '평가 보류' in text
+
+
+def test_inline_budget_boundary_and_extremely_many_sections(monkeypatch):
+    publisher, _, user, _, _, _ = setup_forum(monkeypatch)
+    sub = build_submission(document())
+    for size in (3500, 3900, 5000, 5800, 6000, 8000):
+        sub['cards'] = [dict(title='요약', description='저장됨'),
+                        dict(title='평가 근거', description='가' * size)]
+        embeds = publisher.post_embeds(sub, user)
+        assert sum(len(e) for e in embeds) <= 6000
+        assert all(len(e.description) <= 4096 for e in embeds)
+        if size <= 5000:
+            assert ''.join(e.description for e in embeds[1:]).endswith('가' * size)
+        if size >= 6000:
+            assert '전체 제출·평가' in embeds[1].description
+    sub['cards'].extend(dict(title='평가' + str(i) + '가' * 200, description='근거' * 900) for i in range(100))
+    embeds = publisher.post_embeds(sub, user)
+    assert len(embeds) <= 10 and sum(len(e) for e in embeds) <= 6000
+
+
 @pytest.mark.parametrize('exists', [True, False])
 def test_existing_forum_reused_or_created_with_matching_parent_permissions(monkeypatch, exists):
     publisher, parent, user, permissions, posts, created = setup_forum(monkeypatch, exists)
@@ -215,7 +281,10 @@ def test_existing_forum_reused_or_created_with_matching_parent_permissions(monke
         count = len(posts[0].messages)
         assert url.endswith('/10')
         await publisher.publish(parent, user, sub, journal, save)
-        assert len(posts) == 1 and len(posts[0].messages) == count == len(sub['cards'])
+        assert len(posts) == 1 and len(posts[0].messages) == count == 1
+        text = '\n'.join(e.description for e in posts[0].messages[0].embeds)
+        assert '전체 제출·평가' in text and 'PDF 다운로드' in text
+        assert all(c['name'] in text for c in document()['task']['rubric']['criteria'])
     asyncio.run(run())
     assert journal['status'] == 'published'
     assert bool(created) != exists
@@ -238,11 +307,11 @@ def test_partial_post_and_unknown_create_recovered_by_verified_marker(monkeypatc
     async def run():
         forum = await publisher.forum(parent, user)
         post = (await forum.create_thread(name=sub['post_name'], embed=publisher.embed(sub, 0, user))).thread
-        post.fail_send = True
+        post.messages[0].fail_edit = True
         with pytest.raises(ConnectionError): await publisher.publish(parent, user, sub, {'status': 'creating'}, save)
         assert journal['post_id'] == str(post.id)
         await publisher.publish(parent, user, sub, journal, save)
-        assert len(posts) == 1 and len(post.messages) == len(sub['cards'])
+        assert len(posts) == 1 and len(post.messages) == 1
         post.archived = True
         assert await publisher.find_post(forum, sub) is post
         await publisher.publish(parent, user, sub, {'status': 'uncertain'}, save)
@@ -258,17 +327,22 @@ def test_unknown_creation_without_matching_post_never_duplicates(monkeypatch):
     assert not posts
 
 
-def test_legacy_long_footer_cards_are_updated_without_duplicate_messages(monkeypatch):
+def test_legacy_post_is_consolidated_without_duplicate_messages_or_touching_replies(monkeypatch):
     publisher, parent, user, permissions, posts, created = setup_forum(monkeypatch)
     sub, journal = build_submission(document()), {}
     async def save(**changes): journal.update(changes)
     async def run():
-        await publisher.publish(parent, user, sub, journal, save)
-        for index, message in enumerate(posts[0].messages):
-            message.embeds[0].set_footer(text=legacy_card_marker(sub, index))
+        forum = await publisher.forum(parent, user)
+        post = (await forum.create_thread(name=sub['post_name'], embed=publisher.embed(sub, 0, user))).thread
+        post.messages[0].embeds[0].set_footer(text=legacy_card_marker(sub, 0))
+        for index in range(1, len(sub['cards'])):
+            await post.send(embed=publisher.embed(sub, index, user), allowed_mentions=discord.AllowedMentions.none())
+        replies = list(post.messages[1:])
         await publisher.publish(parent, user, sub, journal, save)
         assert len(posts[0].messages) == len(sub['cards'])
-        assert all(message.embeds[0].footer.text == card_marker(sub, i) for i, message in enumerate(posts[0].messages))
+        assert post.messages[1:] == replies
+        assert post.messages[0].embeds[0].footer.text == card_marker(sub, 0)
+        assert 'PDF 다운로드' in '\n'.join(e.description for e in post.messages[0].embeds)
     asyncio.run(run())
 
 

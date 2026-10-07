@@ -2,7 +2,7 @@
 
 ## 전체 Spec 번호 목록 (2026-10-07)
 
-활성 Spec 46개를 001~046으로 정리했다. 기존 번호 순서를 기준으로 하고 같은 번호 안에서는 선행 기능과 후속 변경 관계를 반영했다. 새 Spec은 047부터 사용한다.
+활성 Spec 47개를 001~047로 정리했다. 기존 번호 순서를 기준으로 하고 같은 번호 안에서는 선행 기능과 후속 변경 관계를 반영했다. 새 Spec은 048부터 사용한다.
 
 동일한 ChatGPT 로그인 문서 사본은 [보관 폴더](archive/chatgpt-login-probe-duplicate.md)에 원문 그대로 보존했다. 과거 검증 보고·실행 파일의 번호는 실행 당시 식별자이며, [이전 번호 대응표](../tests/reports/spec-numbering-2026-10-07.md)로 현재 문서를 찾는다. 구현 진행도는 각 Spec 상단을 따른다.
 
@@ -54,6 +54,7 @@
 | 044 | [Discord 필수 연습 유형과 SQL 직접 풀이](044-discord-sql-practice-mode.md) |
 | 045 | [Discord 텍스트 요청 기반 문제 생성](045-discord-text-task-generation.md) |
 | 046 | [Discord 출제 설계·수정 요청과 입력 예산 개선](046-discord-bounded-generation-repair.md) |
+| 047 | [main 커밋 기반 Discord 운영 배포](047-discord-main-release-workflow.md) |
 
 ## Discord 텍스트 요청 기반 출제 계획 (2026-10-06)
 
