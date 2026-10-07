@@ -1,6 +1,6 @@
 # DA-Agent — 데이터 분석 훈련 에이전트
 
-생성 분석 과제의 자연어 조회를 원본 행·조건·정렬·비교·여러 집계로 확장했습니다. 없는 자료는 필요한 항목을 구체적으로 안내하고, 결과는 표 미리보기와 전체 수집 데이터 JSON 첨부로 제공합니다. 실제 모델과 기존 스레드 DB에서 200행 전체 조회를 검증했습니다. 로컬 구현이며 운영에는 아직 반영하지 않았습니다. [Spec053](specs/053-discord-natural-language-public-query.md), [검증 결과](tests/reports/spec053-natural-language-public-query-2026-10-07.md)를 참고하세요.
+생성 분석 과제의 자연어 조회를 원본 행·조건·정렬·비교·여러 집계로 확장했습니다. 없는 자료는 필요한 항목을 구체적으로 안내하고, 결과는 표 미리보기와 전체 수집 데이터 JSON 첨부로 제공합니다. 운영 봇에 배포했고, 기존 Discord 스레드에서 200행 전체 조회·JSON 다운로드 일치·자료 부족 안내를 확인했습니다. [Spec053](specs/053-discord-natural-language-public-query.md), [검증 결과](tests/reports/spec053-natural-language-public-query-2026-10-07.md)를 참고하세요.
 
 ## Discord 텍스트 요청 기반 출제
 

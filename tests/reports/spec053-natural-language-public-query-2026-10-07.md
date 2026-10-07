@@ -2,7 +2,7 @@
 
 - 검증일: 2026-10-07 (Asia/Seoul)
 - 브랜치: `codex/natural-language-data-query`
-- 범위: 구현·자동 회귀·실제 공급자/읽기 전용 DB·로컬 결과 화면 확인. PR·병합·운영 배포 미수행.
+- 범위: 구현·자동 회귀·실제 공급자/읽기 전용 DB·로컬 화면·PR·main CI·운영 배포·실제 Discord 조회/다운로드 확인.
 - 프로젝트 표준 폴더 7개 모두 존재. 생성·이동 불필요.
 
 ## 변경 결과
@@ -45,6 +45,24 @@
 
 ## 상태와 한계
 
-구현·로컬/실제 모델·DB 검증은 완료했다. 운영 커밋은 `59d8a8c2a6783c1d4bc69215867e6e399b404ddb`이며 이번 변경을 배포하지 않았다. 실제 운영 Discord 명령과 첨부 수신은 이번 검증에서 실행하지 않았다. 운영 반영 후 해당 스레드에서 `/query text:shop_profiles의 전체 데이터를 조회해줘`를 실행해 성공 표와 JSON 첨부를 확인해야 한다.
+구현·검증·운영 반영·실제 Discord 확인을 완료했다. 기능 PR은 [#49](https://github.com/skh001218/DA-Agent/pull/49)이며 PR의 자동 테스트·전용 DB·이미지 CI 3개와 병합 main `5062612894ee0457eec57c5fdcdfe5406a9f3b41`의 같은 CI 3개가 성공했다. `python scripts/deploy_discord.py --apply`는 `verified`, `--status`는 `running: true`, `source_ref: refs/heads/main`, 소스 83개 검증을 반환했다. 기능 배포 이미지 ID는 `sha256:07c32abcc9b8532080bfb7dc546a427c4d6626e92c371c12c1a4fe21b8a61401`이다. DB·웹 컨테이너는 교체하지 않았고 `codex_cli`·일일 한도 0 설정을 보존했다.
+
+기존 스레드에서 실제 `/query` 명령을 사용해 원래 두 요청을 다시 실행했다.
+
+| 운영 요청 | 실제 확인 |
+| --- | --- |
+| shop_profiles의 전체 데이터를 조회해줘 | 성공 실행 `3fe7530c-a18d-44db-a444-b55bd96cd535`; 저장 200행·첫 10행 PNG·전체 JSON 첨부 |
+| 상점의 판매 아이템 목록이 이전과 어떻게 달라졌어? | 기존/변경 아이템 목록과 추가·삭제·변경 이력이 없음을 구체 안내; 현재 표·컬럼 안내; `missing_data`, pending_query 없음, SQL 추가 실행 없음 |
+
+Chrome의 실제 첨부 메뉴에서 JSON을 다운로드했다. 6,537바이트 파일의 실행 ID·컬럼·200행·완전 여부·전체 행 수가 저장 실행 결과와 일치한다. 공개 데이터 DB의 독립 SELECT와도 200행이 일치한다. 원래 실패 기록을 보존했고 운영 검증으로 성공 조회와 자료 부족 요청 기록이 추가됐다. 운영 검증은 읽기 전용 DB 확인과 해당 두 조회 명령만 사용했으며 과제를 제출하거나 종료하지 않았다.
+
+- [실제 전체 조회 메시지](https://discord.com/channels/1556888486919934064/1557274382223540284/1557282994077573141)
+- [실제 JSON 첨부 메시지](https://discord.com/channels/1556888486919934064/1557274382223540284/1557282999479828490)
+- [자료 부족 안내 메시지](https://discord.com/channels/1556888486919934064/1557274382223540284/1557283645516025907)
+- [운영 검증 증거](../artifacts/spec053-production-2026-10-07/verification.json), [다운로드 파일](../artifacts/spec053-production-2026-10-07/full-data.json)
+
+![운영 전체 조회](../artifacts/spec053-production-2026-10-07/all-rows.png)
+
+![운영 자료 부족 안내](../artifacts/spec053-production-2026-10-07/missing-data.png)
 
 공개 표·컬럼과 읽기 전용 실행 검증은 SQL의 실행 범위를 확인한다. 모든 자연어의 의미·비교 단위·인과 해석이 정확함을 보장하지는 않는다. 모호한 조건은 확인하고 실제 실행 SQL과 저장 근거를 검토할 수 있다.
