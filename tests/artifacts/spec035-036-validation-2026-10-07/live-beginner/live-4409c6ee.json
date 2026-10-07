@@ -1,0 +1,44 @@
+{
+  "owner": "spec035-468190ef73c34f40b46aa84a6dd29782",
+  "session_id": "4e62f2e4-6fb4-4af2-9aa2-6b9c40ab4135",
+  "state": "failed",
+  "generation": {
+    "error": "모델 호출에 실패해 출제를 보류했습니다. 호출 제한·모델 연결을 확인하고 수동 재시도하세요.",
+    "phase": "adaptive-design",
+    "states": [
+      {
+        "at": "2026-10-07T00:37:31.039026+00:00",
+        "status": "planning"
+      },
+      {
+        "at": "2026-10-07T00:38:17.945492+00:00",
+        "status": "planning"
+      },
+      {
+        "at": "2026-10-07T00:39:23.141556+00:00",
+        "status": "planning"
+      },
+      {
+        "status": "failed",
+        "at": "2026-10-07T00:39:23.289486+00:00"
+      }
+    ],
+    "status": "failed",
+    "message": "튜토리얼 완료율 하락을 분석하고 싶어",
+    "version": "discord-generation-v1",
+    "revision": 0,
+    "questions": [],
+    "run_token": "4d7b1ffa-25ca-476b-a827-15262f19a476",
+    "error_code": "api_input_budget",
+    "request_id": "4e62f2e4-6fb4-4af2-9aa2-6b9c40ab4135",
+    "planning_calls": 3,
+    "original_message": "튜토리얼 완료율 하락을 분석하고 싶어",
+    "requested_difficulty": "beginner",
+    "requested_help_level": null
+  },
+  "task": {
+    "title": "문제 생성 요청",
+    "difficulty": "beginner"
+  },
+  "live_model": true
+}

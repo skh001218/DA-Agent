@@ -1,0 +1,119 @@
+[
+  {
+    "request": "튜토리얼 완료율 하락을 분석하고 싶어",
+    "difficulty": "beginner",
+    "help_level": "independent",
+    "session_id": "e76f042f-d3f4-468f-ad9e-08f3eba1556f",
+    "state": "failed",
+    "generation": {
+      "error": "고정 데이터 설계의 표본·시간·집계 조건을 충족하지 못했습니다.",
+      "phase": "adaptive-design",
+      "states": [
+        {
+          "at": "2026-10-07T00:46:58.791467+00:00",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-07T00:47:52.516593+00:00",
+          "status": "planning"
+        },
+        {
+          "at": "2026-10-07T00:48:58.128472+00:00",
+          "status": "planning"
+        },
+        {
+          "status": "failed",
+          "at": "2026-10-07T00:50:03.009632+00:00"
+        }
+      ],
+      "status": "failed",
+      "message": "튜토리얼 완료율 하락을 분석하고 싶어",
+      "version": "discord-generation-v1",
+      "revision": 0,
+      "questions": [],
+      "run_token": "8e00b447-dbc3-4293-afe4-31d6fff5a5d4",
+      "error_code": "plan_invalid",
+      "request_id": "e76f042f-d3f4-468f-ad9e-08f3eba1556f",
+      "planning_calls": 3,
+      "original_message": "튜토리얼 완료율 하락을 분석하고 싶어",
+      "requested_difficulty": "beginner",
+      "requested_help_level": "independent"
+    },
+    "public_task": {
+      "title": "문제 생성 요청",
+      "difficulty": "beginner"
+    },
+    "calls": [
+      {
+        "phase": "adaptive-design",
+        "state": "completed",
+        "model": "gemma-4-26b-a4b-it",
+        "reason": null,
+        "usage": {
+          "input_tokens": 6891,
+          "total_tokens": 9360,
+          "output_tokens": 2469
+        }
+      },
+      {
+        "phase": "adaptive-design",
+        "state": "completed",
+        "model": "gemma-4-26b-a4b-it",
+        "reason": null,
+        "usage": {
+          "input_tokens": 8951,
+          "total_tokens": 11418,
+          "output_tokens": 2467
+        }
+      },
+      {
+        "phase": "adaptive-design",
+        "state": "completed",
+        "model": "gemma-4-26b-a4b-it",
+        "reason": null,
+        "usage": {
+          "input_tokens": 8949,
+          "total_tokens": 11404,
+          "output_tokens": 2455
+        }
+      }
+    ],
+    "validation_failures": [
+      {
+        "at": "2026-10-07T00:50:02.967259+00:00",
+        "code": "plan_invalid",
+        "issues": [
+          {
+            "type": "data_dependency",
+            "message": "task quality: retention/churn claims require a defined observable outcome and executable ratio metric; choose a supported current-content performance question instead",
+            "location": []
+          }
+        ]
+      }
+    ],
+    "rejected_design_issues": [
+      [
+        {
+          "type": "data_dependency",
+          "message": "task quality: retention/churn claims require a defined observable outcome and executable ratio metric; choose a supported current-content performance question instead",
+          "location": []
+        }
+      ],
+      [
+        {
+          "type": "data_dependency",
+          "message": "task quality: retention/churn claims require a defined observable outcome and executable ratio metric; choose a supported current-content performance question instead",
+          "location": []
+        }
+      ],
+      [
+        {
+          "type": "data_dependency",
+          "message": "task quality: retention/churn claims require a defined observable outcome and executable ratio metric; choose a supported current-content performance question instead",
+          "location": []
+        }
+      ]
+    ],
+    "alignment_errors": []
+  }
+]

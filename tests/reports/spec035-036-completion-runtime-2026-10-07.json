@@ -1,0 +1,14 @@
+{
+  "image": "sha256:332e2aafa2573a5b60de12a5d4ea1be46ea931ff7dbdfacbc31beb35dcd9f0df",
+  "tag": "da-agent-discord-bot:spec035-036-validated-20261007",
+  "source_matches": {
+    "adaptive_tasks.py": true,
+    "discord_generation.py": true,
+    "discord_provider.py": true,
+    "discord_api_budget.py": true,
+    "discord_service.py": true,
+    "discord_sql_practice.py": true,
+    "task_quality.py": true
+  },
+  "bot_log": "Discord ready: bot_id=1556884921652609034; guilds=[1556888486919934064]\n"
+}

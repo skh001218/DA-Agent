@@ -17,10 +17,10 @@
 
 분자는 분모 모집단에 추가 조건을 적용한 부분집합이라는 기존 ratio 실행 계약을 설계 프롬프트에 명시했다. 시작 이벤트와 완료 이벤트를 서로 배타적인 분모/분자로 겹쳐 0을 만드는 오류를 수정할 수 있도록 안내한다. 독립 검토의 처음 3행 예시를 전체 고유값 목록으로 오인하지 않도록 설명도 보완했다.
 
-- 전체 회귀: **608 passed / 79 skipped**, JUnit (`spec035-036-completion-all-2026-10-07.xml`, 621f 원본 검증 자료). 생략은 전용 DB·API 등 환경 의존 검사다. 기존 Starlette/httpx 사용 경고 1건.
-- 격리 PostgreSQL 관련 회귀: **122 passed**, JUnit (`spec035-036-completion-db-2026-10-07.xml`, 621f 원본 검증 자료). 포트 65447의 별도 컨테이너에서 SQL·생성·서비스·흐름·조회·계약을 검사했다.
-- SQL 설명 저장/검토/복원 포함 DB 전용 검사: **20 passed**, JUnit (`spec035-sql-explanation-db-2026-10-07.xml`, 621f 원본 검증 자료).
-- 운영 시작 로그 확인 및 주요 7개 파일의 SHA256이 체크아웃과 일치: 실행 정보 (`spec035-036-completion-runtime-2026-10-07.json`, 621f 원본 검증 자료).
+- 전체 회귀: **608 passed / 79 skipped**, [JUnit](spec035-036-completion-all-2026-10-07.xml). 생략은 전용 DB·API 등 환경 의존 검사다. 기존 Starlette/httpx 사용 경고 1건.
+- 격리 PostgreSQL 관련 회귀: **122 passed**, [JUnit](spec035-036-completion-db-2026-10-07.xml). 포트 65447의 별도 컨테이너에서 SQL·생성·서비스·흐름·조회·계약을 검사했다.
+- SQL 설명 저장/검토/복원 포함 DB 전용 검사: **20 passed**, [JUnit](spec035-sql-explanation-db-2026-10-07.xml).
+- 운영 시작 로그 확인 및 주요 7개 파일의 SHA256이 체크아웃과 일치: [실행 정보](spec035-036-completion-runtime-2026-10-07.json).
 - 전체 테스트의 생략 항목을 실행했다고 계산하지 않는다. 교육 효과·실제 모델 출제 성공률은 테스트 통과 수로 판정하지 않는다.
 
 ## 실제 Discord SQL 중급
@@ -32,7 +32,7 @@
 - 잘못된 열 이름 실행 오류 후 결과 메시지에 전체 SQL로 새 답장, 성공 실행 `f8a3f56f-6975-415c-9ea9-025cfd40cc60`의 부모 실행은 `e6a9e636-185c-4ea6-bf5c-07700047e2eb`.
 - 유입 채널 2행 전체 결과, SQL 전용 5항목 충족, PDF·결과 포럼 실제 게시 확인.
 - 봇 재시작 후 `/resume`은 같은 결과 포럼 `1557191570548330617`로 안내하고 완료 스레드 보관·잠금을 유지함. 결과 게시물을 새로 만들지 않음.
-- 실행 화면 (`../artifacts/spec035-036-sql-reply-result-2026-10-07.png`, 621f 원본 검증 자료), 결과 포럼 (`../artifacts/spec035-036-sql-result-forum-2026-10-07.png`, 621f 원본 검증 자료), 재시작 후 재개 (`../artifacts/spec035-036-sql-resume-2026-10-07.png`, 621f 원본 검증 자료), 저장 기록 (`../artifacts/spec035-036-validation-2026-10-07/discord-sql-session.json`, 621f 원본 검증 자료).
+- [실행 화면](../artifacts/spec035-036-sql-reply-result-2026-10-07.png), [결과 포럼](../artifacts/spec035-036-sql-result-forum-2026-10-07.png), [재시작 후 재개](../artifacts/spec035-036-sql-resume-2026-10-07.png), [저장 기록](../artifacts/spec035-036-validation-2026-10-07/discord-sql-session.json).
 
 ## 실제 Discord SQL 고급·분석 연결
 
@@ -41,7 +41,7 @@
 - 블록 밖에 중복 추가, 가입·완료 경계, 미도전자·0 분모/NULL 검산 계획을 입력하고 원문/설명이 실제로 저장됨.
 - 실제 Gemma 모델이 설명의 세 방법을 각각 검토했고 SQL 검사 5개와 설명 항목이 충족됨. 원본 SQL 열람 정보가 없는 기존 분석은 `미상`으로 보존해 `없음`으로 추정하지 않음.
 - 결과 포럼 `1557193566382465107`의 PDF·12개 카드·설명과 판단 근거를 실제 화면에서 확인함.
-- 화면 (`../artifacts/spec035-036-advanced-sql-forum-2026-10-07.png`, 621f 원본 검증 자료), 저장 기록 (`../artifacts/spec035-036-validation-2026-10-07/discord-advanced-sql-session.json`, 621f 원본 검증 자료).
+- [화면](../artifacts/spec035-036-advanced-sql-forum-2026-10-07.png), [저장 기록](../artifacts/spec035-036-validation-2026-10-07/discord-advanced-sql-session.json).
 - 자동 모델의 설명 검토를 사람의 교육 품질 승인으로 간주하지 않는다.
 
 ## 실제 모델 분석 출제
@@ -51,14 +51,14 @@
 - 초기 검증에서 회귀 검사와 같은 records DB를 사용해 계획이 interrupted 처리됐다. 이를 별도 DB로 분리했고 해당 초기 결과는 제품 실패로 계산하지 않는다.
 - 후속 beginner 요청은 입력 예산 초과. 수정 이력 축소·정확한 토큰 계산 후에는 구조/표본 및 적합성 검사에서 거절됨.
 - 이전 실패 초안 재시도에서는 fixed data 완료율과 서술된 수치가 불일치해 독립 검토가 거절함. 잘못된 과제를 공개하지 않음.
-- 두 요청×세 난이도를 모두 실행했다. 성공한 출제는 없었다. 행렬 원본 (`../artifacts/spec035-036-validation-2026-10-07/final-levels-recheck/live-levels.json`, 621f 원본 검증 자료).
+- 두 요청×세 난이도를 모두 실행했다. 성공한 출제는 없었다. [행렬 원본](../artifacts/spec035-036-validation-2026-10-07/final-levels-recheck/live-levels.json).
 
 | 요청 | 초급 | 중급 | 고급 |
 | --- | --- | --- | --- |
 | 튜토리얼 완료율 하락 | plan_invalid: 관측 조건에 맞는 표본 없음 | plan_invalid: 비교 그룹 2개 미만 | API429, 입력 토큰/분 16000 |
 | 반복 행동·정상 반례 | API429, 입력 토큰/분 16000 | API429, 입력 토큰/분 16000 | 검증 환경 문제로 결과 제외; 환경 분리 후 재실행은 API429 |
 
-반복 행동 고급의 최초 마지막 실행은 제공자 응답을 받지 못한 상태에서 generation_failed로 종료됐다. 동시 자동 검사와 모델 검증이 같은 로컬 예산 SQLite를 공유했고 스키마 갱신과 구버전 검사 프로세스가 겹쳤다. 환경 간 간섭을 배제할 수 없어 제품 실패로 계산하지 않는다. 자동 검사는 tmp_path 예산으로, 실제 모델 검증은 전용 `.local/spec035-036-validation/api-budget`으로 분리했다. 격리 재실행의 API 제한 결과는 고급 재검사 (`../artifacts/spec035-036-validation-2026-10-07/live-advanced-final/live-levels.json`, 621f 원본 검증 자료)에 보존했다.
+반복 행동 고급의 최초 마지막 실행은 제공자 응답을 받지 못한 상태에서 generation_failed로 종료됐다. 동시 자동 검사와 모델 검증이 같은 로컬 예산 SQLite를 공유했고 스키마 갱신과 구버전 검사 프로세스가 겹쳤다. 환경 간 간섭을 배제할 수 없어 제품 실패로 계산하지 않는다. 자동 검사는 tmp_path 예산으로, 실제 모델 검증은 전용 `.local/spec035-036-validation/api-budget`으로 분리했다. 격리 재실행의 API 제한 결과는 [고급 재검사](../artifacts/spec035-036-validation-2026-10-07/live-advanced-final/live-levels.json)에 보존했다.
 
 행렬 검증 뒤 느린 요청의 진행 중 예약을 만료시키지 않고 응답 완료부터 rolling 예산을 유지하도록 보완했다. 오래된 pending 예약은 3×window 후 회수한다. 기존 예산 DB는 사용량을 보존해 마이그레이션하고 HTTP 장애에서도 예약을 완료 처리한다. 모델 대기는 130초 한도이며 429의 로컬 대기와 안내는 최소 65초다. 이 수정은 테스트 및 운영 배포 후 추가 Discord 요청으로 검사했다. 첫 초안은 모델 응답을 받았지만 지원하지 않는 derived aggregate 연산으로 거절됐고, 수정 호출은 API429로 보류됐다. 앞선 행렬 실패를 최신 수정 뒤의 성공률로 해석하지 않는다.
 
@@ -71,7 +71,7 @@
 - 수정 호출에서 API429 입력 토큰/분 16000 제한을 받았다. 내부 원인은 응답만으로 확정하지 않는다. 정확한 계산/공유 예산이 외부 계정 한도를 항상 없애 준다고 주장하지 않는다.
 - 실패 안내에 기록 보존·수동 재시도·`2026-10-07 10:09:12 KST`를 표시했다. 검증되지 않은 문제·자료는 공개하지 않았다.
 - 실제 `/resume` 후 같은 스레드와 실패 안내·재시도 버튼을 복원했다. 요청 원문·실패 기록 보존, 모델 호출 수 2 유지(재개가 자동 모델 재시도를 만들지 않음)를 저장소에서도 확인했다.
-- 실패 화면 (`../artifacts/spec035-036-analysis-failure-2026-10-07.png`, 621f 원본 검증 자료), 재개 화면 (`../artifacts/spec035-036-analysis-resume-2026-10-07.png`, 621f 원본 검증 자료), 운영 저장 결과 (`../artifacts/spec035-036-validation-2026-10-07/discord-analysis-generation.json`, 621f 원본 검증 자료).
+- [실패 화면](../artifacts/spec035-036-analysis-failure-2026-10-07.png), [재개 화면](../artifacts/spec035-036-analysis-resume-2026-10-07.png), [운영 저장 결과](../artifacts/spec035-036-validation-2026-10-07/discord-analysis-generation.json).
 - 사용한 격리 검사 DB 컨테이너만 종료했고 데이터·컨테이너는 보존했다. 운영 봇과 DB·웹 서비스는 유지했다.
 
 ## 남은 확인
@@ -81,6 +81,6 @@
 - 현재 확인한 결과 화면에서 사람이 검토할 첫 행동: 고급 결과 포럼의 `검산 방법 설명`과 그 판정 근거를 읽고, 설명이 실제 확인 절차를 구체적으로 제시하는지 평가한다. Spec035의 대표 정답·오답·동등 풀이·판정 보류 설명 정확성의 사람 검토가 남아 있다. 학습 효과를 이 구현 검사만으로 주장하지 않는다.
 
 
-## 통합 브랜치 사본의 범위
+## 후속 통합 기록
 
-이 문서는 621f 배포 작업의 기록을 보존한 사본이다. 원본의 검사·화면·운영 세션 자료는 621f 체크아웃에 보존되어 있으며, 이번 통합 커밋에 운영 세션 원문을 추가하지 않는다. 위 경로 표기는 그 원본 자료를 식별한다. 이번 통합본의 현재 검증과 배포 결과는 generation-integration-2026-10-07.md에 별도로 기록한다.
+이 문서의 이미지·배포 명령·검증은 Spec035·036 배포 당시 기록이다. 이후 출제 입력·호출 차감 개선을 통합해 운영 이미지 generation-integrated-20261007로 반영했다. 현재 통합 검증과 배포 명령은 [통합·운영 보고](generation-integration-2026-10-07.md)를 참고한다. PR #30의 검증 자료와 링크는 그대로 보존했다.
