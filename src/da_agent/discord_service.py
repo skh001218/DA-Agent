@@ -707,7 +707,7 @@ class DiscordTrainingService:
             from .codex_provider import CLI_ERRORS
             if plan.get('reason') in CLI_ERRORS:
                 return [CLI_ERRORS[plan['reason']] + ' 답변과 조회 조건은 보존됩니다. 원인 해결 후 수동 재시도하세요.']
-            if plan.get('reason') == 'unsupported_query':
+            if plan.get('reason') in {'unsupported_query', 'missing_data'}:
                 document['pending_query'] = None
                 self._close_question(document, 'superseded')
             elif pending:
@@ -824,7 +824,10 @@ def format_result(execution, settings):
             return '예' if value else '아니오'
         return meanings.get(str(value), str(value))
     lines = [f"실행 성공 · ID {execution['execution_id']}", '확정 계산 기준']
-    lines.extend(f'• {labels.get(key, key)}: {describe(value)}' for key, value in execution['conditions'].items())
+    if execution['conditions'].get('operation') == 'select':
+        lines.append('• 요청한 공개 자료의 행·조건·비교 기준으로 조회했습니다. 실행 SQL은 /sql에서 확인할 수 있습니다.')
+    else:
+        lines.extend(f'• {labels.get(key, key)}: {describe(value)}' for key, value in execution['conditions'].items())
     lines.append('조회 결과는 첨부 표에서 확인하세요. 표를 누르면 확대할 수 있습니다.')
     if any(value is None for row in preview for value in row):
         lines.append('NULL은 값 없음입니다. 비율의 분모 0 등 원인을 확인하며 0%로 해석하지 않습니다.')
@@ -832,6 +835,8 @@ def format_result(execution, settings):
         lines.append('빈 결과입니다. 원인을 단정하거나 0%로 해석하지 않습니다.')
     if len(rows) > 10:
         lines.append(f'표시만 첫 10행으로 제한했습니다. 저장 수집 행: {len(rows)}.')
+    if execution['conditions'].get('operation') == 'select':
+        lines.append('수집한 전체 조회 데이터는 첨부 JSON 파일에서 확인할 수 있습니다.')
     if not result.get('result_complete', False):
         lines.append(f'수집 제한으로 불완전한 결과입니다. 최대 {settings.max_rows}행 / {settings.max_bytes}바이트. 전체 건수는 알 수 없습니다.')
     lines.append(f'읽기 전용 · 실행 제한 {settings.query_timeout_ms / 1000:g}초 · 데이터 버전 {execution["data_version"]} · /sql로 SQL 확인, /evidence로 보고 연결')
