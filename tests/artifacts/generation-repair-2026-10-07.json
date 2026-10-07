@@ -1,0 +1,28 @@
+{
+  "date": "2026-10-07",
+  "session_id": "f2d9f772-73e5-4670-9dc7-5de156465b59",
+  "external_model_calls": 0,
+  "discord_writes": 0,
+  "private_drafts_written": false,
+  "scenarios": [
+    {
+      "scenario": "initial",
+      "estimated_input_tokens": 5539,
+      "headroom": 8461,
+      "drafts_in_request": 0
+    },
+    {
+      "scenario": "correction_1",
+      "estimated_input_tokens": 9990,
+      "headroom": 4010,
+      "drafts_in_request": 1
+    },
+    {
+      "scenario": "correction_2",
+      "estimated_input_tokens": 10250,
+      "headroom": 3750,
+      "drafts_in_request": 1
+    }
+  ],
+  "limitation": "Offline request construction only; no live model success or deployment claim."
+}

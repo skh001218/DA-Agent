@@ -1,0 +1,48 @@
+{
+  "thread_id": "1557195802575904788",
+  "status": "failed",
+  "error_code": "plan_invalid",
+  "planning_calls_total": 4,
+  "latest_call_diagnostics": [
+    {
+      "phase": "adaptive-design",
+      "state": "completed",
+      "reason": null,
+      "input_diagnostic": {
+        "sent": true,
+        "input_limit": 14000,
+        "input_budget_basis": "countTokens",
+        "input_budget_tokens": 4027,
+        "estimated_input_tokens": 4027
+      }
+    },
+    {
+      "phase": "adaptive-design",
+      "state": "completed",
+      "reason": null,
+      "input_diagnostic": {
+        "sent": true,
+        "input_limit": 14000,
+        "input_budget_basis": "countTokens",
+        "input_budget_tokens": 6178,
+        "estimated_input_tokens": 6178
+      }
+    },
+    {
+      "phase": "adaptive-design",
+      "state": "completed",
+      "reason": null,
+      "input_diagnostic": {
+        "sent": true,
+        "input_limit": 14000,
+        "input_budget_basis": "countTokens",
+        "input_budget_tokens": 6153,
+        "retry_after_seconds": 3,
+        "estimated_input_tokens": 6153
+      }
+    }
+  ],
+  "latest_issue_codes": [
+    "value_error"
+  ]
+}

@@ -39,6 +39,10 @@ class ApiBudget:
             conn.execute('INSERT INTO calls (id,scope,at,tokens,pending) VALUES (?,?,?,?,1)', (ident, scope, now, tokens))
             return ident, 0
 
+    def release(self, ident):
+        with sqlite3.connect(self.path) as conn:
+            conn.execute('DELETE FROM calls WHERE id=?', (ident,))
+
     def actual(self, ident, tokens, *, now=None):
         now = time.time() if now is None else now
         with sqlite3.connect(self.path) as conn:

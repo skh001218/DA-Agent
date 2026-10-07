@@ -199,7 +199,7 @@ def test_gemma_generates_directly_without_research_or_selection(generated_servic
     assert source['sources'] == [] and source['searched_at'] is None
     assert source['topic'] == doc['task']['topic']
     design = service.provider.review.call_args_list[0].args[0]
-    assert '가상 업무 상황을 직접 설계' in design[0]['content']
+    assert '실제 검색은 하지 않습니다' in design[0]['content']
     assert json.loads(design[1]['content'])['source_case'] is None
     assert '가상 분석 문제' in task_intro(doc)
     before = service.store.calls
@@ -248,7 +248,8 @@ def test_manual_retry_reuses_rejected_recipe_and_current_validation_feedback(gen
     ready = service.generate('owner',session['session_id'],retry=True)
     assert ready['generation']['status'] == 'ready'
     messages = service.provider.review.call_args_list[3].args[0]
-    assert messages[-2] == {'role':'assistant','content':bad_response['text']}
+    assert messages[-2]['role'] == 'assistant'
+    assert json.loads(messages[-2]['content']) == json.loads(bad_response['text'])
     assert 'count' in messages[-1]['content'] and '500' in messages[-1]['content']
     assert service.store.calls == 5
 

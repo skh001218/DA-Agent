@@ -17,6 +17,25 @@ VERSION = 'discord-generation-v1'
 ACTIVE = {'planning', 'preparing_data', 'validating'}
 
 
+def failure_message(code, diagnostic=None):
+    messages = {
+        'api_input_budget':'내부 출제 입력이 허용 크기를 초과했습니다. 초안과 원래 요청은 보존했습니다. 운영자의 입력 구성 점검이 필요하며 같은 요청을 그대로 반복하지 마세요.',
+        'api_rate_limited':'분당 모델 호출·입력 한도로 출제를 보류했습니다. 대기 후 /retry로 수동 재시도하세요.',
+        'usage_limit':'오늘의 API 호출 한도에 도달했습니다. 다음 날 /retry로 재시도할 수 있으며 기존 기록은 계속 열람할 수 있습니다.',
+        'planning_limit':'요청별 출제 호출 한도에 도달했습니다. 기록을 보존했으며 새 /training 요청이 필요합니다.',
+        'plan_invalid':'모델의 자료 설계가 생성·관계 규칙을 충족하지 못했습니다. 초안을 보존했으며 /retry로 오류에 맞춘 수정을 요청할 수 있습니다.',
+        'research_unavailable':'현재 제공자가 사례 검색을 지원하지 않습니다. 모델의 출제 방식을 확인하세요.',
+        'api_key_missing':'모델 연결 키가 설정되지 않았습니다. 운영자가 연결 설정을 확인한 뒤 재시도하세요.',
+        'api_key_invalid':'모델 연결 인증이 실패했습니다. 운영자가 연결 설정을 확인한 뒤 재시도하세요.',
+        'model_unavailable':'설정한 모델을 사용할 수 없습니다. 운영자가 모델 설정을 확인한 뒤 재시도하세요.',
+    }
+    message = messages.get(code, '모델 호출을 완료하지 못했습니다. 기록은 보존했으며 연결 복구 후 수동 재시도할 수 있습니다.')
+    delay = (diagnostic or {}).get('retry_after_seconds')
+    if code == 'api_rate_limited' and isinstance(delay, int):
+        message += f' 최소 {delay}초 뒤 다시 시도하세요.'
+    return message
+
+
 def request(text, sid, difficulty):
     from .training import contains_material
     if not isinstance(text, str) or not 1 <= len(text.strip()) <= 4000:
@@ -37,8 +56,11 @@ def status_message(document):
     if g['status'] == 'needs_clarification':
         lines += g.get('questions', []) + ['/answer text:답변으로 출제 조건을 알려주세요.']
     elif g['status'] in {'failed', 'interrupted'}:
-        lines += ['기록은 보존했습니다. 재시도 버튼 또는 /retry로 수동 재시도하세요.']
-        if g.get('retry_at'):
+        if g.get('error_code') in {'api_input_budget','planning_limit','usage_limit','api_key_missing','api_key_invalid','model_unavailable'}:
+            lines += ['기록은 보존했습니다. 위 원인을 해결한 뒤 다시 진행하세요.']
+        else:
+            lines += ['기록은 보존했습니다. 재시도 버튼 또는 /retry로 수동 재시도하세요.']
+        if g.get('error_code') == 'api_rate_limited' and g.get('retry_at'):
             from datetime import datetime
             from zoneinfo import ZoneInfo
             lines += ['재시도 가능 시각: '+datetime.fromisoformat(g['retry_at']).astimezone(ZoneInfo('Asia/Seoul')).strftime('%Y-%m-%d %H:%M:%S KST')]
@@ -131,6 +153,7 @@ class DiscordGeneration:
             if g['status'] in {'failed','interrupted'} and not retry: return doc
             if g['status']=='needs_clarification': return doc
             g.update(status='planning',run_token=token,error=None,error_code=None)
+            g.pop('retry_at',None)
             doc['state']='planning'
         job=self.store.generation_job(owner,sid)
         synthetic = getattr(self.service.provider, 'generation_mode', None) == 'synthetic'
@@ -154,24 +177,10 @@ class DiscordGeneration:
 
         def save(): self.store.save_generation_job(owner,sid,job)
         def design_messages():
-            messages=adaptive.planning_messages(data,recent,None if synthetic else job['source_case'])
             if synthetic:
-                messages[0]['content'] += (' 사용자 요청과 난이도로 가상 업무 상황을 직접 설계하세요. '
-                    '반드시 단일 JSON 객체 {...}만 반환하고 배열 [{...}]로 감싸지 마세요. '
-                    '최상위 reason 키는 status=ready에서도 필수입니다. difficulty_reason과 별개이며 설계 이유를 한 문장으로 작성하세요. '
-                    '각 표의 columns[0].generator.kind만 id입니다. 두 번째 이후 컬럼에는 id를 쓰지 마세요. '
-                    '파생 요약 표도 첫 summary_id 컬럼은 kind=id, 두 번째 account_id 등 집계키 컬럼은 kind=group_key입니다. '
-                    'FK joins는 선언된 foreign_key 또는 그 값을 그대로 복사한 파생 group_key에서만 허용합니다. 일반 숫자/aggregate로 연결하지 마세요. '
-                    'timestamp_sequence/offset에 필요한 duration/interval/source 컬럼을 시각 컬럼보다 먼저 선언하세요. '
-                    '다른 표의 계정/대상 식별자는 generator={"kind":"foreign_key","table":"앞선표이름"}로 선언하세요. '
-                    '각 groups[].count는 1~500, 모든 표의 그룹 count 합계는 2000 이하입니다. '
-                    'count=1은 예시 자리표시자가 아닙니다. 실제 생성 행 수이므로 행동 비교 과제는 충분한 계정과 로그 표본을 설계하세요. '
-                    '진단 conditions를 만족하는 행과 정상 반례를 groups의 overrides로 실제 생성하고, '
-                    'group_by 비교는 적어도 두 값이 실제 데이터에 나타나도록 관측 속성을 그룹별 overrides로 보장하세요. '
-                    '정상/의심 구분은 공개 행동 수치로 검토하게 하고 생성 그룹 이름을 category 값으로 노출하지 마세요. '
-                    '공개 category에는 플랫폼·지역 등 관측 속성만 쓰며 normal/suspicious/bot/정상/의심 값과 is_bot 컬럼은 금지합니다. '
-                    '실제 검색이나 출처 확인을 수행했다고 말하지 말고 회사 사례·인용·URL을 만들지 마세요. '
-                    '업무 배경·기간·대상·수치는 연습용 가상 조건임을 공개 설명에 명시하세요.')
+                from .discord_design import planning_messages
+                return planning_messages(data, recent)
+            messages=adaptive.planning_messages(data,recent,None if synthetic else job['source_case'])
             messages[0]['content'] += (
                 'business_case.requirements의 competency는 중복 없이 초급 measurement/decision, '
                 '중급 comparison/uncertainty/decision, 고급 comparison/uncertainty/decision/alternatives/confounding을 포함하세요. '
@@ -191,13 +200,29 @@ class DiscordGeneration:
                 raise DomainError('cancelled','출제를 취소했습니다.')
             if current.get('planning_calls',0)>=adaptive.PLANNING_LIMIT:
                 raise DomainError('planning_limit','요청별 출제 호출 한도에 도달했습니다. 새 /training 요청으로 시작하세요.')
-            self.update(owner,sid,token,'planning',phase=phase,planning_calls=current.get('planning_calls',0)+1)
-            self.store.reserve_call(owner,self.service.daily_limit)
+            self.update(owner,sid,token,'planning',phase=phase)
+            def reserve_call():
+                # Serialize cancellation and both counters in the same records transaction.
+                with self.store.edit(owner,sid) as (latest_doc,conn):
+                    latest=latest_doc['generation']
+                    if latest.get('run_token')!=token or latest['status']=='cancelled':
+                        raise DomainError('cancelled','출제를 취소했습니다.')
+                    if latest.get('planning_calls',0)>=adaptive.PLANNING_LIMIT:
+                        raise DomainError('planning_limit',failure_message('planning_limit'))
+                    if conn is None:
+                        self.store.reserve_call(owner,self.service.daily_limit)
+                    else:
+                        self.store.reserve_call(owner,self.service.daily_limit,conn=conn)
+                    latest['planning_calls']=latest.get('planning_calls',0)+1
             handler=getattr(self.service.provider,method,None)
             if not callable(handler): raise DomainError('research_unavailable','현재 모델 연결의 사례 검색·선정을 지원하지 않습니다.')
             entry={'phase':phase,'at':timestamp(),'state':'started'}
             history.append(entry); save()
-            result=handler(messages)
+            if getattr(type(self.service.provider),'supports_call_reservation',False) is True:
+                result=handler(messages,before_send=reserve_call)
+            else:
+                reserve_call()
+                result=handler(messages)
             entry.update(state=result.get('state'),model=result.get('model'),usage=result.get('usage'),reason=result.get('reason'))
             if result.get('retry_at'):
                 entry['retry_at'] = result['retry_at']
@@ -210,11 +235,12 @@ class DiscordGeneration:
                 entry['quota_diagnostic'] = deepcopy(result['quota_diagnostic'])
             if isinstance(result.get('json_diagnostic'), dict):
                 entry['json_diagnostic'] = deepcopy(result['json_diagnostic'])
+            if isinstance(result.get('input_diagnostic'),dict):
+                entry['input_diagnostic']=deepcopy(result['input_diagnostic'])
             save()
             if result.get('state')!='completed':
                 reason=result.get('reason','provider_unavailable')
-                message='모델 호출에 실패해 출제를 보류했습니다. 호출 제한·모델 연결을 확인하고 수동 재시도하세요.'
-                if reason=='research_unavailable': message='현재 제공자가 사례 검색을 지원하지 않습니다. 모델의 출제 방식을 확인하세요.'
+                message=failure_message(reason,result.get('input_diagnostic'))
                 raise DomainError(reason,message)
             return result
 
@@ -251,8 +277,8 @@ class DiscordGeneration:
                             reusable = candidate
                     except (DomainError, ValueError) as exc:
                         issues = getattr(exc,'validation_issues',[{'message':str(exc)}])
-                    messages += [{'role':'assistant','content':previous['text']},
-                        {'role':'user','content':'이전 요청의 실패 설계를 보존했습니다. 원래 목표·난이도를 유지하고 다음 검증 오류를 수정한 전체 JSON 객체를 반환하세요. '+json.dumps(issues,ensure_ascii=False)}]
+                    from .discord_design import repair_messages
+                    messages=repair_messages(design_messages(),previous['text'],issues)
                 recipe = reusable
                 for attempt in range(0 if reusable else 3):
                     result=call(messages,'adaptive-design')
@@ -268,8 +294,10 @@ class DiscordGeneration:
                         job.setdefault('rejected_designs',[]).append({'issues':issues,'text':result.get('text',''), 'request_message':data.message})
                         save()
                         if attempt==2: raise
-                        messages += [{'role':'assistant','content':result.get('text','')},
-                            {'role':'user','content':'원래 목표·난이도를 유지해 전체 JSON을 수정하세요. ratio에는 명시적인 분자 conditions가 필요하고 측정·비교 질문은 analysis metric_names에 연결해야 합니다. '+json.dumps(issues,ensure_ascii=False)}]
+                        from .discord_design import repair_messages
+                        errors=job.get('design_errors',[])
+                        repeated=len(errors)>1 and errors[-1]==errors[-2]
+                        messages=repair_messages(design_messages(),result.get('text',''),issues,repeated=repeated)
                 if recipe.status=='clarify':
                     return self.update(owner,sid,token,'needs_clarification',questions=recipe.questions)
                 if recipe.status=='unsupported': raise DomainError('unsupported_scope','현재 생성·검산 기능으로 요청 목표를 충족할 수 없습니다. 범위를 구체화해 새 요청을 입력하세요.')
@@ -289,9 +317,8 @@ class DiscordGeneration:
                         job['alignment_repair_used']=True
                         issues=getattr(exc,'validation_issues',[])
                         job.setdefault('alignment_errors',[]).append(issues); save()
-                        messages=design_messages()+[
-                            {'role':'assistant','content':json.dumps(recipe.model_dump(),ensure_ascii=False)},
-                            {'role':'user','content':'요청 목표·난이도를 유지하여 적합성 검토 오류를 수정한 전체 JSON을 반환하세요. '+json.dumps(issues,ensure_ascii=False)}]
+                        from .discord_design import repair_messages
+                        messages=repair_messages(design_messages(),json.dumps(recipe.model_dump(),ensure_ascii=False),issues)
                         original_labels=recipe.labels_public
                         recipe=adaptive.preflight(adaptive.parse_recipe(call(messages,'adaptive-alignment-repair')),seed,data)
                         if recipe.status!='ready' or recipe.difficulty!=data.difficulty or recipe.labels_public!=original_labels:

@@ -6,22 +6,28 @@ import hashlib
 import os
 from pathlib import Path
 import uuid
+import math
 import time
 from datetime import datetime, timezone
 
 import httpx
 
 from .api_provider import GeminiProvider
+from .errors import DomainError
 
 
 class _GemmaClient:
-    def __init__(self, client, budget=None):
+    def __init__(self, client, budget=None, *, budget_wait_seconds=0):
         self.client = client
         self.budget = budget
+        self.before_send = None
+        self.budget_wait_seconds = budget_wait_seconds
         self.last_metadata = {}
 
     def post(self, url, **kwargs):
+        from .discord_design import compact_json, compact_schema
         body = copy.deepcopy(kwargs['json'])
+        envelope = None
         if '/models/gemma-4-' in url:
             body.setdefault('generationConfig', {})['thinkingConfig'] = {'thinkingLevel': 'minimal'}
             try:
@@ -32,40 +38,61 @@ class _GemmaClient:
                 # Keep recipe correction as one structured request. Gemma's
                 # JSON-mode multi-turn correction can return HTTP 500; previous
                 # drafts remain data and the original request/schema stay intact.
-                # Earlier rejected drafts stay in the private checkpoint. Send
-                # only the latest complete correction pair to bound input size.
                 envelope['rejected_design_history'] = body['contents'][-2:]
-                body['contents'] = [{'role':'user','parts':[{'text':json.dumps(envelope,ensure_ascii=False)}]}]
+                body['contents'] = [{'role':'user','parts':[{'text':compact_json(envelope)}]}]
                 body['systemInstruction']['parts'].append({'text':
                     'rejected_design_history는 이전 실패 초안과 검증 오류 자료입니다. 마지막 오류를 수정하되 원래 request와 schema를 유지한 전체 JSON 객체를 반환하세요.'})
-        self.last_metadata = {'generation_config':body.get('generationConfig', {})}
-        reservation = None
+        estimate = lambda: (len(compact_json(body).encode('utf-8'))+2)//3 + 256
+        limit = self.budget.limit if self.budget else 14000
+        tokens = estimate()
+        if tokens > limit and isinstance(envelope, dict) and isinstance(envelope.get('schema'), dict):
+            envelope['schema'] = compact_schema(envelope['schema'])
+            body['contents'][0]['parts'][0]['text'] = compact_json(envelope)
+            tokens = estimate()
+        self.last_metadata = {'generation_config':body.get('generationConfig', {}),
+                              'estimated_input_tokens':tokens, 'input_limit':limit, 'sent':False}
+        if tokens > limit:
+            raise DomainError('api_input_budget', '내부 출제 입력을 줄여도 한도를 초과했습니다. 원래 요청과 초안은 보존했습니다.')
         if self.budget:
-            from .errors import DomainError
-            scope = hashlib.sha256((kwargs['headers']['x-goog-api-key'] + url).encode()).hexdigest()
-            # Reserve a UTF-8 based estimate plus headroom, then reconcile usage.
-            estimate = (len(json.dumps(body, ensure_ascii=False).encode('utf-8'))+2)//3 + 256
             try:
                 model_resource = 'models/'+url.rsplit('/',1)[-1].split(':',1)[0]
-                counted = self.client.post(url.replace(':generateContent',':countTokens'),
-                    headers=kwargs['headers'], json={'generateContentRequest':dict(body,model=model_resource)})
-                total = counted.json().get('totalTokens') if counted.status_code==200 else None
-                if isinstance(total,int) and total>0:
-                    estimate = total+256
-                self.last_metadata['input_budget_tokens'] = estimate
-                self.last_metadata['input_budget_basis'] = 'countTokens' if isinstance(total,int) and total>0 else 'utf8_estimate'
+                counted = self.client.post(url.replace(':generateContent', ':countTokens'),
+                    headers=kwargs['headers'], json={'generateContentRequest':dict(body, model=model_resource)})
+                total = counted.json().get('totalTokens') if counted.status_code == 200 else None
+                if type(total) is int and total > 0:
+                    tokens = total + 256
+                    self.last_metadata['input_budget_basis'] = 'countTokens'
+                else:
+                    self.last_metadata['input_budget_basis'] = 'utf8_estimate'
             except (httpx.HTTPError, ValueError, TypeError, AttributeError):
                 self.last_metadata['input_budget_basis'] = 'utf8_estimate'
-            deadline = time.monotonic()+130
+            self.last_metadata['input_budget_tokens'] = tokens
+            self.last_metadata['estimated_input_tokens'] = tokens
+        reservation = None
+        scope = hashlib.sha256((kwargs['headers']['x-goog-api-key'] + url).encode()).hexdigest()
+        if self.budget:
+            deadline = time.monotonic() + self.budget_wait_seconds
             while True:
-                reservation, delay = self.budget.reserve(scope, estimate)
+                reservation, delay = self.budget.reserve(scope, tokens)
                 if delay is None:
-                    raise DomainError('api_input_budget', '출제 입력이 분당 입력 예산보다 큽니다. 요청 범위를 줄여 새 과제를 시작하세요.')
+                    raise DomainError('api_input_budget', '출제 입력이 허용 예산을 초과했습니다.')
                 if reservation:
                     break
-                if time.monotonic()+delay > deadline:
-                    raise DomainError('api_rate_limited', '공유 호출 예산이 대기 한도에 도달했습니다. 잠시 뒤 수동 재시도하세요.')
-                time.sleep(min(delay+0.1, 5))
+                self.last_metadata['retry_after_seconds'] = math.ceil(delay)
+                if time.monotonic() + delay > deadline:
+                    raise DomainError('api_rate_limited', '공유 입력 예산의 대기 한도에 도달했습니다. 안내한 시각 이후 수동 재시도하세요.')
+                # Wait for capacity, without retrying generateContent or charging
+                # application quotas. Cancellation is checked before transmission.
+                time.sleep(min(delay + 0.1, 5))
+        try:
+            # Charge the application quota only once local checks have passed.
+            if self.before_send:
+                self.before_send()
+        except Exception:
+            if reservation:
+                self.budget.release(reservation)
+            raise
+        self.last_metadata['sent'] = True
         try:
             response = self.client.post(url, **dict(kwargs, json=body))
         except httpx.HTTPError:
@@ -74,11 +101,13 @@ class _GemmaClient:
             raise
         if self.budget:
             try:
-                self.budget.actual(reservation, response.json().get('usageMetadata',{}).get('promptTokenCount'))
+                self.budget.actual(reservation, response.json().get('usageMetadata', {}).get('promptTokenCount'))
                 if response.status_code == 429:
-                    delays = [float(d['retryDelay'][:-1]) for d in response.json().get('error',{}).get('details',[])
-                              if re.fullmatch(r'[0-9.]+s', str(d.get('retryDelay','')))]
-                    self.budget.cooldown(scope, max([65,*delays]))
+                    delays = [float(d['retryDelay'][:-1]) for d in response.json().get('error', {}).get('details', [])
+                              if isinstance(d,dict) and re.fullmatch(r'[0-9.]+s', str(d.get('retryDelay', '')))]
+                    delay = math.ceil(max([65, *delays]))
+                    self.budget.cooldown(scope, delay)
+                    self.last_metadata['retry_after_seconds'] = delay
             except (ValueError, TypeError, AttributeError):
                 pass
         self.last_metadata['http_status'] = response.status_code
@@ -96,16 +125,17 @@ class _GemmaClient:
 
 class DiscordGemmaProvider(GeminiProvider):
     generation_mode = 'synthetic'
+    supports_call_reservation = True
 
     def __init__(self, *, key_file, model='gemma-4-26b-a4b-it', http_client=None, diagnostics_directory=None, budget_directory=None):
         if not model.startswith('gemma-'):
             raise ValueError('Discord Gemma model must start with gemma-')
         from .discord_api_budget import ApiBudget
-        # Mock transports need no wall-clock throttling. Live providers share a
-        # persistent budget through the existing generation volume.
         directory = budget_directory or os.getenv('DISCORD_API_BUDGET_DIR') or (Path(os.getenv('DISCORD_GENERATION_DIRECTORY','.local/discord-generation'))/'api-budget')
         budget = ApiBudget(Path(directory)/'calls.sqlite3') if http_client is None or budget_directory else None
-        super().__init__(key_file=key_file, model=model, http_client=_GemmaClient(http_client or httpx.Client(timeout=90,follow_redirects=False),budget))
+        super().__init__(key_file=key_file, model=model, http_client=_GemmaClient(
+            http_client or httpx.Client(timeout=90,follow_redirects=False),budget,
+            budget_wait_seconds=130 if http_client is None else 0))
         directory = diagnostics_directory or os.getenv('DISCORD_JSON_DIAGNOSTICS_DIR')
         self.diagnostics_directory = Path(directory) if directory else None
 
@@ -113,14 +143,25 @@ class DiscordGemmaProvider(GeminiProvider):
         # Discord tasks are designed directly by Gemma, without external search.
         return self._failed('research_unavailable')
 
-    def review(self, messages, model=None):
+    def review(self, messages, model=None, *, before_send=None):
+        with self.lock:
+            self.http.before_send = before_send
+            self.http.last_metadata = {}
+            try:
+                return self._review(messages, model)
+            finally:
+                self.http.before_send = None
+
+    def _review(self, messages, model=None):
         if model is not None and not model.startswith('gemma-'):
             return self._failed('model_unavailable')
-        from .errors import DomainError
         try:
             response = super().review(messages, model=model)
         except DomainError as exc:
-            return self._failed(exc.code)
+            response = self._failed(exc.code)
+        metadata = self.http.last_metadata
+        response = dict(response, input_diagnostic={k:metadata[k] for k in
+            ('estimated_input_tokens','input_limit','retry_after_seconds','sent','input_budget_tokens','input_budget_basis') if k in metadata})
         if response.get('state') != 'completed':
             return response
         body = response['text'].strip()
@@ -188,7 +229,8 @@ class DiscordGemmaProvider(GeminiProvider):
             diagnostics = getattr(self, 'quota_diagnostic', None) or []
             if diagnostics:
                 result['quota_diagnostic'] = diagnostics
-            delay = max([float(d['retry_delay'][:-1]) for d in diagnostics if d.get('retry_delay')] or [65])
-            delay = max(65,delay)
+            delays = [float(d['retry_delay'][:-1]) for d in diagnostics if d.get('retry_delay')]
+            metadata = getattr(self.http, 'last_metadata', {})
+            delay = max([65, metadata.get('retry_after_seconds', 0), *delays])
             result['retry_at'] = datetime.fromtimestamp(time.time()+delay, timezone.utc).isoformat()
         return result
