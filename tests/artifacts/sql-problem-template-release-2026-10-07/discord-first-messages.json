@@ -1,0 +1,129 @@
+[
+  {
+    "id": "",
+    "images": [],
+    "text": "DA-Agent\n 님이 \n개발테스트\n 님을 스레드에 추가했어요.\n — \n오후 6:23\n2026년 10월 7일 수요일 오후 6:23"
+  },
+  {
+    "id": "",
+    "images": [
+      {
+        "alt": " ",
+        "loaded": true
+      }
+    ],
+    "text": "DA-Agent\n앱\n — \n오후 6:23\n2026년 10월 7일 수요일 오후 6:23\n출제 단계 완료율: 100% (3/3단계 완료) · 문제 출제 완료 (수정됨)\n2026년 10월 7일 수요일 오후 6:25"
+  },
+  {
+    "id": "",
+    "images": [
+      {
+        "alt": "📌",
+        "loaded": true
+      },
+      {
+        "alt": "🎯",
+        "loaded": true
+      },
+      {
+        "alt": "📚",
+        "loaded": true
+      }
+    ],
+    "text": "[\n오후 6:25\n]\n2026년 10월 7일 수요일 오후 6:25\n SQL · 합성 관측 요약으로 계산하는 채널별 D7 리텐션\n난이도: 중급 · 연습 유형: SQL\n\n 1. 문제 목표\n연습용 합성 서비스의 신규 이용자 200명을 대상으로 유입 채널별 D7 리텐션을 계산하세요. 시간대는 Asia/Seoul이며 가입일을 D0로 정의합니다. D7 재접속은 가입일에서 7일 뒤인 달력 날짜의 00:00:00부터 다음 날 00:00:00 직전까지 인증된 접속이 한 번 이상 발생한 경우입니다. 관측 종료 시각은 2026-09-30T23:59:59+09:00입니다. observed_days는 가입일 이후 완전히 관측한 달력 날짜 수이며, 7 이상인 이용자만 분모에 포함합니다. 가입 이후 접속이 전혀 없는 이용자도 관측이 완료되었다면 분모에 포함합니다. 관측 일수 7 미만인 이용자는 실패로 처리하지 않고 제외합니다. user_observations는 원본 접속 로그에서 계산한 자료가 아니라 이용자마다 정확히 한 행을 제공하는 합성 관측 요약입니다. 이 표에서 profiles의 기본키로 조인하여 채널을 확인하세요. 출력 열은 profiles__channel, denominator, numerator, d7_retention 순서입니다. 관측 완료 이용자가 있는 채널만 출력하고, 미완료 이용자만 있는 채널은 출력하지 않습니다. 비율은 0~1이며 빈 분모는 NULL입니다. 빈 대상의 그룹 집계는 0행입니다.\n목표: 관측이 완료된 이용자를 대상으로 무접속자를 포함한 채널별 D7 리텐션을 직접 SELECT로 계산하고 검산한다.\n목표에 맞는 SELECT를 직접 작성하세요.\n\n 2. 사용할 데이터\n첨부한 데이터 사전 이미지를 누르면 확대할 수 있습니다.\n요청별 합성 자료 · 자동 검증 통과 · 사람 품질 검토 전"
+  },
+  {
+    "id": "",
+    "images": [
+      {
+        "alt": "데이터 사전 · profiles\n한 행: 대상 신규 이용자마다 정확히 한 행이며 총 200명이다.\nuser_id: 이용자 기본키 / channel: 가입 시 확정한 유입 채널 / signup_at: Asia/Seoul 기준 가입 시각\n행 1\n• 컬럼명: channel\n• 자료형: text\n행 2\n• 컬럼명: user_id\n• 자료형: bigint\n행 3\n• 컬럼명: signup_at\n• 자료형: timestamptz",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      }
+    ],
+    "text": "[\n오후 6:25\n]\n2026년 10월 7일 수요일 오후 6:25\n:100:\n클릭해서 반응\n:thumbsup:\n클릭해서 반응\n:thumbsdown:\n클릭해서 반응\n반응 추가하기\n답장\n전달\n기타"
+  },
+  {
+    "id": "",
+    "images": [
+      {
+        "alt": "데이터 사전 · user_observations\n한 행: profiles의 모든 이용자를 정확히 한 번 포함하는 합성 관측 요약이다. 같은 이름의 그룹 안에서 프로필 이용자와 요약 행을 일대일로 연결하며 독립적으로 이용자를 추출하지 않는다.\nobservation_id: 요약 행 기본키 / user_id: profiles.user_id를 참조하는 유일한 이용자 외래키 / observed_days: 관측 종료까지 가입일 이후 완전히 관측한 달력 날짜 수 / d7_returned: 관측 완료 이용자의 실제 D7 재접속 여부: 1은 있음, 0은 없음. 미완료 행의 0은 미관측용 저장값이며 실패로 해석하지 않는다. / post_signup_sessions: 가입 이후 관측 종료까지 인증된 접속 횟수. 0인 이용자도 관측 완료 시 분모에 포함한다.\n행 1\n• 컬럼명: user_id\n• 자료형: bigint\n행 2\n• 컬럼명: d7_returned\n• 자료형: bigint\n행 3\n• 컬럼명: observed_days\n• 자료형: bigint\n행 4\n• 컬럼명: observation_id\n• 자료형: bigint\n행 5\n• 컬럼명: post_signup_sessions\n• 자료형: bigint",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      }
+    ],
+    "text": "[\n오후 6:25\n]\n2026년 10월 7일 수요일 오후 6:25"
+  },
+  {
+    "id": "",
+    "images": [
+      {
+        "alt": "🔎",
+        "loaded": true
+      },
+      {
+        "alt": "📤",
+        "loaded": true
+      },
+      {
+        "alt": "📝",
+        "loaded": true
+      }
+    ],
+    "text": "[\n오후 6:25\n]\n2026년 10월 7일 수요일 오후 6:25\n 3. 계산 조건\n• 관측 기간: 가입 대상: 2026-09-20~2026-09-27. 관측 종료: 2026-09-30T23:59:59+09:00, Asia/Seoul.\n• 계산 단위: profiles의 모든 이용자를 정확히 한 번 포함하는 합성 관측 요약이다. 같은 이름의 그룹 안에서 프로필 이용자와 요약 행을 일대일로 연결하며 독립적으로 이용자를 추출하지 않는다.\n• 분석 조건: 가입일을 D0로 하고 D7은 가입일에서 7일 뒤의 달력 날짜로 정의합니다.; observed_days는 가입일 이후 완전히 관측한 달력 날짜 수입니다.; 모든 이용자는 프로필과 합성 관측 요약에 각각 정확히 한 행으로 존재합니다.; 가입 이후 무접속 이용자는 D7 재접속이 없지만 관측 완료 시 분모에 포함합니다.; 미완료 이용자의 d7_returned 저장값은 실패 판정에 사용하지 않습니다.\n• 집계: ratio · 대상 표: user_observations · 그룹: profiles.channel\n• 분자 조건: user_observations.d7_returned = 1\n• 분모 조건: user_observations.observed_days >= 7\n• 비율은 0~1이며 분모 0은 NULL입니다. 그룹 집계는 대상 행이 있는 그룹만 출력합니다.\n\n 4. 출력 형식\n• 출력 열과 순서: profiles__channel, denominator, numerator, d7_retention. 행 순서는 무관합니다. 숫자는 숫자형으로 출력하세요.\n\n 5. 제출 방법\n\n아래에 제공된 sql 코드 블록 틀을 복사해 풀이를 작성하세요.\n,\n틀 안내 메시지에 답장해 실행하세요. 수정할 때도 전체 SQL을 새 답장으로 보내세요.\n,\n실행 결과를 확인한 뒤 /submit로 최종 평가를 요청하세요.\n,\n• 코드 블록과 설명을 포함해 1,900자 이내로 제출하세요.\n• /help로 데이터 사전·평가 기준·개념 도움을 확인하세요.\n• 답장 수신이 제한되면 /sqlrun text:코드블록을 사용하세요.\n\n문제 정보\n• 데이터 버전: discord-generated-97dabc0bdf2e825bceb837e6-data"
+  },
+  {
+    "id": "",
+    "images": [],
+    "text": "[\n오후 6:25\n]\n2026년 10월 7일 수요일 오후 6:25\n이 틀을 복사해 SQL을 작성한 뒤 이 메시지에 답장하세요. 수정도 전체 SQL을 새 답장으로 보내세요.\n\n-- 여기에 풀이 SQL을 작성하세요.\n:100:\n클릭해서 반응\n:thumbsup:\n클릭해서 반응\n:thumbsdown:\n클릭해서 반응\n반응 추가하기\n답장\n전달\n기타"
+  },
+  {
+    "id": "",
+    "images": [],
+    "text": "DA-Agent\n 님이 채널 이름을 변경하셨어요: [중급 - SQL · 합성 관측 요약으로 계산하는 채널별 D7 리텐션]\n — \n오후 6:25\n2026년 10월 7일 수요일 오후 6:25"
+  },
+  {
+    "id": "",
+    "images": [
+      {
+        "alt": "",
+        "loaded": true
+      },
+      {
+        "alt": " ",
+        "loaded": true
+      }
+    ],
+    "text": "앱\n@DA-Agent\n이 틀을 복사해 SQL을 작성한 뒤 이 메시지에 답장하세요. 수정도 전체 SQL을 새 답장으로 보내세요. -- 여기에 풀이 SQL을 작성하세요.\n개발테스트\n — \n오후 6:27\n2026년 10월 7일 수요일 오후 6:27\nSELECT p.channel AS profiles__channel,\n       COUNT(*) AS denominator,\n       COUNT(*) FILTER (WHERE o.d7_returned = 1) AS numerator,\n       (COUNT(*) FILTER (WHERE o.d7_returned = 1))::numeric\n         / NULLIF(COUNT(*), 0) AS d7_retention\nFROM profiles AS p\nJOIN user_observations AS o ON o.user_id = p.user_id\nWHERE o.observed_days >= 7\nGROUP BY p.channel;"
+  },
+  {
+    "id": "",
+    "images": [
+      {
+        "alt": " ",
+        "loaded": true
+      }
+    ],
+    "text": "DA-Agent\n앱\n — \n오후 6:27\n2026년 10월 7일 수요일 오후 6:27\nSQL 실행 결과를 저장했습니다. 실행 ID: ee7bb89a-992d-4987-824f-874c3e0b445e\n전체 수집: 완료\n미리보기는 최대 10행이며 전체 결과와 구분합니다. /submit로 평가하거나 수정한 전체 SQL을 새 답장으로 제출하세요."
+  },
+  {
+    "id": "",
+    "images": [
+      {
+        "alt": "조회 결과\n실행 ID: ee7bb89a-992d-4987-824f-874c3e0b445e\n행 1\n• profiles__channel: paid\n• 분모\ndenominator: 80\n• 분자\nnumerator: 40\n• d7_retention: 0.5\n행 2\n• profiles__channel: organic\n• 분모\ndenominator: 80\n• 분자\nnumerator: 40\n• d7_retention: 0.5",
+        "loaded": true
+      },
+      {
+        "alt": "",
+        "loaded": true
+      }
+    ],
+    "text": "[\n오후 6:27\n]\n2026년 10월 7일 수요일 오후 6:27"
+  }
+]
